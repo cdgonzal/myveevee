@@ -29,8 +29,8 @@ export default function Home() {
           </Heading>
 
           <Text fontSize={{ base: "md", md: "lg" }} maxW="lg">
-            VeeVee reveals your covered benefits and answers questions about your plan—
-            invited by your doctor, private and secure.
+            VeeVee reveals your covered benefits and answers questions about your plan. 
+            Trusted by doctors, private and secure.
           </Text>
 
           <Stack spacing={2}>
@@ -49,7 +49,7 @@ export default function Home() {
             </Button>
 
             <Text fontSize="sm" color="gray.600">
-              Invited by your clinic • HIPAA-aligned • Encrypted
+              Invited by SWCA • HIPAA-aligned • Encrypted
             </Text>
           </Stack>
         </Stack>
@@ -57,7 +57,7 @@ export default function Home() {
         {/* Right side: Hero image */}
         <Box>
           <Image
-            src="/og-image.jpg"
+            src="/hero-image.jpg"
             alt="Patient using VeeVee wellness platform"
             borderRadius="xl"
             border="1px solid"
