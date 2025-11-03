@@ -1,0 +1,17 @@
+# robots.txt for MyVeeVee.com
+# Purpose: Allow all search engines to index public marketing pages
+
+User-agent: *
+Allow: /
+
+# Disallow backend or system paths (none yet, but for safety)
+Disallow: /amplify/
+Disallow: /api/
+Disallow: /admin/
+Disallow: /static/js/test/
+
+# Sitemap location (important for SEO)
+Sitemap: https://myveevee.com/sitemap.xml
+
+# Helpful comment for transparency
+# Created by VeeVee Health | https://myveevee.com | Last updated: 2025-11-02

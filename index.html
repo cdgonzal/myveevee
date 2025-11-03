@@ -1,14 +1,68 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Basics -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My VeeVee — Got Health?</title>
-    <meta name="description" content="Got Health? Unleash the Best Version of You: VeeVee" />
+    <meta name="description" content="VeeVee reveals your covered benefits, perks, wellness products, and everyday health support. Got Health?" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#4FC3F7" />
+    <link rel="apple-touch-icon" href="/android-chrome-512x512.png" />
+    <link rel="canonical" href="https://myveevee.com/" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="My VeeVee" />
+    <meta property="og:title" content="My VeeVee — Got Health?" />
+    <meta property="og:description" content="VeeVee reveals your covered benefits, perks, wellness products, and everyday health support." />
+    <meta property="og:url" content="https://myveevee.com/" />
+    <meta property="og:image" content="https://myveevee.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="My VeeVee — Got Health?" />
+    <meta name="twitter:description" content="VeeVee reveals your covered benefits, perks, wellness products, and everyday health support." />
+    <meta name="twitter:image" content="https://myveevee.com/og-image.jpg" />
+    <meta name="twitter:site" content="@My_VeeVee" />
+
+    <!-- JSON-LD (Organization + Website) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "VeeVee Health",
+      "url": "https://myveevee.com",
+      "logo": "https://myveevee.com/android-chrome-512x512.png",
+      "sameAs": [
+        "https://x.com/My_VeeVee",
+        "https://www.tiktok.com/@veeveehealth",
+        "https://www.linkedin.com/company/veeveehealth"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://myveevee.com",
+      "name": "My VeeVee",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://myveevee.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,36 @@
+/* humans.txt for MyVeeVee.com */
+/* ----------------------------------------------------------- */
+/* TEAM */
+Co-Founders: Dr. Christian D. Gonzalez, MD & Carlos D. Gonzalez, JD
+Design & Brand: VeeVee
+Engineering: VeeVee AI Engineering Team
+Company: 2nd Opinion LLC
+Location: Broward County, Florida, USA
+Website: https://myveevee.com
+
+/* ----------------------------------------------------------- */
+/* TECHNOLOGY */
+Built with: React + Vite + Chakra UI + AWS Amplify
+Infrastructure: Amazon Web Services (Amplify, CloudFront, S3)
+Languages: TypeScript, HTML5, CSS3
+Design System: VeeVee Atomic Design Framework
+Hosting: Amplify Hosting / CloudFront Edge
+Build Year: 2025
+
+/* ----------------------------------------------------------- */
+/* PURPOSE */
+We believe healthcare should feel human again.
+VeeVee helps you see yourself, understand your health,
+and access your covered benefits, perks, and wellness products.
+
+Got Health?
+Join us at https://myveevee.com
+
+/* ----------------------------------------------------------- */
+/* SOCIAL */
+X (Twitter): coming soon
+TikTok: coming soon
+LinkedIn: coming soon
+
+/* ----------------------------------------------------------- */
+Thanks for reading this, mention 'cassius' if you want our attention in correspondence. 
