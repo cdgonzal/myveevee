@@ -1,4 +1,18 @@
-// src/pages/Home.tsx
+// File: src/pages/Home.tsx
+// Version: 1.1 (2025-12-07)
+// Purpose:
+//   Marketing home / hero page for myVeeVee.com.
+//   Introduces VeeVee as an AI wellness mirror, highlights the core value
+//   ("see what's already covered"), and funnels users to veevee.io.
+// Structure:
+//   - Full-viewport dark gradient background
+//   - Left column: headline, supporting copy, primary CTA to veevee.io
+//   - Right column: framed hero card with VeeVee logo strip + hero image
+// Future iterations (not yet implemented):
+//   - Replace stock hero image with a product-first mock (benefits/coverage UI)
+//   - Add subtle motion/scroll reveal for hero elements
+//   - Experiment with secondary CTA for provider-facing flows (vvrevenue.com)
+
 import { Box, Button, Heading, Stack, Text, Image, Grid } from "@chakra-ui/react";
 
 export default function Home() {
@@ -41,7 +55,11 @@ export default function Home() {
             </Box>
           </Heading>
 
-          <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color="whiteAlpha.800">
+          <Text
+            fontSize={{ base: "md", md: "lg" }}
+            maxW="lg"
+            color="whiteAlpha.800"
+          >
             VeeVee reads your health benefits, surfaces what matters, and helps you
             use the care you already have. Private, secure, and trusted by doctors
             and clinics.
