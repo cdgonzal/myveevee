@@ -21,6 +21,7 @@ import {
   Card,
   CardBody,
   useBreakpointValue,
+  Link,
   Flex,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -201,7 +202,8 @@ export default function HowItWorks() {
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                       Always free! Quick Guides help you make sense of what&apos;s
                       going on right now, right now. You hit your knee? New symptom? Stressful week? 
-                      Start here. For free!
+                      <Link href="https://veevee.io" color="accent.400" fontWeight="700" _hover={{ textDecoration: "underline", color: "accent.300" }}>Start here</Link>
+                      For free!
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
                       Great for quick immediate clarity.
