@@ -75,18 +75,6 @@ export default function HowItWorks() {
             AI WELLNESS GUIDES · POWERED BY VEEVEE
           </Text>
 
-          <Heading
-            as="h1"
-            size={{ base: "lg", md: "xl" }}
-            fontWeight="800"
-            mb={3}
-          >
-            AI Powered{" "}
-            <Box as="span" color="accent.400">
-              Wellness Companion
-            </Box>
-          </Heading>
-
           <Button
             as="a"
             href="https://veevee.io"
