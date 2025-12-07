@@ -102,30 +102,6 @@ export default function HowItWorks() {
             understand what&apos;s covered, and use the care you already have.
             You stay in charge. Vee just makes things clearer.
           </Text>
-
-          <Stack
-            direction={{ base: "column", sm: "row" }}
-            spacing={4}
-            justify="center"
-            align="center"
-          >
-            <Button
-              as="a"
-              href="https://veevee.io"
-              size="lg"
-              borderRadius="full"
-              fontWeight="700"
-              px={10}
-              boxShadow="0 0 40px rgba(0, 245, 160, 0.45)"
-            >
-              Got Health? Unlock your wellness today
-            </Button>
-          </Stack>
-
-          <Text fontSize="sm" color="whiteAlpha.800" mt={3}>
-            No diagnoses. No medical advice. Just clarity and everyday support
-            for your health decisions.
-          </Text>
         </MotionBox>
 
         {/* AI Wellness Guides – main section */}
