@@ -90,21 +90,6 @@ export default function HowItWorks() {
               Unlock your wellness today.
             </Box>
           </Heading>
-
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            maxW="3xl"
-            mx="auto"
-            color="whiteAlpha.900"
-            mb={6}
-          >
-            In a world where healthcare feels distant and opaque, 
-            VeeVee&apos;s purpose is to unleash the best version of you. 
-            Because when you understand what&apos;s happening within, 
-            you can act on what truly matters. VeeVee reveals your covered 
-            benefits, perks, wellness products, and everyday health support.
-            Your health can&apos;t wait.
-          </Text>
         </MotionBox>
 
         {/* AI Wellness Guides – main section */}

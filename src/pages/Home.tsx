@@ -60,9 +60,12 @@ export default function Home() {
             maxW="lg"
             color="whiteAlpha.800"
           >
-            VeeVee reads your health benefits, surfaces what matters, and helps you
-            use the care you already have. Private, secure, and trusted by doctors
-            and clinics.
+            In a world where healthcare feels distant and opaque, 
+            VeeVee&apos;s purpose is to unleash the best version of you. 
+            Because when you understand what&apos;s happening within, 
+            you can act on what truly matters. VeeVee reveals your covered 
+            benefits, perks, wellness products, and everyday health support.
+            Your health can&apos;t wait.
           </Text>
 
           <Stack spacing={3}>
