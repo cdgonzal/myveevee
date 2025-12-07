@@ -81,23 +81,11 @@ export default function HowItWorks() {
             fontWeight="800"
             mb={3}
           >
-            Start with a free{" "}
+            AI Powered{" "}
             <Box as="span" color="accent.400">
-              AI Wellness Guide.
+              Wellness Companion
             </Box>
           </Heading>
-
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            maxW="3xl"
-            mx="auto"
-            color="whiteAlpha.900"
-            mb={5}
-          >
-            Create a free account at VeeVee.io, connect your plan, and pick the
-            level of support that fits today — a quick check-in, a 3-day plan,
-            or an ongoing companion.
-          </Text>
 
           <Button
             as="a"
@@ -108,7 +96,7 @@ export default function HowItWorks() {
             px={10}
             boxShadow="0 0 40px rgba(0, 245, 160, 0.45)"
           >
-            Start your first AI Guide for free
+            Get started
           </Button>
 
           <Text fontSize="sm" color="whiteAlpha.800" mt={3}>
@@ -131,16 +119,16 @@ export default function HowItWorks() {
               mb={2}
               textAlign={isMobile ? "left" : "center"}
             >
-              Choose your AI Wellness Guide
+              Start with free AI Quick Guides
             </Heading>
             <Text
               fontSize="sm"
               color="whiteAlpha.800"
               textAlign={isMobile ? "left" : "center"}
             >
-              Most people begin with a free AI Quick Guide. When you want more
-              help, you can go deeper with a 3-day plan or stay with Vee as an
-              everyday wellness companion.
+              The free AI Quick Guides cover common concerns like pain, stress, sleep, 
+              new symptoms, and benefits. For deeper support, try a 3-day plan 
+              or subscribe to VeeVee as your daily companion.
             </Text>
           </MotionBox>
 
