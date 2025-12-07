@@ -88,7 +88,7 @@ export default function Home() {
             borderColor="whiteAlpha.200"
           >
             <Image
-              src="/veevee-logo-neon.png" // put your neon logo file into /public with this name
+              src="/logo.png"
               alt="VeeVee Logo"
               boxSize="40px"
               objectFit="contain"
