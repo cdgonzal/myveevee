@@ -115,7 +115,9 @@ export default function HowItWorks() {
               textAlign={isMobile ? "left" : "center"}
             >
               The free AI Quick Guides cover common concerns like pain, stress, sleep, 
-              new symptoms, and benefits. For deeper support, try a 3-day plan 
+              new symptoms, and benefits. 
+              <br />
+              For deeper support, try 3-day plans with AI Deep Guides, 
               or subscribe to VeeVee as your daily companion.
             </Text>
           </MotionBox>
@@ -192,17 +194,17 @@ export default function HowItWorks() {
                         color="accent.300"
                         opacity={0.95}
                       >
-                        AI Quick Guide
+                        AI Quick Guides
                       </Heading>
                     </Flex>
 
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      One focused session to help you make sense of what&apos;s
-                      going on today — like a new symptom, stressful week, or
-                      confusing benefit.
+                      Always free! Quick Guides help you make sense of what&apos;s
+                      going on right now, right now. You hit your knee? New symptom? Stressful week? 
+                      Start here. For free!
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
-                      Great for quick clarity without a big commitment.
+                      Great for quick immediate clarity.
                     </Text>
                   </CardBody>
                 </MotionCard>
@@ -255,17 +257,16 @@ export default function HowItWorks() {
                         color="accent.300"
                         opacity={0.95}
                       >
-                        AI Deep Guide (3-Day)
+                        AI Deep Guides
                       </Heading>
                     </Flex>
 
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      A short plan built around one issue — like pain, sleep,
-                      stress, or recovery — with small, practical steps over a few
-                      days.
+                      3-Day short plans built around one issue: YOUR WELLNESS. 
+                      Personalized guidance that allows you to understand, decode & act.
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
-                      Understand → decode → act, at a calm, human pace.
+                      Understand → decode → act.
                     </Text>
                   </CardBody>
                 </MotionCard>
@@ -318,17 +319,17 @@ export default function HowItWorks() {
                         color="accent.300"
                         opacity={0.95}
                       >
-                        Vee – AI Wellness Companion
+                        VeeVee: AI Wellness Companion
                       </Heading>
                     </Flex>
 
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      An ongoing companion that grows with your data and patterns
-                      over time, helping you stay connected to your health and
-                      your covered care.
+                      An ongoing companion that grows with you and learns 
+                      from your daily beahviors, helping you stay connected 
+                      to your wellness and understand your covered care benefits.
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
-                      Everyday support that stays soft, calm, and on your side.
+                      Everyday support by your side.
                     </Text>
                   </CardBody>
                 </MotionCard>
@@ -340,7 +341,7 @@ export default function HowItWorks() {
         {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center">
           <Heading as="h2" size="md">
-            Ready to see what Vee can unlock for you?
+            Ready to see what VeeVee can unlock for you?
           </Heading>
           <Text
             fontSize="sm"
@@ -348,9 +349,7 @@ export default function HowItWorks() {
             maxW="2xl"
             mx="auto"
           >
-            Open a free account at VeeVee.io, connect your plan, and let Vee
-            surface the benefits and support you already have — starting with a
-            free AI Quick Guide.
+            Open a free account today.
           </Text>
           <Button
             as="a"
@@ -362,7 +361,7 @@ export default function HowItWorks() {
             alignSelf="center"
             boxShadow="0 0 28px rgba(0, 245, 160, 0.35)"
           >
-            Start your first AI Guide for free →
+            Start your first AI Quick Guide →
           </Button>
         </Stack>
 
