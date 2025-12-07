@@ -1,18 +1,17 @@
 // File: src/App.tsx
-// Version: 1.2 (2025-12-07)
+// Version: 1.3 (2025-12-07)
 // Purpose:
 //   Shell layout and routing for the myVeeVee.com marketing site.
 //   Routes:
-//     - "/"            → Home (hero funnel to veevee.io)
-//     - "/how-it-works" → How it works (3-step flow + guides + CTA)
-//     - "/terms"       → Plain-English Terms & Disclaimers page
-// Notes:
-//   - Header navigation stays minimal and funnel-focused.
-//   - Footer now exposes a direct link to Terms & Disclaimers for legal clarity.
+//     - "/"              → Home (hero funnel to veevee.io)
+//     - "/how-it-works"  → How it works (3-step flow + guides + CTA)
+//     - "/terms"         → Plain-English Terms & Disclaimers page
+// Visual shell:
+//   - Full-page dark gradient background to match neon hero sections.
+//   - Glassmorphism header & footer (blurred dark navy) with neon Log in button.
 // Future iterations (not yet implemented):
-//   - Dark-mode header/footer to fully match page backgrounds.
 //   - Mobile nav menu (burger) for smaller screens.
-//   - Additional legal links (Privacy Policy, cookie notices, etc.) as they are finalized.
+//   - Additional legal links (Privacy Policy, cookie notices, etc.).
 
 import {
   Box,
@@ -33,7 +32,7 @@ export default function App() {
     <Flex
       minH="100vh"
       direction="column"
-      bgGradient="linear(180deg, brand.50, white)"
+      bgGradient="linear(to-b, #050816, #070B1F)"
     >
       <Header />
       <Box as="main" flex="1">
@@ -55,20 +54,23 @@ function Header() {
     <Box
       as="header"
       borderBottom="1px solid"
-      borderColor="brand.200"
-      bg="whiteAlpha.70"
-      backdropFilter="saturate(120%) blur(6px)"
+      borderColor="whiteAlpha.200"
+      bg="rgba(5, 8, 22, 0.7)"           // glassy dark background
+      backdropFilter="saturate(150%) blur(12px)"
+      position="sticky"
+      top={0}
+      zIndex={10}
     >
       <Container maxW="6xl" py="3">
         <Flex align="center" justify="space-between">
-          <Text fontWeight="800" color="surface.900">
+          <Text fontWeight="800" color="whiteAlpha.900">
             VeeVee
           </Text>
           <HStack spacing="6" align="center">
             <CLink
               as={Link}
               to="/"
-              color="surface.900"
+              color="whiteAlpha.900"
               fontWeight="600"
             >
               Home
@@ -76,7 +78,7 @@ function Header() {
             <CLink
               as={Link}
               to="/how-it-works"
-              color="surface.900"
+              color="whiteAlpha.900"
               fontWeight="600"
             >
               How it works
@@ -87,6 +89,8 @@ function Header() {
               size="sm"
               borderRadius="full"
               fontWeight="700"
+              px={5}
+              boxShadow="0 0 20px rgba(0, 245, 160, 0.45)"
             >
               Log in
             </Button>
@@ -102,21 +106,25 @@ function Footer() {
     <Box
       as="footer"
       borderTop="1px solid"
-      borderColor="brand.200"
-      bg="whiteAlpha.70"
-      backdropFilter="saturate(120%) blur(6px)"
+      borderColor="whiteAlpha.200"
+      bg="rgba(5, 8, 22, 0.7)"
+      backdropFilter="saturate(150%) blur(12px)"
     >
       <Container maxW="6xl" py="3">
         <Flex align="center" justify="space-between" fontSize="sm">
-          <Text>© 2025 VeeVee Health</Text>
+          <Text color="whiteAlpha.800">© 2025 VeeVee Health</Text>
           <HStack spacing="4">
-            <CLink href="https://veevee.io" isExternal>
+            <CLink href="https://veevee.io" isExternal color="whiteAlpha.900">
               Log in
             </CLink>
-            <CLink href="https://investveevee.com" isExternal>
+            <CLink
+              href="https://investveevee.com"
+              isExternal
+              color="whiteAlpha.900"
+            >
               For investors
             </CLink>
-            <CLink as={Link} to="/terms">
+            <CLink as={Link} to="/terms" color="whiteAlpha.900">
               Terms &amp; Disclaimers
             </CLink>
           </HStack>

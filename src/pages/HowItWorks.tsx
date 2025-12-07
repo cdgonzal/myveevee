@@ -1,19 +1,18 @@
 // File: src/pages/HowItWorks.tsx
-// Version: 1.0 (2025-12-07)
+// Version: 1.1 (2025-12-07)
 // Purpose:
-//   Explain "How VeeVee works" in a way that feels soft, empowering, and funnel-driven.
-//   This page is designed as a conversion path into veevee.io, not a dense documentation page.
-//   It introduces:
-//     - A simple 3-step flow (Connect → Decode → Use what you have)
+//   Explain "How VeeVee works" in a soft, empowering, funnel-driven way.
+//   Highlights:
+//     - 3-step flow (Connect → Decode → Use what you have)
 //     - Three levels of guidance (Quick Guide, Deep Guide, Companion)
-//     - Clear calls to action to start at VeeVee.io
-// Motion & Visuals:
-//   - Uses framer-motion for gentle fade/slide-in of hero and step cards.
-//   - Uses a subtle flowing gradient behind the "guidance levels" cards to imply movement & support.
-// Future iterations (not yet implemented):
-//   - Wire a dedicated /terms or /legal page and link from the disclaimers.
-//   - Add subtle scroll-based animations for section transitions.
-//   - A/B test CTA wording and placement for conversion optimization.
+//     - Clear calls to action into veevee.io
+// Visual & Motion:
+//   - Dark neon background matching Home.
+//   - framer-motion for gentle fade/slide-in of hero + cards.
+//   - Flowing gradient behind the guidance cards.
+// Contrast tweaks (v1.1):
+//   - Increased text contrast (whiteAlpha.900 / .800) for readability.
+//   - Ensured all body copy is clearly visible on dark backgrounds.
 
 import {
   Box,
@@ -26,8 +25,8 @@ import {
   CardBody,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { keyframes } from "@emotion/react";
 import { motion } from "framer-motion";
+import { keyframes } from "@emotion/react";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
@@ -54,9 +53,9 @@ export default function HowItWorks() {
       bgGradient="linear(to-b, #050816, #070B1F)"
       color="whiteAlpha.900"
       py={{ base: 10, md: 20 }}
-      px={{ base: 6, md: 10 }}
+      px={{ base: 0, md: 0 }}
     >
-      <Stack spacing={{ base: 12, md: 16 }} maxW="5xl" mx="auto">
+      <Stack spacing={{ base: 12, md: 16 }} maxW="5xl" mx="auto" px={{ base: 6, md: 10 }}>
         {/* Hero section */}
         <MotionBox
           textAlign="center"
@@ -71,7 +70,7 @@ export default function HowItWorks() {
             color="accent.300"
             mb={3}
           >
-            Soft AI. Everyday wellness. Built around you.
+            SOFT AI. EVERYDAY WELLNESS. BUILT AROUND YOU.
           </Text>
 
           <Heading
@@ -90,7 +89,7 @@ export default function HowItWorks() {
             fontSize={{ base: "md", md: "lg" }}
             maxW="3xl"
             mx="auto"
-            color="whiteAlpha.800"
+            color="whiteAlpha.900"
             mb={6}
           >
             VeeVee uses soft, supportive AI to help you notice patterns,
@@ -119,7 +118,7 @@ export default function HowItWorks() {
 
           <Text
             fontSize="sm"
-            color="whiteAlpha.700"
+            color="whiteAlpha.800"
             mt={3}
           >
             No diagnoses. No medical advice. Just clarity and everyday support
@@ -145,7 +144,7 @@ export default function HowItWorks() {
             </Heading>
             <Text
               fontSize="sm"
-              color="whiteAlpha.700"
+              color="whiteAlpha.800"
               textAlign={isMobile ? "left" : "center"}
             >
               A calm, guided flow to help you connect your plan, decode your
@@ -160,7 +159,7 @@ export default function HowItWorks() {
             <MotionCard
               bg="surface.800"
               borderWidth="1px"
-              borderColor="whiteAlpha.200"
+              borderColor="whiteAlpha.300"
               borderRadius="xl"
               whileHover={{ y: -4, boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)" }}
               transition={{ type: "spring", stiffness: 260, damping: 18 }}
@@ -181,11 +180,11 @@ export default function HowItWorks() {
                 <Heading as="h3" size="sm" mb={2}>
                   Connect your plan
                 </Heading>
-                <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
+                <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                   Vee securely reads your health benefits and coverage so it can
                   help you see what&apos;s already available to you.
                 </Text>
-                <Text fontSize="xs" color="whiteAlpha.600">
+                <Text fontSize="xs" color="whiteAlpha.800">
                   • You choose what to connect
                   <br />
                   • You can disconnect anytime
@@ -196,7 +195,7 @@ export default function HowItWorks() {
             <MotionCard
               bg="surface.800"
               borderWidth="1px"
-              borderColor="whiteAlpha.200"
+              borderColor="whiteAlpha.300"
               borderRadius="xl"
               whileHover={{ y: -4, boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)" }}
               transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.05 }}
@@ -217,11 +216,11 @@ export default function HowItWorks() {
                 <Heading as="h3" size="sm" mb={2}>
                   Vee brings your benefits to life
                 </Heading>
-                <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
-                  Dense plan language becomes simple, everyday guidance—not
+                <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
+                  Dense plan language becomes simple, everyday guidance — not
                   pages of fine print.
                 </Text>
-                <Text fontSize="xs" color="whiteAlpha.600">
+                <Text fontSize="xs" color="whiteAlpha.800">
                   • Discover what&apos;s already free or included
                   <br />
                   • Understand copays, visits, and limits in plain language
@@ -232,7 +231,7 @@ export default function HowItWorks() {
             <MotionCard
               bg="surface.800"
               borderWidth="1px"
-              borderColor="whiteAlpha.200"
+              borderColor="whiteAlpha.300"
               borderRadius="xl"
               whileHover={{ y: -4, boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)" }}
               transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
@@ -253,11 +252,11 @@ export default function HowItWorks() {
                 <Heading as="h3" size="sm" mb={2}>
                   Use what you already have
                 </Heading>
-                <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
+                <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                   Gentle nudges help you act on covered care that fits your
                   current season of life.
                 </Text>
-                <Text fontSize="xs" color="whiteAlpha.600">
+                <Text fontSize="xs" color="whiteAlpha.800">
                   • Checkups, screenings, preventive care
                   <br />
                   • Therapy visits, follow-ups, and more
@@ -285,7 +284,7 @@ export default function HowItWorks() {
             </Heading>
             <Text
               fontSize="sm"
-              color="whiteAlpha.700"
+              color="whiteAlpha.800"
               textAlign={isMobile ? "left" : "center"}
             >
               Whether you just need a quick check-in or a deeper plan, Vee adapts
@@ -316,7 +315,7 @@ export default function HowItWorks() {
                   bg="surface.800"
                   borderRadius="xl"
                   borderWidth="1px"
-                  borderColor="whiteAlpha.200"
+                  borderColor="whiteAlpha.300"
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
@@ -325,12 +324,12 @@ export default function HowItWorks() {
                     <Heading as="h3" size="sm" mb={2}>
                       AI Quick Guide
                     </Heading>
-                    <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
+                    <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                       One focused session to help you make sense of what&apos;s
-                      going on today—like a new symptom, stressful week, or
+                      going on today — like a new symptom, stressful week, or
                       confusing benefit.
                     </Text>
-                    <Text fontSize="xs" color="whiteAlpha.600">
+                    <Text fontSize="xs" color="whiteAlpha.800">
                       Great for quick clarity without a big commitment.
                     </Text>
                   </CardBody>
@@ -340,7 +339,7 @@ export default function HowItWorks() {
                   bg="surface.800"
                   borderRadius="xl"
                   borderWidth="1px"
-                  borderColor="whiteAlpha.200"
+                  borderColor="whiteAlpha.300"
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
@@ -350,12 +349,12 @@ export default function HowItWorks() {
                     <Heading as="h3" size="sm" mb={2}>
                       AI Deep Guide (3-Day)
                     </Heading>
-                    <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
-                      A short plan built around one issue—like pain, sleep,
-                      stress, or recovery—with small, practical steps over a few
+                    <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
+                      A short plan built around one issue — like pain, sleep,
+                      stress, or recovery — with small, practical steps over a few
                       days.
                     </Text>
-                    <Text fontSize="xs" color="whiteAlpha.600">
+                    <Text fontSize="xs" color="whiteAlpha.800">
                       Understand → decode → act, at a calm, human pace.
                     </Text>
                   </CardBody>
@@ -365,7 +364,7 @@ export default function HowItWorks() {
                   bg="surface.800"
                   borderRadius="xl"
                   borderWidth="1px"
-                  borderColor="whiteAlpha.200"
+                  borderColor="whiteAlpha.300"
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
@@ -375,12 +374,12 @@ export default function HowItWorks() {
                     <Heading as="h3" size="sm" mb={2}>
                       Vee – AI Wellness Companion
                     </Heading>
-                    <Text fontSize="sm" color="whiteAlpha.800" mb={3}>
+                    <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                       An ongoing companion that grows with your data and patterns
                       over time, helping you stay connected to your health and
                       your covered care.
                     </Text>
-                    <Text fontSize="xs" color="whiteAlpha.600">
+                    <Text fontSize="xs" color="whiteAlpha.800">
                       Everyday support that stays soft, calm, and on your side.
                     </Text>
                   </CardBody>
@@ -397,7 +396,7 @@ export default function HowItWorks() {
           </Heading>
           <Text
             fontSize="sm"
-            color="whiteAlpha.700"
+            color="whiteAlpha.800"
             maxW="2xl"
             mx="auto"
           >
@@ -421,7 +420,7 @@ export default function HowItWorks() {
         {/* Soft legal / AI disclaimers */}
         <Box
           fontSize="xs"
-          color="whiteAlpha.600"
+          color="whiteAlpha.700"
           borderTopWidth="1px"
           borderColor="whiteAlpha.200"
           pt={4}
