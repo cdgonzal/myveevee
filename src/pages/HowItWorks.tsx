@@ -202,7 +202,7 @@ export default function HowItWorks() {
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                       Always free! Quick Guides help you make sense of what&apos;s
                       going on right now, right now. You hit your knee? New symptom? Stressful week? 
-                      <Link href="https://veevee.io" color="accent.400" fontWeight="700" _hover={{ textDecoration: "underline", color: "accent.300" }}>Start here</Link>
+                      <Link href="https://veevee.io" color="accent.400" fontWeight="700" _hover={{ textDecoration: "underline", color: "accent.300" }}> Start here </Link>
                       For free!
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
@@ -327,7 +327,7 @@ export default function HowItWorks() {
 
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                       An ongoing companion that grows with you and learns 
-                      from your daily beahviors, helping you stay connected 
+                      from your daily behaviors, helping you stay connected 
                       to your wellness and understand your covered care benefits.
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
@@ -392,6 +392,33 @@ export default function HowItWorks() {
             legal details are provided inside the VeeVee experience.
           </Text>
         </Box>
+
+        <MotionBox
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.1 }}
+          >
+            <Heading
+              as="h2"
+              size="md"
+              mb={2}
+              textAlign={isMobile ? "left" : "center"}
+            >
+              Start with free AI Quick Guides
+            </Heading>
+            <Text
+              fontSize="sm"
+              color="whiteAlpha.800"
+              textAlign={isMobile ? "left" : "center"}
+            >
+              The free AI Quick Guides cover common concerns like pain, stress, sleep, 
+              new symptoms, and benefits. 
+              <br />
+              For deeper support, try 3-day plans with AI Deep Guides, 
+              or subscribe to VeeVee as your daily companion.
+            </Text>
+          </MotionBox>
       </Stack>
     </Box>
   );
