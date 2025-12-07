@@ -338,6 +338,32 @@ export default function HowItWorks() {
               </SimpleGrid>
             </Box>
           </Box>
+          <MotionBox
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.1 }}
+          >
+            <Heading
+              as="h2"
+              size="md"
+              mb={2}
+              textAlign={isMobile ? "left" : "center"}
+            >
+              Start with free AI Quick Guides
+            </Heading>
+            <Text
+              fontSize="sm"
+              color="whiteAlpha.800"
+              textAlign={isMobile ? "left" : "center"}
+            >
+              The free AI Quick Guides cover common concerns like pain, stress, sleep, 
+              new symptoms, and benefits. 
+              <br />
+              For deeper support, try 3-day plans with AI Deep Guides, 
+              or subscribe to VeeVee as your daily companion.
+            </Text>
+          </MotionBox>
         </Stack>
 
         {/* Bottom CTA */}
@@ -392,33 +418,6 @@ export default function HowItWorks() {
             legal details are provided inside the VeeVee experience.
           </Text>
         </Box>
-
-        <MotionBox
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.1 }}
-          >
-            <Heading
-              as="h2"
-              size="md"
-              mb={2}
-              textAlign={isMobile ? "left" : "center"}
-            >
-              Start with free AI Quick Guides
-            </Heading>
-            <Text
-              fontSize="sm"
-              color="whiteAlpha.800"
-              textAlign={isMobile ? "left" : "center"}
-            >
-              The free AI Quick Guides cover common concerns like pain, stress, sleep, 
-              new symptoms, and benefits. 
-              <br />
-              For deeper support, try 3-day plans with AI Deep Guides, 
-              or subscribe to VeeVee as your daily companion.
-            </Text>
-          </MotionBox>
       </Stack>
     </Box>
   );
