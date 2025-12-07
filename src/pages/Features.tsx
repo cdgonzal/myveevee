@@ -200,7 +200,7 @@ export default function Features() {
             fontWeight="800"
             mb={3}
           >
-            Everything your wellness needs, in one calm place.
+            Everything your wellness needs, in one place.
           </Heading>
 
           <Text
@@ -210,7 +210,7 @@ export default function Features() {
             color="whiteAlpha.900"
           >
             VeeVee brings your health story, benefits, patterns, and next steps
-            together — so your wellness finally makes sense.
+            together, so your wellness finally makes sense.
           </Text>
         </MotionBox>
 
@@ -224,8 +224,8 @@ export default function Features() {
               size="lg"
               eyebrow="Core"
               title="AI Wellness Guides"
-              front="Personalized guidance that helps you make sense of what’s happening in your life — from stress and sleep to symptoms and recovery."
-              back="Quick Guides, Deep Guides, and the Vee companion give you calm, step-by-step support instead of noise, so you can focus on what matters most today."
+              front="Personalized guidance that helps you make sense of what’s happening in your life. From stress and sleep to symptoms and recovery."
+              back="Quick Guides, Deep Guides, and the VeeVee companion subscription give you a step-by-step support that is personalized to YOU. Focus on what matters most, YOU!"
             />
           </MotionBox>
 
@@ -239,8 +239,8 @@ export default function Features() {
               size="lg"
               eyebrow="Your Story"
               title="Your Health, Understood"
-              front="Vee listens to your check-ins, uploads, and patterns over time to build a living picture of your health."
-              back="Instead of repeating your story again and again, Vee remembers what you’ve shared and uses it to keep future guidance more personal and more relevant to you."
+              front="VeeVee listens. Your check-ins and history surface patterns that become a living picture of your wellness."
+              back="VeeVee remembers what you’ve shared and uses it to keep future guidance more personal and more relevant to you."
             />
           </MotionBox>
         </SimpleGrid>
