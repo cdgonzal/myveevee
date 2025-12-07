@@ -353,7 +353,7 @@ export default function HowItWorks() {
                   animate="visible"
                 >
                   <CardBody>
-                    <Heading as="h3" size="sm" mb={2}>
+                    <Heading as="h3" size="sm" mb={2} color="accent.400">
                       AI Quick Guide
                     </Heading>
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
@@ -378,7 +378,7 @@ export default function HowItWorks() {
                   transition={{ delay: 0.05 }}
                 >
                   <CardBody>
-                    <Heading as="h3" size="sm" mb={2}>
+                    <Heading as="h3" size="sm" mb={2} color="accent.400">
                       AI Deep Guide (3-Day)
                     </Heading>
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
@@ -403,7 +403,7 @@ export default function HowItWorks() {
                   transition={{ delay: 0.1 }}
                 >
                   <CardBody>
-                    <Heading as="h3" size="sm" mb={2}>
+                    <Heading as="h3" size="sm" mb={2} color="accent.400">
                       Vee – AI Wellness Companion
                     </Heading>
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
