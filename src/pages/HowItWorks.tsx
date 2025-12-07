@@ -108,18 +108,15 @@ export default function HowItWorks() {
               mb={2}
               textAlign={isMobile ? "left" : "center"}
             >
-              Start with free AI Quick Guides
+              The VeeVee AI Wellness Guides
             </Heading>
             <Text
               fontSize="sm"
               color="whiteAlpha.800"
               textAlign={isMobile ? "left" : "center"}
             >
-              The free AI Quick Guides cover common concerns like pain, stress, sleep, 
-              new symptoms, and benefits. 
-              <br />
-              For deeper support, try 3-day plans with AI Deep Guides, 
-              or subscribe to VeeVee as your daily companion.
+              Three guided experiences designed to help you understand, 
+              navigate, and act on your wellness, at your own pace.
             </Text>
           </MotionBox>
 
