@@ -98,9 +98,12 @@ export default function HowItWorks() {
             color="whiteAlpha.900"
             mb={6}
           >
-            VeeVee uses soft, supportive AI to help you notice patterns,
-            understand what&apos;s covered, and use the care you already have.
-            You stay in charge. Vee just makes things clearer.
+            In a world where healthcare feels distant and opaque, 
+            VeeVee&apos;s purpose is to unleash the best version of you. 
+            Because when you understand what&apos;s happening within, 
+            you can act on what truly matters. VeeVee reveals your covered 
+            benefits, perks, wellness products, and everyday health support.
+            Your health can&apos;t wait.
           </Text>
         </MotionBox>
 
