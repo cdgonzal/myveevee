@@ -1,19 +1,15 @@
 // File: src/pages/HowItWorks.tsx
-// Version: 1.2 (2025-12-07)
+// Version: 1.3 (2025-12-07)
 // Purpose:
-//   Simplified, funnel-focused "How it works" page centered on AI Wellness Guides.
-//   The page now:
-//     - Leads with the Guides value (Quick, Deep, Companion).
-//     - Uses 1 / 2 / 3 numbering on each Guide card to clarify the lineup.
-//     - Ends with a single, clear CTA to start a first AI Guide for free.
+//   Funnel-focused "How it works" page centered on AI Wellness Guides.
+//   - Leads with: Start with a free AI Wellness Guide.
+//   - Shows the 3-guide lineup (Quick, Deep, Companion) with 1/2/3 badges.
+//   - Pushes users to create a free VeeVee account and begin with a Quick Guide.
 // Visual & Motion:
 //   - Dark neon background to match Home.
-//   - framer-motion for gentle fade/slide-in.
+//   - framer-motion fade/slide-in.
 //   - Flowing gradient frame around the Guides section.
 //   - Number badges animate on hover via Chakra group hover.
-// Future iterations (not yet implemented):
-//   - Dedicated "Compare plans" or pricing section for the Companion tier.
-//   - Deep links to specific Guide examples (Pain, Sleep, Women’s, etc.).
 
 import {
   Box,
@@ -57,12 +53,12 @@ export default function HowItWorks() {
       py={{ base: 10, md: 20 }}
     >
       <Stack
-        spacing={{ base: 12, md: 16 }}
+        spacing={{ base: 10, md: 14 }}
         maxW="5xl"
         mx="auto"
         px={{ base: 6, md: 10 }}
       >
-        {/* Hero section */}
+        {/* Hero: AI Wellness Guides */}
         <MotionBox
           textAlign="center"
           variants={fadeUp}
@@ -76,20 +72,49 @@ export default function HowItWorks() {
             color="accent.300"
             mb={3}
           >
-            SOFT AI. EVERYDAY WELLNESS. BUILT AROUND YOU.
+            AI WELLNESS GUIDES · POWERED BY VEEVEE
           </Text>
 
           <Heading
             as="h1"
             size={{ base: "lg", md: "xl" }}
             fontWeight="800"
-            mb={4}
+            mb={3}
           >
-            Got Health?{" "}
+            Start with a free{" "}
             <Box as="span" color="accent.400">
-              Unlock your wellness today.
+              AI Wellness Guide.
             </Box>
           </Heading>
+
+          <Text
+            fontSize={{ base: "md", md: "lg" }}
+            maxW="3xl"
+            mx="auto"
+            color="whiteAlpha.900"
+            mb={5}
+          >
+            Create a free account at VeeVee.io, connect your plan, and pick the
+            level of support that fits today — a quick check-in, a 3-day plan,
+            or an ongoing companion.
+          </Text>
+
+          <Button
+            as="a"
+            href="https://veevee.io"
+            size="lg"
+            borderRadius="full"
+            fontWeight="700"
+            px={10}
+            boxShadow="0 0 40px rgba(0, 245, 160, 0.45)"
+          >
+            Start your first AI Guide for free
+          </Button>
+
+          <Text fontSize="sm" color="whiteAlpha.800" mt={3}>
+            No diagnoses. No medical advice. Just clarity and everyday support
+            for your health decisions.
+          </Text>
         </MotionBox>
 
         {/* AI Wellness Guides – main section */}
@@ -106,15 +131,16 @@ export default function HowItWorks() {
               mb={2}
               textAlign={isMobile ? "left" : "center"}
             >
-              Three levels of guidance, one calm companion
+              Choose your AI Wellness Guide
             </Heading>
             <Text
               fontSize="sm"
               color="whiteAlpha.800"
               textAlign={isMobile ? "left" : "center"}
             >
-              Whether you just need a quick check-in or a deeper plan, Vee adapts
-              to how much support you want.
+              Most people begin with a free AI Quick Guide. When you want more
+              help, you can go deeper with a 3-day plan or stay with Vee as an
+              everyday wellness companion.
             </Text>
           </MotionBox>
 
@@ -137,7 +163,7 @@ export default function HowItWorks() {
                 columns={{ base: 1, md: 3 }}
                 spacing={{ base: 4, md: 6 }}
               >
-                {/* Guide 1 */}
+                {/* Guide 1 – Quick Guide */}
                 <MotionCard
                   bg="surface.800"
                   borderRadius="xl"
@@ -205,7 +231,7 @@ export default function HowItWorks() {
                   </CardBody>
                 </MotionCard>
 
-                {/* Guide 2 */}
+                {/* Guide 2 – Deep Guide */}
                 <MotionCard
                   bg="surface.800"
                   borderRadius="xl"
@@ -268,7 +294,7 @@ export default function HowItWorks() {
                   </CardBody>
                 </MotionCard>
 
-                {/* Guide 3 */}
+                {/* Guide 3 – Companion */}
                 <MotionCard
                   bg="surface.800"
                   borderRadius="xl"
@@ -338,7 +364,7 @@ export default function HowItWorks() {
         {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center">
           <Heading as="h2" size="md">
-            Ready to start your first AI Wellness Guide?
+            Ready to see what Vee can unlock for you?
           </Heading>
           <Text
             fontSize="sm"
@@ -346,7 +372,7 @@ export default function HowItWorks() {
             maxW="2xl"
             mx="auto"
           >
-            Create a free account at VeeVee.io, connect your plan, and let Vee
+            Open a free account at VeeVee.io, connect your plan, and let Vee
             surface the benefits and support you already have — starting with a
             free AI Quick Guide.
           </Text>

@@ -51,7 +51,7 @@ export default function Home() {
           >
             Got Health?{" "}
             <Box as="span" color="accent.400">
-              See What&apos;s Already Covered.
+              Unlock your wellness today.
             </Box>
           </Heading>
 
