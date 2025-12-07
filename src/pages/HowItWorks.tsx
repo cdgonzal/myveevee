@@ -156,6 +156,7 @@ export default function HowItWorks() {
             columns={{ base: 1, md: 3 }}
             spacing={5}
           >
+            {/* Card 1 */}
             <MotionCard
               bg="surface.800"
               borderWidth="1px"
@@ -168,18 +169,29 @@ export default function HowItWorks() {
               animate="visible"
             >
               <CardBody>
-                <Text
-                  fontSize="xs"
-                  color="accent.300"
-                  textTransform="uppercase"
-                  letterSpacing="0.16em"
-                  mb={2}
+                {/* Big neon number */}
+                <Heading
+                  as="span"
+                  fontSize="3xl"
+                  fontWeight="800"
+                  color="accent.400"
+                  mb={1}
+                  display="block"
                 >
-                  Step 1
-                </Text>
-                <Heading as="h3" size="sm" mb={2}>
+                  1
+                </Heading>
+
+                {/* Soft green subheadline */}
+                <Heading
+                  as="h3"
+                  size="sm"
+                  mb={2}
+                  color="accent.300"
+                  opacity={0.9}
+                >
                   Connect your plan
                 </Heading>
+
                 <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                   Vee securely reads your health benefits and coverage so it can
                   help you see what&apos;s already available to you.
@@ -192,6 +204,7 @@ export default function HowItWorks() {
               </CardBody>
             </MotionCard>
 
+            {/* Card 2 */}
             <MotionCard
               bg="surface.800"
               borderWidth="1px"
@@ -204,18 +217,27 @@ export default function HowItWorks() {
               animate="visible"
             >
               <CardBody>
-                <Text
-                  fontSize="xs"
-                  color="accent.300"
-                  textTransform="uppercase"
-                  letterSpacing="0.16em"
-                  mb={2}
+                <Heading
+                  as="span"
+                  fontSize="3xl"
+                  fontWeight="800"
+                  color="accent.400"
+                  mb={1}
+                  display="block"
                 >
-                  Step 2
-                </Text>
-                <Heading as="h3" size="sm" mb={2}>
+                  2
+                </Heading>
+
+                <Heading
+                  as="h3"
+                  size="sm"
+                  mb={2}
+                  color="accent.300"
+                  opacity={0.9}
+                >
                   Vee brings your benefits to life
                 </Heading>
+
                 <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                   Dense plan language becomes simple, everyday guidance — not
                   pages of fine print.
@@ -228,6 +250,7 @@ export default function HowItWorks() {
               </CardBody>
             </MotionCard>
 
+            {/* Card 3 */}
             <MotionCard
               bg="surface.800"
               borderWidth="1px"
@@ -240,18 +263,27 @@ export default function HowItWorks() {
               animate="visible"
             >
               <CardBody>
-                <Text
-                  fontSize="xs"
-                  color="accent.300"
-                  textTransform="uppercase"
-                  letterSpacing="0.16em"
-                  mb={2}
+                <Heading
+                  as="span"
+                  fontSize="3xl"
+                  fontWeight="800"
+                  color="accent.400"
+                  mb={1}
+                  display="block"
                 >
-                  Step 3
-                </Text>
-                <Heading as="h3" size="sm" mb={2}>
+                  3
+                </Heading>
+
+                <Heading
+                  as="h3"
+                  size="sm"
+                  mb={2}
+                  color="accent.300"
+                  opacity={0.9}
+                >
                   Use what you already have
                 </Heading>
+
                 <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                   Gentle nudges help you act on covered care that fits your
                   current season of life.

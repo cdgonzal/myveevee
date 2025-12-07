@@ -29,7 +29,7 @@ export default function Terms() {
           fontWeight="800"
           mb={6}
         >
-          Terms &amp; Disclaimers (Plain English)
+          Terms &amp; Disclaimers
         </Heading>
 
         <Stack spacing={4} fontSize={{ base: "sm", md: "md" }} color="whiteAlpha.900">
