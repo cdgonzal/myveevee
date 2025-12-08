@@ -45,33 +45,33 @@ const TESTIMONIALS: TestimonialVoice[] = [
     id: "ashley",
     pillLabel: "Ashley · Caregiver",
     roleLine: "Ashley Cooper, 45 · Working mom & caregiver",
-    oneLiner: "“I was scared to trust AI with my health — but VeeVee made everything feel safe and simple.”",
+    oneLiner: "“AI and health felt terrifying to me until VeeVee made it feel safe and simple.”",
     story:
-      "I’m not a tech person, and I was nervous about uploading anything. VeeVee walked me through my insurance cards and documents in plain language and showed me benefits I didn’t know I had. I still take things slow, but now I feel less afraid and more in control.",
+      "I’m not a tech person, and I was nervous about uploading anything related to my personal wellness. VeeVee walked me through my insurance cards and documents in plain language and showed me benefits I didn’t know I had. I still take things slow, but now I feel less afraid and more in control.",
     emphasis: "Cautious about AI. Found comfort, clarity, and hidden perks.",
   },
   {
     id: "ryan",
-    pillLabel: "Ryan · Tech-forward",
+    pillLabel: "Ryan · Sales Professional",
     roleLine: "Ryan Blake, 29 · Tech-forward professional",
     oneLiner: "“VeeVee finally feels like the health app I’ve been waiting for.”",
     story:
-      "I use AI for work, planning, even workouts — but healthcare always felt stuck in the past. VeeVee connects my patterns, my coverage, and my daily choices in a way that actually makes sense. Now I want even more: cost comparisons, deeper insights, and smarter next steps.",
+      "I use AI for work, planning, even workouts. I’m all-in on AI, and VeeVee is the first health experience that actually matches how I live. VeeVee connects my patterns, my coverage, and my daily choices. Now I want even more: cost comparisons, deeper insights, and smarter next steps.",
     emphasis: "AI-forward. Wants more power, more insight, more future.",
   },
   {
     id: "walter",
-    pillLabel: "Walter · Medicare",
+    pillLabel: "Walter · Retired on Medicare",
     roleLine: "Walter Harris, 72 · Retired teacher on Medicare",
-    oneLiner: "“I don’t do tech — but I can do VeeVee.”",
+    oneLiner: "“Even I can use VeeVee. That says everything.”",
     story:
-      "My grandkids helped me set it up once, and now I can use it on my own. The questions are simple, the buttons are big enough, and it helps me understand what Medicare might cover before I call anyone. I don’t feel lost in the system the way I used to.",
+      "I don’t do tech yet the young lady at my doctor’s office set up VeeVee for me, and now I actually use it. The questions are simple, the buttons are big enough, and it helps me understand what Medicare covers. I don’t feel lost in the system the way I used to.",
     emphasis: "Low tech. High usefulness. Simple enough to stick with.",
   },
   {
     id: "dr_rostant",
     pillLabel: "Dr. Rostant · Clinician",
-    roleLine: "Carlo Rostant, MD · Spine & Wellness Centers of America",
+    roleLine: "Carlo Rostant, MD",
     oneLiner: "“VeeVee helps my patients show up informed, prepared, and more confident than ever.”",
     story:
       "Many patients arrive overwhelmed by symptoms and insurance details before we even begin. VeeVee gives them clarity on their concerns and benefits, and helps them form better questions. When patients feel empowered, our conversations are stronger and their care decisions improve.",
