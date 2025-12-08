@@ -1,10 +1,9 @@
 // File: src/pages/Home.tsx
-// Version: 1.4 (2025-12-07)
-// Purpose:
-//   Homepage hero + payor credibility strip.
-//   This iteration fattens the payor pill, increases text and logo size,
-//   and adds a stronger neon-style outline so the validator feels intentional
-//   and on-brand.
+// Version: 1.5 (2025-12-07)
+// This version keeps the hero the same and simplifies the payor strip:
+//   - Bigger pill
+//   - Larger logos
+//   - No scrolling animation (static, always-visible logos)
 
 import {
   Box,
@@ -15,19 +14,13 @@ import {
   Image,
   Grid,
   HStack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
-import { keyframes } from "@emotion/react";
-
-// Scrolling animation for the payor logos
-const scrollLogos = keyframes`
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-`;
 
 // Normalized payor logos (from public/payors/normalized)
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
-  { src: "/payors/normalized/medicare.png", alt: "Medicare" },
   { src: "/payors/normalized/united2.png", alt: "UnitedHealthcare" },
   { src: "/payors/normalized/cigna.png", alt: "Cigna" },
   { src: "/payors/normalized/humana.png", alt: "Humana" },
@@ -36,8 +29,9 @@ const PAYOR_LOGOS = [
   { src: "/payors/normalized/kaiser2.png", alt: "Kaiser Permanente" },
   { src: "/payors/normalized/centene.png", alt: "Centene" },
   { src: "/payors/normalized/molina.png", alt: "Molina Healthcare" },
+  { src: "/payors/normalized/medicare.png", alt: "Medicare" },
   { src: "/payors/normalized/medicaid.png", alt: "Medicaid" },
-  { src: "/payors/normalized/cvs.png", alt: "CVS" },
+  { src: "/payors/normalized/cvs.png", alt: "CVS / Aetna" },
 ].filter((logo) => !!logo.src);
 
 export default function Home() {
@@ -174,7 +168,7 @@ export default function Home() {
           boxShadow="0 0 36px rgba(0, 245, 160, 0.35)"
           backdropFilter="blur(12px)"
           px={{ base: 6, md: 10 }}
-          py={{ base: 5, md: 6 }}
+          py={{ base: 6, md: 7 }}
         >
           <Text
             textAlign="center"
@@ -186,30 +180,28 @@ export default function Home() {
             employer coverage.
           </Text>
 
-          <Box overflow="hidden">
-            <Box
-              as="div"
-              display="inline-flex"
-              alignItems="center"
-              gap={{ base: 10, md: 12 }}
-              animation={`${scrollLogos} 40s linear infinite`}
-            >
-              {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (
-                <HStack key={`${logo.alt}-${idx}`} spacing={0}>
+          <Wrap
+            justify="center"
+            spacing={{ base: 6, md: 8 }}
+            rowGap={{ base: 4, md: 5 }}
+          >
+            {PAYOR_LOGOS.map((logo) => (
+              <WrapItem key={logo.alt}>
+                <HStack>
                   <Image
                     src={logo.src}
                     alt={logo.alt}
                     h={{ base: "28px", md: "32px" }}
                     objectFit="contain"
-                    opacity={0.75}
+                    opacity={0.85}
                     filter="grayscale(1)"
                     _hover={{ opacity: 1 }}
                     loading="lazy"
                   />
                 </HStack>
-              ))}
-            </Box>
-          </Box>
+              </WrapItem>
+            ))}
+          </Wrap>
         </Box>
       </Box>
     </Box>
