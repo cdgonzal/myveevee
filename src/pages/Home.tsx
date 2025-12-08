@@ -197,7 +197,7 @@ export default function Home() {
               animation={`${scrollLogos} 53s linear infinite`}
               opacity={0.85}
               // gap between each logo frame
-              columnGap={{ base: 16, md: 20 }}
+              columnGap={{ base: 8, md: 10 }}
             >
               {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (
                 <Box

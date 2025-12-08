@@ -92,7 +92,7 @@ function Header() {
               _hover={{ textDecoration: "none" }}
             >
               <Image
-                src="/logo-mark.png"
+                src="/logo.png"
                 alt="VeeVee logo"
                 boxSize={{ base: "28px", md: "32px" }}
                 objectFit="contain"
