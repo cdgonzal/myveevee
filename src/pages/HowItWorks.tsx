@@ -263,6 +263,7 @@ export default function HowItWorks() {
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
                       3-Day short plans built around one issue: YOUR WELLNESS. 
                       Personalized guidance that allows you to understand, decode & act.
+                      Each plan is just $3.99. Simple, transparent, no subscriptions.
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
                       Understand → decode → act.
@@ -323,12 +324,13 @@ export default function HowItWorks() {
                     </Flex>
 
                     <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      An ongoing companion that grows with you and learns 
-                      from your daily behaviors, helping you stay connected 
-                      to your wellness and understand your covered care benefits.
+                      Your adaptive wellness companion, built to support you 
+                      and those you care about. $9.99 for individuals or 
+                      $13.99 for families of up to five, so everyone can stay 
+                      connected and understand their covered care.
                     </Text>
                     <Text fontSize="xs" color="whiteAlpha.800">
-                      Everyday support by your side.
+                      For you. For your family. Connected.
                     </Text>
                   </CardBody>
                 </MotionCard>
