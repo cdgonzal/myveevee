@@ -1,19 +1,10 @@
 // File: src/pages/Home.tsx
-// Version: 1.3 (2025-12-07)
+// Version: 1.4 (2025-12-07)
 // Purpose:
-//   Homepage hero for myVeeVee.com with:
-//     - Main "Got Health? Unlock your wellness today." funnel hero
-//     - Right-side hero card with logo + doctor/patient image
-//     - New payor credibility strip (pill) with scrolling insurer logos
-//       to signal that VeeVee works across real-world health plans.
-// Visual:
-//   - Dark neon gradient background
-//   - Primary CTA: Start at VeeVee.io
-//   - Payor logos shown in subtle grayscale, gently scrolling.
-// Future iterations (not yet implemented):
-//   - Swap hero stock image for a more branded visual or illustration.
-//   - Mobile-specific tweaks for logo strip speed/spacing.
-//   - A/B testing different payor pill copy variants.
+//   Homepage hero + payor credibility strip.
+//   This iteration fattens the payor pill, increases text and logo size,
+//   and adds a stronger neon-style outline so the validator feels intentional
+//   and on-brand.
 
 import {
   Box,
@@ -36,6 +27,7 @@ const scrollLogos = keyframes`
 // Normalized payor logos (from public/payors/normalized)
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
+  { src: "/payors/normalized/medicare.png", alt: "Medicare" },
   { src: "/payors/normalized/united2.png", alt: "UnitedHealthcare" },
   { src: "/payors/normalized/cigna.png", alt: "Cigna" },
   { src: "/payors/normalized/humana.png", alt: "Humana" },
@@ -44,10 +36,9 @@ const PAYOR_LOGOS = [
   { src: "/payors/normalized/kaiser2.png", alt: "Kaiser Permanente" },
   { src: "/payors/normalized/centene.png", alt: "Centene" },
   { src: "/payors/normalized/molina.png", alt: "Molina Healthcare" },
-  { src: "/payors/normalized/medicare.png", alt: "Medicare" },
   { src: "/payors/normalized/medicaid.png", alt: "Medicaid" },
-  { src: "/payors/normalized/cvs.png", alt: "CVS / Aetna" },
-].filter((logo) => !!logo.src); // light safety net
+  { src: "/payors/normalized/cvs.png", alt: "CVS" },
+].filter((logo) => !!logo.src);
 
 export default function Home() {
   return (
@@ -178,17 +169,18 @@ export default function Home() {
       >
         <Box
           borderRadius="full"
-          bg="rgba(255,255,255,0.03)"
-          border="1px solid rgba(255,255,255,0.12)"
-          backdropFilter="blur(10px)"
-          px={{ base: 4, md: 8 }}
-          py={{ base: 4, md: 5 }}
+          bg="rgba(5, 8, 22, 0.96)"
+          border="1px solid rgba(0, 245, 160, 0.5)"
+          boxShadow="0 0 36px rgba(0, 245, 160, 0.35)"
+          backdropFilter="blur(12px)"
+          px={{ base: 6, md: 10 }}
+          py={{ base: 5, md: 6 }}
         >
           <Text
             textAlign="center"
-            fontSize="sm"
-            color="whiteAlpha.800"
-            mb={{ base: 3, md: 4 }}
+            fontSize={{ base: "sm", md: "md" }}
+            color="whiteAlpha.900"
+            mb={{ base: 4, md: 5 }}
           >
             Built for real people across real plans, from national insurers to
             employer coverage.
@@ -196,24 +188,22 @@ export default function Home() {
 
           <Box overflow="hidden">
             <Box
-              // scrolling container
+              as="div"
               display="inline-flex"
               alignItems="center"
-              as="div"
-              gap={{ base: 8, md: 10 }}
+              gap={{ base: 10, md: 12 }}
               animation={`${scrollLogos} 40s linear infinite`}
-              // Duplicate logos for a seamless loop
             >
               {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (
-                <HStack key={`${logo.alt}-${idx}`} spacing={2}>
+                <HStack key={`${logo.alt}-${idx}`} spacing={0}>
                   <Image
                     src={logo.src}
                     alt={logo.alt}
-                    h={{ base: "22px", md: "26px" }}
+                    h={{ base: "28px", md: "32px" }}
                     objectFit="contain"
-                    opacity={0.65}
+                    opacity={0.75}
                     filter="grayscale(1)"
-                    _hover={{ opacity: 0.95 }}
+                    _hover={{ opacity: 1 }}
                     loading="lazy"
                   />
                 </HStack>
