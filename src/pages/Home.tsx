@@ -68,7 +68,7 @@ export default function Home() {
             textTransform="uppercase"
             color="accent.300"
           >
-            Clarity for your health.
+            Clarity for your health
           </Text>
 
           <Heading
@@ -90,6 +90,7 @@ export default function Home() {
           >
             VeeVee uncovers your benefits, explains your care, 
             and guides you through your wellness journey.
+            < br />
             Simply and clearly.
           </Text>
 
