@@ -155,6 +155,7 @@ export default function Home() {
       </Grid>
 
       {/* Payor credibility pill */}
+            {/* Payor credibility pill */}
       <Box
         mt={{ base: 10, md: 14 }}
         maxW="6xl"
@@ -180,6 +181,7 @@ export default function Home() {
             employer coverage.
           </Text>
 
+          {/* Static, normalized logos */}
           <Wrap
             justify="center"
             spacing={{ base: 6, md: 8 }}
@@ -188,16 +190,28 @@ export default function Home() {
             {PAYOR_LOGOS.map((logo) => (
               <WrapItem key={logo.alt}>
                 <HStack>
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    h={{ base: "28px", md: "32px" }}
-                    objectFit="contain"
-                    opacity={0.85}
-                    filter="grayscale(1)"
-                    _hover={{ opacity: 1 }}
-                    loading="lazy"
-                  />
+                  <Box
+                    // Frame each logo so they feel the same size
+                    minW={{ base: "80px", md: "100px" }}
+                    maxW={{ base: "100px", md: "120px" }}
+                    h={{ base: "32px", md: "36px" }}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      maxH="100%"
+                      maxW="100%"
+                      objectFit="contain"
+                      opacity={0.9}
+                      // Push everything toward a white / grayscale look
+                      filter="grayscale(1) brightness(1.6) contrast(1.2)"
+                      _hover={{ opacity: 1 }}
+                      loading="lazy"
+                    />
+                  </Box>
                 </HStack>
               </WrapItem>
             ))}
