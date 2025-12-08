@@ -146,14 +146,14 @@ export default function Home() {
                 VeeVee
               </Text>
               <Text fontSize="xs" color="whiteAlpha.600">
-                Your AI wellness guide
+                Your AI wellness companion
               </Text>
             </Box>
           </Box>
 
           {/* Hero image */}
           <Image
-            src="/hero_33.png"
+            src="/hero_44.png"
             alt="Patient talking with doctor using VeeVee"
             objectFit="cover"
             maxH="420px"
