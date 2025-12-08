@@ -313,15 +313,15 @@ export default function Features() {
             size="pill"
             eyebrow="Coming to more partners soon"
             title="Marketplace & Covered Essentials"
-            front="Discover products, recovery tools, and supports that fit your health goals — including items that may be covered by your benefits."
-            back="Instead of searching blindly, Vee can surface braces, supports, and everyday essentials that match your needs and, when possible, your coverage — so you can feel better equipped in daily life."
+            front="Discover products, recovery tools, and support that fits your wellness goals."
+            back="From wellness products to care services, VeeVee helps you find what’s right for you."
           />
         </MotionBox>
 
         {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center" pt={{ base: 4, md: 6 }}>
           <Heading as="h2" size="md">
-            Ready to see these features working with your own health?
+            Got health?
           </Heading>
           <Text
             fontSize="sm"
@@ -329,9 +329,7 @@ export default function Features() {
             maxW="2xl"
             mx="auto"
           >
-            Create a free account at VeeVee.io and start with an AI Wellness
-            Guide. As you keep showing up, Vee will bring more of these features
-            to life around your real story.
+            Create a free account at VeeVee.io to unlock your wellness.
           </Text>
           <Button
             as="a"
@@ -343,7 +341,7 @@ export default function Features() {
             alignSelf="center"
             boxShadow="0 0 28px rgba(0, 245, 160, 0.35)"
           >
-            Create your free VeeVee account
+            Start for free
           </Button>
         </Stack>
       </Stack>

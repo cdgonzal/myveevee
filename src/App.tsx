@@ -135,7 +135,7 @@ function Footer() {
     >
       <Container maxW="6xl" py="3">
         <Flex align="center" justify="space-between" fontSize="sm">
-          <Text color="whiteAlpha.800">© 2025 VeeVee Health</Text>
+          <Text color="whiteAlpha.800">© {new Date().getFullYear()} VeeVee Health</Text>
 
           <HStack spacing="4">
             <CLink href="https://veevee.io" isExternal color="whiteAlpha.900">
