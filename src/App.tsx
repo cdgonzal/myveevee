@@ -42,6 +42,7 @@ import Home from "./pages/Home";
 import HowItWorks from "./pages/HowItWorks";
 import Terms from "./pages/Terms";
 import Features from "./pages/Features";
+import Testimonials from "./pages/Testimonials";
 
 export default function App() {
   return (
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/features" element={<Features />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/terms" element={<Terms />} />
           </Routes>
         </Container>
@@ -121,6 +123,14 @@ function Header() {
                   fontWeight="600"
                 >
                   Features
+                </CLink>
+                <CLink
+                  as={Link}
+                  to="/testimonials"
+                  color="whiteAlpha.900"
+                  fontWeight="600"
+                >
+                  Testimonials
                 </CLink>
                 <CLink
                   as={Link}
@@ -196,6 +206,15 @@ function Header() {
                 color="whiteAlpha.900"
               >
                 Features
+              </CLink>
+              <CLink
+                as={Link}
+                to="/testimonials"
+                onClick={onClose}
+                fontWeight="600"
+                color="whiteAlpha.900"
+              >
+                Testimonials
               </CLink>
               <CLink
                 as={Link}

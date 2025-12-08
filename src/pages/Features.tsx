@@ -296,7 +296,7 @@ export default function Features() {
             <FeatureCard
               title="Covered Care Benefits"
               front="Check before you book."
-              back="VeeVee helps you uncover checkups, screenings, and services your plan already offers, often without extra cost."
+              back="Uncover checkups, screenings, and services your plan already offers."
             />
 
             <FeatureCard
