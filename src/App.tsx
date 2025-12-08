@@ -88,11 +88,6 @@ function Header() {
 
           {/* NAVIGATION */}
           <HStack spacing="6" align="center">
-            <CLink as={Link} to="/" color="whiteAlpha.900" fontWeight="600"
-              _hover={{ color: "accent.300" }}>
-              Home
-            </CLink>
-
             <CLink as={Link} to="/features" color="whiteAlpha.900" fontWeight="600"
               _hover={{ color: "accent.300" }}>
               Features
