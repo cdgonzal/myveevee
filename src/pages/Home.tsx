@@ -68,7 +68,7 @@ export default function Home() {
             textTransform="uppercase"
             color="accent.300"
           >
-            Your AI wellness mirror
+            Clarity for your health.
           </Text>
 
           <Heading
@@ -88,11 +88,9 @@ export default function Home() {
             maxW="lg"
             color="whiteAlpha.800"
           >
-            In a world where healthcare feels distant and opaque, VeeVee&apos;s
-            purpose is to unleash the best version of you. Because when you
-            understand what&apos;s happening within, you can act on what truly
-            matters. VeeVee reveals your covered benefits, perks, wellness
-            products, and everyday health support. Your health can&apos;t wait.
+            VeeVee uncovers your benefits, explains your care, 
+            and guides you through your wellness journey.
+            Simply and clearly.
           </Text>
 
           <Stack spacing={3}>
