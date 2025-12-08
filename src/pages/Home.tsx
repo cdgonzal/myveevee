@@ -121,7 +121,7 @@ export default function Home() {
             </Button>
 
             <Text fontSize="sm" color="whiteAlpha.600">
-              Invited by SWCA • HIPAA-aligned • Encrypted
+              Designed by Doctors • HIPAA-aligned • Encrypted
             </Text>
           </Stack>
         </Stack>
@@ -137,31 +137,40 @@ export default function Home() {
           boxShadow="0 0 60px rgba(0,0,0,0.8)"
         >
           {/* Logo strip */}
-          <Box
-            display="flex"
-            alignItems="center"
-            gap={3}
-            px={4}
-            py={3}
-            bg="rgba(7, 11, 31, 0.98)"
-            borderBottomWidth="1px"
-            borderColor="whiteAlpha.200"
+          <CLink
+            href="https://veevee.io"
+            _hover={{ textDecoration: "none" }}
+            _focus={{ boxShadow: "none" }}
+            display="block"         // allow block-level clicking
           >
-            <Image
-              src="/logo.png"
-              alt="VeeVee Logo"
-              boxSize="40px"
-              objectFit="contain"
-            />
-            <Box>
-              <Text fontWeight="700" fontSize="md">
-                VeeVee
-              </Text>
-              <Text fontSize="xs" color="whiteAlpha.600">
-                Your AI wellness companion
-              </Text>
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={3}
+              px={4}
+              py={3}
+              bg="rgba(7, 11, 31, 0.98)"
+              borderBottomWidth="1px"
+              borderColor="whiteAlpha.200"
+              cursor="pointer"       // shows it’s clickable
+            >
+              <Image
+                src="/logo.png"
+                alt="VeeVee Logo"
+                boxSize="40px"
+                objectFit="contain"
+                draggable="false"
+              />
+              <Box>
+                <Text fontWeight="700" fontSize="md">
+                  VeeVee
+                </Text>
+                <Text fontSize="xs" color="whiteAlpha.600">
+                  Your AI wellness companion
+                </Text>
+              </Box>
             </Box>
-          </Box>
+          </CLink>
 
           {/* Hero image */}
           <Image
