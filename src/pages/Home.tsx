@@ -18,6 +18,7 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
+import { Link as CLink } from "@chakra-ui/react";
 
 
 // Normalized payor logos (from public/payors/normalized)
@@ -67,21 +68,33 @@ export default function Home() {
             letterSpacing="0.18em"
             textTransform="uppercase"
             color="accent.300"
+            as={CLink}
+            href="https://veevee.io"
+            _hover={{ textDecoration: "none" }}
+            _focus={{ outline: "none" }}
           >
             Clarity for your health
           </Text>
 
-          <Heading
-            as="h1"
-            size={{ base: "xl", md: "2xl" }}
-            fontWeight="800"
-            lineHeight="1.1"
+          <CLink
+            href="https://veevee.io"
+            _hover={{ textDecoration: "none" }}
+            _focus={{ outline: "none" }}
+            style={{ textDecoration: "none" }}
           >
-            Got Health?{" "}
-            <Box as="span" color="accent.400">
-              Unlock your wellness today.
-            </Box>
-          </Heading>
+            <Heading
+              as="h1"
+              size={{ base: "xl", md: "2xl" }}
+              fontWeight="800"
+              lineHeight="1.1"
+              color="white"
+            >
+              Got Health?{" "}
+              <Box as="span" color="accent.400">
+                Unlock your wellness today.
+              </Box>
+            </Heading>
+          </CLink>
 
           <Text
             fontSize={{ base: "md", md: "lg" }}
