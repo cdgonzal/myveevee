@@ -1,5 +1,5 @@
 // File: src/pages/Testimonials.tsx
-// Version: 1.0 (2025-12-08)
+// Version: 1.1 (2025-12-08)
 // Purpose:
 //   Compact testimonials module for myVeeVee.com.
 //   - Short, high-impact social proof from 3 patient voices + 1 clinician.
@@ -9,6 +9,9 @@
 //   - Short page (not tall): one main section centered on the screen.
 //   - Tab/pill selector swaps content with a gentle fade/slide (Framer Motion).
 //   - CTA always pushes to veevee.io to reinforce the funnel.
+// Mobile fix (v1.1):
+//   - On mobile, testimonial pills are now full-width stacked buttons.
+//   - No overlapping text, no tiny pills: clean, tappable rows.
 // Future iterations (not yet implemented):
 //   - Add avatar photos or initials for each voice.
 //   - A/B test ordering of voices or quote variants.
@@ -21,7 +24,6 @@ import {
   Heading,
   Text,
   Stack,
-  HStack,
   Badge,
   useBreakpointValue,
 } from "@chakra-ui/react";
@@ -45,7 +47,8 @@ const TESTIMONIALS: TestimonialVoice[] = [
     id: "ashley",
     pillLabel: "Ashley · Caregiver",
     roleLine: "Ashley Cooper, 45 · Working mom & caregiver",
-    oneLiner: "“AI and health felt terrifying to me until VeeVee made it feel safe and simple.”",
+    oneLiner:
+      "“AI and health felt terrifying to me until VeeVee made it feel safe and simple.”",
     story:
       "I’m not a tech person, and I was nervous about uploading anything related to my personal wellness. VeeVee walked me through my insurance cards and documents in plain language and showed me benefits I didn’t know I had. I still take things slow, but now I feel less afraid and more in control.",
     emphasis: "Cautious about AI. Found comfort, clarity, and hidden perks.",
@@ -53,8 +56,9 @@ const TESTIMONIALS: TestimonialVoice[] = [
   {
     id: "ryan",
     pillLabel: "Ryan · Sales Professional",
-    roleLine: "Ryan Blake, 29 · Tech-forward professional",
-    oneLiner: "“VeeVee finally feels like the health app I’ve been waiting for.”",
+    roleLine: "Ryan Blake, 29 · Tech Sales professional",
+    oneLiner:
+      "“VeeVee finally feels like the health app I’ve been waiting for.”",
     story:
       "I use AI for work, planning, even workouts. I’m all-in on AI, and VeeVee is the first health experience that actually matches how I live. VeeVee connects my patterns, my coverage, and my daily choices. Now I want even more: cost comparisons, deeper insights, and smarter next steps.",
     emphasis: "AI-forward. Wants more power, more insight, more future.",
@@ -63,16 +67,18 @@ const TESTIMONIALS: TestimonialVoice[] = [
     id: "walter",
     pillLabel: "Walter · Retired on Medicare",
     roleLine: "Walter Harris, 72 · Retired teacher on Medicare",
-    oneLiner: "“Even I can use VeeVee. That says everything.”",
+    oneLiner:
+      "“Even I can use VeeVee. That says everything.”",
     story:
       "I don’t do tech yet the young lady at my doctor’s office set up VeeVee for me, and now I actually use it. The questions are simple, the buttons are big enough, and it helps me understand what Medicare covers. I don’t feel lost in the system the way I used to.",
     emphasis: "Low tech. High usefulness. Simple enough to stick with.",
   },
   {
     id: "dr_rostant",
-    pillLabel: "Dr. Rostant · Clinician",
+    pillLabel: "Dr. Rostant · Physician",
     roleLine: "Carlo Rostant, MD",
-    oneLiner: "“VeeVee helps my patients show up informed, prepared, and more confident than ever.”",
+    oneLiner:
+      "“VeeVee helps my patients show up informed, prepared, and more confident than ever.”",
     story:
       "Many patients arrive overwhelmed by symptoms and insurance details before we even begin. VeeVee gives them clarity on their concerns and benefits, and helps them form better questions. When patients feel empowered, our conversations are stronger and their care decisions improve.",
     emphasis: "Future-looking clinician. Sees AI as a way to elevate care.",
@@ -135,11 +141,11 @@ export default function Testimonials() {
 
         {/* Voice selector pills */}
         <Box>
-          <HStack
+          <Stack
+            direction={{ base: "column", md: "row" }}
             spacing={3}
-            justify={isMobile ? "flex-start" : "center"}
-            overflowX={isMobile ? "auto" : "visible"}
-            pb={isMobile ? 1 : 0}
+            justify={{ base: "flex-start", md: "center" }}
+            align={{ base: "stretch", md: "center" }}
           >
             {TESTIMONIALS.map((voice) => {
               const isActive = voice.id === activeId;
@@ -150,8 +156,10 @@ export default function Testimonials() {
                   size="sm"
                   borderRadius="full"
                   fontWeight={isActive ? "700" : "500"}
-                  px={4}
-                  whiteSpace="nowrap"
+                  px={{ base: 4, md: 5 }}
+                  py={{ base: 2.5, md: 2 }}
+                  fontSize={{ base: "xs", md: "sm" }}
+                  w={{ base: "100%", md: "auto" }}
                   onClick={() => setActiveId(voice.id)}
                   bg={isActive ? "accent.400" : "transparent"}
                   color={isActive ? "#050816" : "whiteAlpha.900"}
@@ -165,7 +173,7 @@ export default function Testimonials() {
                 </Button>
               );
             })}
-          </HStack>
+          </Stack>
         </Box>
 
         {/* Testimonial shell + CTA */}
@@ -188,7 +196,7 @@ export default function Testimonials() {
             >
               <Stack spacing={{ base: 4, md: 5 }}>
                 {/* Role / tag */}
-                <HStack spacing={3} align="center">
+                <Stack direction="row" spacing={3} align="center">
                   <Badge
                     variant="subtle"
                     colorScheme="green"
@@ -209,7 +217,7 @@ export default function Testimonials() {
                   >
                     {activeVoice.roleLine}
                   </Text>
-                </HStack>
+                </Stack>
 
                 {/* One-liner */}
                 <Heading
