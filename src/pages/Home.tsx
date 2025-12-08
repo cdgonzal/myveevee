@@ -24,14 +24,14 @@ import { keyframes } from "@emotion/react";
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
   { src: "/payors/normalized/cigna.png", alt: "Cigna" },
-  { src: "/payors/normalized/humana44.png", alt: "Humana" },
+  { src: "/payors/normalized/humana99.png", alt: "Humana" },
   { src: "/payors/normalized/aetna2.png", alt: "Aetna" },
   { src: "/payors/normalized/elevance2.png", alt: "Elevance" },
   { src: "/payors/normalized/florida2.png", alt: "Florida Blue" },
   { src: "/payors/normalized/kaiser44.png", alt: "Kaiser Permanente" },
   { src: "/payors/normalized/centene.png", alt: "Centene" },
   { src: "/payors/normalized/molina3.png", alt: "Molina Healthcare" },
-  { src: "/payors/normalized/medicare22.png", alt: "Medicare" },
+  { src: "/payors/normalized/medicare1.png", alt: "Medicare" },
   { src: "/payors/normalized/cvs.png", alt: "CVS" },
 ].filter((logo) => !!logo.src);
 
