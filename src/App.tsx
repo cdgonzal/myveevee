@@ -1,10 +1,22 @@
 // File: src/App.tsx
 // Version: 1.5 (2025-12-07)
-// Updates:
-//   - Added "/features" route
-//   - Added "Features" link in the header
-//   - Made logo + brand title a clickable link to home
-//   - Maintains neon dark-glass header styling
+// Purpose:
+//   Shell layout and routing for the myVeeVee.com marketing site.
+//   Routes:
+//     - "/"              → Home (hero funnel to veevee.io)
+//     - "/features"      → Features (AI Wellness Guides, benefits, etc.)
+//     - "/how-it-works"  → How it works (3-step flow + guides + CTA)
+//     - "/terms"         → Plain-English Terms & Disclaimers page
+// Visual shell:
+//   - Full-page dark gradient background to match neon hero sections.
+//   - Glassmorphism header & footer (blurred dark navy) with neon Log in button.
+// Responsive behavior:
+//   - Desktop/tablet: logo + brand + inline nav ("Features", "How it works") + Log in.
+//   - Mobile: logo + brand + Log in + hamburger icon that opens a side drawer
+//     with the same nav links.
+// Future iterations (not yet implemented):
+//   - Animate drawer links with subtle motion.
+//   - Add additional legal links (Privacy, cookies) when ready.
 
 import {
   Box,
@@ -15,13 +27,21 @@ import {
   Link as CLink,
   Text,
   Image,
+  IconButton,
+  useDisclosure,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  Stack,
 } from "@chakra-ui/react";
 import { Link, Route, Routes } from "react-router-dom";
-
 import Home from "./pages/Home";
 import HowItWorks from "./pages/HowItWorks";
 import Terms from "./pages/Terms";
-import Features from "./pages/Features"; // NEW
+import Features from "./pages/Features";
 
 export default function App() {
   return (
@@ -31,7 +51,6 @@ export default function App() {
       bgGradient="linear(to-b, #050816, #070B1F)"
     >
       <Header />
-
       <Box as="main" flex="1">
         <Container maxW="6xl" py={{ base: 8, md: 12 }}>
           <Routes>
@@ -42,80 +61,165 @@ export default function App() {
           </Routes>
         </Container>
       </Box>
-
       <Footer />
     </Flex>
   );
 }
 
 function Header() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <Box
-      as="header"
-      borderBottom="1px solid"
-      borderColor="whiteAlpha.200"
-      bg="rgba(5, 8, 22, 0.75)"
-      backdropFilter="blur(10px)"
-      position="sticky"
-      top={0}
-      zIndex={20}
-    >
-      <Container maxW="6xl" py="3">
-        <Flex align="center" justify="space-between">
-
-          {/* LOGO + BRAND → click to go home */}
-          <CLink as={Link} to="/" _hover={{ textDecoration: "none" }}>
-            <Flex align="center" gap={3}>
+    <>
+      <Box
+        as="header"
+        borderBottom="1px solid"
+        borderColor="whiteAlpha.200"
+        bg="rgba(5, 8, 22, 0.7)" // glassy dark background
+        backdropFilter="saturate(150%) blur(12px)"
+        position="sticky"
+        top={0}
+        zIndex={10}
+      >
+        <Container maxW="6xl" py="3">
+          <Flex align="center" justify="space-between">
+            {/* Logo + brand → home link */}
+            <HStack
+              as={Link}
+              to="/"
+              spacing={3}
+              align="center"
+              _hover={{ textDecoration: "none" }}
+            >
               <Image
-                src="/logo.png"
-                alt="VeeVee Logo"
-                boxSize="32px"
+                src="/logo-mark.png"
+                alt="VeeVee logo"
+                boxSize={{ base: "28px", md: "32px" }}
                 objectFit="contain"
-                filter="drop-shadow(0 0 8px rgba(0,245,160,0.55))"
               />
-
               <Text
                 fontWeight="800"
-                fontSize="xl"
+                fontSize={{ base: "md", md: "lg" }}
                 bgGradient="linear(to-r, accent.300, accent.400)"
                 bgClip="text"
-                textShadow="0 0 12px rgba(0, 245, 160, 0.3)"
               >
                 VeeVee
               </Text>
-            </Flex>
-          </CLink>
+            </HStack>
 
-          {/* NAVIGATION */}
-          <HStack spacing="6" align="right">
-            <CLink as={Link} to="/features" color="whiteAlpha.900" fontWeight="600"
-              _hover={{ color: "accent.300" }}>
-              Features
-            </CLink>
+            {/* Right side: nav + login + burger */}
+            <HStack spacing={{ base: 3, md: 6 }} align="center">
+              {/* Desktop nav links */}
+              <HStack
+                spacing={{ base: 3, md: 6 }}
+                display={{ base: "none", md: "flex" }}
+              >
+                <CLink
+                  as={Link}
+                  to="/features"
+                  color="whiteAlpha.900"
+                  fontWeight="600"
+                >
+                  Features
+                </CLink>
+                <CLink
+                  as={Link}
+                  to="/how-it-works"
+                  color="whiteAlpha.900"
+                  fontWeight="600"
+                >
+                  How it works
+                </CLink>
+              </HStack>
 
-            <CLink as={Link} to="/how-it-works" color="whiteAlpha.900" fontWeight="600"
-              _hover={{ color: "accent.300" }}>
-              How it works
-            </CLink>
+              {/* Log in button: always visible, just slightly tighter on mobile */}
+              <Button
+                as="a"
+                href="https://veevee.io"
+                size="sm"
+                borderRadius="full"
+                fontWeight="700"
+                px={{ base: 4, md: 5 }}
+                boxShadow="0 0 20px rgba(0, 245, 160, 0.45)"
+              >
+                Log in
+              </Button>
 
-            <Button
-              as="a"
-              href="https://veevee.io"
-              size="sm"
-              borderRadius="full"
-              fontWeight="700"
-              px={5}
-              bg="accent.400"
-              color="#050816"
-              boxShadow="0 0 18px rgba(0,245,160,0.45)"
-              _hover={{ bg: "accent.300" }}
-            >
-              Log in
-            </Button>
-          </HStack>
-        </Flex>
-      </Container>
-    </Box>
+              {/* Mobile hamburger: only show on base–sm, hide on md+ */}
+              <IconButton
+                aria-label="Open navigation menu"
+                icon={
+                  <Box
+                    as="span"
+                    fontSize="22px"
+                    lineHeight="1"
+                    color="whiteAlpha.900"
+                    mt="2px"
+                  >
+                    ☰
+                  </Box>
+                }
+                variant="ghost"
+                color="whiteAlpha.900"
+                display={{ base: "inline-flex", md: "none" }}
+                onClick={onOpen}
+              />
+            </HStack>
+          </Flex>
+        </Container>
+      </Box>
+
+      {/* Mobile drawer nav */}
+      <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
+        <DrawerOverlay />
+        <DrawerContent bg="#050816" color="whiteAlpha.900">
+          <DrawerCloseButton mt={2} />
+          <DrawerHeader borderBottomWidth="1px" borderColor="whiteAlpha.200">
+            Navigation
+          </DrawerHeader>
+          <DrawerBody>
+            <Stack spacing={4} mt={4}>
+              <CLink
+                as={Link}
+                to="/"
+                onClick={onClose}
+                fontWeight="600"
+                color="whiteAlpha.900"
+              >
+                Home
+              </CLink>
+              <CLink
+                as={Link}
+                to="/features"
+                onClick={onClose}
+                fontWeight="600"
+                color="whiteAlpha.900"
+              >
+                Features
+              </CLink>
+              <CLink
+                as={Link}
+                to="/how-it-works"
+                onClick={onClose}
+                fontWeight="600"
+                color="whiteAlpha.900"
+              >
+                How it works
+              </CLink>
+              <CLink
+                href="https://veevee.io"
+                isExternal
+                onClick={onClose}
+                fontWeight="700"
+                color="accent.300"
+              >
+                Log in to VeeVee.io
+              </CLink>
+            </Stack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
 
@@ -126,17 +230,17 @@ function Footer() {
       borderTop="1px solid"
       borderColor="whiteAlpha.200"
       bg="rgba(5, 8, 22, 0.7)"
-      backdropFilter="blur(12px)"
+      backdropFilter="saturate(150%) blur(12px)"
     >
       <Container maxW="6xl" py="3">
         <Flex align="center" justify="space-between" fontSize="sm">
-          <Text color="whiteAlpha.800">© {new Date().getFullYear()} VeeVee Health</Text>
-
+          <Text color="whiteAlpha.800">
+            © {new Date().getFullYear()} VeeVee Health
+          </Text>
           <HStack spacing="4">
             <CLink href="https://veevee.io" isExternal color="whiteAlpha.900">
               Log in
             </CLink>
-
             <CLink
               href="https://investveevee.com"
               isExternal
@@ -144,7 +248,6 @@ function Footer() {
             >
               For investors
             </CLink>
-
             <CLink as={Link} to="/terms" color="whiteAlpha.900">
               Terms &amp; Disclaimers
             </CLink>
