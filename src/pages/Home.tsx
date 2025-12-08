@@ -37,7 +37,6 @@ const scrollLogos = keyframes`
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
   { src: "/payors/normalized/united2.png", alt: "UnitedHealthcare" },
-  { src: "/payors/normalized/aetna.png", alt: "Aetna" },          // if you fix aetna.png later
   { src: "/payors/normalized/cigna.png", alt: "Cigna" },
   { src: "/payors/normalized/humana.png", alt: "Humana" },
   { src: "/payors/normalized/elevance2.png", alt: "Elevance" },
