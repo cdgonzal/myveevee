@@ -153,7 +153,7 @@ export default function Home() {
 
           {/* Hero image */}
           <Image
-            src="/hero-image.jpg"
+            src="/hero_1.png"
             alt="Patient talking with doctor using VeeVee"
             objectFit="cover"
             maxH="420px"
