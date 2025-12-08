@@ -173,13 +173,15 @@ export default function Home() {
           </CLink>
 
           {/* Hero image */}
-          <Image
-            src="/hero_44.png"
-            alt="Patient talking with doctor using VeeVee"
-            objectFit="cover"
-            maxH="420px"
-            w="100%"
-          />
+          <CLink href="https://example.com" isExternal>
+            <Image
+              src="/hero_44.png"
+              alt="Patient talking with doctor using VeeVee"
+              objectFit="cover"
+              maxH="420px"
+              w="100%"
+            />
+          </CLink>
         </Box>
       </Grid>
 
