@@ -173,7 +173,7 @@ export default function Home() {
           </CLink>
 
           {/* Hero image */}
-          <CLink href="https://example.com" isExternal>
+          <CLink href="https://veevee.io" isExternal>
             <Image
               src="/hero_44.png"
               alt="Patient talking with doctor using VeeVee"

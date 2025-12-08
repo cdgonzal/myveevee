@@ -1,5 +1,5 @@
 // File: src/pages/Features.tsx
-// Version: 1.0 (2025-12-07)
+// Version: 1.1 (2025-12-08)
 // Purpose:
 //   Marketing-style "Features" page for myVeeVee.com.
 //   Text-only, Apple-style layout that showcases the VeeVee ecosystem:
@@ -13,6 +13,8 @@
 // Interaction:
 //   - Soft hover reveal: front copy fades back and deeper benefit copy fades in.
 //   - Gentle elevation + glow on hover. No icons, no flips, no heavy motion.
+//   - Mobile-safe Marketplace pill: on small screens, back content stacks
+//     vertically so the pill doesn’t collapse or narrow on hover.
 // Future iterations (not yet implemented):
 //   - Deeper links into specific product surfaces (Feed, Quick Guides, Shop).
 //   - Screenshots or illustrations for each feature.
@@ -30,6 +32,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { Link as CLink } from "@chakra-ui/react";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
@@ -47,7 +50,13 @@ type FeatureCardProps = {
   size?: "lg" | "md" | "pill";
 };
 
-function FeatureCard({ eyebrow, title, front, back, size = "md" }: FeatureCardProps) {
+function FeatureCard({
+  eyebrow,
+  title,
+  front,
+  back,
+  size = "md",
+}: FeatureCardProps) {
   const isPill = size === "pill";
 
   return (
@@ -107,14 +116,26 @@ function FeatureCard({ eyebrow, title, front, back, size = "md" }: FeatureCardPr
           position="absolute"
           inset={0}
           display="flex"
-          alignItems="center"
-          justifyContent={isPill ? "space-between" : "flex-start"}
+          flexDirection={{
+            base: isPill ? "column" : "column",
+            md: isPill ? "row" : "row",
+          }}
+          alignItems={{
+            base: "flex-start",
+            md: isPill ? "center" : "flex-start",
+          }}
+          justifyContent={{
+            base: "flex-start",
+            md: isPill ? "space-between" : "flex-start",
+          }}
           px={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}
+          py={{ base: isPill ? 4 : 6 }}
+          gap={{ base: isPill ? 3 : 2, md: isPill ? 4 : 0 }}
           opacity={0}
           transition="opacity 0.25s ease-out"
           _groupHover={{ opacity: 1 }}
         >
-          <Box maxW={isPill ? "lg" : "full"}>
+          <Box maxW={isPill ? "100%" : "full"}>
             {eyebrow && (
               <Text
                 fontSize="xs"
@@ -147,8 +168,8 @@ function FeatureCard({ eyebrow, title, front, back, size = "md" }: FeatureCardPr
               borderRadius="full"
               fontWeight="700"
               px={6}
-              ml={{ base: 0, md: 4 }}
-              mt={{ base: 4, md: 0 }}
+              mt={{ base: 3, md: 0 }}
+              alignSelf={{ base: "stretch", md: "center" }}
               boxShadow="0 0 24px rgba(0, 245, 160, 0.35)"
             >
               Explore in VeeVee
@@ -225,7 +246,7 @@ export default function Features() {
               eyebrow="Core"
               title="AI Wellness Guides"
               front="Personalized guidance that helps you make sense of what’s happening in your life. From stress and sleep to symptoms and recovery."
-              back="Quick Guides, Deep Guides, and the VeeVee companion subscription give you a step-by-step support that is personalized to YOU. Focus on what matters most, YOU!"
+              back="Quick Guides, Deep Guides, and the VeeVee companion subscription give you step-by-step support that is personalized to YOU. Focus on what matters most, YOU!"
             />
           </MotionBox>
 
@@ -247,11 +268,7 @@ export default function Features() {
 
         {/* Row 2 – four medium feature cards */}
         <Stack spacing={4}>
-          <MotionBox
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-          >
+          <MotionBox variants={fadeUp} initial="hidden" animate="visible">
             <Heading
               as="h2"
               size="md"
@@ -267,9 +284,8 @@ export default function Features() {
               mx={isMobile ? undefined : "auto"}
               textAlign={isMobile ? "left" : "center"}
             >
-              VeeVee helps you understand your coverage, your benefits, 
-              and your health patterns so you can navigate healthcare 
-              with clarity instead of confusion.
+              VeeVee helps you understand your coverage, your benefits,
+              and your health patterns.
             </Text>
           </MotionBox>
 
@@ -279,58 +295,56 @@ export default function Features() {
           >
             <FeatureCard
               title="Covered Care Benefits"
-              front="VeeVee helps you uncover checkups, screenings, and services your plan already offers, often without extra cost."
-              back="Check before you book. VeeVee can help you find covered care options that fit your needs and budget."
+              front="Check before you book."
+              back="VeeVee helps you uncover checkups, screenings, and services your plan already offers, often without extra cost."
             />
 
             <FeatureCard
               title="Wellness Trajectory"
-              front="VeeVee helps you see if things are trending better, worse, or staying the same over time."
-              back="VeeVee spots early changes in your wellness patterns so you can stay at your best."
+              front="VeeVee reveals your trends."
+              back="Spot early changes in your wellness patterns so you can stay at your best."
             />
 
             <FeatureCard
               title="Behavior Insights"
-              front="Tiny patterns add up. VeeVee connects your sleep, mood, movement, wearables, habits, and much more."
-              back="You might discover that you sleep better on days you walk more, or that certain routines make your pain lighter. These insights are unique to you."
+              front="Tiny patterns add up."
+              back="You might discover that you sleep better on days you walk more. Insights that are unique to you."
             />
 
             <FeatureCard
               title="Personalized Care Support"
-              front="When you’re ready for more help, VeeVee can point you toward the right kind of support."
-              back="From finding the right type of clinician to preparing for a visit, VeeVee helps you feel more prepared and less alone in your next wellness step."
+              front="Find the right kind of support."
+              back="VeeVee helps you feel more prepared and less alone."
             />
           </SimpleGrid>
         </Stack>
 
         {/* Row 3 – Marketplace pill card */}
-        <MotionBox
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-        >
+        <MotionBox variants={fadeUp} initial="hidden" animate="visible">
           <FeatureCard
             size="pill"
-            eyebrow="Coming to more partners soon"
-            title="Marketplace & Covered Essentials"
-            front="Discover products, recovery tools, and support that fits your wellness goals."
-            back="From wellness products to care services, VeeVee helps you find what’s right for you."
+            eyebrow="Expanding your Choices"
+            title="Personalized Marketplace made for You"
+            front="Discover products, recovery tools, and much more"
+            back="VeeVee finds what is right for You, and only You."
           />
         </MotionBox>
 
         {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center" pt={{ base: 4, md: 6 }}>
-          <Heading as="h2" size="md">
-            Got health?
-          </Heading>
-          <Text
-            fontSize="sm"
-            color="whiteAlpha.800"
-            maxW="2xl"
-            mx="auto"
-          >
-            Create a free account at VeeVee.io to unlock your wellness.
-          </Text>
+          <CLink href="https://veevee.io" _hover={{ textDecoration: "none" }} _focus={{ boxShadow: "none" }} display="block">
+            <Heading as="h2" size="md">
+              Got health?
+            </Heading>
+            <Text
+              fontSize="sm"
+              color="whiteAlpha.800"
+              maxW="2xl"
+              mx="auto"
+            >
+              Unlock your wellness with a free account at VeeVee.io
+            </Text>
+          </CLink>
           <Button
             as="a"
             href="https://veevee.io"
