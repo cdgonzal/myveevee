@@ -267,8 +267,9 @@ export default function Features() {
               mx={isMobile ? undefined : "auto"}
               textAlign={isMobile ? "left" : "center"}
             >
-              VeeVee looks at your coverage, your patterns, and your choices
-              together — so you can move from guessing to understanding.
+              VeeVee helps you understand your coverage, your benefits, 
+              and your health patterns so you can navigate healthcare 
+              with clarity instead of confusion.
             </Text>
           </MotionBox>
 
@@ -278,26 +279,26 @@ export default function Features() {
           >
             <FeatureCard
               title="Covered Care Benefits"
-              front="Vee highlights checkups, screenings, and services that may already be included with your plan."
-              back="See what might be available before you book — so you can use more of what you’re already paying for, and miss less of the care meant for you."
+              front="VeeVee helps you uncover checkups, screenings, and services your plan already offers, often without extra cost."
+              back="Check before you book. VeeVee can help you find covered care options that fit your needs and budget."
             />
 
             <FeatureCard
               title="Wellness Trajectory"
-              front="Over time, Vee helps you see if things are trending better, worse, or staying the same."
-              back="By comparing your patterns over weeks and months, Vee can help you notice early changes — and encourage you to stay on track when you’re improving."
+              front="VeeVee helps you see if things are trending better, worse, or staying the same over time."
+              back="VeeVee spots early changes in your wellness patterns so you can stay at your best."
             />
 
             <FeatureCard
               title="Behavior Insights"
-              front="Tiny patterns add up. Vee connects your sleep, mood, movement, and habits."
+              front="Tiny patterns add up. VeeVee connects your sleep, mood, movement, wearables, habits, and much more."
               back="You might discover that you sleep better on days you walk more, or that certain routines make your pain lighter. These insights are unique to you."
             />
 
             <FeatureCard
               title="Personalized Care Support"
-              front="When you’re ready for more help, Vee can point you toward the right kind of support."
-              back="From finding the right type of clinician to preparing for a visit, Vee helps you feel more prepared and less alone in your next step."
+              front="When you’re ready for more help, VeeVee can point you toward the right kind of support."
+              back="From finding the right type of clinician to preparing for a visit, VeeVee helps you feel more prepared and less alone in your next wellness step."
             />
           </SimpleGrid>
         </Stack>
