@@ -1,11 +1,12 @@
 // File: src/App.tsx
-// Version: 1.5 (2025-12-07)
+// Version: 1.6 (2025-12-09)
 // Purpose:
 //   Shell layout and routing for the myVeeVee.com marketing site.
 //   Routes:
 //     - "/"              → Home (hero funnel to veevee.io)
 //     - "/features"      → Features (AI Wellness Guides, benefits, etc.)
 //     - "/how-it-works"  → How it works (3-step flow + guides + CTA)
+//     - "/testimonials"  → Social proof / success stories
 //     - "/terms"         → Plain-English Terms & Disclaimers page
 // Visual shell:
 //   - Full-page dark gradient background to match neon hero sections.
@@ -14,10 +15,13 @@
 //   - Desktop/tablet: logo + brand + inline nav ("Features", "How it works") + Log in.
 //   - Mobile: logo + brand + Log in + hamburger icon that opens a side drawer
 //     with the same nav links.
+// Behavior:
+//   - ScrollToTop ensures each route change starts at the top of the page.
 // Future iterations (not yet implemented):
 //   - Animate drawer links with subtle motion.
 //   - Add additional legal links (Privacy, cookies) when ready.
 
+import { useEffect } from "react";
 import {
   Box,
   Button,
@@ -37,12 +41,23 @@ import {
   DrawerBody,
   Stack,
 } from "@chakra-ui/react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import HowItWorks from "./pages/HowItWorks";
 import Terms from "./pages/Terms";
 import Features from "./pages/Features";
 import Testimonials from "./pages/Testimonials";
+
+// Scroll to top on every route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 export default function App() {
   return (
@@ -54,6 +69,7 @@ export default function App() {
       <Header />
       <Box as="main" flex="1">
         <Container maxW="6xl" py={{ base: 8, md: 12 }}>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/features" element={<Features />} />
