@@ -83,13 +83,18 @@ function FeatureCard({
 }: FeatureCardProps) {
   const isPill = size === "pill";
 
-  // Mobile has no hover, so we make reveal tap-based.
+  // Mobile has no hover, so reveal is tap-based.
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [open, setOpen] = React.useState(false);
 
-  // Desktop uses hover; mobile uses tap state.
+  // Desktop: hover reveal. Mobile: tap reveal.
   const frontOpacity = isMobile ? (open ? 0.08 : 1) : 1;
   const backOpacity = isMobile ? (open ? 1 : 0) : 0;
+
+  // Make images behave better on mobile:
+  // - default to "contain" on mobile to avoid weird crops
+  const resolvedFit =
+    isMobile && !isPill ? (imageMode === "cover" ? "contain" : imageMode) : imageMode;
 
   return (
     <MotionCard
@@ -100,119 +105,63 @@ function FeatureCard({
       borderColor="whiteAlpha.200"
       overflow="hidden"
       cursor={isMobile && !isPill ? "pointer" : "default"}
-      onClick={
-        isMobile && !isPill
-          ? () => setOpen((v) => !v)
-          : undefined
-      }
+      onClick={isMobile && !isPill ? () => setOpen((v) => !v) : undefined}
       whileHover={{
         y: -3,
         boxShadow: "0 0 30px rgba(0, 245, 160, 0.35)",
       }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
-      <CardBody
-        position="relative"
-        p={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}
-      >
-        {/* Visual header (v1.2)
-            Adds instant comprehension: picture first, then text. */}
+      <CardBody p={0}>
+        {/* ZONE A: Image header (never covered by reveal content) */}
         {imageSrc && !isPill && (
           <Box
-            mb={4}
-            borderRadius="xl"
-            overflow="hidden"
-            borderWidth="1px"
-            borderColor="whiteAlpha.200"
-            bg="blackAlpha.400"
+            px={{ base: 4, md: 6 }}
+            pt={{ base: 4, md: 6 }}
+            pb={{ base: 3, md: 4 }}
           >
-            <Image
-              src={imageSrc}
-              alt={imageAlt || title}
-              w="100%"
-              h={{ base: "160px", md: size === "lg" ? "220px" : "160px" }}
-              objectFit={imageMode}
-              opacity={0.95}
-              loading="lazy"
-            />
+            <Box
+              borderRadius="xl"
+              overflow="hidden"
+              borderWidth="1px"
+              borderColor="whiteAlpha.200"
+              bg="blackAlpha.400"
+            >
+              {/* Use aspect ratio so it scales nicely on mobile */}
+              <Box
+                position="relative"
+                w="100%"
+                // 16:10-ish; feels “app screenshot” without being too tall on mobile
+                aspectRatio={size === "lg" ? "16 / 10" : "16 / 11"}
+              >
+                <Image
+                  src={imageSrc}
+                  alt={imageAlt || title}
+                  w="100%"
+                  h="100%"
+                  objectFit={resolvedFit as any}
+                  opacity={0.96}
+                  loading="lazy"
+                />
+              </Box>
+            </Box>
           </Box>
         )}
 
-        {/* Front content */}
-        <Box
-          opacity={frontOpacity}
-          transition="opacity 0.25s ease-out"
-          _groupHover={{ opacity: 0.08 }}
-        >
-          {eyebrow && (
-            <Text
-              fontSize="xs"
-              textTransform="uppercase"
-              letterSpacing="0.16em"
-              color="accent.300"
-              mb={2}
-            >
-              {eyebrow}
-            </Text>
-          )}
-
-          <Heading
-            as="h3"
-            size={size === "lg" ? "md" : "sm"}
-            mb={2}
-            color="whiteAlpha.900"
+        {/* ZONE B: Content area (reveal lives only here) */}
+        <Box position="relative" px={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }} pb={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}>
+          {/* Front */}
+          <Box
+            opacity={frontOpacity}
+            transition="opacity 0.25s ease-out"
+            _groupHover={{ opacity: 0.08 }}
           >
-            {title}
-          </Heading>
-
-          <Text
-            fontSize="sm"
-            color="whiteAlpha.800"
-            maxW={size === "lg" ? "sm" : "none"}
-          >
-            {front}
-          </Text>
-
-          {/* Mobile hint for discoverability */}
-          {isMobile && !isPill && (
-            <Text mt={3} fontSize="xs" color="whiteAlpha.600">
-              Tap to learn more
-            </Text>
-          )}
-        </Box>
-
-        {/* Back / reveal content */}
-        <Box
-          position="absolute"
-          inset={0}
-          display="flex"
-          flexDirection={{
-            base: isPill ? "column" : "column",
-            md: isPill ? "row" : "row",
-          }}
-          alignItems={{
-            base: "flex-start",
-            md: isPill ? "center" : "flex-start",
-          }}
-          justifyContent={{
-            base: "flex-start",
-            md: isPill ? "space-between" : "flex-start",
-          }}
-          px={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}
-          py={{ base: isPill ? 4 : 6 }}
-          gap={{ base: isPill ? 3 : 2, md: isPill ? 4 : 0 }}
-          opacity={backOpacity}
-          transition="opacity 0.25s ease-out"
-          _groupHover={{ opacity: 1 }}
-          pointerEvents={isMobile ? (open ? "auto" : "none") : "auto"}
-        >
-          <Box maxW={isPill ? "100%" : "full"}>
             {eyebrow && (
               <Text
                 fontSize="xs"
                 textTransform="uppercase"
                 letterSpacing="0.16em"
-                color="accent.200"
+                color="accent.300"
                 mb={2}
               >
                 {eyebrow}
@@ -223,43 +172,104 @@ function FeatureCard({
               as="h3"
               size={size === "lg" ? "md" : "sm"}
               mb={2}
-              color="accent.300"
+              color="whiteAlpha.900"
             >
               {title}
             </Heading>
 
-            <Text fontSize="sm" color="whiteAlpha.900">
-              {back}
+            <Text
+              fontSize="sm"
+              color="whiteAlpha.800"
+              maxW={size === "lg" ? "sm" : "none"}
+            >
+              {front}
             </Text>
 
-            {/* Mobile hint to close */}
             {isMobile && !isPill && (
               <Text mt={3} fontSize="xs" color="whiteAlpha.600">
-                Tap again to close
+                Tap to learn more
               </Text>
             )}
           </Box>
 
-          {isPill && (
-            <Button
-              as="a"
-              href="https://veevee.io"
-              size="sm"
-              borderRadius="full"
-              fontWeight="700"
-              px={6}
-              mt={{ base: 3, md: 0 }}
-              alignSelf={{ base: "stretch", md: "center" }}
-              boxShadow="0 0 24px rgba(0, 245, 160, 0.35)"
-            >
-              Explore in VeeVee
-            </Button>
-          )}
+          {/* Back overlay: ONLY covers the content zone now */}
+          <Box
+            position="absolute"
+            inset={0}
+            display="flex"
+            flexDirection={{
+              base: isPill ? "column" : "column",
+              md: isPill ? "row" : "column",
+            }}
+            alignItems={{
+              base: "flex-start",
+              md: isPill ? "center" : "flex-start",
+            }}
+            justifyContent={{
+              base: "flex-start",
+              md: isPill ? "space-between" : "flex-start",
+            }}
+            gap={{ base: isPill ? 3 : 2, md: isPill ? 4 : 2 }}
+            opacity={backOpacity}
+            transition="opacity 0.25s ease-out"
+            _groupHover={{ opacity: 1 }}
+            pointerEvents={isMobile ? (open ? "auto" : "none") : "auto"}
+          >
+            <Box>
+              {eyebrow && (
+                <Text
+                  fontSize="xs"
+                  textTransform="uppercase"
+                  letterSpacing="0.16em"
+                  color="accent.200"
+                  mb={2}
+                >
+                  {eyebrow}
+                </Text>
+              )}
+
+              <Heading
+                as="h3"
+                size={size === "lg" ? "md" : "sm"}
+                mb={2}
+                color="accent.300"
+              >
+                {title}
+              </Heading>
+
+              <Text fontSize="sm" color="whiteAlpha.900">
+                {back}
+              </Text>
+
+              {isMobile && !isPill && (
+                <Text mt={3} fontSize="xs" color="whiteAlpha.600">
+                  Tap again to close
+                </Text>
+              )}
+            </Box>
+
+            {isPill && (
+              <Button
+                as="a"
+                href="https://veevee.io"
+                size="sm"
+                borderRadius="full"
+                fontWeight="700"
+                px={6}
+                mt={{ base: 3, md: 0 }}
+                alignSelf={{ base: "stretch", md: "center" }}
+                boxShadow="0 0 24px rgba(0, 245, 160, 0.35)"
+              >
+                Explore in VeeVee
+              </Button>
+            )}
+          </Box>
         </Box>
       </CardBody>
     </MotionCard>
   );
 }
+
 
 export default function Features() {
   const isMobile = useBreakpointValue({ base: true, md: false });
