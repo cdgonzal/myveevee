@@ -1,25 +1,40 @@
 // File: src/pages/Features.tsx
-// Version: 1.1 (2025-12-08)
+// Version: 1.2 (2025-12-13)
 // Purpose:
 //   Marketing-style "Features" page for myVeeVee.com.
-//   Text-only, Apple-style layout that showcases the VeeVee ecosystem:
-//     - AI Wellness Guides
-//     - Your Health, Understood
-//     - Covered Care Benefits
-//     - Wellness Trajectory
-//     - Behavior Insights
-//     - Personalized Care Support
-//     - Marketplace (horizontal pill card)
-// Interaction:
-//   - Soft hover reveal: front copy fades back and deeper benefit copy fades in.
-//   - Gentle elevation + glow on hover. No icons, no flips, no heavy motion.
-//   - Mobile-safe Marketplace pill: on small screens, back content stacks
-//     vertically so the pill doesn’t collapse or narrow on hover.
-// Future iterations (not yet implemented):
-//   - Deeper links into specific product surfaces (Feed, Quick Guides, Shop).
-//   - Screenshots or illustrations for each feature.
-//   - A "For Providers" variant of the Features layout.
+//
+// What changed in v1.2:
+//   ✅ Added optional feature images (screenshots/illustrations) per card.
+//   ✅ Kept Apple-style hover reveal on desktop.
+//   ✅ Added mobile-friendly "tap to reveal" behavior (since mobile has no hover).
+//   ✅ Added a subtle "Tap to learn more" hint on mobile to make the interaction obvious.
+//
+// UX goal:
+//   Make the page instantly understandable for non-readers:
+//   Image → headline → 1 line → (optional) tap/hover for deeper benefit copy.
+//
+// Potential future steps (not implemented here):
+//   - Add a "How it works" 3-step strip under the hero (3 images + 1-line captions).
+//   - Add lightweight GIF/MP4 loops (6–10s) instead of static images for 2–3 flagship features.
+//   - Add deep links: each feature card can link to a specific surface (Feed, Guides, Shop).
+//   - Add a "For Providers" variant with different copy + proof points.
+//   - Add analytics logging (view + tap/hover reveal) to measure engagement.
+//
+// Images you should add (place in: public/images/features/*):
+//   - /images/features/guides.png
+//   - /images/features/health-story.png
+//   - /images/features/benefits.png
+//   - /images/features/trajectory.png
+//   - /images/features/insights.png
+//   - /images/features/support.png
+//   - /images/features/marketplace.png
+//
+// Notes on image style:
+//   - Best: real product screenshots inside phone mockups (trust + clarity).
+//   - Good: clean illustrations while product evolves.
+//   - Keep consistent aspect ratio per section for a premium feel.
 
+import React from "react";
 import {
   Box,
   Button,
@@ -30,6 +45,7 @@ import {
   Card,
   CardBody,
   useBreakpointValue,
+  Image,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { Link as CLink } from "@chakra-ui/react";
@@ -48,6 +64,11 @@ type FeatureCardProps = {
   front: string;
   back: string;
   size?: "lg" | "md" | "pill";
+
+  // NEW (v1.2): Optional image to reduce text heaviness
+  imageSrc?: string;
+  imageAlt?: string;
+  imageMode?: "cover" | "contain";
 };
 
 function FeatureCard({
@@ -56,8 +77,19 @@ function FeatureCard({
   front,
   back,
   size = "md",
+  imageSrc,
+  imageAlt,
+  imageMode = "cover",
 }: FeatureCardProps) {
   const isPill = size === "pill";
+
+  // Mobile has no hover, so we make reveal tap-based.
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const [open, setOpen] = React.useState(false);
+
+  // Desktop uses hover; mobile uses tap state.
+  const frontOpacity = isMobile ? (open ? 0.08 : 1) : 1;
+  const backOpacity = isMobile ? (open ? 1 : 0) : 0;
 
   return (
     <MotionCard
@@ -67,6 +99,12 @@ function FeatureCard({
       borderWidth="1px"
       borderColor="whiteAlpha.200"
       overflow="hidden"
+      cursor={isMobile && !isPill ? "pointer" : "default"}
+      onClick={
+        isMobile && !isPill
+          ? () => setOpen((v) => !v)
+          : undefined
+      }
       whileHover={{
         y: -3,
         boxShadow: "0 0 30px rgba(0, 245, 160, 0.35)",
@@ -77,9 +115,32 @@ function FeatureCard({
         position="relative"
         p={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}
       >
+        {/* Visual header (v1.2)
+            Adds instant comprehension: picture first, then text. */}
+        {imageSrc && !isPill && (
+          <Box
+            mb={4}
+            borderRadius="xl"
+            overflow="hidden"
+            borderWidth="1px"
+            borderColor="whiteAlpha.200"
+            bg="blackAlpha.400"
+          >
+            <Image
+              src={imageSrc}
+              alt={imageAlt || title}
+              w="100%"
+              h={{ base: "160px", md: size === "lg" ? "220px" : "160px" }}
+              objectFit={imageMode}
+              opacity={0.95}
+              loading="lazy"
+            />
+          </Box>
+        )}
+
         {/* Front content */}
         <Box
-          opacity={1}
+          opacity={frontOpacity}
           transition="opacity 0.25s ease-out"
           _groupHover={{ opacity: 0.08 }}
         >
@@ -94,6 +155,7 @@ function FeatureCard({
               {eyebrow}
             </Text>
           )}
+
           <Heading
             as="h3"
             size={size === "lg" ? "md" : "sm"}
@@ -102,6 +164,7 @@ function FeatureCard({
           >
             {title}
           </Heading>
+
           <Text
             fontSize="sm"
             color="whiteAlpha.800"
@@ -109,6 +172,13 @@ function FeatureCard({
           >
             {front}
           </Text>
+
+          {/* Mobile hint for discoverability */}
+          {isMobile && !isPill && (
+            <Text mt={3} fontSize="xs" color="whiteAlpha.600">
+              Tap to learn more
+            </Text>
+          )}
         </Box>
 
         {/* Back / reveal content */}
@@ -131,9 +201,10 @@ function FeatureCard({
           px={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}
           py={{ base: isPill ? 4 : 6 }}
           gap={{ base: isPill ? 3 : 2, md: isPill ? 4 : 0 }}
-          opacity={0}
+          opacity={backOpacity}
           transition="opacity 0.25s ease-out"
           _groupHover={{ opacity: 1 }}
+          pointerEvents={isMobile ? (open ? "auto" : "none") : "auto"}
         >
           <Box maxW={isPill ? "100%" : "full"}>
             {eyebrow && (
@@ -147,6 +218,7 @@ function FeatureCard({
                 {eyebrow}
               </Text>
             )}
+
             <Heading
               as="h3"
               size={size === "lg" ? "md" : "sm"}
@@ -155,9 +227,17 @@ function FeatureCard({
             >
               {title}
             </Heading>
+
             <Text fontSize="sm" color="whiteAlpha.900">
               {back}
             </Text>
+
+            {/* Mobile hint to close */}
+            {isMobile && !isPill && (
+              <Text mt={3} fontSize="xs" color="whiteAlpha.600">
+                Tap again to close
+              </Text>
+            )}
           </Box>
 
           {isPill && (
@@ -236,10 +316,7 @@ export default function Features() {
         </MotionBox>
 
         {/* Row 1 – two large flagship cards */}
-        <SimpleGrid
-          columns={{ base: 1, md: 2 }}
-          spacing={{ base: 4, md: 6 }}
-        >
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 4, md: 6 }}>
           <MotionBox variants={fadeUp} initial="hidden" animate="visible">
             <FeatureCard
               size="lg"
@@ -247,6 +324,8 @@ export default function Features() {
               title="AI Wellness Guides"
               front="Personalized guidance that helps you make sense of what’s happening in your life. From stress and sleep to symptoms and recovery."
               back="Quick Guides, Deep Guides, and the VeeVee companion subscription give you step-by-step support that is personalized to YOU. Focus on what matters most, YOU!"
+              imageSrc="/images/features/guides.png"
+              imageAlt="AI Wellness Guides screenshot"
             />
           </MotionBox>
 
@@ -262,6 +341,8 @@ export default function Features() {
               title="Your Health, Understood"
               front="VeeVee listens. Your check-ins and history surface patterns that become a living picture of your wellness."
               back="VeeVee remembers what you’ve shared and uses it to keep future guidance more personal and more relevant to you."
+              imageSrc="/images/features/health-story.png"
+              imageAlt="Health story and check-ins screenshot"
             />
           </MotionBox>
         </SimpleGrid>
@@ -284,37 +365,42 @@ export default function Features() {
               mx={isMobile ? undefined : "auto"}
               textAlign={isMobile ? "left" : "center"}
             >
-              VeeVee helps you understand your coverage, your benefits,
-              and your health patterns.
+              VeeVee helps you understand your coverage, your benefits, and your
+              health patterns.
             </Text>
           </MotionBox>
 
-          <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 4 }}
-            spacing={{ base: 4, md: 5 }}
-          >
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={{ base: 4, md: 5 }}>
             <FeatureCard
               title="Covered Care Benefits"
               front="Check before you book."
               back="Uncover checkups, screenings, and services your plan already offers."
+              imageSrc="/images/features/benefits.png"
+              imageAlt="Benefits discovery screenshot"
             />
 
             <FeatureCard
               title="Wellness Trajectory"
               front="VeeVee reveals your trends."
               back="Spot early changes in your wellness patterns so you can stay at your best."
+              imageSrc="/images/features/trajectory.png"
+              imageAlt="Wellness trends screenshot"
             />
 
             <FeatureCard
               title="Behavior Insights"
               front="Tiny patterns add up."
               back="You might discover that you sleep better on days you walk more. Insights that are unique to you."
+              imageSrc="/images/features/insights.png"
+              imageAlt="Behavior insights screenshot"
             />
 
             <FeatureCard
               title="Personalized Care Support"
               front="Find the right kind of support."
               back="VeeVee helps you feel more prepared and less alone."
+              imageSrc="/images/features/support.png"
+              imageAlt="Personalized support screenshot"
             />
           </SimpleGrid>
         </Stack>
@@ -327,24 +413,27 @@ export default function Features() {
             title="Personalized Marketplace made for You"
             front="Discover products, recovery tools, and much more"
             back="VeeVee finds what is right for You, and only You."
+            // NOTE: pill card intentionally stays text-forward.
+            // If you want, we can convert pill into a two-column row with an image.
           />
         </MotionBox>
 
         {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center" pt={{ base: 4, md: 6 }}>
-          <CLink href="https://veevee.io" _hover={{ textDecoration: "none" }} _focus={{ boxShadow: "none" }} display="block">
+          <CLink
+            href="https://veevee.io"
+            _hover={{ textDecoration: "none" }}
+            _focus={{ boxShadow: "none" }}
+            display="block"
+          >
             <Heading as="h2" size="md">
               Got health?
             </Heading>
-            <Text
-              fontSize="sm"
-              color="whiteAlpha.800"
-              maxW="2xl"
-              mx="auto"
-            >
+            <Text fontSize="sm" color="whiteAlpha.800" maxW="2xl" mx="auto">
               Unlock your wellness with a free account at VeeVee.io
             </Text>
           </CLink>
+
           <Button
             as="a"
             href="https://veevee.io"
