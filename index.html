@@ -24,7 +24,7 @@
     <meta property="og:title" content="My VeeVee — Got Health?" />
     <meta property="og:description" content="VeeVee reveals your covered benefits, perks, wellness products, and everyday health support." />
     <meta property="og:url" content="https://myveevee.com/" />
-    <meta property="og:image" content="https://myveevee.com/og-image.jpg" />
+    <meta property="og:image" content="https://myveevee.com/hero_44.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
@@ -32,7 +32,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="My VeeVee — Got Health?" />
     <meta name="twitter:description" content="VeeVee reveals your covered benefits, perks, wellness products, and everyday health support." />
-    <meta name="twitter:image" content="https://myveevee.com/og-image.jpg" />
+    <meta name="twitter:image" content="https://myveevee.com/hero_44.png" />
     <meta name="twitter:site" content="@My_VeeVee" />
 
     <!-- JSON-LD (Organization + Website) -->
@@ -62,6 +62,16 @@
         "query-input": "required name=search_term_string"
       }
     }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1GWP2YT1CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // SPA note: set to false so we can manually fire page_view on route changes later
+      gtag('config', 'G-1GWP2YT1CP', { send_page_view: false });
     </script>
   </head>
   <body>
