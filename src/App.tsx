@@ -209,14 +209,15 @@ function Footer() {
     >
       <Container maxW="6xl" py="3">
         <Flex
-          align={{ base: "flex-start", md: "center" }}
+          align={{ base: "center", md: "center" }}
           justify="space-between"
           direction={{ base: "column", md: "row" }}
           gap={{ base: 3, md: 0 }}
           fontSize="sm"
+          textAlign={{ base: "center", md: "left" }}
         >
           <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
-          <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }}>
+          <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }} align={{ base: "center", md: "flex-start" }}>
             <CLink as={Link} to="/features" color={primaryText}>
               Why VeeVee
             </CLink>

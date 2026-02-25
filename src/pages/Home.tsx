@@ -113,7 +113,7 @@ export default function Home() {
               Check my coverage
             </Button>
 
-            <Text fontSize="sm" color={subtle}>
+            <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
               Insurance | Recommendations | Health Records
             </Text>
           </Stack>
