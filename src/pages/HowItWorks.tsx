@@ -1,16 +1,3 @@
-// File: src/pages/HowItWorks.tsx
-// Version: 1.3 (2025-12-07)
-// Purpose:
-//   Funnel-focused "How it works" page centered on AI Wellness Guides.
-//   - Leads with: Start with a free AI Wellness Guide.
-//   - Shows the 3-guide lineup (Quick, Deep, Companion) with 1/2/3 badges.
-//   - Pushes users to create a free VeeVee account and begin with a Quick Guide.
-// Visual & Motion:
-//   - Dark neon background to match Home.
-//   - framer-motion fade/slide-in.
-//   - Flowing gradient frame around the Guides section.
-//   - Number badges animate on hover via Chakra group hover.
-
 import {
   Box,
   Button,
@@ -20,31 +7,39 @@ import {
   Stack,
   Card,
   CardBody,
-  useBreakpointValue,
-  Link,
-  Flex,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { keyframes } from "@emotion/react";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
 
-// Simple fade-up animation for sections
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
 };
 
-// Flowing gradient animation behind the guidance cards
-const flowGradient = keyframes`
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-`;
+const STEPS = [
+  {
+    number: "1",
+    title: "Share what is happening",
+    detail:
+      "Upload a photo, describe symptoms in text, or speak naturally. VeeVee captures your context in seconds.",
+  },
+  {
+    number: "2",
+    title: "Get triage plus simulation",
+    detail:
+      "See immediate triage guidance and explore what-if scenarios using your digital twin and unified profile.",
+  },
+  {
+    number: "3",
+    title: "Take action with confidence",
+    detail:
+      "Move toward care, pharmacy, and treatment options while maximizing benefits and coverage fit for your plan.",
+  },
+];
 
 export default function HowItWorks() {
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
   return (
     <Box
       as="main"
@@ -53,19 +48,8 @@ export default function HowItWorks() {
       color="whiteAlpha.900"
       py={{ base: 10, md: 20 }}
     >
-      <Stack
-        spacing={{ base: 10, md: 14 }}
-        maxW="5xl"
-        mx="auto"
-        px={{ base: 6, md: 10 }}
-      >
-        {/* Hero: AI Wellness Guides */}
-        <MotionBox
-          textAlign="center"
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-        >
+      <Stack spacing={{ base: 10, md: 14 }} maxW="5xl" mx="auto" px={{ base: 6, md: 10 }}>
+        <MotionBox textAlign="center" variants={fadeUp} initial="hidden" animate="visible">
           <Text
             fontSize="sm"
             letterSpacing="0.18em"
@@ -73,310 +57,65 @@ export default function HowItWorks() {
             color="accent.300"
             mb={3}
           >
-            AI WELLNESS GUIDES · POWERED BY VEEVEE
+            HOW IT WORKS
           </Text>
-
-          <Button
-            as="a"
-            href="https://veevee.io"
-            size="lg"
-            borderRadius="full"
-            fontWeight="700"
-            px={10}
-            boxShadow="0 0 40px rgba(0, 245, 160, 0.45)"
-          >
-            Get started
-          </Button>
-
-          <Text fontSize="sm" color="whiteAlpha.800" mt={3}>
-            No diagnoses. No medical advice. Just clarity and everyday support
-            for your health decisions.
+          <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={4}>
+            A 3-step path from uncertainty to action.
+          </Heading>
+          <Text fontSize={{ base: "sm", md: "md" }} color="whiteAlpha.800" maxW="3xl" mx="auto">
+            VeeVee combines rapid triage, digital twin simulation, and benefits-aware guidance so you can make better health decisions faster.
           </Text>
         </MotionBox>
 
-        {/* AI Wellness Guides – main section */}
-        <Stack spacing={6}>
-          <MotionBox
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.1 }}
-          >
-            <Heading
-              as="h2"
-              size="md"
-              mb={2}
-              textAlign={isMobile ? "left" : "center"}
-            >
-              The VeeVee AI Wellness Guides
-            </Heading>
-            <Text
-              fontSize="sm"
-              color="whiteAlpha.800"
-              textAlign={isMobile ? "left" : "center"}
-            >
-              Three guided experiences designed to help you understand, 
-              navigate, and act on your wellness, at your own pace.
-            </Text>
-          </MotionBox>
-
-          <Box
-            position="relative"
-            borderRadius="2xl"
-            p={{ base: 1, md: 1.5 }}
-            bgGradient="linear(to-r, accent.500, accent.300, accent.500)"
-            backgroundSize="200% 200%"
-            animation={`${flowGradient} 18s linear infinite`}
-          >
-            <Box
-              borderRadius="2xl"
-              bg="rgba(5, 8, 22, 0.96)"
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 4, md: 6 }}>
+          {STEPS.map((step, index) => (
+            <MotionCard
+              key={step.number}
+              bg="surface.800"
+              borderRadius="xl"
               borderWidth="1px"
-              borderColor="whiteAlpha.200"
-              p={{ base: 4, md: 6 }}
+              borderColor="whiteAlpha.300"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ y: -4, boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)" }}
             >
-              <SimpleGrid
-                columns={{ base: 1, md: 3 }}
-                spacing={{ base: 4, md: 6 }}
-              >
-                {/* Guide 1 – Quick Guide */}
-                <MotionCard
-                  bg="surface.800"
-                  borderRadius="xl"
-                  borderWidth="1px"
-                  borderColor="whiteAlpha.300"
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover={{
-                    y: -4,
-                    boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)",
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 18,
-                  }}
-                  role="group"
+              <CardBody>
+                <Box
+                  w={8}
+                  h={8}
+                  borderRadius="full"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontWeight="800"
+                  fontSize="lg"
+                  bg="rgba(0, 245, 160, 0.08)"
+                  color="accent.400"
+                  border="1px solid"
+                  borderColor="accent.400"
+                  mb={3}
                 >
-                  <CardBody>
-                    <Flex align="center" mb={3}>
-                      {/* Number badge */}
-                      <Box
-                        w={8}
-                        h={8}
-                        borderRadius="full"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        fontWeight="800"
-                        fontSize="lg"
-                        bg="rgba(0, 245, 160, 0.08)"
-                        color="accent.400"
-                        border="1px solid"
-                        borderColor="accent.400"
-                        transition="all 0.2s ease-out"
-                        _groupHover={{
-                          bg: "accent.400",
-                          color: "#050816",
-                          boxShadow: "0 0 18px rgba(0, 245, 160, 0.6)",
-                          transform: "translateY(-1px)",
-                        }}
-                      >
-                        1
-                      </Box>
-                      <Heading
-                        as="h3"
-                        size="sm"
-                        ml={3}
-                        color="accent.300"
-                        opacity={0.95}
-                      >
-                        AI Quick Guides
-                      </Heading>
-                    </Flex>
+                  {step.number}
+                </Box>
+                <Heading as="h3" size="sm" mb={2} color="accent.300">
+                  {step.title}
+                </Heading>
+                <Text fontSize="sm" color="whiteAlpha.900">
+                  {step.detail}
+                </Text>
+              </CardBody>
+            </MotionCard>
+          ))}
+        </SimpleGrid>
 
-                    <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      Always free! Quick Guides help you make sense of what&apos;s
-                      going on right now, right now. You hit your knee? New symptom? Stressful week? 
-                      <Link href="https://veevee.io" color="accent.400" fontWeight="700" _hover={{ textDecoration: "underline", color: "accent.300" }}> Start here </Link>
-                      For free!
-                    </Text>
-                    <Text fontSize="xs" color="whiteAlpha.800">
-                      Great for quick immediate clarity.
-                    </Text>
-                  </CardBody>
-                </MotionCard>
-
-                {/* Guide 2 – Deep Guide */}
-                <MotionCard
-                  bg="surface.800"
-                  borderRadius="xl"
-                  borderWidth="1px"
-                  borderColor="whiteAlpha.300"
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
-                  transition={{ delay: 0.05 }}
-                  whileHover={{
-                    y: -4,
-                    boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)",
-                  }}
-                  role="group"
-                >
-                  <CardBody>
-                    <Flex align="center" mb={3}>
-                      <Box
-                        w={8}
-                        h={8}
-                        borderRadius="full"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        fontWeight="800"
-                        fontSize="lg"
-                        bg="rgba(0, 245, 160, 0.08)"
-                        color="accent.400"
-                        border="1px solid"
-                        borderColor="accent.400"
-                        transition="all 0.2s ease-out"
-                        _groupHover={{
-                          bg: "accent.400",
-                          color: "#050816",
-                          boxShadow: "0 0 18px rgba(0, 245, 160, 0.6)",
-                          transform: "translateY(-1px)",
-                        }}
-                      >
-                        2
-                      </Box>
-                      <Heading
-                        as="h3"
-                        size="sm"
-                        ml={3}
-                        color="accent.300"
-                        opacity={0.95}
-                      >
-                        AI Deep Guides
-                      </Heading>
-                    </Flex>
-
-                    <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      3-Day short plans built around one issue: YOUR WELLNESS. 
-                      Personalized guidance that allows you to understand, decode & act.
-                      Each plan is just $3.99. Simple, transparent, no subscriptions.
-                    </Text>
-                    <Text fontSize="xs" color="whiteAlpha.800">
-                      Understand → decode → act.
-                    </Text>
-                  </CardBody>
-                </MotionCard>
-
-                {/* Guide 3 – Companion */}
-                <MotionCard
-                  bg="surface.800"
-                  borderRadius="xl"
-                  borderWidth="1px"
-                  borderColor="whiteAlpha.300"
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
-                  transition={{ delay: 0.1 }}
-                  whileHover={{
-                    y: -4,
-                    boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)",
-                  }}
-                  role="group"
-                >
-                  <CardBody>
-                    <Flex align="center" mb={3}>
-                      <Box
-                        w={8}
-                        h={8}
-                        borderRadius="full"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        fontWeight="800"
-                        fontSize="lg"
-                        bg="rgba(0, 245, 160, 0.08)"
-                        color="accent.400"
-                        border="1px solid"
-                        borderColor="accent.400"
-                        transition="all 0.2s ease-out"
-                        _groupHover={{
-                          bg: "accent.400",
-                          color: "#050816",
-                          boxShadow: "0 0 18px rgba(0, 245, 160, 0.6)",
-                          transform: "translateY(-1px)",
-                        }}
-                      >
-                        3
-                      </Box>
-                      <Heading
-                        as="h3"
-                        size="sm"
-                        ml={3}
-                        color="accent.300"
-                        opacity={0.95}
-                      >
-                        VeeVee: AI Wellness Companion
-                      </Heading>
-                    </Flex>
-
-                    <Text fontSize="sm" color="whiteAlpha.900" mb={3}>
-                      Your adaptive wellness companion, built to support you 
-                      and those you care about. $9.99 for individuals or 
-                      $13.99 for families of up to five, so everyone can stay 
-                      connected and understand their covered care.
-                    </Text>
-                    <Text fontSize="xs" color="whiteAlpha.800">
-                      For you. For your family. Connected.
-                    </Text>
-                  </CardBody>
-                </MotionCard>
-              </SimpleGrid>
-            </Box>
-          </Box>
-          <MotionBox
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.1 }}
-          >
-            <Heading
-              as="h2"
-              size="md"
-              mb={2}
-              textAlign={isMobile ? "left" : "center"}
-            >
-              Start with free AI Quick Guides
-            </Heading>
-            <Text
-              fontSize="sm"
-              color="whiteAlpha.800"
-              textAlign={isMobile ? "left" : "center"}
-            >
-              The free AI Quick Guides cover common concerns like pain, stress, sleep, 
-              new symptoms, and benefits. 
-              <br />
-              For deeper support, try 3-day plans with AI Deep Guides, 
-              or subscribe to VeeVee as your daily companion.
-            </Text>
-          </MotionBox>
-        </Stack>
-
-        {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center">
           <Heading as="h2" size="md">
-            Ready to see what VeeVee can unlock for you?
+            Start with your first input.
           </Heading>
-          <Text
-            fontSize="sm"
-            color="whiteAlpha.800"
-            maxW="2xl"
-            mx="auto"
-          >
-            Open a free account today.
+          <Text fontSize="sm" color="whiteAlpha.800" maxW="2xl" mx="auto">
+            Begin free at VeeVee.io and see how your triage, profile, and coverage context work together in one place.
           </Text>
           <Button
             as="a"
@@ -388,11 +127,10 @@ export default function HowItWorks() {
             alignSelf="center"
             boxShadow="0 0 28px rgba(0, 245, 160, 0.35)"
           >
-            Start your first AI Quick Guide →
+            Start at VeeVee.io
           </Button>
         </Stack>
 
-        {/* Soft legal / AI disclaimers */}
         <Box
           fontSize="xs"
           color="whiteAlpha.700"
@@ -402,19 +140,13 @@ export default function HowItWorks() {
           mt={4}
         >
           <Text mb={1}>
-            VeeVee is a wellness and education companion. It doesn&apos;t provide
-            medical advice, diagnoses, or treatment, and it doesn&apos;t replace
-            your doctor or your health plan.
+            VeeVee is a wellness and education companion and does not provide medical advice, diagnosis, or treatment.
           </Text>
           <Text mb={1}>
-            Some suggestions are generated by artificial intelligence, which is
-            probabilistic and may not always be accurate. Always confirm coverage
-            with your insurer and talk to a licensed clinician for medical
-            decisions.
+            Care routing and live-doctor pathways depend on availability, eligibility, and partner networks.
           </Text>
           <Text>
-            This page is for general information only. Full terms, privacy, and
-            legal details are provided inside the VeeVee experience.
+            AI-generated guidance is probabilistic and should be validated with your insurer and licensed clinicians.
           </Text>
         </Box>
       </Stack>

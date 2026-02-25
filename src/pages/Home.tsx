@@ -1,10 +1,3 @@
-// File: src/pages/Home.tsx
-// Version: 1.5 (2025-12-07)
-// This version keeps the hero the same and simplifies the payor strip:
-//   - Bigger pill
-//   - Larger logos
-//   - No scrolling animation (static, always-visible logos)
-
 import {
   Box,
   Button,
@@ -13,15 +6,13 @@ import {
   Text,
   Image,
   Grid,
-  HStack,
-  Wrap,
-  WrapItem,
+  SimpleGrid,
+  Card,
+  CardBody,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { Link as CLink } from "@chakra-ui/react";
 
-
-// Normalized payor logos (from public/payors/normalized)
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
   { src: "/payors/normalized/cigna.png", alt: "Cigna" },
@@ -36,12 +27,29 @@ const PAYOR_LOGOS = [
   { src: "/payors/normalized/cvs.png", alt: "CVS" },
 ].filter((logo) => !!logo.src);
 
-// Horizontal marquee animation for the payor logos
 const scrollLogos = keyframes`
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 `;
 
+const PILLARS = [
+  {
+    title: "Instant Triage From Any Input",
+    text: "Upload a photo, type what is happening, or speak naturally. VeeVee rapidly triages your situation and guides you to care pathways, pharmacy options, and treatment next steps.",
+  },
+  {
+    title: "My Digital Twin",
+    text: "Build a personalized simulation of your health profile so you can test what-if scenarios and understand how changes may impact your wellness over time.",
+  },
+  {
+    title: "My True Me Profile",
+    text: "Unify medical history, genetics, and wearable signals in one living profile so guidance reflects who you are right now, not generic averages.",
+  },
+  {
+    title: "Benefits Maximizer",
+    text: "Match care decisions to your real plan details and uncover how to maximize covered care and lower avoidable out-of-pocket costs.",
+  },
+];
 
 export default function Home() {
   return (
@@ -53,7 +61,6 @@ export default function Home() {
       py={{ base: 10, md: 20 }}
       px={{ base: 6, md: 10 }}
     >
-      {/* Hero layout */}
       <Grid
         templateColumns={{ base: "1fr", md: "minmax(0, 1.1fr) minmax(0, 1fr)" }}
         gap={{ base: 12, md: 16 }}
@@ -61,7 +68,6 @@ export default function Home() {
         maxW="6xl"
         mx="auto"
       >
-        {/* Left side: Copy */}
         <Stack spacing={6}>
           <Text
             fontSize="sm"
@@ -73,7 +79,7 @@ export default function Home() {
             _hover={{ textDecoration: "none" }}
             _focus={{ outline: "none" }}
           >
-            Clarity for your health
+            Why VeeVee
           </Text>
 
           <CLink
@@ -89,9 +95,9 @@ export default function Home() {
               lineHeight="1.1"
               color="white"
             >
-              Got Health?{" "}
+              Instant health clarity,
               <Box as="span" color="accent.400">
-                Unlock your wellness today.
+                {" "}built around you.
               </Box>
             </Heading>
           </CLink>
@@ -101,10 +107,9 @@ export default function Home() {
             maxW="lg"
             color="whiteAlpha.800"
           >
-            VeeVee uncovers your benefits, explains your care, 
-            and guides you through your wellness journey.
-            < br />
-            Simply and clearly.
+            One app to triage quickly, simulate outcomes with your digital twin,
+            unify your true health profile, and maximize coverage for the care
+            you actually need.
           </Text>
 
           <Stack spacing={3}>
@@ -121,12 +126,11 @@ export default function Home() {
             </Button>
 
             <Text fontSize="sm" color="whiteAlpha.600">
-              Designed by Doctors • HIPAA-aligned • Encrypted
+              Personalized triage | Benefits-aware guidance | Encrypted
             </Text>
           </Stack>
         </Stack>
 
-        {/* Right side: Hero card with logo + image */}
         <Box
           position="relative"
           bg="rgba(10, 14, 32, 0.95)"
@@ -136,12 +140,11 @@ export default function Home() {
           borderColor="whiteAlpha.200"
           boxShadow="0 0 60px rgba(0,0,0,0.8)"
         >
-          {/* Logo strip */}
           <CLink
             href="https://veevee.io"
             _hover={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
-            display="block"         // allow block-level clicking
+            display="block"
           >
             <Box
               display="flex"
@@ -152,7 +155,7 @@ export default function Home() {
               bg="rgba(7, 11, 31, 0.98)"
               borderBottomWidth="1px"
               borderColor="whiteAlpha.200"
-              cursor="pointer"       // shows it’s clickable
+              cursor="pointer"
             >
               <Image
                 src="/logo.png"
@@ -172,7 +175,6 @@ export default function Home() {
             </Box>
           </CLink>
 
-          {/* Hero image */}
           <CLink href="https://veevee.io" isExternal>
             <Image
               src="/hero_44.png"
@@ -185,7 +187,42 @@ export default function Home() {
         </Box>
       </Grid>
 
-      {/* Payor credibility pill */}
+      <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto">
+        <Stack spacing={3} mb={5}>
+          <Text
+            fontSize="xs"
+            textTransform="uppercase"
+            letterSpacing="0.16em"
+            color="accent.300"
+          >
+            The Core Experience
+          </Text>
+          <Heading as="h2" size={{ base: "md", md: "lg" }}>
+            Four reasons people choose VeeVee
+          </Heading>
+        </Stack>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          {PILLARS.map((pillar) => (
+            <Card
+              key={pillar.title}
+              bg="rgba(7, 11, 31, 0.9)"
+              borderColor="whiteAlpha.200"
+              borderWidth="1px"
+              borderRadius="2xl"
+            >
+              <CardBody>
+                <Heading as="h3" size="sm" mb={3} color="accent.300">
+                  {pillar.title}
+                </Heading>
+                <Text fontSize="sm" color="whiteAlpha.900">
+                  {pillar.text}
+                </Text>
+              </CardBody>
+            </Card>
+          ))}
+        </SimpleGrid>
+      </Box>
+
       <Box
         mt={{ base: 10, md: 14 }}
         maxW="6xl"
@@ -211,7 +248,6 @@ export default function Home() {
             employer coverage.
           </Text>
 
-          {/* Single-row marquee of normalized logos */}
           <Box overflow="hidden">
             <Box
               as="div"
@@ -219,7 +255,6 @@ export default function Home() {
               alignItems="center"
               animation={`${scrollLogos} 53s linear infinite`}
               opacity={0.85}
-              // gap between each logo frame
               columnGap={{ base: 8, md: 10 }}
             >
               {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (

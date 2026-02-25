@@ -1,39 +1,3 @@
-// File: src/pages/Features.tsx
-// Version: 1.2 (2025-12-13)
-// Purpose:
-//   Marketing-style "Features" page for myVeeVee.com.
-//
-// What changed in v1.2:
-//   ✅ Added optional feature images (screenshots/illustrations) per card.
-//   ✅ Kept Apple-style hover reveal on desktop.
-//   ✅ Added mobile-friendly "tap to reveal" behavior (since mobile has no hover).
-//   ✅ Added a subtle "Tap to learn more" hint on mobile to make the interaction obvious.
-//
-// UX goal:
-//   Make the page instantly understandable for non-readers:
-//   Image → headline → 1 line → (optional) tap/hover for deeper benefit copy.
-//
-// Potential future steps (not implemented here):
-//   - Add a "How it works" 3-step strip under the hero (3 images + 1-line captions).
-//   - Add lightweight GIF/MP4 loops (6–10s) instead of static images for 2–3 flagship features.
-//   - Add deep links: each feature card can link to a specific surface (Feed, Guides, Shop).
-//   - Add a "For Providers" variant with different copy + proof points.
-//   - Add analytics logging (view + tap/hover reveal) to measure engagement.
-//
-// Images you should add (place in: public/images/features/*):
-//   - /images/features/guides.png
-//   - /images/features/health-story.png
-//   - /images/features/benefits.png
-//   - /images/features/trajectory.png
-//   - /images/features/insights.png
-//   - /images/features/support.png
-//   - /images/features/marketplace.png
-//
-// Notes on image style:
-//   - Best: real product screenshots inside phone mockups (trust + clarity).
-//   - Good: clean illustrations while product evolves.
-//   - Keep consistent aspect ratio per section for a premium feel.
-
 import React from "react";
 import {
   Box,
@@ -48,220 +12,158 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { Link as CLink } from "@chakra-ui/react";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
 };
 
-type FeatureCardProps = {
-  eyebrow?: string;
+type Pillar = {
+  eyebrow: string;
   title: string;
   front: string;
   back: string;
-  size?: "lg" | "md" | "pill";
-
-  // NEW (v1.2): Optional image to reduce text heaviness
-  imageSrc?: string;
-  imageAlt?: string;
-  imageMode?: "cover" | "contain";
+  imageSrc: string;
+  imageAlt: string;
 };
 
-function FeatureCard({
-  eyebrow,
-  title,
-  front,
-  back,
-  size = "md",
-  imageSrc,
-  imageAlt,
-  imageMode = "cover",
-}: FeatureCardProps) {
-  const isPill = size === "pill";
+const PILLARS: Pillar[] = [
+  {
+    eyebrow: "Pillar 1",
+    title: "Instant Triage",
+    front: "Photo, text, or voice input turns into immediate next-step guidance.",
+    back: "VeeVee triages your situation and routes you toward relevant care pathways, including live-doctor options where available, pharmacy actions, and treatment next steps.",
+    imageSrc: "/images/features/support.png",
+    imageAlt: "Instant triage workflow",
+  },
+  {
+    eyebrow: "Pillar 2",
+    title: "My Digital Twin",
+    front: "A simulation layer personalized to your body, habits, and goals.",
+    back: "Model what-if changes and explore how routines, symptoms, and decisions may influence your wellness trajectory before you commit.",
+    imageSrc: "/images/features/trajectory.png",
+    imageAlt: "Digital twin simulation",
+  },
+  {
+    eyebrow: "Pillar 3",
+    title: "My True Me Profile",
+    front: "History, genetics, and wearables connected into one living health profile.",
+    back: "Instead of fragmented records, VeeVee keeps your context together so guidance can stay personal, current, and specific to you.",
+    imageSrc: "/images/features/health-story.png",
+    imageAlt: "Unified health profile",
+  },
+  {
+    eyebrow: "Pillar 4",
+    title: "Benefits Maximizer",
+    front: "Choose care with your real coverage and costs in mind.",
+    back: "VeeVee helps map options against your plan so you can unlock covered benefits and avoid paying for care that should already be included.",
+    imageSrc: "/images/features/benefits.png",
+    imageAlt: "Benefits and coverage optimization",
+  },
+];
 
-  // Mobile has no hover, so reveal is tap-based.
+function PillarCard({ pillar }: { pillar: Pillar }) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [open, setOpen] = React.useState(false);
 
-  // Desktop: hover reveal. Mobile: tap reveal.
   const frontOpacity = isMobile ? (open ? 0.08 : 1) : 1;
   const backOpacity = isMobile ? (open ? 1 : 0) : 0;
-
-  // Make images behave better on mobile:
-  // - default to "contain" on mobile to avoid weird crops
-  const resolvedFit =
-    isMobile && !isPill ? (imageMode === "cover" ? "contain" : imageMode) : imageMode;
 
   return (
     <MotionCard
       role="group"
       bg="surface.800"
-      borderRadius={isPill ? "full" : "2xl"}
+      borderRadius="2xl"
       borderWidth="1px"
       borderColor="whiteAlpha.200"
       overflow="hidden"
-      cursor={isMobile && !isPill ? "pointer" : "default"}
-      onClick={isMobile && !isPill ? () => setOpen((v) => !v) : undefined}
-      whileHover={{
-        y: -3,
-        boxShadow: "0 0 30px rgba(0, 245, 160, 0.35)",
-      }}
+      cursor={isMobile ? "pointer" : "default"}
+      onClick={isMobile ? () => setOpen((v) => !v) : undefined}
+      whileHover={{ y: -3, boxShadow: "0 0 30px rgba(0, 245, 160, 0.35)" }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
       <CardBody p={0}>
-        {/* ZONE A: Image header (never covered by reveal content) */}
-        {imageSrc && !isPill && (
+        <Box px={{ base: 4, md: 6 }} pt={{ base: 4, md: 6 }} pb={{ base: 3, md: 4 }}>
           <Box
-            px={{ base: 4, md: 6 }}
-            pt={{ base: 4, md: 6 }}
-            pb={{ base: 3, md: 4 }}
+            borderRadius="xl"
+            overflow="hidden"
+            borderWidth="1px"
+            borderColor="whiteAlpha.200"
+            bg="blackAlpha.400"
           >
-            <Box
-              borderRadius="xl"
-              overflow="hidden"
-              borderWidth="1px"
-              borderColor="whiteAlpha.200"
-              bg="blackAlpha.400"
-            >
-              {/* Use aspect ratio so it scales nicely on mobile */}
-              <Box
-                position="relative"
+            <Box position="relative" w="100%" aspectRatio="16 / 10">
+              <Image
+                src={pillar.imageSrc}
+                alt={pillar.imageAlt}
                 w="100%"
-                // 16:10-ish; feels “app screenshot” without being too tall on mobile
-                aspectRatio={size === "lg" ? "16 / 10" : "16 / 11"}
-              >
-                <Image
-                  src={imageSrc}
-                  alt={imageAlt || title}
-                  w="100%"
-                  h="100%"
-                  objectFit={resolvedFit as any}
-                  opacity={0.96}
-                  loading="lazy"
-                />
-              </Box>
+                h="100%"
+                objectFit={isMobile ? "contain" : "cover"}
+                opacity={0.96}
+                loading="lazy"
+              />
             </Box>
           </Box>
-        )}
+        </Box>
 
-        {/* ZONE B: Content area (reveal lives only here) */}
-        <Box position="relative" px={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }} pb={{ base: isPill ? 4 : 5, md: isPill ? 5 : 6 }}>
-          {/* Front */}
-          <Box
-            opacity={frontOpacity}
-            transition="opacity 0.25s ease-out"
-            _groupHover={{ opacity: 0.08 }}
-          >
-            {eyebrow && (
-              <Text
-                fontSize="xs"
-                textTransform="uppercase"
-                letterSpacing="0.16em"
-                color="accent.300"
-                mb={2}
-              >
-                {eyebrow}
-              </Text>
-            )}
-
-            <Heading
-              as="h3"
-              size={size === "lg" ? "md" : "sm"}
-              mb={2}
-              color="whiteAlpha.900"
-            >
-              {title}
-            </Heading>
-
+        <Box position="relative" px={{ base: 5, md: 6 }} pb={{ base: 5, md: 6 }}>
+          <Box opacity={frontOpacity} transition="opacity 0.25s ease-out" _groupHover={{ opacity: 0.08 }}>
             <Text
-              fontSize="sm"
-              color="whiteAlpha.800"
-              maxW={size === "lg" ? "sm" : "none"}
+              fontSize="xs"
+              textTransform="uppercase"
+              letterSpacing="0.16em"
+              color="accent.300"
+              mb={2}
             >
-              {front}
+              {pillar.eyebrow}
             </Text>
-
-            {isMobile && !isPill && (
+            <Heading as="h3" size="sm" mb={2} color="whiteAlpha.900">
+              {pillar.title}
+            </Heading>
+            <Text fontSize="sm" color="whiteAlpha.800">
+              {pillar.front}
+            </Text>
+            {isMobile && (
               <Text mt={3} fontSize="xs" color="whiteAlpha.600">
                 Tap to learn more
               </Text>
             )}
           </Box>
 
-          {/* Back overlay: ONLY covers the content zone now */}
           <Box
             position="absolute"
             inset={0}
             display="flex"
-            flexDirection={{
-              base: isPill ? "column" : "column",
-              md: isPill ? "row" : "column",
-            }}
-            alignItems={{
-              base: "flex-start",
-              md: isPill ? "center" : "flex-start",
-            }}
-            justifyContent={{
-              base: "flex-start",
-              md: isPill ? "space-between" : "flex-start",
-            }}
-            gap={{ base: isPill ? 3 : 2, md: isPill ? 4 : 2 }}
+            flexDirection="column"
+            alignItems="flex-start"
+            justifyContent="flex-start"
+            gap={2}
             opacity={backOpacity}
             transition="opacity 0.25s ease-out"
             _groupHover={{ opacity: 1 }}
             pointerEvents={isMobile ? (open ? "auto" : "none") : "auto"}
           >
-            <Box>
-              {eyebrow && (
-                <Text
-                  fontSize="xs"
-                  textTransform="uppercase"
-                  letterSpacing="0.16em"
-                  color="accent.200"
-                  mb={2}
-                >
-                  {eyebrow}
-                </Text>
-              )}
-
-              <Heading
-                as="h3"
-                size={size === "lg" ? "md" : "sm"}
-                mb={2}
-                color="accent.300"
-              >
-                {title}
-              </Heading>
-
-              <Text fontSize="sm" color="whiteAlpha.900">
-                {back}
+            <Text
+              fontSize="xs"
+              textTransform="uppercase"
+              letterSpacing="0.16em"
+              color="accent.200"
+              mb={2}
+            >
+              {pillar.eyebrow}
+            </Text>
+            <Heading as="h3" size="sm" mb={2} color="accent.300">
+              {pillar.title}
+            </Heading>
+            <Text fontSize="sm" color="whiteAlpha.900">
+              {pillar.back}
+            </Text>
+            {isMobile && (
+              <Text mt={3} fontSize="xs" color="whiteAlpha.600">
+                Tap again to close
               </Text>
-
-              {isMobile && !isPill && (
-                <Text mt={3} fontSize="xs" color="whiteAlpha.600">
-                  Tap again to close
-                </Text>
-              )}
-            </Box>
-
-            {isPill && (
-              <Button
-                as="a"
-                href="https://veevee.io"
-                size="sm"
-                borderRadius="full"
-                fontWeight="700"
-                px={6}
-                mt={{ base: 3, md: 0 }}
-                alignSelf={{ base: "stretch", md: "center" }}
-                boxShadow="0 0 24px rgba(0, 245, 160, 0.35)"
-              >
-                Explore in VeeVee
-              </Button>
             )}
           </Box>
         </Box>
@@ -269,7 +171,6 @@ function FeatureCard({
     </MotionCard>
   );
 }
-
 
 export default function Features() {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -282,19 +183,8 @@ export default function Features() {
       color="whiteAlpha.900"
       py={{ base: 10, md: 20 }}
     >
-      <Stack
-        spacing={{ base: 10, md: 14 }}
-        maxW="6xl"
-        mx="auto"
-        px={{ base: 6, md: 10 }}
-      >
-        {/* Hero */}
-        <MotionBox
-          textAlign="center"
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-        >
+      <Stack spacing={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
+        <MotionBox textAlign="center" variants={fadeUp} initial="hidden" animate="visible">
           <Text
             fontSize="sm"
             letterSpacing="0.18em"
@@ -302,148 +192,37 @@ export default function Features() {
             color="accent.300"
             mb={3}
           >
-            FEATURES
+            WHY VEEVEE
           </Text>
-
-          <Heading
-            as="h1"
-            size={{ base: "lg", md: "xl" }}
-            fontWeight="800"
-            mb={3}
-          >
-            Everything your wellness needs, in one place.
+          <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={3}>
+            Four capabilities working together for better health decisions.
           </Heading>
-
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            maxW="3xl"
-            mx="auto"
-            color="whiteAlpha.900"
-          >
-            VeeVee brings your health story, benefits, patterns, and next steps
-            together, so your wellness finally makes sense.
+          <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="whiteAlpha.900">
+            Each pillar is designed to reduce delay, remove guesswork, and make health actions more personal and more financially smart.
           </Text>
         </MotionBox>
 
-        {/* Row 1 – two large flagship cards */}
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 4, md: 6 }}>
-          <MotionBox variants={fadeUp} initial="hidden" animate="visible">
-            <FeatureCard
-              size="lg"
-              eyebrow="Core"
-              title="AI Wellness Guides"
-              front="Personalized guidance that helps you make sense of what’s happening in your life. From stress and sleep to symptoms and recovery."
-              back="Quick Guides, Deep Guides, and the VeeVee companion subscription give you step-by-step support that is personalized to YOU. Focus on what matters most, YOU!"
-              imageSrc="/images/features/guides.png"
-              imageAlt="AI Wellness Guides screenshot"
-            />
-          </MotionBox>
-
-          <MotionBox
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.05 }}
-          >
-            <FeatureCard
-              size="lg"
-              eyebrow="Your Story"
-              title="Your Health, Understood"
-              front="VeeVee listens. Your check-ins and history surface patterns that become a living picture of your wellness."
-              back="VeeVee remembers what you’ve shared and uses it to keep future guidance more personal and more relevant to you."
-              imageSrc="/images/features/health-story.png"
-              imageAlt="Health story and check-ins screenshot"
-            />
-          </MotionBox>
+          {PILLARS.map((pillar, index) => (
+            <MotionBox
+              key={pillar.title}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: index * 0.04 }}
+            >
+              <PillarCard pillar={pillar} />
+            </MotionBox>
+          ))}
         </SimpleGrid>
 
-        {/* Row 2 – four medium feature cards */}
-        <Stack spacing={4}>
-          <MotionBox variants={fadeUp} initial="hidden" animate="visible">
-            <Heading
-              as="h2"
-              size="md"
-              mb={2}
-              textAlign={isMobile ? "left" : "center"}
-            >
-              Built to connect the dots for you
-            </Heading>
-            <Text
-              fontSize="sm"
-              color="whiteAlpha.800"
-              maxW="3xl"
-              mx={isMobile ? undefined : "auto"}
-              textAlign={isMobile ? "left" : "center"}
-            >
-              VeeVee helps you understand your coverage, your benefits, and your
-              health patterns.
-            </Text>
-          </MotionBox>
-
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={{ base: 4, md: 5 }}>
-            <FeatureCard
-              title="Covered Care Benefits"
-              front="Check before you book."
-              back="Uncover checkups, screenings, and services your plan already offers."
-              imageSrc="/images/features/benefits.png"
-              imageAlt="Benefits discovery screenshot"
-            />
-
-            <FeatureCard
-              title="Wellness Trajectory"
-              front="VeeVee reveals your trends."
-              back="Spot early changes in your wellness patterns so you can stay at your best."
-              imageSrc="/images/features/trajectory.png"
-              imageAlt="Wellness trends screenshot"
-            />
-
-            <FeatureCard
-              title="Behavior Insights"
-              front="Tiny patterns add up."
-              back="You might discover that you sleep better on days you walk more. Insights that are unique to you."
-              imageSrc="/images/features/insights.png"
-              imageAlt="Behavior insights screenshot"
-            />
-
-            <FeatureCard
-              title="Personalized Care Support"
-              front="Find the right kind of support."
-              back="VeeVee helps you feel more prepared and less alone."
-              imageSrc="/images/features/support.png"
-              imageAlt="Personalized support screenshot"
-            />
-          </SimpleGrid>
-        </Stack>
-
-        {/* Row 3 – Marketplace pill card */}
-        <MotionBox variants={fadeUp} initial="hidden" animate="visible">
-          <FeatureCard
-            size="pill"
-            eyebrow="Expanding your Choices"
-            title="Personalized Marketplace made for You"
-            front="Discover products, recovery tools, and much more"
-            back="VeeVee finds what is right for You, and only You."
-            // NOTE: pill card intentionally stays text-forward.
-            // If you want, we can convert pill into a two-column row with an image.
-          />
-        </MotionBox>
-
-        {/* Bottom CTA */}
         <Stack spacing={4} textAlign="center" pt={{ base: 4, md: 6 }}>
-          <CLink
-            href="https://veevee.io"
-            _hover={{ textDecoration: "none" }}
-            _focus={{ boxShadow: "none" }}
-            display="block"
-          >
-            <Heading as="h2" size="md">
-              Got health?
-            </Heading>
-            <Text fontSize="sm" color="whiteAlpha.800" maxW="2xl" mx="auto">
-              Unlock your wellness with a free account at VeeVee.io
-            </Text>
-          </CLink>
-
+          <Heading as="h2" size="md">
+            Ready to see your personalized health path?
+          </Heading>
+          <Text fontSize="sm" color="whiteAlpha.800" maxW="2xl" mx="auto" textAlign={isMobile ? "left" : "center"}>
+            Start with your own profile and get guidance that aligns with your symptoms, your history, and your coverage.
+          </Text>
           <Button
             as="a"
             href="https://veevee.io"

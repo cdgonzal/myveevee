@@ -138,7 +138,7 @@ function Header() {
                   color="whiteAlpha.900"
                   fontWeight="600"
                 >
-                  Features
+                  Why VeeVee
                 </CLink>
                 <CLink
                   as={Link}
@@ -221,7 +221,7 @@ function Header() {
                 fontWeight="600"
                 color="whiteAlpha.900"
               >
-                Features
+                Why VeeVee
               </CLink>
               <CLink
                 as={Link}
