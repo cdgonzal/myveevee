@@ -6,13 +6,11 @@ import {
   Text,
   Image,
   Grid,
-  SimpleGrid,
-  Card,
-  CardBody,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { Link as CLink } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
@@ -32,25 +30,6 @@ const scrollLogos = keyframes`
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 `;
-
-const PILLARS = [
-  {
-    title: "Instant Triage From Any Input",
-    text: "Upload a photo, type what is happening, or speak naturally. VeeVee rapidly triages your situation and guides you to care pathways, pharmacy options, and treatment next steps.",
-  },
-  {
-    title: "My Digital Twin",
-    text: "Build a personalized simulation of your health profile so you can test what-if scenarios and understand how changes may impact your wellness over time.",
-  },
-  {
-    title: "My True Me Profile",
-    text: "Unify medical history, genetics, and wearable signals in one living profile so guidance reflects who you are right now, not generic averages.",
-  },
-  {
-    title: "Benefits Maximizer",
-    text: "Match care decisions to your real plan details and uncover how to maximize covered care and lower avoidable out-of-pocket costs.",
-  },
-];
 
 export default function Home() {
   const heroWebpSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026-v2.webp`;
@@ -198,7 +177,7 @@ export default function Home() {
       </Grid>
 
       <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto">
-        <Stack spacing={3} mb={5}>
+        <Stack spacing={2} mb={5}>
           <Text
             fontSize="xs"
             textTransform="uppercase"
@@ -207,24 +186,18 @@ export default function Home() {
           >
             How VeeVee helps you
           </Text>
-          <Heading as="h2" size={{ base: "md", md: "lg" }} color="text.primary">
-            Core Four (4) Features
-          </Heading>
+          <CLink
+            as={RouterLink}
+            to="/features"
+            _hover={{ textDecoration: "none" }}
+            _focus={{ boxShadow: "none" }}
+            w="fit-content"
+          >
+            <Heading as="h2" size={{ base: "md", md: "lg" }} color="text.primary">
+              Core Features →
+            </Heading>
+          </CLink>
         </Stack>
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-          {PILLARS.map((pillar) => (
-            <Card key={pillar.title} bg="bg.surface" borderColor={border} borderWidth="1px" borderRadius="2xl">
-              <CardBody>
-                <Heading as="h3" size="sm" mb={3} color="accent.soft">
-                  {pillar.title}
-                </Heading>
-                <Text fontSize="sm" color="text.primary">
-                  {pillar.text}
-                </Text>
-              </CardBody>
-            </Card>
-          ))}
-        </SimpleGrid>
       </Box>
 
       <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 4, md: 6 }}>
