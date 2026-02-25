@@ -53,7 +53,8 @@ const PILLARS = [
 ];
 
 export default function Home() {
-  const heroSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026.webp`;
+  const heroWebpSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026.webp`;
+  const heroJpgSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026.jpg`;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -178,13 +179,30 @@ export default function Home() {
           </CLink>
 
           <CLink href="https://veevee.io" isExternal>
-            <Image
-              src={heroSrc}
-              alt="VeeVee marketing image showing connected care and benefits optimization"
-              objectFit="cover"
-              maxH="420px"
-              w="100%"
-            />
+            <Box as="picture" display="block">
+              <source srcSet={heroWebpSrc} type="image/webp" />
+              <Image
+                src={heroJpgSrc}
+                alt="VeeVee marketing image showing connected care and benefits optimization"
+                objectFit="cover"
+                maxH="420px"
+                w="100%"
+                onLoad={(e) => {
+                  console.log("[HeroImage] loaded", {
+                    currentSrc: e.currentTarget.currentSrc,
+                    webp: heroWebpSrc,
+                    fallback: heroJpgSrc,
+                  });
+                }}
+                onError={(e) => {
+                  console.error("[HeroImage] failed", {
+                    currentSrc: e.currentTarget.currentSrc,
+                    webp: heroWebpSrc,
+                    fallback: heroJpgSrc,
+                  });
+                }}
+              />
+            </Box>
           </CLink>
         </Box>
       </Grid>
@@ -273,4 +291,3 @@ export default function Home() {
     </Box>
   );
 }
-
