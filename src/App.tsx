@@ -19,6 +19,7 @@ import {
   Stack,
   useColorMode,
   useColorModeValue,
+  Switch,
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
@@ -129,7 +130,10 @@ function Header() {
                 </CLink>
               </HStack>
 
-              <ColorModeToggle display={{ base: "none", md: "inline-flex" }} />
+              <ColorModeToggle
+                display={{ base: "none", md: "inline-flex" }}
+                withDivider
+              />
 
               <Button
                 as="a"
@@ -235,13 +239,16 @@ function Footer() {
 function ColorModeToggle({
   display,
   w,
+  withDivider = false,
 }: {
   display?: any;
   w?: any;
+  withDivider?: boolean;
 }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const label = colorMode === "dark" ? "Switch to light mode" : "Switch to dark mode";
   const nextMode = colorMode === "dark" ? "light" : "dark";
+  const isDark = colorMode === "dark";
 
   const onToggle = () => {
     toggleColorMode();
@@ -252,17 +259,33 @@ function ColorModeToggle({
   };
 
   return (
-    <Button
-      onClick={onToggle}
-      size="sm"
-      variant="outline"
-      aria-label={label}
-      title={label}
+    <Flex
+      align="center"
+      gap={2}
       display={display}
       w={w}
+      justify={w ? "space-between" : "flex-start"}
     >
-      {colorMode === "dark" ? "Light mode" : "Dark mode"}
-    </Button>
+      {withDivider && (
+        <Box
+          h="28px"
+          w="1px"
+          bg="border.default"
+          opacity={0.9}
+          mr={1}
+        />
+      )}
+      <Text fontSize="xs" color="text.subtle" letterSpacing="0.04em">
+        Theme
+      </Text>
+      <Switch
+        isChecked={isDark}
+        onChange={onToggle}
+        colorScheme="blue"
+        aria-label={label}
+        title={label}
+      />
+    </Flex>
   );
 }
 

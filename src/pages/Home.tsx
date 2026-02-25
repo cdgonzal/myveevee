@@ -108,17 +108,15 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Instant health clarity,
+              Know what’s covered.
               <Box as="span" color="accent.primary">
-                {" "}built around you.
+                {" "}Before you book.
               </Box>
             </Heading>
           </CLink>
 
           <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-            One app to triage quickly, simulate outcomes with your digital twin,
-            unify your true health profile, and maximize coverage for the care
-            you actually need.
+            Avoid surprise bills and denied claims. No guessing. No surprises.
           </Text>
 
           <Stack spacing={3}>
@@ -131,11 +129,11 @@ export default function Home() {
               px={10}
               boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
             >
-              Start at VeeVee.io
+              Check my coverage
             </Button>
 
             <Text fontSize="sm" color={subtle}>
-              Personalized triage | Benefits-aware guidance | Encrypted
+              Insurance Benefits | Personalized Recommendations | Health Records
             </Text>
           </Stack>
         </Stack>
@@ -198,10 +196,10 @@ export default function Home() {
             letterSpacing="0.16em"
             color="accent.soft"
           >
-            The Core Experience
+            How VeeVee helps you
           </Text>
           <Heading as="h2" size={{ base: "md", md: "lg" }} color="text.primary">
-            Four reasons people choose VeeVee
+            Core Four (4) Features
           </Heading>
         </Stack>
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
