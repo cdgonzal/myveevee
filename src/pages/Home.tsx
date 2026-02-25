@@ -179,33 +179,61 @@ export default function Home() {
           </CLink>
 
           <CLink href="https://veevee.io" isExternal>
-            <Box as="picture" display="block">
-              <source srcSet={heroWebpSrc} type="image/webp" />
-              <Image
-                src={heroJpgSrc}
-                alt="VeeVee marketing image showing connected care and benefits optimization"
-                objectFit="cover"
-                maxH="420px"
-                w="100%"
-                onLoad={(e) => {
-                  console.log("[HeroImage] loaded", {
-                    currentSrc: e.currentTarget.currentSrc,
+            <Image
+              src={heroWebpSrc}
+              alt="VeeVee marketing image showing connected care and benefits optimization"
+              objectFit="cover"
+              maxH="420px"
+              w="100%"
+              onLoad={(e) => {
+                console.log("[HeroImage] loaded", {
+                  currentSrc: e.currentTarget.currentSrc,
+                  webp: heroWebpSrc,
+                  fallback: heroJpgSrc,
+                });
+              }}
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (img.src.endsWith(".webp")) {
+                  console.warn("[HeroImage] webp failed, falling back to jpg", {
+                    currentSrc: img.currentSrc,
                     webp: heroWebpSrc,
                     fallback: heroJpgSrc,
                   });
-                }}
-                onError={(e) => {
-                  console.error("[HeroImage] failed", {
-                    currentSrc: e.currentTarget.currentSrc,
-                    webp: heroWebpSrc,
-                    fallback: heroJpgSrc,
-                  });
-                }}
-              />
-            </Box>
+                  img.src = heroJpgSrc;
+                  return;
+                }
+                console.error("[HeroImage] jpg fallback also failed", {
+                  currentSrc: img.currentSrc,
+                  webp: heroWebpSrc,
+                  fallback: heroJpgSrc,
+                });
+              }}
+            />
           </CLink>
         </Box>
       </Grid>
+
+      {/* Temporary render diagnostics: remove after verifying image delivery */}
+      <Box mt={{ base: 8, md: 10 }} maxW="6xl" mx="auto">
+        <Text fontSize="xs" color={subtle} mb={3}>
+          Image render test (outside hero container)
+        </Text>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          <Box borderWidth="1px" borderColor={border} borderRadius="xl" overflow="hidden">
+            <Text fontSize="xs" px={3} py={2} color={subtle}>
+              Direct WEBP: {heroWebpSrc}
+            </Text>
+            <Image src={heroWebpSrc} alt="Direct WebP render test" w="100%" h="220px" objectFit="cover" />
+          </Box>
+          <Box borderWidth="1px" borderColor={border} borderRadius="xl" overflow="hidden">
+            <Text fontSize="xs" px={3} py={2} color={subtle}>
+              Direct JPG: {heroJpgSrc}
+            </Text>
+            <Image src={heroJpgSrc} alt="Direct JPG render test" w="100%" h="220px" objectFit="cover" />
+          </Box>
+        </SimpleGrid>
+      </Box>
 
       <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto">
         <Stack spacing={3} mb={5}>
