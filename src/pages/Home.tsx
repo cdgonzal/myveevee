@@ -45,6 +45,7 @@ export default function Home() {
   const subtle = useColorModeValue("text.subtle", "text.subtle");
   const pillBg = "accent.primary";
   const logoFilter = useColorModeValue("none", "invert(1)");
+  const payorLogoFilter = "grayscale(1) brightness(0) invert(1) contrast(1.05)";
 
   return (
     <Box
@@ -240,8 +241,8 @@ export default function Home() {
                     maxH="100%"
                     maxW="100%"
                     objectFit="contain"
-                    opacity={0.9}
-                    filter="grayscale(1) brightness(1.6) contrast(1.2)"
+                    opacity={0.92}
+                    filter={payorLogoFilter}
                     _hover={{ opacity: 1 }}
                     loading="lazy"
                   />
