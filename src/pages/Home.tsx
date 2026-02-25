@@ -89,9 +89,9 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Know what’s covered. Know what's right.
+              Take control.
               <Box as="span" color="accent.primary">
-                {" "}Before you book.
+                {" "}Get the right care. Every time.
               </Box>
             </Heading>
           </CLink>
