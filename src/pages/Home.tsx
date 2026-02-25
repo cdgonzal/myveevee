@@ -97,7 +97,7 @@ export default function Home() {
           </CLink>
 
           <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-            We help you take control of your healthcare by unlocking your benefits and guiding you to the right care.
+            We help you take control of your wellness by unlocking your benefits and guiding you to the right care.
           </Text>
 
           <Stack spacing={3}>
