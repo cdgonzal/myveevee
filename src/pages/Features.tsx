@@ -37,7 +37,7 @@ const PILLARS: Pillar[] = [
     title: "Instant Triage",
     front: "Photo, text, or voice input turns into immediate next-step guidance.",
     back: "VeeVee triages your situation and routes you toward relevant care pathways, including live-doctor options where available, pharmacy actions, and treatment next steps.",
-    imageSrc: "/images/features/support.png",
+    imageSrc: "/images/features/support.webp",
     imageAlt: "Instant triage workflow",
   },
   {
@@ -45,7 +45,7 @@ const PILLARS: Pillar[] = [
     title: "My Digital Twin",
     front: "A simulation layer personalized to your body, habits, and goals.",
     back: "Model what-if changes and explore how routines, symptoms, and decisions may influence your wellness trajectory before you commit.",
-    imageSrc: "/images/features/trajectory.png",
+    imageSrc: "/images/features/trajectory.webp",
     imageAlt: "Digital twin simulation",
   },
   {
@@ -53,7 +53,7 @@ const PILLARS: Pillar[] = [
     title: "My True Me Profile",
     front: "History, genetics, and wearables connected into one living health profile.",
     back: "Instead of fragmented records, VeeVee keeps your context together so guidance can stay personal, current, and specific to you.",
-    imageSrc: "/images/features/health-story.png",
+    imageSrc: "/images/features/health-story.webp",
     imageAlt: "Unified health profile",
   },
   {
@@ -61,7 +61,7 @@ const PILLARS: Pillar[] = [
     title: "Benefits Maximizer",
     front: "Choose care with your real coverage and costs in mind.",
     back: "VeeVee helps map options against your plan so you can unlock covered benefits and avoid paying for care that should already be included.",
-    imageSrc: "/images/features/benefits.png",
+    imageSrc: "/images/features/benefits.webp",
     imageAlt: "Benefits and coverage optimization",
   },
 ];

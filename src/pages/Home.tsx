@@ -62,7 +62,7 @@ export default function Home() {
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
   const subtle = useColorModeValue("text.subtle", "text.subtle");
-  const pillBg = useColorModeValue("#FFFFFF", "surface.900");
+  const pillBg = "surface.900";
   const logoFilter = useColorModeValue("none", "invert(1)");
 
   return (
@@ -180,7 +180,7 @@ export default function Home() {
 
           <CLink href="https://veevee.io" isExternal>
             <Image
-              src="/images/marketing/hero-2026.png"
+              src="/images/marketing/hero-2026.webp"
               alt="VeeVee marketing image showing connected care and benefits optimization"
               objectFit="cover"
               maxH="420px"
@@ -230,7 +230,7 @@ export default function Home() {
           px={{ base: 6, md: 10 }}
           py={{ base: 6, md: 7 }}
         >
-          <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="text.primary" mb={{ base: 4, md: 5 }}>
+          <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="#FFFFFF" mb={{ base: 4, md: 5 }}>
             Built for real people across real plans, from national insurers to
             employer coverage.
           </Text>
