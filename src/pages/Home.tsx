@@ -63,6 +63,7 @@ export default function Home() {
   const muted = useColorModeValue("text.muted", "text.muted");
   const subtle = useColorModeValue("text.subtle", "text.subtle");
   const pillBg = useColorModeValue("white", "rgba(5, 8, 22, 0.96)");
+  const logoFilter = useColorModeValue("none", "invert(1)");
 
   return (
     <Box
@@ -157,7 +158,7 @@ export default function Home() {
             <Box
               display="flex"
               alignItems="center"
-              gap={3}
+              gap={2}
               px={4}
               py={3}
               bg={heroStripBg}
@@ -166,20 +167,14 @@ export default function Home() {
               cursor="pointer"
             >
               <Image
-                src="/logo.png"
-                alt="VeeVee Logo"
-                boxSize="40px"
+                src="/brand/2026/combined.svg"
+                alt="VeeVee"
+                h={{ base: "28px", md: "32px" }}
+                w="auto"
                 objectFit="contain"
                 draggable="false"
+                filter={logoFilter}
               />
-              <Box>
-                <Text fontWeight="700" fontSize="md" color="text.primary">
-                  VeeVee
-                </Text>
-                <Text fontSize="xs" color={subtle}>
-                  Your AI wellness companion
-                </Text>
-              </Box>
             </Box>
           </CLink>
 

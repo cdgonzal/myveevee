@@ -79,11 +79,8 @@ function Header() {
   const headerBg = useColorModeValue("bg.glass", "bg.glass");
   const borderColor = useColorModeValue("border.default", "border.default");
   const navColor = useColorModeValue("text.primary", "text.primary");
-  const brandGradient = useColorModeValue(
-    "linear(to-r, brand.300, accent.500)",
-    "linear(to-r, accent.300, accent.400)"
-  );
   const drawerBg = useColorModeValue("white", "surface.900");
+  const logoFilter = useColorModeValue("none", "invert(1)");
 
   return (
     <>
@@ -102,24 +99,18 @@ function Header() {
             <HStack
               as={Link}
               to="/"
-              spacing={3}
+              spacing={2}
               align="center"
               _hover={{ textDecoration: "none" }}
             >
               <Image
-                src="/logo.png"
-                alt="VeeVee logo"
-                boxSize={{ base: "28px", md: "32px" }}
+                src="/brand/2026/combined.svg"
+                alt="VeeVee"
+                h={{ base: "22px", md: "28px" }}
+                w="auto"
                 objectFit="contain"
+                filter={logoFilter}
               />
-              <Text
-                fontWeight="800"
-                fontSize={{ base: "md", md: "lg" }}
-                bgGradient={brandGradient}
-                bgClip="text"
-              >
-                VeeVee
-              </Text>
             </HStack>
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
@@ -138,7 +129,7 @@ function Header() {
                 </CLink>
               </HStack>
 
-              <ColorModeToggle />
+              <ColorModeToggle display={{ base: "none", md: "inline-flex" }} />
 
               <Button
                 as="a"
@@ -174,7 +165,7 @@ function Header() {
           </DrawerHeader>
           <DrawerBody>
             <Stack spacing={4} mt={4}>
-              <ColorModeToggle />
+              <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
               <CLink as={Link} to="/" onClick={onClose} fontWeight="600" color={navColor}>
                 Home
               </CLink>
@@ -213,9 +204,15 @@ function Footer() {
       backdropFilter="saturate(150%) blur(12px)"
     >
       <Container maxW="6xl" py="3">
-        <Flex align="center" justify="space-between" fontSize="sm">
+        <Flex
+          align={{ base: "flex-start", md: "center" }}
+          justify="space-between"
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 3, md: 0 }}
+          fontSize="sm"
+        >
           <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
-          <HStack spacing="4">
+          <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }}>
             <CLink as={Link} to="/features" color={primaryText}>
               Why VeeVee
             </CLink>
@@ -228,14 +225,20 @@ function Footer() {
             <CLink as={Link} to="/terms" color={primaryText}>
               Terms &amp; Disclaimers
             </CLink>
-          </HStack>
+          </Stack>
         </Flex>
       </Container>
     </Box>
   );
 }
 
-function ColorModeToggle() {
+function ColorModeToggle({
+  display,
+  w,
+}: {
+  display?: any;
+  w?: any;
+}) {
   const { colorMode, toggleColorMode } = useColorMode();
   const label = colorMode === "dark" ? "Switch to light mode" : "Switch to dark mode";
   const nextMode = colorMode === "dark" ? "light" : "dark";
@@ -255,6 +258,8 @@ function ColorModeToggle() {
       variant="outline"
       aria-label={label}
       title={label}
+      display={display}
+      w={w}
     >
       {colorMode === "dark" ? "Light mode" : "Dark mode"}
     </Button>
