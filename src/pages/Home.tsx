@@ -180,8 +180,8 @@ export default function Home() {
 
           <CLink href="https://veevee.io" isExternal>
             <Image
-              src="/hero_44.png"
-              alt="Patient talking with doctor using VeeVee"
+              src="/images/marketing/hero-2026.png"
+              alt="VeeVee marketing image showing connected care and benefits optimization"
               objectFit="cover"
               maxH="420px"
               w="100%"
