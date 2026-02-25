@@ -1,26 +1,3 @@
-// File: src/App.tsx
-// Version: 1.6 (2025-12-09)
-// Purpose:
-//   Shell layout and routing for the myVeeVee.com marketing site.
-//   Routes:
-//     - "/"              → Home (hero funnel to veevee.io)
-//     - "/features"      → Features (AI Wellness Guides, benefits, etc.)
-//     - "/how-it-works"  → How it works (3-step flow + guides + CTA)
-//     - "/testimonials"  → Social proof / success stories
-//     - "/terms"         → Plain-English Terms & Disclaimers page
-// Visual shell:
-//   - Full-page dark gradient background to match neon hero sections.
-//   - Glassmorphism header & footer (blurred dark navy) with neon Log in button.
-// Responsive behavior:
-//   - Desktop/tablet: logo + brand + inline nav ("Features", "How it works") + Log in.
-//   - Mobile: logo + brand + Log in + hamburger icon that opens a side drawer
-//     with the same nav links.
-// Behavior:
-//   - ScrollToTop ensures each route change starts at the top of the page.
-// Future iterations (not yet implemented):
-//   - Animate drawer links with subtle motion.
-//   - Add additional legal links (Privacy, cookies) when ready.
-
 import { useEffect } from "react";
 import {
   Box,
@@ -40,6 +17,8 @@ import {
   DrawerHeader,
   DrawerBody,
   Stack,
+  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
@@ -48,7 +27,6 @@ import Terms from "./pages/Terms";
 import Features from "./pages/Features";
 import Testimonials from "./pages/Testimonials";
 
-// Scroll to top on every route change
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -60,12 +38,13 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  const pageGradient = useColorModeValue(
+    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #050816, #070B1F)"
+  );
+
   return (
-    <Flex
-      minH="100vh"
-      direction="column"
-      bgGradient="linear(to-b, #050816, #070B1F)"
-    >
+    <Flex minH="100vh" direction="column" bgGradient={pageGradient}>
       <Header />
       <Box as="main" flex="1">
         <Container maxW="6xl" py={{ base: 8, md: 12 }}>
@@ -86,14 +65,22 @@ export default function App() {
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const headerBg = useColorModeValue("bg.glass", "bg.glass");
+  const borderColor = useColorModeValue("border.default", "border.default");
+  const navColor = useColorModeValue("text.primary", "text.primary");
+  const brandGradient = useColorModeValue(
+    "linear(to-r, brand.300, accent.500)",
+    "linear(to-r, accent.300, accent.400)"
+  );
+  const drawerBg = useColorModeValue("white", "surface.900");
 
   return (
     <>
       <Box
         as="header"
         borderBottom="1px solid"
-        borderColor="whiteAlpha.200"
-        bg="rgba(5, 8, 22, 0.7)" // glassy dark background
+        borderColor={borderColor}
+        bg={headerBg}
         backdropFilter="saturate(150%) blur(12px)"
         position="sticky"
         top={0}
@@ -101,7 +88,6 @@ function Header() {
       >
         <Container maxW="6xl" py="3">
           <Flex align="center" justify="space-between">
-            {/* Logo + brand → home link */}
             <HStack
               as={Link}
               to="/"
@@ -118,47 +104,31 @@ function Header() {
               <Text
                 fontWeight="800"
                 fontSize={{ base: "md", md: "lg" }}
-                bgGradient="linear(to-r, accent.300, accent.400)"
+                bgGradient={brandGradient}
                 bgClip="text"
               >
                 VeeVee
               </Text>
             </HStack>
 
-            {/* Right side: nav + login + burger */}
-            <HStack spacing={{ base: 3, md: 6 }} align="center">
-              {/* Desktop nav links */}
+            <HStack spacing={{ base: 3, md: 4 }} align="center">
               <HStack
                 spacing={{ base: 3, md: 6 }}
                 display={{ base: "none", md: "flex" }}
               >
-                <CLink
-                  as={Link}
-                  to="/features"
-                  color="whiteAlpha.900"
-                  fontWeight="600"
-                >
+                <CLink as={Link} to="/features" color={navColor} fontWeight="600">
                   Why VeeVee
                 </CLink>
-                <CLink
-                  as={Link}
-                  to="/testimonials"
-                  color="whiteAlpha.900"
-                  fontWeight="600"
-                >
+                <CLink as={Link} to="/testimonials" color={navColor} fontWeight="600">
                   Testimonials
                 </CLink>
-                <CLink
-                  as={Link}
-                  to="/how-it-works"
-                  color="whiteAlpha.900"
-                  fontWeight="600"
-                >
+                <CLink as={Link} to="/how-it-works" color={navColor} fontWeight="600">
                   How it works
                 </CLink>
               </HStack>
 
-              {/* Log in button: always visible, just slightly tighter on mobile */}
+              <ColorModeToggle />
+
               <Button
                 as="a"
                 href="https://veevee.io"
@@ -171,22 +141,11 @@ function Header() {
                 Log in
               </Button>
 
-              {/* Mobile hamburger: only show on base–sm, hide on md+ */}
               <IconButton
                 aria-label="Open navigation menu"
-                icon={
-                  <Box
-                    as="span"
-                    fontSize="22px"
-                    lineHeight="1"
-                    color="whiteAlpha.900"
-                    mt="2px"
-                  >
-                    ☰
-                  </Box>
-                }
+                icon={<Box as="span" fontSize="12px" lineHeight="1">Menu</Box>}
                 variant="ghost"
-                color="whiteAlpha.900"
+                color={navColor}
                 display={{ base: "inline-flex", md: "none" }}
                 onClick={onOpen}
               />
@@ -195,59 +154,29 @@ function Header() {
         </Container>
       </Box>
 
-      {/* Mobile drawer nav */}
       <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
-        <DrawerContent bg="#050816" color="whiteAlpha.900">
+        <DrawerContent bg={drawerBg} color={navColor}>
           <DrawerCloseButton mt={2} />
-          <DrawerHeader borderBottomWidth="1px" borderColor="whiteAlpha.200">
+          <DrawerHeader borderBottomWidth="1px" borderColor={borderColor}>
             Navigation
           </DrawerHeader>
           <DrawerBody>
             <Stack spacing={4} mt={4}>
-              <CLink
-                as={Link}
-                to="/"
-                onClick={onClose}
-                fontWeight="600"
-                color="whiteAlpha.900"
-              >
+              <ColorModeToggle />
+              <CLink as={Link} to="/" onClick={onClose} fontWeight="600" color={navColor}>
                 Home
               </CLink>
-              <CLink
-                as={Link}
-                to="/features"
-                onClick={onClose}
-                fontWeight="600"
-                color="whiteAlpha.900"
-              >
+              <CLink as={Link} to="/features" onClick={onClose} fontWeight="600" color={navColor}>
                 Why VeeVee
               </CLink>
-              <CLink
-                as={Link}
-                to="/testimonials"
-                onClick={onClose}
-                fontWeight="600"
-                color="whiteAlpha.900"
-              >
+              <CLink as={Link} to="/testimonials" onClick={onClose} fontWeight="600" color={navColor}>
                 Testimonials
               </CLink>
-              <CLink
-                as={Link}
-                to="/how-it-works"
-                onClick={onClose}
-                fontWeight="600"
-                color="whiteAlpha.900"
-              >
+              <CLink as={Link} to="/how-it-works" onClick={onClose} fontWeight="600" color={navColor}>
                 How it works
               </CLink>
-              <CLink
-                href="https://veevee.io"
-                isExternal
-                onClick={onClose}
-                fontWeight="700"
-                color="accent.300"
-              >
+              <CLink href="https://veevee.io" isExternal onClick={onClose} fontWeight="700" color="accent.soft">
                 Log in to VeeVee.io
               </CLink>
             </Stack>
@@ -259,36 +188,55 @@ function Header() {
 }
 
 function Footer() {
+  const footerBorder = useColorModeValue("border.default", "border.default");
+  const footerBg = useColorModeValue("bg.glass", "bg.glass");
+  const primaryText = useColorModeValue("text.primary", "text.primary");
+  const mutedText = useColorModeValue("text.muted", "text.muted");
+
   return (
     <Box
       as="footer"
       borderTop="1px solid"
-      borderColor="whiteAlpha.200"
-      bg="rgba(5, 8, 22, 0.7)"
+      borderColor={footerBorder}
+      bg={footerBg}
       backdropFilter="saturate(150%) blur(12px)"
     >
       <Container maxW="6xl" py="3">
         <Flex align="center" justify="space-between" fontSize="sm">
-          <Text color="whiteAlpha.800">
-            © {new Date().getFullYear()} VeeVee Health
-          </Text>
+          <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
           <HStack spacing="4">
-            <CLink href="https://veevee.io" isExternal color="whiteAlpha.900">
-              Log in
+            <CLink as={Link} to="/features" color={primaryText}>
+              Why VeeVee
             </CLink>
-            <CLink
-              href="https://investveevee.com"
-              isExternal
-              color="whiteAlpha.900"
-            >
-              For investors
+            <CLink href="https://veevee.io" isExternal color={primaryText}>
+              Start at VeeVee.io
             </CLink>
-            <CLink as={Link} to="/terms" color="whiteAlpha.900">
+            <CLink href="https://investveevee.com" isExternal color={primaryText}>
+              Investor Info
+            </CLink>
+            <CLink as={Link} to="/terms" color={primaryText}>
               Terms &amp; Disclaimers
             </CLink>
           </HStack>
         </Flex>
       </Container>
     </Box>
+  );
+}
+
+function ColorModeToggle() {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const label = colorMode === "dark" ? "Switch to light mode" : "Switch to dark mode";
+
+  return (
+    <Button
+      onClick={toggleColorMode}
+      size="sm"
+      variant="outline"
+      aria-label={label}
+      title={label}
+    >
+      {colorMode === "dark" ? "Light mode" : "Dark mode"}
+    </Button>
   );
 }

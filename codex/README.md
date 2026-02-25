@@ -111,12 +111,13 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Navigation and Site-Wide Consistency
 - [x] Update nav labels/order in `src/App.tsx` if needed for new story flow.
-- [ ] Ensure footer links and wording reflect updated messaging.
+- [x] Ensure footer links and wording reflect updated messaging.
 - [x] Check page metadata in `index.html` (title, description, OG/Twitter) for consistency.
 - [x] Sync codex docs after implementation so architecture and messaging notes stay accurate.
+- [ ] Theme factory + light mode + toggle tasks are tracked in `codex/readme_theme.md`.
 
 ### QA and Review Passes
-- [ ] Pass 1: Content QA (clarity, consistency, tone, legal-safe language).
+- [x] Pass 1: Content QA (clarity, consistency, tone, legal-safe language).
 - [ ] Pass 2: UX QA (desktop/mobile responsiveness, interaction behavior, readability).
 - [ ] Pass 3: Conversion QA (CTA prominence, funnel continuity, page-to-page flow).
 - [ ] Pass 4: Accessibility QA (heading order, contrast, keyboard navigation, link clarity).

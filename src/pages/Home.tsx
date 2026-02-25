@@ -9,6 +9,7 @@ import {
   SimpleGrid,
   Card,
   CardBody,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import { Link as CLink } from "@chakra-ui/react";
@@ -52,12 +53,23 @@ const PILLARS = [
 ];
 
 export default function Home() {
+  const pageGradient = useColorModeValue(
+    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #050816, #070B1F)"
+  );
+  const heroCardBg = useColorModeValue("bg.elevated", "bg.elevated");
+  const heroStripBg = useColorModeValue("gray.100", "rgba(7, 11, 31, 0.98)");
+  const border = useColorModeValue("border.default", "border.default");
+  const muted = useColorModeValue("text.muted", "text.muted");
+  const subtle = useColorModeValue("text.subtle", "text.subtle");
+  const pillBg = useColorModeValue("white", "rgba(5, 8, 22, 0.96)");
+
   return (
     <Box
       as="main"
       minH="100vh"
-      bgGradient="linear(to-b, #050816, #070B1F)"
-      color="whiteAlpha.900"
+      bgGradient={pageGradient}
+      color="text.primary"
       py={{ base: 10, md: 20 }}
       px={{ base: 6, md: 10 }}
     >
@@ -73,7 +85,7 @@ export default function Home() {
             fontSize="sm"
             letterSpacing="0.18em"
             textTransform="uppercase"
-            color="accent.300"
+            color="accent.soft"
             as={CLink}
             href="https://veevee.io"
             _hover={{ textDecoration: "none" }}
@@ -93,20 +105,16 @@ export default function Home() {
               size={{ base: "xl", md: "2xl" }}
               fontWeight="800"
               lineHeight="1.1"
-              color="white"
+              color="text.primary"
             >
               Instant health clarity,
-              <Box as="span" color="accent.400">
+              <Box as="span" color="accent.primary">
                 {" "}built around you.
               </Box>
             </Heading>
           </CLink>
 
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            maxW="lg"
-            color="whiteAlpha.800"
-          >
+          <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
             One app to triage quickly, simulate outcomes with your digital twin,
             unify your true health profile, and maximize coverage for the care
             you actually need.
@@ -125,7 +133,7 @@ export default function Home() {
               Start at VeeVee.io
             </Button>
 
-            <Text fontSize="sm" color="whiteAlpha.600">
+            <Text fontSize="sm" color={subtle}>
               Personalized triage | Benefits-aware guidance | Encrypted
             </Text>
           </Stack>
@@ -133,12 +141,12 @@ export default function Home() {
 
         <Box
           position="relative"
-          bg="rgba(10, 14, 32, 0.95)"
+          bg={heroCardBg}
           borderRadius="2xl"
           overflow="hidden"
           borderWidth="1px"
-          borderColor="whiteAlpha.200"
-          boxShadow="0 0 60px rgba(0,0,0,0.8)"
+          borderColor={border}
+          boxShadow="0 0 60px rgba(0,0,0,0.25)"
         >
           <CLink
             href="https://veevee.io"
@@ -152,9 +160,9 @@ export default function Home() {
               gap={3}
               px={4}
               py={3}
-              bg="rgba(7, 11, 31, 0.98)"
+              bg={heroStripBg}
               borderBottomWidth="1px"
-              borderColor="whiteAlpha.200"
+              borderColor={border}
               cursor="pointer"
             >
               <Image
@@ -165,10 +173,10 @@ export default function Home() {
                 draggable="false"
               />
               <Box>
-                <Text fontWeight="700" fontSize="md">
+                <Text fontWeight="700" fontSize="md" color="text.primary">
                   VeeVee
                 </Text>
-                <Text fontSize="xs" color="whiteAlpha.600">
+                <Text fontSize="xs" color={subtle}>
                   Your AI wellness companion
                 </Text>
               </Box>
@@ -193,28 +201,22 @@ export default function Home() {
             fontSize="xs"
             textTransform="uppercase"
             letterSpacing="0.16em"
-            color="accent.300"
+            color="accent.soft"
           >
             The Core Experience
           </Text>
-          <Heading as="h2" size={{ base: "md", md: "lg" }}>
+          <Heading as="h2" size={{ base: "md", md: "lg" }} color="text.primary">
             Four reasons people choose VeeVee
           </Heading>
         </Stack>
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
           {PILLARS.map((pillar) => (
-            <Card
-              key={pillar.title}
-              bg="rgba(7, 11, 31, 0.9)"
-              borderColor="whiteAlpha.200"
-              borderWidth="1px"
-              borderRadius="2xl"
-            >
+            <Card key={pillar.title} bg="bg.surface" borderColor={border} borderWidth="1px" borderRadius="2xl">
               <CardBody>
-                <Heading as="h3" size="sm" mb={3} color="accent.300">
+                <Heading as="h3" size="sm" mb={3} color="accent.soft">
                   {pillar.title}
                 </Heading>
-                <Text fontSize="sm" color="whiteAlpha.900">
+                <Text fontSize="sm" color="text.primary">
                   {pillar.text}
                 </Text>
               </CardBody>
@@ -223,27 +225,17 @@ export default function Home() {
         </SimpleGrid>
       </Box>
 
-      <Box
-        mt={{ base: 10, md: 14 }}
-        maxW="6xl"
-        mx="auto"
-        px={{ base: 4, md: 6 }}
-      >
+      <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 4, md: 6 }}>
         <Box
           borderRadius="full"
-          bg="rgba(5, 8, 22, 0.96)"
+          bg={pillBg}
           border="1px solid rgba(0, 245, 160, 0.5)"
           boxShadow="0 0 36px rgba(0, 245, 160, 0.35)"
           backdropFilter="blur(12px)"
           px={{ base: 6, md: 10 }}
           py={{ base: 6, md: 7 }}
         >
-          <Text
-            textAlign="center"
-            fontSize={{ base: "sm", md: "md" }}
-            color="whiteAlpha.900"
-            mb={{ base: 4, md: 5 }}
-          >
+          <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="text.primary" mb={{ base: 4, md: 5 }}>
             Built for real people across real plans, from national insurers to
             employer coverage.
           </Text>

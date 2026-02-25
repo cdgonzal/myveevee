@@ -7,6 +7,7 @@ import {
   Stack,
   Card,
   CardBody,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
@@ -40,12 +41,20 @@ const STEPS = [
 ];
 
 export default function HowItWorks() {
+  const pageGradient = useColorModeValue(
+    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #050816, #070B1F)"
+  );
+  const muted = useColorModeValue("text.muted", "text.muted");
+  const subtle = useColorModeValue("text.subtle", "text.subtle");
+  const borderColor = useColorModeValue("border.default", "border.default");
+
   return (
     <Box
       as="main"
       minH="100vh"
-      bgGradient="linear(to-b, #050816, #070B1F)"
-      color="whiteAlpha.900"
+      bgGradient={pageGradient}
+      color="text.primary"
       py={{ base: 10, md: 20 }}
     >
       <Stack spacing={{ base: 10, md: 14 }} maxW="5xl" mx="auto" px={{ base: 6, md: 10 }}>
@@ -54,7 +63,7 @@ export default function HowItWorks() {
             fontSize="sm"
             letterSpacing="0.18em"
             textTransform="uppercase"
-            color="accent.300"
+            color="accent.soft"
             mb={3}
           >
             HOW IT WORKS
@@ -62,7 +71,7 @@ export default function HowItWorks() {
           <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={4}>
             A 3-step path from uncertainty to action.
           </Heading>
-          <Text fontSize={{ base: "sm", md: "md" }} color="whiteAlpha.800" maxW="3xl" mx="auto">
+          <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="3xl" mx="auto">
             VeeVee combines rapid triage, digital twin simulation, and benefits-aware guidance so you can make better health decisions faster.
           </Text>
         </MotionBox>
@@ -71,10 +80,10 @@ export default function HowItWorks() {
           {STEPS.map((step, index) => (
             <MotionCard
               key={step.number}
-              bg="surface.800"
+              bg="bg.surface"
               borderRadius="xl"
               borderWidth="1px"
-              borderColor="whiteAlpha.300"
+              borderColor={borderColor}
               variants={fadeUp}
               initial="hidden"
               animate="visible"
@@ -92,17 +101,17 @@ export default function HowItWorks() {
                   fontWeight="800"
                   fontSize="lg"
                   bg="rgba(0, 245, 160, 0.08)"
-                  color="accent.400"
+                  color="accent.primary"
                   border="1px solid"
-                  borderColor="accent.400"
+                  borderColor="accent.primary"
                   mb={3}
                 >
                   {step.number}
                 </Box>
-                <Heading as="h3" size="sm" mb={2} color="accent.300">
+                <Heading as="h3" size="sm" mb={2} color="accent.soft">
                   {step.title}
                 </Heading>
-                <Text fontSize="sm" color="whiteAlpha.900">
+                <Text fontSize="sm" color="text.primary">
                   {step.detail}
                 </Text>
               </CardBody>
@@ -114,7 +123,7 @@ export default function HowItWorks() {
           <Heading as="h2" size="md">
             Start with your first input.
           </Heading>
-          <Text fontSize="sm" color="whiteAlpha.800" maxW="2xl" mx="auto">
+          <Text fontSize="sm" color={muted} maxW="2xl" mx="auto">
             Begin free at VeeVee.io and see how your triage, profile, and coverage context work together in one place.
           </Text>
           <Button
@@ -131,14 +140,7 @@ export default function HowItWorks() {
           </Button>
         </Stack>
 
-        <Box
-          fontSize="xs"
-          color="whiteAlpha.700"
-          borderTopWidth="1px"
-          borderColor="whiteAlpha.200"
-          pt={4}
-          mt={4}
-        >
+        <Box fontSize="xs" color={subtle} borderTopWidth="1px" borderColor={borderColor} pt={4} mt={4}>
           <Text mb={1}>
             VeeVee is a wellness and education companion and does not provide medical advice, diagnosis, or treatment.
           </Text>

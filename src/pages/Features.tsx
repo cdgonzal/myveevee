@@ -10,6 +10,7 @@ import {
   CardBody,
   useBreakpointValue,
   Image,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
@@ -68,6 +69,9 @@ const PILLARS: Pillar[] = [
 function PillarCard({ pillar }: { pillar: Pillar }) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [open, setOpen] = React.useState(false);
+  const borderColor = useColorModeValue("border.default", "border.default");
+  const subtle = useColorModeValue("text.subtle", "text.subtle");
+  const muted = useColorModeValue("text.muted", "text.muted");
 
   const frontOpacity = isMobile ? (open ? 0.08 : 1) : 1;
   const backOpacity = isMobile ? (open ? 1 : 0) : 0;
@@ -75,10 +79,10 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
   return (
     <MotionCard
       role="group"
-      bg="surface.800"
+      bg="bg.surface"
       borderRadius="2xl"
       borderWidth="1px"
-      borderColor="whiteAlpha.200"
+      borderColor={borderColor}
       overflow="hidden"
       cursor={isMobile ? "pointer" : "default"}
       onClick={isMobile ? () => setOpen((v) => !v) : undefined}
@@ -91,7 +95,7 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
             borderRadius="xl"
             overflow="hidden"
             borderWidth="1px"
-            borderColor="whiteAlpha.200"
+            borderColor={borderColor}
             bg="blackAlpha.400"
           >
             <Box position="relative" w="100%" aspectRatio="16 / 10">
@@ -114,19 +118,19 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
               fontSize="xs"
               textTransform="uppercase"
               letterSpacing="0.16em"
-              color="accent.300"
+              color="accent.soft"
               mb={2}
             >
               {pillar.eyebrow}
             </Text>
-            <Heading as="h3" size="sm" mb={2} color="whiteAlpha.900">
+            <Heading as="h3" size="sm" mb={2} color="text.primary">
               {pillar.title}
             </Heading>
-            <Text fontSize="sm" color="whiteAlpha.800">
+            <Text fontSize="sm" color={muted}>
               {pillar.front}
             </Text>
             {isMobile && (
-              <Text mt={3} fontSize="xs" color="whiteAlpha.600">
+              <Text mt={3} fontSize="xs" color={subtle}>
                 Tap to learn more
               </Text>
             )}
@@ -149,19 +153,19 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
               fontSize="xs"
               textTransform="uppercase"
               letterSpacing="0.16em"
-              color="accent.200"
+              color="accent.soft"
               mb={2}
             >
               {pillar.eyebrow}
             </Text>
-            <Heading as="h3" size="sm" mb={2} color="accent.300">
+            <Heading as="h3" size="sm" mb={2} color="accent.soft">
               {pillar.title}
             </Heading>
-            <Text fontSize="sm" color="whiteAlpha.900">
+            <Text fontSize="sm" color="text.primary">
               {pillar.back}
             </Text>
             {isMobile && (
-              <Text mt={3} fontSize="xs" color="whiteAlpha.600">
+              <Text mt={3} fontSize="xs" color={subtle}>
                 Tap again to close
               </Text>
             )}
@@ -174,13 +178,18 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
 
 export default function Features() {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const pageGradient = useColorModeValue(
+    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #050816, #070B1F)"
+  );
+  const muted = useColorModeValue("text.muted", "text.muted");
 
   return (
     <Box
       as="main"
       minH="100vh"
-      bgGradient="linear(to-b, #050816, #070B1F)"
-      color="whiteAlpha.900"
+      bgGradient={pageGradient}
+      color="text.primary"
       py={{ base: 10, md: 20 }}
     >
       <Stack spacing={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
@@ -189,7 +198,7 @@ export default function Features() {
             fontSize="sm"
             letterSpacing="0.18em"
             textTransform="uppercase"
-            color="accent.300"
+            color="accent.soft"
             mb={3}
           >
             WHY VEEVEE
@@ -197,7 +206,7 @@ export default function Features() {
           <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={3}>
             Four capabilities working together for better health decisions.
           </Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="whiteAlpha.900">
+          <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
             Each pillar is designed to reduce delay, remove guesswork, and make health actions more personal and more financially smart.
           </Text>
         </MotionBox>
@@ -220,7 +229,7 @@ export default function Features() {
           <Heading as="h2" size="md">
             Ready to see your personalized health path?
           </Heading>
-          <Text fontSize="sm" color="whiteAlpha.800" maxW="2xl" mx="auto" textAlign={isMobile ? "left" : "center"}>
+          <Text fontSize="sm" color={muted} maxW="2xl" mx="auto" textAlign={isMobile ? "left" : "center"}>
             Start with your own profile and get guidance that aligns with your symptoms, your history, and your coverage.
           </Text>
           <Button
