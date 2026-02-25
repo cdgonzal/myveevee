@@ -89,9 +89,9 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Take control.
+              Take control.<br></br>
               <Box as="span" color="accent.primary">
-                {" "}Get the right care. Every time.
+                {" "}Get the right care.
               </Box>
             </Heading>
           </CLink>
