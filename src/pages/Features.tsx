@@ -180,7 +180,7 @@ export default function Features() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const pageGradient = useColorModeValue(
     "linear(to-b, gray.50, blue.50)",
-    "linear(to-b, #050816, #070B1F)"
+    "linear(to-b, surface.900, surface.800)"
   );
   const muted = useColorModeValue("text.muted", "text.muted");
 
@@ -249,3 +249,4 @@ export default function Features() {
     </Box>
   );
 }
+

@@ -3,7 +3,7 @@ import { Box, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 export default function Terms() {
   const pageGradient = useColorModeValue(
     "linear(to-b, gray.50, blue.50)",
-    "linear(to-b, #050816, #070B1F)"
+    "linear(to-b, surface.900, surface.800)"
   );
 
   return (
@@ -80,3 +80,4 @@ export default function Terms() {
     </Box>
   );
 }
+

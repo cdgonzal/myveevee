@@ -55,7 +55,7 @@ const PILLARS = [
 export default function Home() {
   const pageGradient = useColorModeValue(
     "linear(to-b, gray.50, blue.50)",
-    "linear(to-b, #050816, #070B1F)"
+    "linear(to-b, surface.900, surface.800)"
   );
   const heroCardBg = useColorModeValue("bg.elevated", "bg.elevated");
   const heroStripBg = useColorModeValue("gray.100", "rgba(7, 11, 31, 0.98)");
@@ -279,3 +279,4 @@ export default function Home() {
     </Box>
   );
 }
+

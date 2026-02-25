@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import {
   Box,
   Button,
@@ -21,11 +21,12 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/Home";
-import HowItWorks from "./pages/HowItWorks";
-import Terms from "./pages/Terms";
-import Features from "./pages/Features";
-import Testimonials from "./pages/Testimonials";
+
+const Home = lazy(() => import("./pages/Home"));
+const Features = lazy(() => import("./pages/Features"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks"));
+const Testimonials = lazy(() => import("./pages/Testimonials"));
+const Terms = lazy(() => import("./pages/Terms"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -37,10 +38,18 @@ function ScrollToTop() {
   return null;
 }
 
+function PageFallback() {
+  return (
+    <Box py={12} textAlign="center">
+      <Text color="text.muted">Loading...</Text>
+    </Box>
+  );
+}
+
 export default function App() {
   const pageGradient = useColorModeValue(
     "linear(to-b, gray.50, blue.50)",
-    "linear(to-b, #050816, #070B1F)"
+    "linear(to-b, surface.900, surface.800)"
   );
 
   return (
@@ -49,13 +58,15 @@ export default function App() {
       <Box as="main" flex="1">
         <Container maxW="6xl" py={{ base: 8, md: 12 }}>
           <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/testimonials" element={<Testimonials />} />
-            <Route path="/terms" element={<Terms />} />
-          </Routes>
+          <Suspense fallback={<PageFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/terms" element={<Terms />} />
+            </Routes>
+          </Suspense>
         </Container>
       </Box>
       <Footer />
@@ -227,10 +238,19 @@ function Footer() {
 function ColorModeToggle() {
   const { colorMode, toggleColorMode } = useColorMode();
   const label = colorMode === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  const nextMode = colorMode === "dark" ? "light" : "dark";
+
+  const onToggle = () => {
+    toggleColorMode();
+    const gtag = (window as any).gtag;
+    if (typeof gtag === "function") {
+      gtag("event", "theme_toggle", { mode: nextMode });
+    }
+  };
 
   return (
     <Button
-      onClick={toggleColorMode}
+      onClick={onToggle}
       size="sm"
       variant="outline"
       aria-label={label}
@@ -240,3 +260,4 @@ function ColorModeToggle() {
     </Button>
   );
 }
+
