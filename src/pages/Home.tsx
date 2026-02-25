@@ -114,7 +114,7 @@ export default function Home() {
             </Button>
 
             <Text fontSize="sm" color={subtle}>
-              Insurance Benefits | Personalized Recommendations | Health Records
+              Insurance | Recommendations | Health Records
             </Text>
           </Stack>
         </Stack>
