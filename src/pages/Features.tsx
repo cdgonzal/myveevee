@@ -86,7 +86,7 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
       overflow="hidden"
       cursor={isMobile ? "pointer" : "default"}
       onClick={isMobile ? () => setOpen((v) => !v) : undefined}
-      whileHover={{ y: -3, boxShadow: "0 0 30px rgba(0, 245, 160, 0.35)" }}
+      whileHover={{ y: -3, boxShadow: "0 0 30px rgba(17, 119, 186, 0.35)" }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
       <CardBody p={0}>
@@ -96,7 +96,7 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
             overflow="hidden"
             borderWidth="1px"
             borderColor={borderColor}
-            bg="blackAlpha.400"
+            bg="surface.700"
           >
             <Box position="relative" w="100%" aspectRatio="16 / 10">
               <Image
@@ -179,7 +179,7 @@ function PillarCard({ pillar }: { pillar: Pillar }) {
 export default function Features() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const pageGradient = useColorModeValue(
-    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
   );
   const muted = useColorModeValue("text.muted", "text.muted");
@@ -240,7 +240,7 @@ export default function Features() {
             fontWeight="700"
             px={8}
             alignSelf="center"
-            boxShadow="0 0 28px rgba(0, 245, 160, 0.35)"
+            boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
           >
             Start for free
           </Button>
@@ -249,4 +249,5 @@ export default function Features() {
     </Box>
   );
 }
+
 

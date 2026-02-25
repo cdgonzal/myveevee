@@ -48,7 +48,7 @@ function PageFallback() {
 
 export default function App() {
   const pageGradient = useColorModeValue(
-    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
   );
 
@@ -138,7 +138,7 @@ function Header() {
                 borderRadius="full"
                 fontWeight="700"
                 px={{ base: 4, md: 5 }}
-                boxShadow="0 0 20px rgba(0, 245, 160, 0.45)"
+                boxShadow="0 0 20px rgba(17, 119, 186, 0.45)"
               >
                 Log in
               </Button>
@@ -265,4 +265,5 @@ function ColorModeToggle({
     </Button>
   );
 }
+
 

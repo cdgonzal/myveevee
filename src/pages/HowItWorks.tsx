@@ -42,7 +42,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   const pageGradient = useColorModeValue(
-    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
   );
   const muted = useColorModeValue("text.muted", "text.muted");
@@ -88,7 +88,7 @@ export default function HowItWorks() {
               initial="hidden"
               animate="visible"
               transition={{ delay: index * 0.05 }}
-              whileHover={{ y: -4, boxShadow: "0 0 28px rgba(0, 245, 160, 0.35)" }}
+              whileHover={{ y: -4, boxShadow: "0 0 28px rgba(17, 119, 186, 0.35)" }}
             >
               <CardBody>
                 <Box
@@ -100,7 +100,7 @@ export default function HowItWorks() {
                   justifyContent="center"
                   fontWeight="800"
                   fontSize="lg"
-                  bg="rgba(0, 245, 160, 0.08)"
+                  bg="rgba(156, 231, 255, 0.15)"
                   color="accent.primary"
                   border="1px solid"
                   borderColor="accent.primary"
@@ -134,7 +134,7 @@ export default function HowItWorks() {
             fontWeight="700"
             px={8}
             alignSelf="center"
-            boxShadow="0 0 28px rgba(0, 245, 160, 0.35)"
+            boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
           >
             Start at VeeVee.io
           </Button>
@@ -155,4 +155,5 @@ export default function HowItWorks() {
     </Box>
   );
 }
+
 

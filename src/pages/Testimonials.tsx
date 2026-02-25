@@ -75,13 +75,13 @@ export default function Testimonials() {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const pageGradient = useColorModeValue(
-    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
   );
   const muted = useColorModeValue("text.muted", "text.muted");
   const subtle = useColorModeValue("text.subtle", "text.subtle");
   const borderColor = useColorModeValue("border.default", "border.default");
-  const cardBg = useColorModeValue("bg.surface", "rgba(7, 11, 31, 0.95)");
+  const cardBg = useColorModeValue("bg.surface", "surface.800");
 
   return (
     <Box
@@ -124,8 +124,8 @@ export default function Testimonials() {
                   bg={isActive ? "accent.primary" : "transparent"}
                   color={isActive ? "accent.on" : "text.primary"}
                   borderColor="accent.primary"
-                  _hover={{ bg: isActive ? "accent.primary" : "blackAlpha.100" }}
-                  _focus={{ boxShadow: "0 0 0 2px rgba(0,245,160,0.5)" }}
+                  _hover={{ bg: isActive ? "accent.primary" : "brand.50" }}
+                  _focus={{ boxShadow: "0 0 0 2px rgba(17,119,186,0.5)" }}
                 >
                   {voice.pillLabel}
                 </Button>
@@ -139,7 +139,7 @@ export default function Testimonials() {
             <MotionBox key={activeVoice.id} variants={contentVariants} initial="hidden" animate="visible" exit="exit">
               <Stack spacing={{ base: 4, md: 5 }}>
                 <Stack direction="row" spacing={3} align="center">
-                  <Badge variant="subtle" colorScheme="green" bg="rgba(0,245,160,0.12)" color="accent.soft" borderRadius="full" px={3} py={1} fontSize="xs">
+                  <Badge variant="subtle" bg="rgba(156,231,255,0.28)" color="accent.soft" borderRadius="full" px={3} py={1} fontSize="xs">
                     Testimonial
                   </Badge>
                   <Text fontSize="xs" color={subtle} textTransform="uppercase" letterSpacing="0.14em">
@@ -188,7 +188,7 @@ export default function Testimonials() {
                     fontWeight="700"
                     px={8}
                     alignSelf={isMobile ? "stretch" : "center"}
-                    boxShadow="0 0 26px rgba(0, 245, 160, 0.4)"
+                    boxShadow="0 0 26px rgba(17, 119, 186, 0.4)"
                   >
                     Start at VeeVee.io
                   </Button>
@@ -201,4 +201,5 @@ export default function Testimonials() {
     </Box>
   );
 }
+
 

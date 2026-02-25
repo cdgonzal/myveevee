@@ -54,15 +54,15 @@ const PILLARS = [
 
 export default function Home() {
   const pageGradient = useColorModeValue(
-    "linear(to-b, gray.50, blue.50)",
+    "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
   );
   const heroCardBg = useColorModeValue("bg.elevated", "bg.elevated");
-  const heroStripBg = useColorModeValue("gray.100", "rgba(7, 11, 31, 0.98)");
+  const heroStripBg = useColorModeValue("brand.50", "surface.700");
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
   const subtle = useColorModeValue("text.subtle", "text.subtle");
-  const pillBg = useColorModeValue("white", "rgba(5, 8, 22, 0.96)");
+  const pillBg = useColorModeValue("#FFFFFF", "surface.900");
   const logoFilter = useColorModeValue("none", "invert(1)");
 
   return (
@@ -129,7 +129,7 @@ export default function Home() {
               borderRadius="full"
               fontWeight="700"
               px={10}
-              boxShadow="0 0 40px rgba(0, 245, 160, 0.45)"
+              boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
             >
               Start at VeeVee.io
             </Button>
@@ -224,8 +224,8 @@ export default function Home() {
         <Box
           borderRadius="full"
           bg={pillBg}
-          border="1px solid rgba(0, 245, 160, 0.5)"
-          boxShadow="0 0 36px rgba(0, 245, 160, 0.35)"
+          border="1px solid rgba(25, 37, 134, 0.5)"
+          boxShadow="0 0 36px rgba(25, 37, 134, 0.35)"
           backdropFilter="blur(12px)"
           px={{ base: 6, md: 10 }}
           py={{ base: 6, md: 7 }}
@@ -274,4 +274,5 @@ export default function Home() {
     </Box>
   );
 }
+
 
