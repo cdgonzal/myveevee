@@ -53,6 +53,7 @@ const PILLARS = [
 ];
 
 export default function Home() {
+  const heroSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026.webp`;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -178,7 +179,7 @@ export default function Home() {
 
           <CLink href="https://veevee.io" isExternal>
             <Image
-              src="/images/marketing/hero-2026.webp"
+              src={heroSrc}
               alt="VeeVee marketing image showing connected care and benefits optimization"
               objectFit="cover"
               maxH="420px"
@@ -272,5 +273,4 @@ export default function Home() {
     </Box>
   );
 }
-
 
