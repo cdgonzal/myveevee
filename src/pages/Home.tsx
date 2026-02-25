@@ -110,7 +110,7 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Know what’s covered.
+              Know what’s covered. Know what's right.
               <Box as="span" color="accent.primary">
                 {" "}Before you book.
               </Box>
@@ -118,7 +118,7 @@ export default function Home() {
           </CLink>
 
           <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-            Avoid surprise bills and denied claims. No guessing. No surprises.
+            We help you take control of your healthcare by unlocking your benefits and guiding you to the right care.
           </Text>
 
           <Stack spacing={3}>
