@@ -43,7 +43,7 @@ export default function Home() {
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
   const subtle = useColorModeValue("text.subtle", "text.subtle");
-  const pillBg = "surface.900";
+  const pillBg = "accent.primary";
   const logoFilter = useColorModeValue("none", "invert(1)");
 
   return (
