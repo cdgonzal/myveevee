@@ -11,6 +11,7 @@ import {
 import { keyframes } from "@emotion/react";
 import { Link as CLink } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { APP_LINKS } from "../config/links";
 
 const PAYOR_LOGOS = [
   { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
@@ -69,8 +70,8 @@ export default function Home() {
             letterSpacing="0.18em"
             textTransform="uppercase"
             color="accent.soft"
-            as={CLink}
-            href="https://veevee.io"
+            as={RouterLink}
+            to={APP_LINKS.cta.getStarted}
             _hover={{ textDecoration: "none" }}
             _focus={{ outline: "none" }}
           >
@@ -78,7 +79,8 @@ export default function Home() {
           </Text>
 
           <CLink
-            href="https://veevee.io"
+            as={RouterLink}
+            to={APP_LINKS.cta.getStarted}
             _hover={{ textDecoration: "none" }}
             _focus={{ outline: "none" }}
             style={{ textDecoration: "none" }}
@@ -103,8 +105,8 @@ export default function Home() {
 
           <Stack spacing={3}>
             <Button
-              as="a"
-              href="https://veevee.io/"
+              as={RouterLink}
+              to={APP_LINKS.cta.checkBenefits}
               size="lg"
               borderRadius="full"
               fontWeight="700"
@@ -130,7 +132,8 @@ export default function Home() {
           boxShadow="0 0 60px rgba(0,0,0,0.25)"
         >
           <CLink
-            href="https://veevee.io"
+            as={RouterLink}
+            to={APP_LINKS.cta.getStarted}
             _hover={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
             display="block"
@@ -158,7 +161,7 @@ export default function Home() {
             </Box>
           </CLink>
 
-          <CLink href="https://veevee.io" isExternal>
+          <CLink as={RouterLink} to={APP_LINKS.cta.getStarted}>
             <Image
               src={heroWebpSrc}
               alt="VeeVee marketing image showing connected care and benefits optimization"
@@ -189,7 +192,7 @@ export default function Home() {
           </Text>
           <CLink
             as={RouterLink}
-            to="/features"
+            to={APP_LINKS.internal.whyVeeVee}
             _hover={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
             w="fit-content"

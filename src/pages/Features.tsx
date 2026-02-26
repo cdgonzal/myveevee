@@ -13,6 +13,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { Link as RouterLink } from "react-router-dom";
+import { APP_LINKS } from "../config/links";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
@@ -233,8 +235,8 @@ export default function Features() {
             Start with your own profile and get guidance that aligns with your symptoms, your history, and your coverage.
           </Text>
           <Button
-            as="a"
-            href="https://veevee.io"
+            as={RouterLink}
+            to={APP_LINKS.cta.getStarted}
             size="md"
             borderRadius="full"
             fontWeight="700"

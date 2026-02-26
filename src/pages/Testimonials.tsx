@@ -10,6 +10,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link as RouterLink } from "react-router-dom";
+import { APP_LINKS } from "../config/links";
 
 const MotionBox = motion(Box);
 
@@ -181,8 +183,8 @@ export default function Testimonials() {
                     </Text>
                   </Box>
                   <Button
-                    as="a"
-                    href="https://veevee.io"
+                    as={RouterLink}
+                    to={APP_LINKS.cta.getStarted}
                     size="md"
                     borderRadius="full"
                     fontWeight="700"
@@ -190,7 +192,7 @@ export default function Testimonials() {
                     alignSelf={isMobile ? "stretch" : "center"}
                     boxShadow="0 0 26px rgba(17, 119, 186, 0.4)"
                   >
-                    Start at VeeVee.io
+                    Get started
                   </Button>
                 </Stack>
               </Stack>

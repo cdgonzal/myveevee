@@ -22,6 +22,7 @@ import {
   Switch,
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { APP_LINKS } from "./config/links";
 
 const Home = lazy(() => import("./pages/Home"));
 const Features = lazy(() => import("./pages/Features"));
@@ -61,11 +62,11 @@ export default function App() {
           <ScrollToTop />
           <Suspense fallback={<PageFallback />}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/features" element={<Features />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/terms" element={<Terms />} />
+              <Route path={APP_LINKS.internal.home} element={<Home />} />
+              <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
+              <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
+              <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
+              <Route path={APP_LINKS.internal.terms} element={<Terms />} />
             </Routes>
           </Suspense>
         </Container>
@@ -119,13 +120,13 @@ function Header() {
                 spacing={{ base: 3, md: 6 }}
                 display={{ base: "none", md: "flex" }}
               >
-                <CLink as={Link} to="/features" color={navColor} fontWeight="600">
+                <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
                   Why VeeVee
                 </CLink>
-                <CLink as={Link} to="/testimonials" color={navColor} fontWeight="600">
+                <CLink as={Link} to={APP_LINKS.internal.testimonials} color={navColor} fontWeight="600">
                   Testimonials
                 </CLink>
-                <CLink as={Link} to="/how-it-works" color={navColor} fontWeight="600">
+                <CLink as={Link} to={APP_LINKS.internal.howItWorks} color={navColor} fontWeight="600">
                   How it works
                 </CLink>
               </HStack>
@@ -137,7 +138,7 @@ function Header() {
 
               <Button
                 as="a"
-                href="https://veevee.io"
+                href={APP_LINKS.external.authenticatedConsole}
                 size="sm"
                 borderRadius="full"
                 fontWeight="700"
@@ -170,20 +171,20 @@ function Header() {
           <DrawerBody>
             <Stack spacing={4} mt={4}>
               <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
-              <CLink as={Link} to="/" onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink as={Link} to={APP_LINKS.internal.home} onClick={onClose} fontWeight="600" color={navColor}>
                 Home
               </CLink>
-              <CLink as={Link} to="/features" onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
                 Why VeeVee
               </CLink>
-              <CLink as={Link} to="/testimonials" onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink as={Link} to={APP_LINKS.internal.testimonials} onClick={onClose} fontWeight="600" color={navColor}>
                 Testimonials
               </CLink>
-              <CLink as={Link} to="/how-it-works" onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink as={Link} to={APP_LINKS.internal.howItWorks} onClick={onClose} fontWeight="600" color={navColor}>
                 How it works
               </CLink>
-              <CLink href="https://veevee.io" isExternal onClick={onClose} fontWeight="700" color="accent.soft">
-                Log in to VeeVee.io
+              <CLink href={APP_LINKS.external.authenticatedConsole} isExternal onClick={onClose} fontWeight="700" color="accent.soft">
+                Log in
               </CLink>
             </Stack>
           </DrawerBody>
@@ -218,16 +219,16 @@ function Footer() {
         >
           <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
           <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }} align={{ base: "center", md: "flex-start" }}>
-            <CLink as={Link} to="/features" color={primaryText}>
+            <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={primaryText}>
               Why VeeVee
             </CLink>
-            <CLink href="https://veevee.io" isExternal color={primaryText}>
-              Start at VeeVee.io
+            <CLink as={Link} to={APP_LINKS.cta.getStarted} color={primaryText}>
+              Get started
             </CLink>
-            <CLink href="https://investveevee.com" isExternal color={primaryText}>
+            <CLink href={APP_LINKS.external.investors} isExternal color={primaryText}>
               Investor Info
             </CLink>
-            <CLink as={Link} to="/terms" color={primaryText}>
+            <CLink as={Link} to={APP_LINKS.internal.terms} color={primaryText}>
               Terms &amp; Disclaimers
             </CLink>
           </Stack>

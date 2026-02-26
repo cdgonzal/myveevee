@@ -10,6 +10,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { Link as RouterLink } from "react-router-dom";
+import { APP_LINKS } from "../config/links";
 
 const MotionBox = motion(Box);
 const MotionCard = motion(Card);
@@ -124,11 +126,11 @@ export default function HowItWorks() {
             Start with your first input.
           </Heading>
           <Text fontSize="sm" color={muted} maxW="2xl" mx="auto">
-            Begin free at VeeVee.io and see how your triage, profile, and coverage context work together in one place.
+            Begin free and see how your triage, profile, and coverage context work together in one place.
           </Text>
           <Button
-            as="a"
-            href="https://veevee.io"
+            as={RouterLink}
+            to={APP_LINKS.cta.getStarted}
             size="md"
             borderRadius="full"
             fontWeight="700"
@@ -136,7 +138,7 @@ export default function HowItWorks() {
             alignSelf="center"
             boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
           >
-            Start at VeeVee.io
+            Get started
           </Button>
         </Stack>
 
