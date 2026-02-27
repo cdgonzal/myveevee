@@ -150,9 +150,18 @@ export default function Home() {
               cursor="pointer"
             >
               <Image
-                src="/brand/2026/combined.svg"
+                src="/brand/2026/icon.svg"
+                alt="VeeVee icon"
+                h={{ base: "20px", md: "24px" }}
+                w="auto"
+                objectFit="contain"
+                draggable="false"
+                filter={logoFilter}
+              />
+              <Image
+                src="/brand/2026/wordmark.svg"
                 alt="VeeVee"
-                h={{ base: "28px", md: "32px" }}
+                h={{ base: "9px", md: "11px" }}
                 w="auto"
                 objectFit="contain"
                 draggable="false"
