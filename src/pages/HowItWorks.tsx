@@ -24,7 +24,7 @@ const fadeUp = {
 const STEPS = [
   {
     number: "1",
-    title: "Tell us what’s happening",
+    title: "Tell us what's happening",
     detail:
       "Type it. Say it. Upload a photo. VeeVee listens and understands. Free and instant.",
   },
@@ -50,6 +50,17 @@ export default function HowItWorks() {
   const muted = useColorModeValue("text.muted", "text.muted");
   const subtle = useColorModeValue("text.subtle", "text.subtle");
   const borderColor = useColorModeValue("border.default", "border.default");
+  const cardShadow = useColorModeValue(
+    "0 10px 24px rgba(6, 37, 76, 0.10)",
+    "0 10px 26px rgba(0, 0, 0, 0.38)"
+  );
+  const cardHoverShadow = useColorModeValue(
+    "0 14px 30px rgba(17, 119, 186, 0.26)",
+    "0 14px 32px rgba(17, 119, 186, 0.34)"
+  );
+  const stepCircleBg = useColorModeValue("accent.primary", "accent.soft");
+  const stepCircleColor = useColorModeValue("white", "surface.900");
+  const freeAccent = useColorModeValue("#001A52", "#9CE7FF");
 
   return (
     <Box
@@ -74,7 +85,7 @@ export default function HowItWorks() {
             Your wellness questions answered in 3 simple steps.
           </Heading>
           <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="3xl" mx="auto">
-            Start free. Share what’s going on and get clear next steps instantly.
+            Start <Box as="span" fontWeight="800" color={freeAccent}>free</Box>. Share what's going on and get clear next steps instantly.
           </Text>
         </MotionBox>
 
@@ -90,22 +101,24 @@ export default function HowItWorks() {
               initial="hidden"
               animate="visible"
               transition={{ delay: index * 0.05 }}
-              whileHover={{ y: -4, boxShadow: "0 0 28px rgba(17, 119, 186, 0.35)" }}
+              boxShadow={cardShadow}
+              whileHover={{ y: -4, boxShadow: cardHoverShadow }}
             >
               <CardBody>
                 <Box
-                  w={8}
-                  h={8}
+                  w={11}
+                  h={11}
                   borderRadius="full"
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
                   fontWeight="800"
-                  fontSize="lg"
-                  bg="rgba(156, 231, 255, 0.15)"
-                  color="accent.primary"
+                  fontSize="xl"
+                  bg={stepCircleBg}
+                  color={stepCircleColor}
                   border="1px solid"
                   borderColor="accent.primary"
+                  boxShadow="0 0 0 2px rgba(156, 231, 255, 0.35)"
                   mb={3}
                 >
                   {step.number}
@@ -114,7 +127,17 @@ export default function HowItWorks() {
                   {step.title}
                 </Heading>
                 <Text fontSize="sm" color="text.primary">
-                  {step.detail}
+                  {step.detail.split(/(free|Free)/g).map((part, partIndex) =>
+                    part.toLowerCase() === "free" ? (
+                      <Box as="span" key={`${step.number}-free-${partIndex}`} fontWeight="800" color={freeAccent}>
+                        {part}
+                      </Box>
+                    ) : (
+                      <Box as="span" key={`${step.number}-${partIndex}`}>
+                        {part}
+                      </Box>
+                    )
+                  )}
                 </Text>
               </CardBody>
             </MotionCard>
@@ -157,5 +180,3 @@ export default function HowItWorks() {
     </Box>
   );
 }
-
-
