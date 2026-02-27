@@ -7,6 +7,7 @@ import {
   Stack,
   Card,
   CardBody,
+  Link as CLink,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -58,8 +59,8 @@ export default function HowItWorks() {
     "0 14px 30px rgba(17, 119, 186, 0.26)",
     "0 14px 32px rgba(17, 119, 186, 0.34)"
   );
-  const stepCircleBg = useColorModeValue("accent.primary", "accent.soft");
-  const stepCircleColor = useColorModeValue("white", "surface.900");
+  const stepCircleBg = "accent.primary";
+  const stepCircleColor = "white";
   const freeAccent = useColorModeValue("#001A52", "#9CE7FF");
 
   return (
@@ -106,19 +107,19 @@ export default function HowItWorks() {
             >
               <CardBody>
                 <Box
-                  w={11}
-                  h={11}
+                  w={14}
+                  h={14}
                   borderRadius="full"
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
                   fontWeight="800"
-                  fontSize="xl"
+                  fontSize="2xl"
                   bg={stepCircleBg}
                   color={stepCircleColor}
-                  border="1px solid"
-                  borderColor="accent.primary"
-                  boxShadow="0 0 0 2px rgba(156, 231, 255, 0.35)"
+                  border="2px solid"
+                  borderColor="white"
+                  boxShadow="0 0 0 2px rgba(0, 26, 82, 0.32)"
                   mb={3}
                 >
                   {step.number}
@@ -146,14 +147,14 @@ export default function HowItWorks() {
 
         <Stack spacing={4} textAlign="center">
           <Heading as="h2" size="md">
-            Start with your first input.
+            Curious what happens next?
           </Heading>
           <Text fontSize="sm" color={muted} maxW="2xl" mx="auto">
-            Begin free and see how your triage, profile, and coverage context work together in one place.
+            Try a free health scenario and see how VeeVee responds - before creating an account.
           </Text>
           <Button
             as={RouterLink}
-            to={APP_LINKS.cta.getStarted}
+            to={APP_LINKS.internal.whyVeeVee}
             size="md"
             borderRadius="full"
             fontWeight="700"
@@ -161,8 +162,18 @@ export default function HowItWorks() {
             alignSelf="center"
             boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
           >
-            Get started
+            Try it free
           </Button>
+          <CLink
+            href={APP_LINKS.external.authenticatedConsole}
+            isExternal
+            color="accent.soft"
+            fontSize="sm"
+            fontWeight="600"
+            textDecoration="underline"
+          >
+            Already ready?
+          </CLink>
         </Stack>
 
         <Box fontSize="xs" color={subtle} borderTopWidth="1px" borderColor={borderColor} pt={4} mt={4}>
