@@ -27,6 +27,7 @@ import { APP_LINKS } from "./config/links";
 const Home = lazy(() => import("./pages/Home"));
 const Features = lazy(() => import("./pages/Features"));
 const HowItWorks = lazy(() => import("./pages/HowItWorks"));
+const Simulator = lazy(() => import("./pages/Simulator"));
 const Testimonials = lazy(() => import("./pages/Testimonials"));
 const Terms = lazy(() => import("./pages/Terms"));
 
@@ -65,6 +66,7 @@ export default function App() {
               <Route path={APP_LINKS.internal.home} element={<Home />} />
               <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
               <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
+              <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
               <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
               <Route path={APP_LINKS.internal.terms} element={<Terms />} />
             </Routes>

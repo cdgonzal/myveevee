@@ -3,6 +3,7 @@ export const APP_LINKS = {
     home: "/",
     whyVeeVee: "/features",
     howItWorks: "/how-it-works",
+    simulator: "/simulator",
     testimonials: "/testimonials",
     terms: "/terms",
   },
