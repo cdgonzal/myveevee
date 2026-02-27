@@ -106,23 +106,21 @@ function Header() {
               _hover={{ textDecoration: "none" }}
             >
               <Image
-                src="/favicon.svg"
+                src="/brand/2026/icon.svg"
                 alt="VeeVee icon"
                 h={{ base: "20px", md: "24px" }}
                 w="auto"
                 objectFit="contain"
                 filter={logoFilter}
               />
-              <Text
-                color={navColor}
-                fontWeight="800"
-                fontSize={{ base: "sm", md: "md" }}
-                letterSpacing="0.08em"
-                textTransform="lowercase"
-                opacity={0.9}
-              >
-                veevee
-              </Text>
+              <Image
+                src="/brand/2026/wordmark.svg"
+                alt="VeeVee"
+                h={{ base: "12px", md: "14px" }}
+                w="auto"
+                objectFit="contain"
+                filter={logoFilter}
+              />
             </HStack>
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
