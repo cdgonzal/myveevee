@@ -24,21 +24,21 @@ const fadeUp = {
 const STEPS = [
   {
     number: "1",
-    title: "Share what is happening",
+    title: "Tell us what’s happening",
     detail:
-      "Upload a photo, describe symptoms in text, or speak naturally. VeeVee captures your context in seconds.",
+      "Type it. Say it. Upload a photo. VeeVee listens and understands. Free and instant.",
   },
   {
     number: "2",
-    title: "Get triage plus simulation",
+    title: "Get clear guidance",
     detail:
-      "See immediate triage guidance and explore what-if scenarios using your digital twin and unified profile.",
+      "See what might be going on and what to do next. Simple, personalized answers for free.",
   },
   {
     number: "3",
-    title: "Take action with confidence",
+    title: "Take the next step",
     detail:
-      "Move toward care, pharmacy, and treatment options while maximizing benefits and coverage fit for your plan.",
+      "Know where to go, what to ask, and whether your plan covers it.",
   },
 ];
 
@@ -71,10 +71,10 @@ export default function HowItWorks() {
             HOW IT WORKS
           </Text>
           <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={4}>
-            A 3-step path from uncertainty to action.
+            Your wellness questions answered in 3 simple steps.
           </Heading>
           <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="3xl" mx="auto">
-            VeeVee combines rapid triage, digital twin simulation, and benefits-aware guidance so you can make better health decisions faster.
+            Start free. Share what’s going on and get clear next steps instantly.
           </Text>
         </MotionBox>
 
