@@ -49,7 +49,6 @@ export default function HowItWorks() {
     "linear(to-b, surface.900, surface.800)"
   );
   const muted = useColorModeValue("text.muted", "text.muted");
-  const subtle = useColorModeValue("text.subtle", "text.subtle");
   const borderColor = useColorModeValue("border.default", "border.default");
   const cardShadow = useColorModeValue(
     "0 10px 24px rgba(6, 37, 76, 0.10)",
@@ -176,17 +175,6 @@ export default function HowItWorks() {
           </CLink>
         </Stack>
 
-        <Box fontSize="xs" color={subtle} borderTopWidth="1px" borderColor={borderColor} pt={4} mt={4}>
-          <Text mb={1}>
-            VeeVee is a wellness and education companion and does not provide medical advice, diagnosis, or treatment.
-          </Text>
-          <Text mb={1}>
-            Care routing and live-doctor pathways depend on availability, eligibility, and partner networks.
-          </Text>
-          <Text>
-            AI-generated guidance is probabilistic and should be validated with your insurer and licensed clinicians.
-          </Text>
-        </Box>
       </Stack>
     </Box>
   );
