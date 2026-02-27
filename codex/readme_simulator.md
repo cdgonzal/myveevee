@@ -1,7 +1,7 @@
-# Simulator Page Plan
+# Wellness Mirror Plan
 
 ## Purpose
-Build a new `Simulator` page that lets users run health/benefits "what-if" scenarios and understand how VeeVee makes decisions.
+Build a new `Wellness Mirror` page that lets users run health/benefits "what-if" scenarios and understand how VeeVee makes decisions.
 
 ## Product Definition
 VeeVee's simulator scenario explorer is an event-driven what-if engine that:
@@ -18,19 +18,19 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 
 ## Checklist
 - [x] Create `Simulator` route and page scaffold (`/simulator`).
-- [ ] Add header/footer navigation links to Simulator where appropriate.
+- [x] Add header/footer navigation links to Simulator where appropriate.
 - [x] Define simulator input schema (profile, insurance, symptom, behavior, meds, labs, lifestyle).
 - [x] Build scenario input form UI with validation and friendly defaults.
-- [ ] Create normalized twin-state model contract for UI state.
-- [ ] Build versioned pipeline interface (policy, guardrails, coverage constraints).
-- [ ] Implement deterministic rule pass (state updates + flags).
-- [ ] Implement reasoning pass (explanations + recommendation ranking).
-- [ ] Return structured outputs:
-  - [ ] twin-state updates
-  - [ ] risk/priority signals
-  - [ ] ranked recommended actions
-  - [ ] follow-up questions
-  - [ ] decision trace/audit log
+- [x] Create normalized twin-state model contract for UI state.
+- [x] Build versioned pipeline interface (policy, guardrails, coverage constraints).
+- [x] Implement deterministic rule pass (state updates + flags).
+- [x] Implement reasoning pass (explanations + recommendation ranking).
+- [x] Return structured outputs:
+  - [x] twin-state updates
+  - [x] risk/priority signals
+  - [x] ranked recommended actions
+  - [x] follow-up questions
+  - [x] decision trace/audit log
 - [x] Design "Under the hood" panel showing inputs -> rule hits -> outputs.
 - [x] Add CTA flow from simulator to account creation / login.
 - [ ] Instrument analytics events (start sim, input change, run sim, CTA click).
@@ -48,8 +48,16 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 
 ## Progress Notes
 - Route created: `src/pages/Simulator.tsx` wired at `/simulator`.
+- Header, mobile nav, and footer now include `Wellness Mirror®`.
 - Input schema added: `src/simulator/schema.ts` with defaults and starter scenarios.
 - Current Simulator UI includes starter scenario selection, editable form fields, and structured input preview under "Under The Hood".
+- Simulation engine added: `src/simulator/engine.ts` with versioned pipeline metadata, deterministic scoring rules, ranking logic, and structured output contract.
+- Simulator page now renders risk summary, twin-state updates, ranked actions, follow-up questions, and decision trace output.
+
+## Next Up
+- Instrument analytics events (start sim, input change, run sim, CTA click).
+- Add safety messaging and non-diagnostic disclaimers where needed.
+- Add loading, error, and empty states.
 
 ## Open Questions (Keep Simple)
 - [ ] Should simulator be public without login, or gated after first scenario?

@@ -21,6 +21,7 @@
 import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
+import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
 import {
   DEFAULT_SIMULATOR_INPUT,
   STARTER_SCENARIOS,
@@ -44,6 +45,9 @@ export default function Simulator() {
 
   const [draftInput, setDraftInput] = useState<SimulatorInput>(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT);
   const [simulatedInput, setSimulatedInput] = useState<SimulatorInput>(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT);
+  const [result, setResult] = useState<SimulationResult>(() =>
+    runWellnessMirrorSimulation(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT)
+  );
 
   const inputTypes = Object.keys(draftInput);
   const outputs = [
@@ -59,6 +63,7 @@ export default function Simulator() {
     const next = STARTER_SCENARIOS.find((scenario) => scenario.id === scenarioId)?.input ?? DEFAULT_SIMULATOR_INPUT;
     setDraftInput(next);
     setSimulatedInput(next);
+    setResult(runWellnessMirrorSimulation(next));
   };
 
   return (
@@ -251,9 +256,75 @@ export default function Simulator() {
                 />
               </FormControl>
 
-              <Button alignSelf="flex-start" onClick={() => setSimulatedInput(draftInput)}>
+              <Button
+                alignSelf="flex-start"
+                onClick={() => {
+                  setSimulatedInput(draftInput);
+                  setResult(runWellnessMirrorSimulation(draftInput));
+                }}
+              >
                 Run simulation preview
               </Button>
+            </Stack>
+          </CardBody>
+        </Card>
+
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+          <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+            <CardBody>
+              <Stack spacing={3}>
+                <Heading as="h2" size="sm">Risk summary</Heading>
+                <Text fontSize="sm">
+                  Risk score: <b>{result.riskScore}</b> ({result.riskLevel})
+                </Text>
+                <Stack spacing={1}>
+                  {result.riskSignals.map((signal) => (
+                    <Text key={signal} fontSize="sm">- {signal}</Text>
+                  ))}
+                </Stack>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+            <CardBody>
+              <Stack spacing={3}>
+                <Heading as="h2" size="sm">Twin-state updates</Heading>
+                {result.twinStateUpdates.map((update) => (
+                  <Box key={`${update.field}-${update.summary}`} borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
+                    <Text fontSize="sm"><b>{update.field}</b> ({update.direction})</Text>
+                    <Text fontSize="sm" color={muted}>{update.summary}</Text>
+                  </Box>
+                ))}
+              </Stack>
+            </CardBody>
+          </Card>
+        </SimpleGrid>
+
+        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <CardBody>
+            <Stack spacing={3}>
+              <Heading as="h2" size="sm">Ranked recommended actions</Heading>
+              {result.recommendations.map((recommendation) => (
+                <Box key={recommendation.id} borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
+                  <Text fontSize="sm">
+                    <b>{recommendation.title}</b> (priority {recommendation.priority})
+                  </Text>
+                  <Text fontSize="sm" color={muted}>{recommendation.rationale}</Text>
+                  <Text fontSize="sm" color={muted}>{recommendation.coverageNote}</Text>
+                </Box>
+              ))}
+            </Stack>
+          </CardBody>
+        </Card>
+
+        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <CardBody>
+            <Stack spacing={3}>
+              <Heading as="h2" size="sm">Follow-up questions</Heading>
+              {result.followUpQuestions.map((question) => (
+                <Text key={question} fontSize="sm">- {question}</Text>
+              ))}
             </Stack>
           </CardBody>
         </Card>
@@ -265,8 +336,14 @@ export default function Simulator() {
               <Text color={muted} fontSize="sm">
                 This page will expose pipeline versions, rule hits, coverage constraints, and reasoning steps used to rank actions.
               </Text>
+              <Text color={muted} fontSize="sm">
+                {result.pipelineVersion} | {result.policyVersion} | {result.guardrailVersion} | {result.coverageVersion}
+              </Text>
               <Box as="pre" fontSize="xs" borderWidth="1px" borderColor={border} borderRadius="md" p={3} overflowX="auto">
                 {JSON.stringify(simulatedInput, null, 2)}
+              </Box>
+              <Box as="pre" fontSize="xs" borderWidth="1px" borderColor={border} borderRadius="md" p={3} overflowX="auto">
+                {JSON.stringify(result.decisionTrace, null, 2)}
               </Box>
             </Stack>
           </CardBody>
@@ -279,7 +356,8 @@ export default function Simulator() {
           <Button
             as="a"
             href={APP_LINKS.external.authenticatedConsole}
-            isExternal
+            target="_blank"
+            rel="noopener noreferrer"
             variant="outline"
             borderRadius="full"
             px={8}
