@@ -108,7 +108,7 @@ function Header() {
               <Image
                 src="/brand/2026/icon.svg"
                 alt="VeeVee icon"
-                h={{ base: "20px", md: "24px" }}
+                h={{ base: "26px", md: "30px" }}
                 w="auto"
                 objectFit="contain"
                 filter={logoFilter}
@@ -116,7 +116,7 @@ function Header() {
               <Image
                 src="/brand/2026/wordmark.svg"
                 alt="VeeVee"
-                h={{ base: "12px", md: "14px" }}
+                h={{ base: "10px", md: "12px" }}
                 w="auto"
                 objectFit="contain"
                 filter={logoFilter}
