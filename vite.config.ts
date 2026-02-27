@@ -11,14 +11,5 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ["react", "react-dom", "react-router-dom"],
-          chakra: ["@chakra-ui/react", "@emotion/react", "@emotion/styled"],
-          motion: ["framer-motion"],
-        },
-      },
-    },
   },
 });
