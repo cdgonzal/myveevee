@@ -113,7 +113,7 @@ export default function Home() {
               px={10}
               boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
             >
-              Check my coverage
+              How It Works
             </Button>
 
             <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
