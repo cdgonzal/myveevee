@@ -37,9 +37,9 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - [x] Add safety messaging and non-diagnostic disclaimers where needed.
 - [x] Add loading, error, and empty states.
 - [ ] Add test coverage:
-  - [ ] unit tests for rules and ranking
-  - [ ] contract tests for pipeline output shape
-  - [ ] UI tests for key simulator flows
+  - [x] unit tests for rules and ranking
+  - [x] contract tests for pipeline output shape
+  - [x] UI tests for key simulator flows
 - [ ] Add logging strategy for observability and auditability.
 - [ ] Security/privacy pass (PII minimization, redaction in logs, retention rules).
 - [ ] Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
@@ -56,14 +56,12 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - Analytics events added for page view, scenario start, input changes, simulation runs, and CTA clicks.
 - UX states added for loading, errors, and empty output sections.
 - Safety notice added to reinforce educational/non-diagnostic use.
+- Test framework added (Vitest + Testing Library) with simulator engine and UI tests.
 
 ## Next Up
-- Add test coverage:
-  - unit tests for rules and ranking
-  - contract tests for pipeline output shape
-  - UI tests for key simulator flows
 - Add logging strategy for observability and auditability.
 - Security/privacy pass (PII minimization, redaction in logs, retention rules).
+- Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
 
 ## Open Questions (Keep Simple)
 - [ ] Should simulator be public without login, or gated after first scenario?
