@@ -8,7 +8,12 @@ import { theme } from "../theme";
 function renderSimulator() {
   return render(
     <ChakraProvider theme={theme}>
-      <MemoryRouter>
+      <MemoryRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
         <Simulator />
       </MemoryRouter>
     </ChakraProvider>
@@ -37,4 +42,3 @@ describe("Simulator page", () => {
     });
   });
 });
-

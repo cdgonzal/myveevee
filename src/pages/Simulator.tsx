@@ -9,6 +9,7 @@
   CardBody,
   FormControl,
   FormLabel,
+  FormHelperText,
   Grid,
   Heading,
   Input,
@@ -21,7 +22,7 @@
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
@@ -58,6 +59,7 @@ export default function Simulator() {
   const [lastAuditRunId, setLastAuditRunId] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const inputEventLastSentRef = useRef<Record<string, number>>({});
 
   const inputTypes = Object.keys(draftInput);
   const outputs = [
@@ -67,6 +69,8 @@ export default function Simulator() {
     "Follow-up questions",
     "Decision-step trace",
   ];
+  const serializedInput = useMemo(() => JSON.stringify(simulatedInput, null, 2), [simulatedInput]);
+  const serializedTrace = useMemo(() => JSON.stringify(result.decisionTrace, null, 2), [result.decisionTrace]);
 
   const trackEvent = (eventName: string, params?: Record<string, string | number>) => {
     const gtag = (window as any).gtag;
@@ -76,6 +80,10 @@ export default function Simulator() {
   };
 
   const trackInputChange = (field: string) => {
+    const now = Date.now();
+    const last = inputEventLastSentRef.current[field] ?? 0;
+    if (now - last < 800) return;
+    inputEventLastSentRef.current[field] = now;
     trackEvent("wm_input_change", { field });
   };
 
@@ -113,7 +121,14 @@ export default function Simulator() {
   };
 
   return (
-    <Box as="main" minH="100vh" bgGradient={pageGradient} color="text.primary" py={{ base: 10, md: 20 }}>
+    <Box
+      as="main"
+      minH="100vh"
+      bgGradient={pageGradient}
+      color="text.primary"
+      py={{ base: 10, md: 20 }}
+      aria-label="Wellness Mirror simulator"
+    >
       <Stack spacing={{ base: 8, md: 10 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
         <Stack spacing={3}>
           <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
@@ -182,14 +197,15 @@ export default function Simulator() {
           </CardBody>
         </Card>
 
-        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl" as="section" aria-labelledby="scenario-input-heading">
           <CardBody>
             <Stack spacing={4}>
-              <Heading as="h2" size="sm">Scenario input</Heading>
+              <Heading id="scenario-input-heading" as="h2" size="sm">Scenario input</Heading>
               <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
                 <FormControl>
-                  <FormLabel fontSize="sm">Insurance payer</FormLabel>
+                  <FormLabel htmlFor="insurance-payer" fontSize="sm">Insurance payer</FormLabel>
                   <Input
+                    id="insurance-payer"
                     value={draftInput.insurance.payer}
                     onChange={(e) => {
                       setDraftInput((prev) => ({
@@ -202,8 +218,9 @@ export default function Simulator() {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">State</FormLabel>
+                  <FormLabel htmlFor="profile-state" fontSize="sm">State</FormLabel>
                   <Input
+                    id="profile-state"
                     value={draftInput.profile.state}
                     onChange={(e) => {
                       setDraftInput((prev) => ({
@@ -216,8 +233,9 @@ export default function Simulator() {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Symptom severity</FormLabel>
+                  <FormLabel htmlFor="symptom-severity" fontSize="sm">Symptom severity</FormLabel>
                   <Select
+                    id="symptom-severity"
                     value={draftInput.symptom.severity}
                     onChange={(e) => {
                       setDraftInput((prev) => ({
@@ -234,7 +252,7 @@ export default function Simulator() {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Symptom duration (days)</FormLabel>
+                  <FormLabel htmlFor="symptom-duration" fontSize="sm">Symptom duration (days)</FormLabel>
                   <NumberInput
                     min={1}
                     max={180}
@@ -247,12 +265,12 @@ export default function Simulator() {
                       trackInputChange("symptom.durationDays");
                     }}
                   >
-                    <NumberInputField />
+                    <NumberInputField id="symptom-duration" />
                   </NumberInput>
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Medication adherence (%)</FormLabel>
+                  <FormLabel htmlFor="med-adherence" fontSize="sm">Medication adherence (%)</FormLabel>
                   <NumberInput
                     min={0}
                     max={100}
@@ -268,12 +286,13 @@ export default function Simulator() {
                       trackInputChange("medication.adherencePercent");
                     }}
                   >
-                    <NumberInputField />
+                    <NumberInputField id="med-adherence" />
                   </NumberInput>
+                  <FormHelperText fontSize="xs">0 to 100%</FormHelperText>
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Sleep (hours/night)</FormLabel>
+                  <FormLabel htmlFor="sleep-hours" fontSize="sm">Sleep (hours/night)</FormLabel>
                   <NumberInput
                     min={0}
                     max={12}
@@ -289,14 +308,15 @@ export default function Simulator() {
                       trackInputChange("behaviorChange.sleepHours");
                     }}
                   >
-                    <NumberInputField />
+                    <NumberInputField id="sleep-hours" />
                   </NumberInput>
                 </FormControl>
               </Grid>
 
               <FormControl>
-                <FormLabel fontSize="sm">Symptom description</FormLabel>
+                <FormLabel htmlFor="symptom-description" fontSize="sm">Symptom description</FormLabel>
                 <Textarea
+                  id="symptom-description"
                   value={draftInput.symptom.description}
                   onChange={(e) => {
                     setDraftInput((prev) => ({
@@ -313,6 +333,7 @@ export default function Simulator() {
                 alignSelf="flex-start"
                 isLoading={isRunning}
                 loadingText="Running"
+                aria-live="polite"
                 onClick={() => {
                   void runSimulation(draftInput, "manual");
                 }}
@@ -324,7 +345,7 @@ export default function Simulator() {
         </Card>
 
         {errorMessage && (
-          <Alert status="error" borderRadius="lg">
+          <Alert status="error" borderRadius="lg" role="alert">
             <AlertIcon />
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
@@ -417,10 +438,10 @@ export default function Simulator() {
                 {result.pipelineVersion} | {result.policyVersion} | {result.guardrailVersion} | {result.coverageVersion}
               </Text>
               <Box as="pre" fontSize="xs" borderWidth="1px" borderColor={border} borderRadius="md" p={3} overflowX="auto">
-                {JSON.stringify(simulatedInput, null, 2)}
+                {serializedInput}
               </Box>
               <Box as="pre" fontSize="xs" borderWidth="1px" borderColor={border} borderRadius="md" p={3} overflowX="auto">
-                {JSON.stringify(result.decisionTrace, null, 2)}
+                {serializedTrace}
               </Box>
             </Stack>
           </CardBody>
@@ -433,7 +454,7 @@ export default function Simulator() {
           </AlertDescription>
         </Alert>
 
-        <Alert status="success" borderRadius="lg" variant="subtle">
+        <Alert status="success" borderRadius="lg" variant="subtle" role="status">
           <AlertIcon />
           <AlertDescription fontSize="sm">
             Audit logging enabled with redaction. Free-text inputs are excluded from stored records.

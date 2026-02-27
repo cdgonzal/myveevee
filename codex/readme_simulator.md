@@ -42,8 +42,8 @@ The engine should run through a versioned pipeline with policy, clinical guardra
   - [x] UI tests for key simulator flows
 - [x] Add logging strategy for observability and auditability.
 - [x] Security/privacy pass (PII minimization, redaction in logs, retention rules).
-- [ ] Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
-- [ ] Performance pass (bundle split, lazy load simulator modules, optimize payloads).
+- [x] Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
+- [x] Performance pass (bundle split, lazy load simulator modules, optimize payloads).
 - [ ] Final UX/content review with product + marketing.
 
 ## Progress Notes
@@ -59,10 +59,11 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - Test framework added (Vitest + Testing Library) with simulator engine and UI tests.
 - Audit logging strategy added in `src/simulator/logging.ts` with structured run records.
 - Privacy controls added: free-text redaction, summary-only storage, and session retention cap (25 latest records).
+- Accessibility updates added in `src/pages/Simulator.tsx`: explicit form labels/ids, section landmarking, helper text, and ARIA status/alert semantics.
+- Performance updates added in `src/pages/Simulator.tsx`: memoized large JSON rendering and throttled input analytics emission.
+- Simulator route remains lazy-loaded via `React.lazy` in `src/App.tsx` for code-split delivery.
 
 ## Next Up
-- Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
-- Performance pass (bundle split, lazy load simulator modules, optimize payloads).
 - Final UX/content review with product + marketing.
 
 ## Open Questions (Keep Simple)
