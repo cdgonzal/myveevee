@@ -1,4 +1,7 @@
 ﻿import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Badge,
   Box,
   Button,
@@ -18,7 +21,7 @@
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
@@ -48,6 +51,8 @@ export default function Simulator() {
   const [result, setResult] = useState<SimulationResult>(() =>
     runWellnessMirrorSimulation(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT)
   );
+  const [isRunning, setIsRunning] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const inputTypes = Object.keys(draftInput);
   const outputs = [
@@ -58,12 +63,45 @@ export default function Simulator() {
     "Decision-step trace",
   ];
 
+  const trackEvent = (eventName: string, params?: Record<string, string | number>) => {
+    const gtag = (window as any).gtag;
+    if (typeof gtag === "function") {
+      gtag("event", eventName, params ?? {});
+    }
+  };
+
+  const trackInputChange = (field: string) => {
+    trackEvent("wm_input_change", { field });
+  };
+
+  const runSimulation = async (input: SimulatorInput, source: string) => {
+    setIsRunning(true);
+    setErrorMessage(null);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      const nextResult = runWellnessMirrorSimulation(input);
+      setSimulatedInput(input);
+      setResult(nextResult);
+      trackEvent("wm_run_simulation", { source, riskScore: nextResult.riskScore });
+    } catch {
+      setErrorMessage("Simulation failed. Please try again.");
+      trackEvent("wm_run_simulation_error", { source });
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  useEffect(() => {
+    trackEvent("wm_view");
+  }, []);
+
   const applyScenario = (scenarioId: string) => {
     setSelectedId(scenarioId);
     const next = STARTER_SCENARIOS.find((scenario) => scenario.id === scenarioId)?.input ?? DEFAULT_SIMULATOR_INPUT;
     setDraftInput(next);
-    setSimulatedInput(next);
-    setResult(runWellnessMirrorSimulation(next));
+    trackEvent("wm_start_scenario", { scenarioId });
+    void runSimulation(next, "scenario");
   };
 
   return (
@@ -145,12 +183,13 @@ export default function Simulator() {
                   <FormLabel fontSize="sm">Insurance payer</FormLabel>
                   <Input
                     value={draftInput.insurance.payer}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setDraftInput((prev) => ({
                         ...prev,
                         insurance: { ...prev.insurance, payer: e.target.value },
-                      }))
-                    }
+                      }));
+                      trackInputChange("insurance.payer");
+                    }}
                   />
                 </FormControl>
 
@@ -158,12 +197,13 @@ export default function Simulator() {
                   <FormLabel fontSize="sm">State</FormLabel>
                   <Input
                     value={draftInput.profile.state}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setDraftInput((prev) => ({
                         ...prev,
                         profile: { ...prev.profile, state: e.target.value.toUpperCase() },
-                      }))
-                    }
+                      }));
+                      trackInputChange("profile.state");
+                    }}
                   />
                 </FormControl>
 
@@ -171,12 +211,13 @@ export default function Simulator() {
                   <FormLabel fontSize="sm">Symptom severity</FormLabel>
                   <Select
                     value={draftInput.symptom.severity}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setDraftInput((prev) => ({
                         ...prev,
                         symptom: { ...prev.symptom, severity: e.target.value as SymptomSeverity },
-                      }))
-                    }
+                      }));
+                      trackInputChange("symptom.severity");
+                    }}
                   >
                     <option value="low">Low</option>
                     <option value="moderate">Moderate</option>
@@ -190,12 +231,13 @@ export default function Simulator() {
                     min={1}
                     max={180}
                     value={draftInput.symptom.durationDays}
-                    onChange={(_, value) =>
+                    onChange={(_, value) => {
                       setDraftInput((prev) => ({
                         ...prev,
                         symptom: { ...prev.symptom, durationDays: Number.isFinite(value) ? value : 1 },
-                      }))
-                    }
+                      }));
+                      trackInputChange("symptom.durationDays");
+                    }}
                   >
                     <NumberInputField />
                   </NumberInput>
@@ -207,15 +249,16 @@ export default function Simulator() {
                     min={0}
                     max={100}
                     value={draftInput.medication.adherencePercent}
-                    onChange={(_, value) =>
+                    onChange={(_, value) => {
                       setDraftInput((prev) => ({
                         ...prev,
                         medication: {
                           ...prev.medication,
                           adherencePercent: Number.isFinite(value) ? value : 0,
                         },
-                      }))
-                    }
+                      }));
+                      trackInputChange("medication.adherencePercent");
+                    }}
                   >
                     <NumberInputField />
                   </NumberInput>
@@ -227,15 +270,16 @@ export default function Simulator() {
                     min={0}
                     max={12}
                     value={draftInput.behaviorChange.sleepHours}
-                    onChange={(_, value) =>
+                    onChange={(_, value) => {
                       setDraftInput((prev) => ({
                         ...prev,
                         behaviorChange: {
                           ...prev.behaviorChange,
                           sleepHours: Number.isFinite(value) ? value : 0,
                         },
-                      }))
-                    }
+                      }));
+                      trackInputChange("behaviorChange.sleepHours");
+                    }}
                   >
                     <NumberInputField />
                   </NumberInput>
@@ -246,21 +290,23 @@ export default function Simulator() {
                 <FormLabel fontSize="sm">Symptom description</FormLabel>
                 <Textarea
                   value={draftInput.symptom.description}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setDraftInput((prev) => ({
                       ...prev,
                       symptom: { ...prev.symptom, description: e.target.value },
-                    }))
-                  }
+                    }));
+                    trackInputChange("symptom.description");
+                  }}
                   rows={3}
                 />
               </FormControl>
 
               <Button
                 alignSelf="flex-start"
+                isLoading={isRunning}
+                loadingText="Running"
                 onClick={() => {
-                  setSimulatedInput(draftInput);
-                  setResult(runWellnessMirrorSimulation(draftInput));
+                  void runSimulation(draftInput, "manual");
                 }}
               >
                 Run simulation preview
@@ -268,6 +314,13 @@ export default function Simulator() {
             </Stack>
           </CardBody>
         </Card>
+
+        {errorMessage && (
+          <Alert status="error" borderRadius="lg">
+            <AlertIcon />
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        )}
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
           <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
@@ -278,9 +331,13 @@ export default function Simulator() {
                   Risk score: <b>{result.riskScore}</b> ({result.riskLevel})
                 </Text>
                 <Stack spacing={1}>
-                  {result.riskSignals.map((signal) => (
-                    <Text key={signal} fontSize="sm">- {signal}</Text>
-                  ))}
+                  {result.riskSignals.length ? (
+                    result.riskSignals.map((signal) => (
+                      <Text key={signal} fontSize="sm">- {signal}</Text>
+                    ))
+                  ) : (
+                    <Text fontSize="sm" color={muted}>No active risk signals for this scenario.</Text>
+                  )}
                 </Stack>
               </Stack>
             </CardBody>
@@ -290,12 +347,16 @@ export default function Simulator() {
             <CardBody>
               <Stack spacing={3}>
                 <Heading as="h2" size="sm">Twin-state updates</Heading>
-                {result.twinStateUpdates.map((update) => (
-                  <Box key={`${update.field}-${update.summary}`} borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
-                    <Text fontSize="sm"><b>{update.field}</b> ({update.direction})</Text>
-                    <Text fontSize="sm" color={muted}>{update.summary}</Text>
-                  </Box>
-                ))}
+                {result.twinStateUpdates.length ? (
+                  result.twinStateUpdates.map((update) => (
+                    <Box key={`${update.field}-${update.summary}`} borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
+                      <Text fontSize="sm"><b>{update.field}</b> ({update.direction})</Text>
+                      <Text fontSize="sm" color={muted}>{update.summary}</Text>
+                    </Box>
+                  ))
+                ) : (
+                  <Text fontSize="sm" color={muted}>No state deltas detected for this run.</Text>
+                )}
               </Stack>
             </CardBody>
           </Card>
@@ -305,15 +366,19 @@ export default function Simulator() {
           <CardBody>
             <Stack spacing={3}>
               <Heading as="h2" size="sm">Ranked recommended actions</Heading>
-              {result.recommendations.map((recommendation) => (
-                <Box key={recommendation.id} borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
-                  <Text fontSize="sm">
-                    <b>{recommendation.title}</b> (priority {recommendation.priority})
-                  </Text>
-                  <Text fontSize="sm" color={muted}>{recommendation.rationale}</Text>
-                  <Text fontSize="sm" color={muted}>{recommendation.coverageNote}</Text>
-                </Box>
-              ))}
+              {result.recommendations.length ? (
+                result.recommendations.map((recommendation) => (
+                  <Box key={recommendation.id} borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
+                    <Text fontSize="sm">
+                      <b>{recommendation.title}</b> (priority {recommendation.priority})
+                    </Text>
+                    <Text fontSize="sm" color={muted}>{recommendation.rationale}</Text>
+                    <Text fontSize="sm" color={muted}>{recommendation.coverageNote}</Text>
+                  </Box>
+                ))
+              ) : (
+                <Text fontSize="sm" color={muted}>No actions generated yet.</Text>
+              )}
             </Stack>
           </CardBody>
         </Card>
@@ -322,9 +387,13 @@ export default function Simulator() {
           <CardBody>
             <Stack spacing={3}>
               <Heading as="h2" size="sm">Follow-up questions</Heading>
-              {result.followUpQuestions.map((question) => (
-                <Text key={question} fontSize="sm">- {question}</Text>
-              ))}
+              {result.followUpQuestions.length ? (
+                result.followUpQuestions.map((question) => (
+                  <Text key={question} fontSize="sm">- {question}</Text>
+                ))
+              ) : (
+                <Text fontSize="sm" color={muted}>No follow-up questions for this run.</Text>
+              )}
             </Stack>
           </CardBody>
         </Card>
@@ -334,7 +403,7 @@ export default function Simulator() {
             <Stack spacing={3}>
               <Heading as="h2" size="sm">Under The Hood</Heading>
               <Text color={muted} fontSize="sm">
-                This page will expose pipeline versions, rule hits, coverage constraints, and reasoning steps used to rank actions.
+                This page exposes pipeline versions, rule hits, coverage constraints, and reasoning steps used to rank actions.
               </Text>
               <Text color={muted} fontSize="sm">
                 {result.pipelineVersion} | {result.policyVersion} | {result.guardrailVersion} | {result.coverageVersion}
@@ -349,8 +418,22 @@ export default function Simulator() {
           </CardBody>
         </Card>
 
+        <Alert status="info" borderRadius="lg" variant="subtle">
+          <AlertIcon />
+          <AlertDescription fontSize="sm">
+            Wellness Mirror is a planning and education tool. It is not medical diagnosis or treatment.
+          </AlertDescription>
+        </Alert>
+
         <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
-          <Button as={RouterLink} to={APP_LINKS.internal.whyVeeVee} borderRadius="full" px={8} fontWeight="700">
+          <Button
+            as={RouterLink}
+            to={APP_LINKS.internal.whyVeeVee}
+            borderRadius="full"
+            px={8}
+            fontWeight="700"
+            onClick={() => trackEvent("wm_cta_click", { cta: "explore_features" })}
+          >
             Explore Features
           </Button>
           <Button
@@ -362,6 +445,7 @@ export default function Simulator() {
             borderRadius="full"
             px={8}
             fontWeight="700"
+            onClick={() => trackEvent("wm_cta_click", { cta: "login" })}
           >
             Log in
           </Button>

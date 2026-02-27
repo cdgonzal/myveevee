@@ -33,9 +33,9 @@ The engine should run through a versioned pipeline with policy, clinical guardra
   - [x] decision trace/audit log
 - [x] Design "Under the hood" panel showing inputs -> rule hits -> outputs.
 - [x] Add CTA flow from simulator to account creation / login.
-- [ ] Instrument analytics events (start sim, input change, run sim, CTA click).
-- [ ] Add safety messaging and non-diagnostic disclaimers where needed.
-- [ ] Add loading, error, and empty states.
+- [x] Instrument analytics events (start sim, input change, run sim, CTA click).
+- [x] Add safety messaging and non-diagnostic disclaimers where needed.
+- [x] Add loading, error, and empty states.
 - [ ] Add test coverage:
   - [ ] unit tests for rules and ranking
   - [ ] contract tests for pipeline output shape
@@ -53,11 +53,17 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - Current Simulator UI includes starter scenario selection, editable form fields, and structured input preview under "Under The Hood".
 - Simulation engine added: `src/simulator/engine.ts` with versioned pipeline metadata, deterministic scoring rules, ranking logic, and structured output contract.
 - Simulator page now renders risk summary, twin-state updates, ranked actions, follow-up questions, and decision trace output.
+- Analytics events added for page view, scenario start, input changes, simulation runs, and CTA clicks.
+- UX states added for loading, errors, and empty output sections.
+- Safety notice added to reinforce educational/non-diagnostic use.
 
 ## Next Up
-- Instrument analytics events (start sim, input change, run sim, CTA click).
-- Add safety messaging and non-diagnostic disclaimers where needed.
-- Add loading, error, and empty states.
+- Add test coverage:
+  - unit tests for rules and ranking
+  - contract tests for pipeline output shape
+  - UI tests for key simulator flows
+- Add logging strategy for observability and auditability.
+- Security/privacy pass (PII minimization, redaction in logs, retention rules).
 
 ## Open Questions (Keep Simple)
 - [ ] Should simulator be public without login, or gated after first scenario?
