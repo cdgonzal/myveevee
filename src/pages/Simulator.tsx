@@ -26,6 +26,10 @@ import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
 import {
+  createSimulationAuditRecord,
+  persistSimulationAuditRecord,
+} from "../simulator/logging";
+import {
   DEFAULT_SIMULATOR_INPUT,
   STARTER_SCENARIOS,
   type SimulatorInput,
@@ -51,6 +55,7 @@ export default function Simulator() {
   const [result, setResult] = useState<SimulationResult>(() =>
     runWellnessMirrorSimulation(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT)
   );
+  const [lastAuditRunId, setLastAuditRunId] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -83,6 +88,9 @@ export default function Simulator() {
       const nextResult = runWellnessMirrorSimulation(input);
       setSimulatedInput(input);
       setResult(nextResult);
+      const auditRecord = createSimulationAuditRecord(input, nextResult, source);
+      persistSimulationAuditRecord(auditRecord);
+      setLastAuditRunId(auditRecord.runId);
       trackEvent("wm_run_simulation", { source, riskScore: nextResult.riskScore });
     } catch {
       setErrorMessage("Simulation failed. Please try again.");
@@ -422,6 +430,14 @@ export default function Simulator() {
           <AlertIcon />
           <AlertDescription fontSize="sm">
             Wellness Mirror is a planning and education tool. It is not medical diagnosis or treatment.
+          </AlertDescription>
+        </Alert>
+
+        <Alert status="success" borderRadius="lg" variant="subtle">
+          <AlertIcon />
+          <AlertDescription fontSize="sm">
+            Audit logging enabled with redaction. Free-text inputs are excluded from stored records.
+            {lastAuditRunId ? ` Latest run ID: ${lastAuditRunId}.` : ""}
           </AlertDescription>
         </Alert>
 

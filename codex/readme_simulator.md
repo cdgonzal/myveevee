@@ -40,8 +40,8 @@ The engine should run through a versioned pipeline with policy, clinical guardra
   - [x] unit tests for rules and ranking
   - [x] contract tests for pipeline output shape
   - [x] UI tests for key simulator flows
-- [ ] Add logging strategy for observability and auditability.
-- [ ] Security/privacy pass (PII minimization, redaction in logs, retention rules).
+- [x] Add logging strategy for observability and auditability.
+- [x] Security/privacy pass (PII minimization, redaction in logs, retention rules).
 - [ ] Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
 - [ ] Performance pass (bundle split, lazy load simulator modules, optimize payloads).
 - [ ] Final UX/content review with product + marketing.
@@ -57,11 +57,13 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - UX states added for loading, errors, and empty output sections.
 - Safety notice added to reinforce educational/non-diagnostic use.
 - Test framework added (Vitest + Testing Library) with simulator engine and UI tests.
+- Audit logging strategy added in `src/simulator/logging.ts` with structured run records.
+- Privacy controls added: free-text redaction, summary-only storage, and session retention cap (25 latest records).
 
 ## Next Up
-- Add logging strategy for observability and auditability.
-- Security/privacy pass (PII minimization, redaction in logs, retention rules).
 - Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
+- Performance pass (bundle split, lazy load simulator modules, optimize payloads).
+- Final UX/content review with product + marketing.
 
 ## Open Questions (Keep Simple)
 - [ ] Should simulator be public without login, or gated after first scenario?
