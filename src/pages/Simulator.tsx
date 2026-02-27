@@ -1,35 +1,32 @@
-import {
+﻿import {
   Badge,
   Box,
   Button,
   Card,
   CardBody,
+  FormControl,
+  FormLabel,
+  Grid,
   Heading,
+  Input,
+  NumberInput,
+  NumberInputField,
+  Select,
   SimpleGrid,
   Stack,
   Text,
+  Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
-
-const INPUT_TYPES = [
-  "Profile",
-  "Insurance",
-  "Symptoms",
-  "Behavior change",
-  "Medication",
-  "Lab values",
-  "Lifestyle events",
-];
-
-const OUTPUTS = [
-  "Predicted twin-state updates",
-  "Risk and priority signals",
-  "Ranked recommended actions",
-  "Follow-up questions",
-  "Decision-step trace",
-];
+import {
+  DEFAULT_SIMULATOR_INPUT,
+  STARTER_SCENARIOS,
+  type SimulatorInput,
+  type SymptomSeverity,
+} from "../simulator/schema";
 
 export default function Simulator() {
   const pageGradient = useColorModeValue(
@@ -39,15 +36,40 @@ export default function Simulator() {
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
 
+  const [selectedId, setSelectedId] = useState(STARTER_SCENARIOS[0]?.id ?? "");
+  const selectedScenario = useMemo(
+    () => STARTER_SCENARIOS.find((scenario) => scenario.id === selectedId),
+    [selectedId]
+  );
+
+  const [draftInput, setDraftInput] = useState<SimulatorInput>(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT);
+  const [simulatedInput, setSimulatedInput] = useState<SimulatorInput>(selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT);
+
+  const inputTypes = Object.keys(draftInput);
+  const outputs = [
+    "Predicted twin-state updates",
+    "Risk and priority signals",
+    "Ranked recommended actions",
+    "Follow-up questions",
+    "Decision-step trace",
+  ];
+
+  const applyScenario = (scenarioId: string) => {
+    setSelectedId(scenarioId);
+    const next = STARTER_SCENARIOS.find((scenario) => scenario.id === scenarioId)?.input ?? DEFAULT_SIMULATOR_INPUT;
+    setDraftInput(next);
+    setSimulatedInput(next);
+  };
+
   return (
     <Box as="main" minH="100vh" bgGradient={pageGradient} color="text.primary" py={{ base: 10, md: 20 }}>
       <Stack spacing={{ base: 8, md: 10 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
         <Stack spacing={3}>
           <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
-            Simulator Preview
+            Wellness Mirror® Preview
           </Badge>
           <Heading as="h1" size={{ base: "lg", md: "xl" }}>
-            Scenario Explorer (What-If Engine)
+            Wellness Mirror® Scenario Explorer
           </Heading>
           <Text color={muted} maxW="4xl">
             Run a health or benefits scenario, see predicted changes to your Digital Twin, and inspect how decisions are made.
@@ -60,9 +82,9 @@ export default function Simulator() {
               <Stack spacing={4}>
                 <Heading as="h2" size="sm">Inputs captured</Heading>
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={2}>
-                  {INPUT_TYPES.map((item) => (
+                  {inputTypes.map((item) => (
                     <Box key={item} fontSize="sm" borderWidth="1px" borderColor={border} borderRadius="md" px={3} py={2}>
-                      {item}
+                      {item[0].toUpperCase() + item.slice(1)}
                     </Box>
                   ))}
                 </SimpleGrid>
@@ -75,8 +97,8 @@ export default function Simulator() {
               <Stack spacing={4}>
                 <Heading as="h2" size="sm">Outputs returned</Heading>
                 <Stack spacing={2}>
-                  {OUTPUTS.map((item) => (
-                    <Text key={item} fontSize="sm">� {item}</Text>
+                  {outputs.map((item) => (
+                    <Text key={item} fontSize="sm">- {item}</Text>
                   ))}
                 </Stack>
               </Stack>
@@ -86,14 +108,166 @@ export default function Simulator() {
 
         <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
           <CardBody>
+            <Stack spacing={4}>
+              <Heading as="h2" size="sm">Starter scenarios</Heading>
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3}>
+                {STARTER_SCENARIOS.map((scenario) => (
+                  <Box key={scenario.id} borderWidth="1px" borderColor={border} borderRadius="lg" p={3}>
+                    <Stack spacing={2}>
+                      <Text fontWeight="700" fontSize="sm">{scenario.title}</Text>
+                      <Text color={muted} fontSize="sm">{scenario.summary}</Text>
+                      <Button
+                        size="sm"
+                        variant={selectedId === scenario.id ? "solid" : "outline"}
+                        onClick={() => applyScenario(scenario.id)}
+                      >
+                        Use scenario
+                      </Button>
+                    </Stack>
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </Stack>
+          </CardBody>
+        </Card>
+
+        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <CardBody>
+            <Stack spacing={4}>
+              <Heading as="h2" size="sm">Scenario input</Heading>
+              <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
+                <FormControl>
+                  <FormLabel fontSize="sm">Insurance payer</FormLabel>
+                  <Input
+                    value={draftInput.insurance.payer}
+                    onChange={(e) =>
+                      setDraftInput((prev) => ({
+                        ...prev,
+                        insurance: { ...prev.insurance, payer: e.target.value },
+                      }))
+                    }
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">State</FormLabel>
+                  <Input
+                    value={draftInput.profile.state}
+                    onChange={(e) =>
+                      setDraftInput((prev) => ({
+                        ...prev,
+                        profile: { ...prev.profile, state: e.target.value.toUpperCase() },
+                      }))
+                    }
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Symptom severity</FormLabel>
+                  <Select
+                    value={draftInput.symptom.severity}
+                    onChange={(e) =>
+                      setDraftInput((prev) => ({
+                        ...prev,
+                        symptom: { ...prev.symptom, severity: e.target.value as SymptomSeverity },
+                      }))
+                    }
+                  >
+                    <option value="low">Low</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="high">High</option>
+                  </Select>
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Symptom duration (days)</FormLabel>
+                  <NumberInput
+                    min={1}
+                    max={180}
+                    value={draftInput.symptom.durationDays}
+                    onChange={(_, value) =>
+                      setDraftInput((prev) => ({
+                        ...prev,
+                        symptom: { ...prev.symptom, durationDays: Number.isFinite(value) ? value : 1 },
+                      }))
+                    }
+                  >
+                    <NumberInputField />
+                  </NumberInput>
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Medication adherence (%)</FormLabel>
+                  <NumberInput
+                    min={0}
+                    max={100}
+                    value={draftInput.medication.adherencePercent}
+                    onChange={(_, value) =>
+                      setDraftInput((prev) => ({
+                        ...prev,
+                        medication: {
+                          ...prev.medication,
+                          adherencePercent: Number.isFinite(value) ? value : 0,
+                        },
+                      }))
+                    }
+                  >
+                    <NumberInputField />
+                  </NumberInput>
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Sleep (hours/night)</FormLabel>
+                  <NumberInput
+                    min={0}
+                    max={12}
+                    value={draftInput.behaviorChange.sleepHours}
+                    onChange={(_, value) =>
+                      setDraftInput((prev) => ({
+                        ...prev,
+                        behaviorChange: {
+                          ...prev.behaviorChange,
+                          sleepHours: Number.isFinite(value) ? value : 0,
+                        },
+                      }))
+                    }
+                  >
+                    <NumberInputField />
+                  </NumberInput>
+                </FormControl>
+              </Grid>
+
+              <FormControl>
+                <FormLabel fontSize="sm">Symptom description</FormLabel>
+                <Textarea
+                  value={draftInput.symptom.description}
+                  onChange={(e) =>
+                    setDraftInput((prev) => ({
+                      ...prev,
+                      symptom: { ...prev.symptom, description: e.target.value },
+                    }))
+                  }
+                  rows={3}
+                />
+              </FormControl>
+
+              <Button alignSelf="flex-start" onClick={() => setSimulatedInput(draftInput)}>
+                Run simulation preview
+              </Button>
+            </Stack>
+          </CardBody>
+        </Card>
+
+        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <CardBody>
             <Stack spacing={3}>
               <Heading as="h2" size="sm">Under The Hood</Heading>
               <Text color={muted} fontSize="sm">
                 This page will expose pipeline versions, rule hits, coverage constraints, and reasoning steps used to rank actions.
               </Text>
-              <Text color={muted} fontSize="sm">
-                Current status: scaffold complete. Next step is wiring the input form and simulation engine contract.
-              </Text>
+              <Box as="pre" fontSize="xs" borderWidth="1px" borderColor={border} borderRadius="md" p={3} overflowX="auto">
+                {JSON.stringify(simulatedInput, null, 2)}
+              </Box>
             </Stack>
           </CardBody>
         </Card>

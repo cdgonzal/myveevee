@@ -133,6 +133,9 @@ function Header() {
                 <CLink as={Link} to={APP_LINKS.internal.howItWorks} color={navColor} fontWeight="600">
                   How It Works
                 </CLink>
+                <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
+                  Wellness Mirror®
+                </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
                   Features
                 </CLink>
@@ -184,6 +187,9 @@ function Header() {
               <CLink as={Link} to={APP_LINKS.internal.howItWorks} onClick={onClose} fontWeight="600" color={navColor}>
                 How It Works
               </CLink>
+              <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
+                Wellness Mirror®
+              </CLink>
               <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
                 Features
               </CLink>
@@ -228,6 +234,9 @@ function Footer() {
           <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }} align={{ base: "center", md: "flex-start" }}>
             <CLink href={APP_LINKS.external.authenticatedConsole} isExternal color={primaryText}>
               Log In
+            </CLink>
+            <CLink as={Link} to={APP_LINKS.internal.simulator} color={primaryText}>
+              Wellness Mirror®
             </CLink>
             <CLink href={APP_LINKS.external.investors} isExternal color={primaryText}>
               Investor Info

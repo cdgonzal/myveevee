@@ -17,10 +17,10 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - Show a clear "look under the hood" of captured data, reasoning steps, and recommendation logic.
 
 ## Checklist
-- [ ] Create `Simulator` route and page scaffold (`/simulator`).
+- [x] Create `Simulator` route and page scaffold (`/simulator`).
 - [ ] Add header/footer navigation links to Simulator where appropriate.
-- [ ] Define simulator input schema (profile, insurance, symptom, behavior, meds, labs, lifestyle).
-- [ ] Build scenario input form UI with validation and friendly defaults.
+- [x] Define simulator input schema (profile, insurance, symptom, behavior, meds, labs, lifestyle).
+- [x] Build scenario input form UI with validation and friendly defaults.
 - [ ] Create normalized twin-state model contract for UI state.
 - [ ] Build versioned pipeline interface (policy, guardrails, coverage constraints).
 - [ ] Implement deterministic rule pass (state updates + flags).
@@ -31,8 +31,8 @@ The engine should run through a versioned pipeline with policy, clinical guardra
   - [ ] ranked recommended actions
   - [ ] follow-up questions
   - [ ] decision trace/audit log
-- [ ] Design "Under the hood" panel showing inputs -> rule hits -> outputs.
-- [ ] Add CTA flow from simulator to account creation / login.
+- [x] Design "Under the hood" panel showing inputs -> rule hits -> outputs.
+- [x] Add CTA flow from simulator to account creation / login.
 - [ ] Instrument analytics events (start sim, input change, run sim, CTA click).
 - [ ] Add safety messaging and non-diagnostic disclaimers where needed.
 - [ ] Add loading, error, and empty states.
@@ -45,6 +45,11 @@ The engine should run through a versioned pipeline with policy, clinical guardra
 - [ ] Accessibility pass (keyboard flow, labels, contrast, screen-reader order).
 - [ ] Performance pass (bundle split, lazy load simulator modules, optimize payloads).
 - [ ] Final UX/content review with product + marketing.
+
+## Progress Notes
+- Route created: `src/pages/Simulator.tsx` wired at `/simulator`.
+- Input schema added: `src/simulator/schema.ts` with defaults and starter scenarios.
+- Current Simulator UI includes starter scenario selection, editable form fields, and structured input preview under "Under The Hood".
 
 ## Open Questions (Keep Simple)
 - [ ] Should simulator be public without login, or gated after first scenario?
