@@ -3,30 +3,29 @@ import {
   Box,
   Button,
   Container,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   HStack,
-  Link as CLink,
-  Text,
-  Image,
   IconButton,
-  useDisclosure,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
-  DrawerBody,
+  Image,
+  Link as CLink,
   Stack,
+  Switch,
+  Text,
   useColorMode,
   useColorModeValue,
-  Switch,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { APP_LINKS } from "./config/links";
 
 const Home = lazy(() => import("./pages/Home"));
 const Features = lazy(() => import("./pages/Features"));
-const HowItWorks = lazy(() => import("./pages/HowItWorks"));
 const Simulator = lazy(() => import("./pages/Simulator"));
 const Testimonials = lazy(() => import("./pages/Testimonials"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -65,7 +64,6 @@ export default function App() {
             <Routes>
               <Route path={APP_LINKS.internal.home} element={<Home />} />
               <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
-              <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
               <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
               <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
               <Route path={APP_LINKS.internal.terms} element={<Terms />} />
@@ -126,15 +124,9 @@ function Header() {
             </HStack>
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
-              <HStack
-                spacing={{ base: 3, md: 6 }}
-                display={{ base: "none", md: "flex" }}
-              >
-                <CLink as={Link} to={APP_LINKS.internal.howItWorks} color={navColor} fontWeight="600">
-                  How It Works
-                </CLink>
+              <HStack spacing={{ base: 3, md: 6 }} display={{ base: "none", md: "flex" }}>
                 <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
-                  Wellness Mirror®
+                  Wellness Mirror
                 </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
                   Features
@@ -144,10 +136,7 @@ function Header() {
                 </CLink>
               </HStack>
 
-              <ColorModeToggle
-                display={{ base: "none", md: "inline-flex" }}
-                withDivider
-              />
+              <ColorModeToggle display={{ base: "none", md: "inline-flex" }} withDivider />
 
               <Button
                 as="a"
@@ -184,11 +173,8 @@ function Header() {
           <DrawerBody>
             <Stack spacing={4} mt={4}>
               <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
-              <CLink as={Link} to={APP_LINKS.internal.howItWorks} onClick={onClose} fontWeight="600" color={navColor}>
-                How It Works
-              </CLink>
               <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
-                Wellness Mirror®
+                Wellness Mirror
               </CLink>
               <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
                 Features
@@ -236,7 +222,7 @@ function Footer() {
               Log In
             </CLink>
             <CLink as={Link} to={APP_LINKS.internal.simulator} color={primaryText}>
-              Wellness Mirror®
+              Wellness Mirror
             </CLink>
             <CLink href={APP_LINKS.external.investors} isExternal color={primaryText}>
               Investor Info
@@ -303,5 +289,3 @@ function ColorModeToggle({
     </Flex>
   );
 }
-
-

@@ -63,12 +63,35 @@ const HOSPITAL_VALUE_ROWS = [
   },
 ];
 
+const PATIENT_STEPS = [
+  {
+    number: "1",
+    title: "Tell us what's happening",
+    detail: "Type it. Say it. Upload a photo. VeeVee listens and understands. Free and instant.",
+  },
+  {
+    number: "2",
+    title: "Get clear guidance",
+    detail: "See what might be going on and what to do next. Simple, personalized answers for free.",
+  },
+  {
+    number: "3",
+    title: "Take the next step",
+    detail: "Know where to go, what to ask, and whether your plan covers it.",
+  },
+];
+
 const scrollLogos = keyframes`
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 `;
 
 export default function Home() {
+  const {
+    isOpen: isPatientOpen,
+    onOpen: onPatientOpen,
+    onClose: onPatientClose,
+  } = useDisclosure();
   const {
     isOpen: isValueOpen,
     onOpen: onValueOpen,
@@ -99,6 +122,8 @@ export default function Home() {
   const positiveColor = useColorModeValue("green.600", "green.300");
   const nvidiaAccent = "#76B900";
   const nvidiaSoftBg = useColorModeValue("rgba(118, 185, 0, 0.08)", "rgba(118, 185, 0, 0.14)");
+  const stepCircleColor = "white";
+  const freeAccent = useColorModeValue("#001A52", "#9CE7FF");
 
   return (
     <>
@@ -158,8 +183,7 @@ export default function Home() {
 
             <Stack spacing={3}>
               <Button
-                as={RouterLink}
-                to={APP_LINKS.cta.checkBenefits}
+                onClick={onPatientOpen}
                 size="lg"
                 borderRadius="full"
                 fontWeight="700"
@@ -286,6 +310,9 @@ export default function Home() {
               <Text color={muted}>
                 Discover benefits and perks, get answers to everyday health questions, stay connected to your doctors, monitor your health, and build a digital twin that lets you explore what-if scenarios with your own avatar.
               </Text>
+              <Button onClick={onPatientOpen} size="sm" borderRadius="full" fontWeight="700" alignSelf="flex-start">
+                See how it works
+              </Button>
             </Box>
 
             <Box
@@ -445,6 +472,116 @@ export default function Home() {
           </Box>
         </Box>
       </Box>
+
+      <Modal isOpen={isPatientOpen} onClose={onPatientClose} size="5xl" isCentered scrollBehavior="inside">
+        <ModalOverlay bg="rgba(6, 37, 76, 0.55)" backdropFilter="blur(6px)" />
+        <ModalContent bg={modalBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
+          <ModalHeader pr={12}>How VeeVee Works for Patients</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Stack spacing={6}>
+              <Box>
+                <Text
+                  fontSize="xs"
+                  letterSpacing="0.18em"
+                  textTransform="uppercase"
+                  color="accent.soft"
+                  mb={3}
+                >
+                  How it works
+                </Text>
+                <Heading as="h2" size="lg" fontWeight="800" mb={3}>
+                  Your wellness questions answered in 3 simple steps.
+                </Heading>
+                <Text color={muted} maxW="3xl">
+                  Start <Box as="span" fontWeight="800" color={freeAccent}>free</Box>. Share what&apos;s going on and get clear next steps instantly.
+                </Text>
+              </Box>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 4, md: 6 }}>
+                {PATIENT_STEPS.map((step) => (
+                  <Box
+                    key={step.number}
+                    bg="bg.surface"
+                    borderRadius="xl"
+                    borderWidth="1px"
+                    borderColor={border}
+                    boxShadow="0 10px 24px rgba(6, 37, 76, 0.10)"
+                    p={5}
+                  >
+                    <Box
+                      w={14}
+                      h={14}
+                      borderRadius="full"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      fontWeight="800"
+                      fontSize="2xl"
+                      bg="accent.primary"
+                      color={stepCircleColor}
+                      border="2px solid"
+                      borderColor="white"
+                      boxShadow="0 0 0 2px rgba(0, 26, 82, 0.32)"
+                      mb={3}
+                    >
+                      {step.number}
+                    </Box>
+                    <Heading as="h3" size="sm" mb={2} color="accent.soft">
+                      {step.title}
+                    </Heading>
+                    <Text fontSize="sm" color="text.primary">
+                      {step.detail.split(/(free|Free)/g).map((part, partIndex) =>
+                        part.toLowerCase() === "free" ? (
+                          <Box as="span" key={`${step.number}-free-${partIndex}`} fontWeight="800" color={freeAccent}>
+                            {part}
+                          </Box>
+                        ) : (
+                          <Box as="span" key={`${step.number}-${partIndex}`}>
+                            {part}
+                          </Box>
+                        )
+                      )}
+                    </Text>
+                  </Box>
+                ))}
+              </SimpleGrid>
+
+              <Stack spacing={4} textAlign="center">
+                <Heading as="h3" size="md">
+                  Curious what happens next?
+                </Heading>
+                <Text fontSize="sm" color={muted} maxW="2xl" mx="auto">
+                  Try a free health scenario and see how VeeVee responds before creating an account.
+                </Text>
+                <Button
+                  as={RouterLink}
+                  to={APP_LINKS.internal.simulator}
+                  onClick={onPatientClose}
+                  size="md"
+                  borderRadius="full"
+                  fontWeight="700"
+                  px={8}
+                  alignSelf="center"
+                  boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
+                >
+                  Try it free
+                </Button>
+                <CLink
+                  href={APP_LINKS.external.authenticatedConsole}
+                  isExternal
+                  color="accent.soft"
+                  fontSize="sm"
+                  fontWeight="600"
+                  textDecoration="underline"
+                >
+                  Already ready?
+                </CLink>
+              </Stack>
+            </Stack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       <Modal isOpen={isValueOpen} onClose={onValueClose} size="6xl" isCentered scrollBehavior="inside">
         <ModalOverlay bg="rgba(6, 37, 76, 0.55)" backdropFilter="blur(6px)" />
