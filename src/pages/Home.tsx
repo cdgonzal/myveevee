@@ -170,7 +170,7 @@ export default function Home() {
                 lineHeight="1.1"
                 color="text.primary"
               >
-                One smart health platform.<br></br>
+                One smart wellness platform.<br></br>
                 <Box as="span" color="accent.primary">
                   {" "}More peace of mind.
                 </Box>
@@ -178,19 +178,20 @@ export default function Home() {
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VeeVee helps people feel more confident about their health and helps hospitals respond faster. It is built to be simple, safe, private, and ready when you need it.
+              VeeVee helps people feel more confident about their everyday life and helps hospitals respond faster. It is built to be simple, safe, private, and ready when you need it.
             </Text>
 
             <Stack spacing={3}>
               <Button
-                onClick={onPatientOpen}
+                as={RouterLink}
+                to={APP_LINKS.internal.whyVeeVee}
                 size="lg"
                 borderRadius="full"
                 fontWeight="700"
                 px={10}
                 boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
               >
-                How It Works
+                Features
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
@@ -267,6 +268,57 @@ export default function Home() {
         </Grid>
 
         <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto">
+          <Box
+            borderRadius="full"
+            bg={pillBg}
+            border="1px solid rgba(25, 37, 134, 0.5)"
+            boxShadow="0 0 36px rgba(25, 37, 134, 0.35)"
+            backdropFilter="blur(12px)"
+            px={{ base: 6, md: 10 }}
+            py={{ base: 6, md: 7 }}
+          >
+            <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="#FFFFFF" mb={{ base: 4, md: 5 }}>
+              Built for real life, real care decisions, and real hospital workflows.
+            </Text>
+
+            <Box overflow="hidden">
+              <Box
+                as="div"
+                display="inline-flex"
+                alignItems="center"
+                animation={`${scrollLogos} 53s linear infinite`}
+                opacity={0.85}
+                columnGap={{ base: 8, md: 10 }}
+              >
+                {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (
+                  <Box
+                    key={`${logo.alt}-${idx}`}
+                    minW={{ base: "90px", md: "110px" }}
+                    maxW={{ base: "110px", md: "130px" }}
+                    h={{ base: "32px", md: "36px" }}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      maxH="100%"
+                      maxW="100%"
+                      objectFit="contain"
+                      opacity={0.92}
+                      filter={payorLogoFilter}
+                      _hover={{ opacity: 1 }}
+                      loading="lazy"
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+
+        <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto">
           <Stack spacing={2} mb={5}>
             <Text
               fontSize="xs"
@@ -305,10 +357,10 @@ export default function Home() {
                 For patients
               </Text>
               <Heading as="h3" size="md" mb={3}>
-                A health companion that stays with you between visits.
+                A wellness companion that stays with you between visits.
               </Heading>
               <Text color={muted}>
-                Ask everyday health questions, find benefits and perks, stay connected to your care, track your health, and explore your digital twin in a way that feels personal, private, and easy to understand.
+                Ask everyday questions, find benefits and perks, stay connected to your care, track your health, and explore your digital twin in a way that feels personal, private, and easy to understand.
               </Text>
               <Button onClick={onPatientOpen} size="sm" borderRadius="full" fontWeight="700" alignSelf="flex-start">
                 See how it works
@@ -421,56 +473,6 @@ export default function Home() {
           </Box>
         </Box>
 
-        <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 4, md: 6 }}>
-          <Box
-            borderRadius="full"
-            bg={pillBg}
-            border="1px solid rgba(25, 37, 134, 0.5)"
-            boxShadow="0 0 36px rgba(25, 37, 134, 0.35)"
-            backdropFilter="blur(12px)"
-            px={{ base: 6, md: 10 }}
-            py={{ base: 6, md: 7 }}
-          >
-            <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="#FFFFFF" mb={{ base: 4, md: 5 }}>
-              Built for real life, real care decisions, and real hospital workflows.
-            </Text>
-
-            <Box overflow="hidden">
-              <Box
-                as="div"
-                display="inline-flex"
-                alignItems="center"
-                animation={`${scrollLogos} 53s linear infinite`}
-                opacity={0.85}
-                columnGap={{ base: 8, md: 10 }}
-              >
-                {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (
-                  <Box
-                    key={`${logo.alt}-${idx}`}
-                    minW={{ base: "90px", md: "110px" }}
-                    maxW={{ base: "110px", md: "130px" }}
-                    h={{ base: "32px", md: "36px" }}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Image
-                      src={logo.src}
-                      alt={logo.alt}
-                      maxH="100%"
-                      maxW="100%"
-                      objectFit="contain"
-                      opacity={0.92}
-                      filter={payorLogoFilter}
-                      _hover={{ opacity: 1 }}
-                      loading="lazy"
-                    />
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
       </Box>
 
       <Modal isOpen={isPatientOpen} onClose={onPatientClose} size="5xl" isCentered scrollBehavior="inside">
