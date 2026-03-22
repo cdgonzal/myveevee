@@ -62,6 +62,33 @@ function quickInputToSimulatorInput(quick: QuickInput, base: SimulatorInput): Si
   };
 }
 
+function StepBadge({
+  number,
+  bg,
+  color,
+}: {
+  number: string;
+  bg: string;
+  color: string;
+}) {
+  return (
+    <Box
+      w="34px"
+      h="34px"
+      borderRadius="full"
+      bg={bg}
+      color={color}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      fontWeight="800"
+      fontSize="sm"
+    >
+      {number}
+    </Box>
+  );
+}
+
 export default function Simulator() {
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
@@ -70,6 +97,12 @@ export default function Simulator() {
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
   const scenarioCardBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.62)");
+  const stepBg = useColorModeValue("rgba(255, 255, 255, 0.84)", "rgba(6, 37, 76, 0.72)");
+  const outputBg = useColorModeValue("rgba(17, 119, 186, 0.08)", "rgba(17, 119, 186, 0.14)");
+  const outputCardBg = useColorModeValue("rgba(255, 255, 255, 0.94)", "rgba(2, 26, 54, 0.88)");
+  const stepBadgeBg = useColorModeValue("#001A52", "#9CE7FF");
+  const stepBadgeColor = useColorModeValue("#FFFFFF", "#001A52");
+  const outputBorder = useColorModeValue("#1177BA", "#9CE7FF");
 
   const [selectedId, setSelectedId] = useState(STARTER_SCENARIOS[0]?.id ?? "");
   const selectedScenario = useMemo(
@@ -178,31 +211,41 @@ export default function Simulator() {
             py={1}
             borderRadius="full"
           >
-            VeeVee Simulator® Preview
+            VeeVee Simulator Preview
           </Badge>
           <Heading as="h1" size={{ base: "lg", md: "xl" }}>
             Try a simple what-if health scenario.
           </Heading>
           <Text color={muted} maxW="4xl">
-            VeeVee Simulator® gives you a quick preview of what may matter, what questions to ask, and what next steps may help. It is a simple teaser for the fuller app experience.
+            VeeVee Simulator gives you a quick preview of what may matter, what questions to ask, and what next steps may help. It is a simple teaser for the fuller app experience.
           </Text>
         </Stack>
 
-        <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+        <Card bg={stepBg} borderWidth="1px" borderColor={border} borderRadius="2xl" boxShadow="0 16px 34px rgba(6, 37, 76, 0.10)">
           <CardBody>
             <Stack spacing={4}>
-              <Heading as="h2" size="sm">
-                Pick a life situation
-              </Heading>
+              <Stack spacing={3}>
+                <StepBadge number="1" bg={stepBadgeBg} color={stepBadgeColor} />
+                <Box>
+                  <Heading as="h2" size="sm" mb={1}>
+                    Pick a scenario
+                  </Heading>
+                  <Text fontSize="sm" color={muted}>
+                    Start with the life situation that feels closest to what you want to explore.
+                  </Text>
+                </Box>
+              </Stack>
+
               <SimpleGrid columns={{ base: 1, md: 2, xl: 4 }} spacing={3}>
                 {STARTER_SCENARIOS.map((scenario) => (
                   <Box
                     key={scenario.id}
                     borderWidth="1px"
-                    borderColor={selectedId === scenario.id ? "accent.primary" : border}
+                    borderColor={selectedId === scenario.id ? outputBorder : border}
                     borderRadius="xl"
-                    bg={scenarioCardBg}
+                    bg={selectedId === scenario.id ? outputBg : scenarioCardBg}
                     p={4}
+                    boxShadow={selectedId === scenario.id ? "0 0 0 1px rgba(17, 119, 186, 0.25)" : "none"}
                   >
                     <Stack spacing={2}>
                       <Text fontWeight="700" fontSize="sm">
@@ -229,16 +272,21 @@ export default function Simulator() {
           </CardBody>
         </Card>
 
-        <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} alignItems="stretch">
-          <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+        <SimpleGrid columns={{ base: 1, lg: "minmax(0, 0.95fr) minmax(0, 1.05fr)" }} spacing={6} alignItems="stretch">
+          <Card bg={stepBg} borderWidth="1px" borderColor={border} borderRadius="2xl" boxShadow="0 16px 34px rgba(6, 37, 76, 0.10)">
             <CardBody>
               <Stack spacing={4}>
-                <Heading as="h2" size="sm">
-                  Adjust a few details
-                </Heading>
-                <Text color={muted} fontSize="sm">
-                  Keep it simple. Change a few things and see how the preview responds.
-                </Text>
+                <Stack spacing={3}>
+                  <StepBadge number="2" bg={stepBadgeBg} color={stepBadgeColor} />
+                  <Box>
+                    <Heading as="h2" size="sm" mb={1}>
+                      Change the parameters
+                    </Heading>
+                    <Text color={muted} fontSize="sm">
+                      Adjust a few details and make the scenario feel more like your situation.
+                    </Text>
+                  </Box>
+                </Stack>
 
                 <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
                   <FormControl>
@@ -319,6 +367,27 @@ export default function Simulator() {
                   </FormControl>
                 </Grid>
 
+                <Box
+                  borderWidth="1px"
+                  borderColor={border}
+                  borderRadius="xl"
+                  bg={scenarioCardBg}
+                  px={4}
+                  py={3}
+                >
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                    Current setup
+                  </Text>
+                  <Text fontSize="sm" color={muted}>
+                    {quickInput.severity === "low"
+                      ? "A little off"
+                      : quickInput.severity === "moderate"
+                        ? "Noticeable"
+                        : "Hard to ignore"}{" "}
+                    symptoms for {quickInput.durationDays} day{quickInput.durationDays === 1 ? "" : "s"}, about {quickInput.sleepHours} hours of sleep, payer: {quickInput.payer || "Not added"}.
+                  </Text>
+                </Box>
+
                 <Button
                   alignSelf="flex-start"
                   isLoading={isRunning}
@@ -326,51 +395,83 @@ export default function Simulator() {
                   aria-live="polite"
                   onClick={handleRunPreview}
                 >
-                  See my preview
+                  Update my outcome
                 </Button>
               </Stack>
             </CardBody>
           </Card>
 
-          <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <Card
+            bg={outputBg}
+            borderWidth="2px"
+            borderColor={outputBorder}
+            borderRadius="2xl"
+            boxShadow="0 20px 42px rgba(17, 119, 186, 0.16)"
+          >
             <CardBody>
               <Stack spacing={4}>
-                <Heading as="h2" size="sm">
-                  What VeeVee notices
-                </Heading>
-                <Text fontSize="sm">
-                  Overall level: <b>{result.riskLevel}</b>
-                </Text>
-                <Text fontSize="sm" color={muted}>
-                  Preview score: {result.riskScore}
-                </Text>
+                <Stack spacing={3}>
+                  <StepBadge number="3" bg={stepBadgeBg} color={stepBadgeColor} />
+                  <Box>
+                    <Heading as="h2" size="sm" mb={1}>
+                      Here is your outcome
+                    </Heading>
+                    <Text color={muted} fontSize="sm">
+                      A quick read on what VeeVee notices, what it predicts, and what you may want to do next.
+                    </Text>
+                  </Box>
+                </Stack>
+
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                  <Box borderWidth="1px" borderColor={outputBorder} borderRadius="xl" bg={outputCardBg} px={4} py={3}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                      Overall outcome
+                    </Text>
+                    <Text fontSize="sm">
+                      Level: <b>{result.riskLevel}</b>
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      Preview score: {result.riskScore}
+                    </Text>
+                  </Box>
+                  <Box borderWidth="1px" borderColor={outputBorder} borderRadius="xl" bg={outputCardBg} px={4} py={3}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                      Based on these inputs
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      {simulatedInput.symptom.durationDays} day symptoms, {simulatedInput.behaviorChange.sleepHours} hours of sleep, payer {simulatedInput.insurance.payer}.
+                    </Text>
+                  </Box>
+                </SimpleGrid>
 
                 <Box>
                   <Text fontSize="sm" fontWeight="700" mb={2}>
-                    Main signals
+                    What VeeVee notices
                   </Text>
                   <Stack spacing={2}>
                     {result.riskSignals.length ? (
                       result.riskSignals.slice(0, 3).map((signal) => (
-                        <Text key={signal} fontSize="sm">
-                          - {signal}
-                        </Text>
+                        <Box key={signal} borderWidth="1px" borderColor={outputBorder} borderRadius="lg" bg={outputCardBg} px={3} py={2}>
+                          <Text fontSize="sm">{signal}</Text>
+                        </Box>
                       ))
                     ) : (
-                      <Text fontSize="sm" color={muted}>
-                        Nothing urgent stands out in this preview.
-                      </Text>
+                      <Box borderWidth="1px" borderColor={outputBorder} borderRadius="lg" bg={outputCardBg} px={3} py={2}>
+                        <Text fontSize="sm" color={muted}>
+                          Nothing urgent stands out in this preview.
+                        </Text>
+                      </Box>
                     )}
                   </Stack>
                 </Box>
 
                 <Box>
                   <Text fontSize="sm" fontWeight="700" mb={2}>
-                    What you may want to do next
+                    Predictions, actions, and next steps
                   </Text>
                   <Stack spacing={2}>
                     {result.recommendations.slice(0, 3).map((recommendation) => (
-                      <Box key={recommendation.id} borderWidth="1px" borderColor={border} borderRadius="lg" px={3} py={2}>
+                      <Box key={recommendation.id} borderWidth="1px" borderColor={outputBorder} borderRadius="lg" bg={outputCardBg} px={3} py={2}>
                         <Text fontSize="sm" fontWeight="700">
                           {recommendation.title}
                         </Text>
@@ -387,7 +488,7 @@ export default function Simulator() {
         </SimpleGrid>
 
         <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
-          <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <Card bg={outputBg} borderWidth="1px" borderColor={outputBorder} borderRadius="2xl">
             <CardBody>
               <Stack spacing={4}>
                 <Heading as="h2" size="sm">
@@ -395,16 +496,16 @@ export default function Simulator() {
                 </Heading>
                 <Stack spacing={2}>
                   {result.followUpQuestions.map((question) => (
-                    <Text key={question} fontSize="sm">
-                      - {question}
-                    </Text>
+                    <Box key={question} borderWidth="1px" borderColor={outputBorder} borderRadius="lg" bg={outputCardBg} px={3} py={2}>
+                      <Text fontSize="sm">{question}</Text>
+                    </Box>
                   ))}
                 </Stack>
               </Stack>
             </CardBody>
           </Card>
 
-          <Card bg="bg.surface" borderWidth="1px" borderColor={border} borderRadius="xl">
+          <Card bg={stepBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
             <CardBody>
               <Stack spacing={4}>
                 <Heading as="h2" size="sm">
@@ -456,7 +557,7 @@ export default function Simulator() {
         <Alert status="info" borderRadius="lg" variant="subtle">
           <AlertIcon />
           <AlertDescription fontSize="sm">
-            VeeVee Simulator® is a planning and education tool. It is not medical diagnosis or treatment.
+            VeeVee Simulator is a planning and education tool. It is not medical diagnosis or treatment.
           </AlertDescription>
         </Alert>
 

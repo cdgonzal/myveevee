@@ -24,7 +24,7 @@ describe("Simulator page", () => {
   it("renders the simplified simulator experience", () => {
     renderSimulator();
     expect(screen.getByText("Try a simple what-if health scenario.")).toBeInTheDocument();
-    expect(screen.getByText("Pick a life situation")).toBeInTheDocument();
+    expect(screen.getByText("Pick a scenario")).toBeInTheDocument();
     expect(screen.getByText("Teaser for the app")).toBeInTheDocument();
   });
 
@@ -34,14 +34,14 @@ describe("Simulator page", () => {
     const severitySelect = screen.getByLabelText("How does it feel?");
     fireEvent.change(severitySelect, { target: { value: "high" } });
 
-    const previewButton = await screen.findByRole("button", { name: "See my preview" });
+    const previewButton = await screen.findByRole("button", { name: "Update my outcome" });
     await waitFor(() => {
       expect(previewButton).toBeEnabled();
     });
     fireEvent.click(previewButton);
 
     await waitFor(() => {
-      expect(screen.getByText("What you may want to do next")).toBeInTheDocument();
+      expect(screen.getByText("Predictions, actions, and next steps")).toBeInTheDocument();
     });
   });
 });
