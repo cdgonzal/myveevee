@@ -69,7 +69,16 @@ const scrollLogos = keyframes`
 `;
 
 export default function Home() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isValueOpen,
+    onOpen: onValueOpen,
+    onClose: onValueClose,
+  } = useDisclosure();
+  const {
+    isOpen: isArchitectureOpen,
+    onOpen: onArchitectureOpen,
+    onClose: onArchitectureClose,
+  } = useDisclosure();
   const heroWebpSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026-v2.webp`;
   const heroJpgSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026.jpg`;
   const pageGradient = useColorModeValue(
@@ -88,6 +97,8 @@ export default function Home() {
   const modalBg = useColorModeValue("white", "surface.800");
   const tableHeadBg = useColorModeValue("brand.50", "surface.700");
   const positiveColor = useColorModeValue("green.600", "green.300");
+  const nvidiaAccent = "#76B900";
+  const nvidiaSoftBg = useColorModeValue("rgba(118, 185, 0, 0.08)", "rgba(118, 185, 0, 0.14)");
 
   return (
     <>
@@ -295,11 +306,92 @@ export default function Home() {
               <Text color={muted} mb={4}>
                 Deploy real-time, low-latency agentic computer vision and automated clinical documentation to support continuous vigilance, reduce fall and hygiene risk, replace labor-intensive observation workflows, and create new revenue opportunities.
               </Text>
-              <Button onClick={onOpen} size="sm" borderRadius="full" fontWeight="700">
-                See the VeeVee Value table
-              </Button>
+              <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
+                <Button onClick={onValueOpen} size="sm" borderRadius="full" fontWeight="700">
+                  See the VeeVee Value table
+                </Button>
+                <Button
+                  onClick={onArchitectureOpen}
+                  size="sm"
+                  borderRadius="full"
+                  fontWeight="700"
+                  variant="outline"
+                  borderColor={nvidiaAccent}
+                  color={nvidiaAccent}
+                  _hover={{ bg: nvidiaSoftBg }}
+                >
+                  See the technology backbone
+                </Button>
+              </Stack>
             </Box>
           </SimpleGrid>
+        </Box>
+
+        <Box mt={{ base: 10, md: 12 }} maxW="6xl" mx="auto">
+          <Box
+            borderWidth="1px"
+            borderColor={border}
+            borderRadius="2xl"
+            bg={nvidiaSoftBg}
+            boxShadow="0 18px 40px rgba(6, 37, 76, 0.10)"
+            p={{ base: 5, md: 7 }}
+          >
+            <Stack spacing={5}>
+              <Text
+                fontSize="xs"
+                textTransform="uppercase"
+                letterSpacing="0.16em"
+                color={nvidiaAccent}
+                fontWeight="700"
+              >
+                Technology backbone
+              </Text>
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 5, md: 8 }}>
+                <Stack spacing={3}>
+                  <Heading as="h3" size="md" color="text.primary">
+                    VeeVee is built on an NVIDIA-enabled performance layer.
+                  </Heading>
+                  <Text color={muted}>
+                    For hospitals, that means local bedside inference, ultra-low-latency event detection, and concurrent AI orchestration across the unit. For the mobile app, the same accelerated foundation supports the avatar, the simulation experience, and the intelligence layer behind the digital twin.
+                  </Text>
+                </Stack>
+                <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={3}>
+                  <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
+                      Local edge inference
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      4K bedside streams processed locally for speed, privacy, and cloud-minimized workflows.
+                    </Text>
+                  </Box>
+                  <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
+                      Real-time sensing
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      Sensor and video pipelines tuned for sub-100ms fall-risk awareness.
+                    </Text>
+                  </Box>
+                  <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
+                      Unit-scale orchestration
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      Near-edge inference services coordinate concurrent AI streams across 36-bed units.
+                    </Text>
+                  </Box>
+                  <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
+                      App intelligence
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      The avatar, simulation, and VeeVee brain share the same accelerated AI DNA.
+                    </Text>
+                  </Box>
+                </SimpleGrid>
+              </SimpleGrid>
+            </Stack>
+          </Box>
         </Box>
 
         <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 4, md: 6 }}>
@@ -354,7 +446,7 @@ export default function Home() {
         </Box>
       </Box>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="6xl" isCentered scrollBehavior="inside">
+      <Modal isOpen={isValueOpen} onClose={onValueClose} size="6xl" isCentered scrollBehavior="inside">
         <ModalOverlay bg="rgba(6, 37, 76, 0.55)" backdropFilter="blur(6px)" />
         <ModalContent bg={modalBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
           <ModalHeader pr={12}>The VeeVee Value</ModalHeader>
@@ -453,6 +545,80 @@ export default function Home() {
               <Text fontSize="xs" color={subtle}>
                 Illustrative model for sales conversations. Actual results depend on patient eligibility, hospital staffing patterns, documentation workflows, payer mix, utilization, and local reimbursement performance.
               </Text>
+            </Stack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isArchitectureOpen} onClose={onArchitectureClose} size="6xl" isCentered scrollBehavior="inside">
+        <ModalOverlay bg="rgba(6, 37, 76, 0.55)" backdropFilter="blur(6px)" />
+        <ModalContent bg={modalBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
+          <ModalHeader pr={12}>The VeeVee Technology Backbone</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Stack spacing={6}>
+              <Text color={muted} maxW="4xl">
+                NVIDIA is part of the performance DNA of VeeVee. We surface it here as the technical backbone behind bedside hospital intelligence and the consumer-facing avatar and simulation experience, without turning the product story into vendor-first marketing.
+              </Text>
+
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={5} bg={nvidiaSoftBg}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color={nvidiaAccent} mb={2}>
+                    Bedside edge inference
+                  </Text>
+                  <Heading as="h3" size="sm" mb={2}>
+                    ThinkEdge SE100 with NVIDIA RTX 2000 Ada
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    VeeVee bedside systems process 4K video streams locally on ThinkEdge SE100 hardware powered by NVIDIA RTX 2000 Ada GPUs, supporting HIPAA-conscious workflows without pushing sensitive patient video to the cloud for inference.
+                  </Text>
+                </Box>
+
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color={nvidiaAccent} mb={2}>
+                    Ultra-low-latency sensing
+                  </Text>
+                  <Heading as="h3" size="sm" mb={2}>
+                    NVIDIA Clara Holoscan
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    We are integrating the NVIDIA Clara Holoscan SDK for sensor and video processing so the VeeVee virtual nurse can detect fall-risk events in under 100 milliseconds.
+                  </Text>
+                </Box>
+
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color={nvidiaAccent} mb={2}>
+                    Optimized AI pipeline
+                  </Text>
+                  <Heading as="h3" size="sm" mb={2}>
+                    TensorRT and Triton at the near edge
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    VeeVee uses NVIDIA TensorRT for model optimization and Triton Inference Server on the near-edge SE450 layer to manage concurrent AI streams across 36-bed units.
+                  </Text>
+                </Box>
+
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={5} bg={nvidiaSoftBg}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color={nvidiaAccent} mb={2}>
+                    Mobile app intelligence
+                  </Text>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Avatar, simulation, and VeeVee brain
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    The same accelerated AI foundation informs the VeeVee mobile app, including the avatar layer, simulation workflows, and the core intelligence that powers the digital twin experience.
+                  </Text>
+                </Box>
+              </SimpleGrid>
+
+              <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={5}>
+                <Heading as="h3" size="sm" mb={3}>
+                  How to talk about this
+                </Heading>
+                <Text color={muted} fontSize="sm">
+                  Lead with outcomes: local inference, privacy-conscious processing, real-time responsiveness, and scale. Then attribute those capabilities to the NVIDIA-enabled stack underneath. That keeps the VeeVee story product-first while still making the technical foundation clear.
+                </Text>
+              </Box>
             </Stack>
           </ModalBody>
         </ModalContent>
