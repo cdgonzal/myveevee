@@ -170,15 +170,15 @@ export default function Home() {
                 lineHeight="1.1"
                 color="text.primary"
               >
-                One AI platform.<br></br>
+                One smart health platform.<br></br>
                 <Box as="span" color="accent.primary">
-                  {" "}Better health decisions.
+                  {" "}More peace of mind.
                 </Box>
               </Heading>
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VeeVee is a health companion for people and a high-performance edge AI ecosystem for hospitals, connecting everyday guidance, benefits discovery, doctor engagement, monitoring, and digital twin simulation with real-time clinical intelligence.
+              VeeVee helps people feel more confident about their health and helps hospitals respond faster. It is built to be simple, safe, private, and ready when you need it.
             </Text>
 
             <Stack spacing={3}>
@@ -194,7 +194,7 @@ export default function Home() {
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
-                Benefits | Care Guidance | Doctor Connection | Edge AI
+                Private | Helpful | Fast
               </Text>
             </Stack>
           </Stack>
@@ -308,7 +308,7 @@ export default function Home() {
                 A health companion that stays with you between visits.
               </Heading>
               <Text color={muted}>
-                Discover benefits and perks, get answers to everyday health questions, stay connected to your doctors, monitor your health, and build a digital twin that lets you explore what-if scenarios with your own avatar.
+                Ask everyday health questions, find benefits and perks, stay connected to your care, track your health, and explore your digital twin in a way that feels personal, private, and easy to understand.
               </Text>
               <Button onClick={onPatientOpen} size="sm" borderRadius="full" fontWeight="700" alignSelf="flex-start">
                 See how it works
@@ -331,7 +331,7 @@ export default function Home() {
                 Edge AI built for the modern hospital.
               </Heading>
               <Text color={muted} mb={4}>
-                Deploy real-time, low-latency agentic computer vision and automated clinical documentation to support continuous vigilance, reduce fall and hygiene risk, replace labor-intensive observation workflows, and create new revenue opportunities.
+                VeeVee helps hospitals watch over patients, catch risk sooner, reduce busywork, and keep sensitive data closer to home.
               </Text>
               <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
                 <Button onClick={onValueOpen} size="sm" borderRadius="full" fontWeight="700">
@@ -376,43 +376,43 @@ export default function Home() {
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 5, md: 8 }}>
                 <Stack spacing={3}>
                   <Heading as="h3" size="md" color="text.primary">
-                    VeeVee is built on an NVIDIA-enabled performance layer.
+                    Safe, fast AI behind the scenes.
                   </Heading>
                   <Text color={muted}>
-                    For hospitals, that means local bedside inference, ultra-low-latency event detection, and concurrent AI orchestration across the unit. For the mobile app, the same accelerated foundation supports the avatar, the simulation experience, and the intelligence layer behind the digital twin.
+                    VeeVee runs on NVIDIA-based technology so it can keep video local, respond quickly, and make the app feel smooth and smart without overcomplicating the experience.
                   </Text>
                 </Stack>
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={3}>
                   <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
-                      Local edge inference
+                      Private by design
                     </Text>
                     <Text fontSize="sm" color={muted}>
-                      4K bedside streams processed locally for speed, privacy, and cloud-minimized workflows.
+                      Sensitive bedside video can stay local instead of being pushed to the cloud.
                     </Text>
                   </Box>
                   <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
-                      Real-time sensing
+                      Fast alerts
                     </Text>
                     <Text fontSize="sm" color={muted}>
-                      Sensor and video pipelines tuned for sub-100ms fall-risk awareness.
+                      The system is tuned to spot urgent moments quickly, including fall-risk events.
                     </Text>
                   </Box>
                   <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
-                      Unit-scale orchestration
+                      Ready for the unit
                     </Text>
                     <Text fontSize="sm" color={muted}>
-                      Near-edge inference services coordinate concurrent AI streams across 36-bed units.
+                      VeeVee is built to handle many rooms and many streams at once.
                     </Text>
                   </Box>
                   <Box borderWidth="1px" borderColor={border} borderRadius="xl" bg={audienceCardBg} p={4}>
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color={nvidiaAccent} mb={2}>
-                      App intelligence
+                      Smooth app experience
                     </Text>
                     <Text fontSize="sm" color={muted}>
-                      The avatar, simulation, and VeeVee brain share the same accelerated AI DNA.
+                      The same foundation helps power the avatar, simulation, and VeeVee brain in the app.
                     </Text>
                   </Box>
                 </SimpleGrid>
@@ -432,7 +432,7 @@ export default function Home() {
             py={{ base: 6, md: 7 }}
           >
             <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="#FFFFFF" mb={{ base: 4, md: 5 }}>
-              Built to navigate real plans, real care decisions, and the real operational demands facing modern health systems.
+              Built for real life, real care decisions, and real hospital workflows.
             </Text>
 
             <Box overflow="hidden">
@@ -494,7 +494,7 @@ export default function Home() {
                   Your wellness questions answered in 3 simple steps.
                 </Heading>
                 <Text color={muted} maxW="3xl">
-                  Start <Box as="span" fontWeight="800" color={freeAccent}>free</Box>. Share what&apos;s going on and get clear next steps instantly.
+                  Start <Box as="span" fontWeight="800" color={freeAccent}>free</Box>. Tell VeeVee what is going on and get calm, clear next steps.
                 </Text>
               </Box>
 
@@ -552,7 +552,7 @@ export default function Home() {
                   Curious what happens next?
                 </Heading>
                 <Text fontSize="sm" color={muted} maxW="2xl" mx="auto">
-                  Try a free health scenario and see how VeeVee responds before creating an account.
+                  Try a free health scenario and see how VeeVee responds before you create an account.
                 </Text>
                 <Button
                   as={RouterLink}
@@ -591,7 +591,7 @@ export default function Home() {
           <ModalBody pb={6}>
             <Stack spacing={6}>
               <Text color={muted} maxW="4xl">
-                Conservative 2026 hospital economics using a $199 per bed per month rollout, showing how billing, sitter replacement, and risk reduction combine to make the model cash-flow positive quickly.
+                A simple way to think about value: VeeVee can help hospitals bring in new revenue, reduce labor costs, and lower risk, often making the system pay for itself quickly.
               </Text>
 
               <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
@@ -600,10 +600,10 @@ export default function Home() {
                     Revenue engine
                   </Text>
                   <Heading as="h3" size="sm" mb={2}>
-                    1 billed RPM/RTM patient can cover 1 bed-month
+                    One billed patient can cover one bed-month
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    Using an average of about $200 per month across device supply, setup, and monitoring-management reimbursement.
+                    With RPM or RTM billing, one patient can roughly cover the monthly cost of one VeeVee bed.
                   </Text>
                 </Box>
 
@@ -612,10 +612,10 @@ export default function Home() {
                     Labor savings
                   </Text>
                   <Heading as="h3" size="sm" mb={2}>
-                    3 full-time sitters can fund 100+ beds
+                    Replacing sitters changes the math fast
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    Based on 2026 sitter costs of roughly $25 to $45 per hour, or about $600 to $1,080 per day.
+                    Even a small drop in 1:1 sitter use can offset a large part of the rollout.
                   </Text>
                 </Box>
 
@@ -627,7 +627,7 @@ export default function Home() {
                     One prevented fall matters
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    A single fall with injury can mean about $14,056 in direct cost and up to $60,000 in litigation exposure.
+                    Fewer falls and safer workflows can protect both patients and hospital budgets.
                   </Text>
                 </Box>
               </SimpleGrid>
@@ -680,7 +680,7 @@ export default function Home() {
               </SimpleGrid>
 
               <Text fontSize="xs" color={subtle}>
-                Illustrative model for sales conversations. Actual results depend on patient eligibility, hospital staffing patterns, documentation workflows, payer mix, utilization, and local reimbursement performance.
+                Illustrative example only. Actual results depend on staffing, patient mix, workflows, reimbursement, and rollout design.
               </Text>
             </Stack>
           </ModalBody>
@@ -695,7 +695,7 @@ export default function Home() {
           <ModalBody pb={6}>
             <Stack spacing={6}>
               <Text color={muted} maxW="4xl">
-                NVIDIA is part of the performance DNA of VeeVee. We surface it here as the technical backbone behind bedside hospital intelligence and the consumer-facing avatar and simulation experience, without turning the product story into vendor-first marketing.
+                The technical foundation matters, but the goal is simple: keep VeeVee fast, private, and reliable. NVIDIA technology helps us do that behind the scenes.
               </Text>
 
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
@@ -707,7 +707,7 @@ export default function Home() {
                     ThinkEdge SE100 with NVIDIA RTX 2000 Ada
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    VeeVee bedside systems process 4K video streams locally on ThinkEdge SE100 hardware powered by NVIDIA RTX 2000 Ada GPUs, supporting HIPAA-conscious workflows without pushing sensitive patient video to the cloud for inference.
+                    At the bedside, VeeVee can process video locally so sensitive patient data does not need to travel to the cloud.
                   </Text>
                 </Box>
 
@@ -719,7 +719,7 @@ export default function Home() {
                     NVIDIA Clara Holoscan
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    We are integrating the NVIDIA Clara Holoscan SDK for sensor and video processing so the VeeVee virtual nurse can detect fall-risk events in under 100 milliseconds.
+                    This helps VeeVee react quickly when something looks wrong, including fall-risk events.
                   </Text>
                 </Box>
 
@@ -731,7 +731,7 @@ export default function Home() {
                     TensorRT and Triton at the near edge
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    VeeVee uses NVIDIA TensorRT for model optimization and Triton Inference Server on the near-edge SE450 layer to manage concurrent AI streams across 36-bed units.
+                    These tools help VeeVee run smoothly across many rooms at once without slowing down.
                   </Text>
                 </Box>
 
@@ -743,17 +743,17 @@ export default function Home() {
                     Avatar, simulation, and VeeVee brain
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    The same accelerated AI foundation informs the VeeVee mobile app, including the avatar layer, simulation workflows, and the core intelligence that powers the digital twin experience.
+                    The same core technology helps power the avatar, simulation, and digital twin experience in the app.
                   </Text>
                 </Box>
               </SimpleGrid>
 
               <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={5}>
                 <Heading as="h3" size="sm" mb={3}>
-                  How to talk about this
+                  What this means in plain English
                 </Heading>
                 <Text color={muted} fontSize="sm">
-                  Lead with outcomes: local inference, privacy-conscious processing, real-time responsiveness, and scale. Then attribute those capabilities to the NVIDIA-enabled stack underneath. That keeps the VeeVee story product-first while still making the technical foundation clear.
+                  VeeVee is designed to keep private data closer to home, respond quickly, and feel smooth to use. The technology matters because it helps people feel safer and more supported.
                 </Text>
               </Box>
             </Stack>
