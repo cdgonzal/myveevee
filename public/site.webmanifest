@@ -1,7 +1,7 @@
 {
   "name": "My VeeVee: Got Health?",
   "short_name": "VeeVee",
-  "description": "VeeVee reveals your covered benefits, perks, wellness products, and everyday health support.",
+  "description": "VeeVee is an AI health companion for patients and a hospital edge AI platform for monitoring, computer vision, and automated documentation.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

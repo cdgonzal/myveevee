@@ -20,8 +20,10 @@ Build Year: 2025
 /* ----------------------------------------------------------- */
 /* PURPOSE */
 We believe healthcare should feel human again.
-VeeVee helps you see yourself, understand your health,
-and access your covered benefits, perks, and wellness products.
+VeeVee is a health companion for patients and a high-performance
+edge AI ecosystem for hospitals, connecting benefits discovery,
+everyday guidance, doctor engagement, digital twin simulation,
+continuous vigilance, and automated clinical documentation.
 
 Got Health?
 Join us at https://myveevee.com

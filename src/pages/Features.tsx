@@ -36,35 +36,51 @@ type Pillar = {
 const PILLARS: Pillar[] = [
   {
     eyebrow: "Pillar 1",
-    title: "Instant Triage",
-    front: "Photo, text, or voice input turns into immediate next-step guidance.",
-    back: "VeeVee triages your situation and routes you toward relevant care pathways, including live-doctor options where available, pharmacy actions, and treatment next steps.",
+    title: "Everyday Health Companion",
+    front: "Answers, guidance, and next steps for the questions people have every day.",
+    back: "VeeVee helps users understand symptoms, routines, and wellness questions in plain language, then points them toward appropriate actions, resources, and care pathways.",
     imageSrc: "/images/features/support.webp",
-    imageAlt: "Instant triage workflow",
+    imageAlt: "Everyday health companion workflow",
   },
   {
     eyebrow: "Pillar 2",
-    title: "My Digital Twin",
-    front: "A simulation layer personalized to your body, habits, and goals.",
-    back: "Model what-if changes and explore how routines, symptoms, and decisions may influence your wellness trajectory before you commit.",
-    imageSrc: "/images/features/trajectory.webp",
-    imageAlt: "Digital twin simulation",
+    title: "Benefits, Perks, and Coverage",
+    front: "Find the benefits you already have before you spend more than you need to.",
+    back: "VeeVee maps care options against plan details, wellness perks, and available programs so users can unlock coverage, reduce friction, and make financially smarter choices.",
+    imageSrc: "/images/features/benefits.webp",
+    imageAlt: "Benefits and coverage optimization",
   },
   {
     eyebrow: "Pillar 3",
-    title: "My True Me Profile",
-    front: "History, genetics, and wearables connected into one living health profile.",
-    back: "Instead of fragmented records, VeeVee keeps your context together so guidance can stay personal, current, and specific to you.",
-    imageSrc: "/images/features/health-story.webp",
-    imageAlt: "Unified health profile",
+    title: "Doctor Connection and Monitoring",
+    front: "Stay engaged between visits with a more complete view of your health.",
+    back: "By keeping health context, observations, and questions organized, VeeVee helps people show up better prepared for appointments and stay more connected to their clinicians over time.",
+    imageSrc: "/images/features/trajectory.webp",
+    imageAlt: "Health monitoring and clinician connection",
   },
   {
     eyebrow: "Pillar 4",
-    title: "Benefits Maximizer",
-    front: "Choose care with your real coverage and costs in mind.",
-    back: "VeeVee helps map options against your plan so you can unlock covered benefits and avoid paying for care that should already be included.",
-    imageSrc: "/images/features/benefits.webp",
-    imageAlt: "Benefits and coverage optimization",
+    title: "Digital Twin Simulation",
+    front: "Create a personalized avatar to explore what-if scenarios before acting.",
+    back: "VeeVee's digital twin layer helps users model changes in habits, symptoms, and care decisions so they can better understand possible outcomes before making a move.",
+    imageSrc: "/images/features/health-story.webp",
+    imageAlt: "Digital twin and avatar simulation",
+  },
+  {
+    eyebrow: "Pillar 5",
+    title: "Edge AI for Hospitals",
+    front: "A high-performance platform for real-time, low-latency hospital intelligence.",
+    back: "VeeVee brings agentic computer vision to the edge so hospitals can act on visual signals in real time without depending on delayed or centralized workflows.",
+    imageSrc: "/images/features/support.webp",
+    imageAlt: "Hospital edge AI platform",
+  },
+  {
+    eyebrow: "Pillar 6",
+    title: "Continuous Vigilance and Documentation",
+    front: "Reduce risk, cut hard costs, and support revenue-generating workflows.",
+    back: "The platform supports automated clinical documentation, fall prevention, hand hygiene observation, continuous vigilance programs, and alternatives to labor-intensive one-to-one sitter models.",
+    imageSrc: "/images/features/trajectory.webp",
+    imageAlt: "Continuous vigilance and automated documentation",
   },
 ];
 
@@ -206,10 +222,10 @@ export default function Features() {
             WHY VEEVEE
           </Text>
           <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={3}>
-            Four capabilities working together for better health decisions.
+            One platform serving both the patient journey and the modern hospital.
           </Heading>
           <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
-            Each pillar is designed to reduce delay, remove guesswork, and make health actions more personal and more financially smart.
+            VeeVee combines personal health companionship with edge AI infrastructure so people get clearer guidance and health systems get real-time operational intelligence.
           </Text>
         </MotionBox>
 
@@ -229,10 +245,10 @@ export default function Features() {
 
         <Stack spacing={4} textAlign="center" pt={{ base: 4, md: 6 }}>
           <Heading as="h2" size="md">
-            Ready to see your personalized health path?
+            Ready to see how VeeVee fits your world?
           </Heading>
           <Text fontSize="sm" color={muted} maxW="2xl" mx="auto" textAlign={isMobile ? "left" : "center"}>
-            Start with your own profile and get guidance that aligns with your symptoms, your history, and your coverage.
+            Start with the patient experience, then explore the broader platform story behind benefits guidance, digital twin simulation, and hospital-grade edge AI.
           </Text>
           <Button
             as={RouterLink}
