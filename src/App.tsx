@@ -125,11 +125,11 @@ function Header() {
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
               <HStack spacing={{ base: 3, md: 6 }} display={{ base: "none", md: "flex" }}>
-                <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
-                  Wellness Mirror
-                </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
                   Features
+                </CLink>
+                <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
+                  VeeVee Simulator®
                 </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.testimonials} color={navColor} fontWeight="600">
                   Testimonials
@@ -173,11 +173,11 @@ function Header() {
           <DrawerBody>
             <Stack spacing={4} mt={4}>
               <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
-              <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
-                Wellness Mirror
-              </CLink>
               <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
                 Features
+              </CLink>
+              <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
+                VeeVee Simulator®
               </CLink>
               <CLink as={Link} to={APP_LINKS.internal.testimonials} onClick={onClose} fontWeight="600" color={navColor}>
                 Testimonials
@@ -222,7 +222,7 @@ function Footer() {
               Log In
             </CLink>
             <CLink as={Link} to={APP_LINKS.internal.simulator} color={primaryText}>
-              Wellness Mirror
+              VeeVee Simulator®
             </CLink>
             <CLink href={APP_LINKS.external.investors} isExternal color={primaryText}>
               Investor Info

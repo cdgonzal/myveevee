@@ -21,27 +21,27 @@ function renderSimulator() {
 }
 
 describe("Simulator page", () => {
-  it("renders the simplified step-1 experience", () => {
+  it("renders the simplified simulator experience", () => {
     renderSimulator();
-    expect(screen.getByText("Wellness Mirror® Scenario Explorer")).toBeInTheDocument();
-    expect(screen.getByText("Step 1: Quick Check (4 inputs)")).toBeInTheDocument();
-    expect(screen.getByText("Digital Twin Avatar (Placeholder)")).toBeInTheDocument();
+    expect(screen.getByText("Try a simple what-if health scenario.")).toBeInTheDocument();
+    expect(screen.getByText("Pick a life situation")).toBeInTheDocument();
+    expect(screen.getByText("Teaser for the app")).toBeInTheDocument();
   });
 
-  it("runs preview and can expand to the full final report", async () => {
+  it("runs a preview and shows simple next steps", async () => {
     renderSimulator();
 
-    const severitySelect = screen.getByLabelText("Symptom severity");
+    const severitySelect = screen.getByLabelText("How does it feel?");
     fireEvent.change(severitySelect, { target: { value: "high" } });
 
-    const previewButton = screen.getByRole("button", { name: "Get preview" });
+    const previewButton = await screen.findByRole("button", { name: "See my preview" });
+    await waitFor(() => {
+      expect(previewButton).toBeEnabled();
+    });
     fireEvent.click(previewButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Risk score:/)).toBeInTheDocument();
+      expect(screen.getByText("What you may want to do next")).toBeInTheDocument();
     });
-
-    fireEvent.click(screen.getByRole("button", { name: "Step 3: See full final report" }));
-    expect(screen.getByText("Under The Hood")).toBeInTheDocument();
   });
 });

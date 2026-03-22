@@ -80,15 +80,15 @@ export const DEFAULT_SIMULATOR_INPUT: SimulatorInput = {
 
 export const STARTER_SCENARIOS: StarterScenario[] = [
   {
-    id: "sx-fatigue-coverage",
-    title: "Fatigue + Headache with PCP Gap",
-    summary: "Simulate triage and coverage-aware next steps without an assigned PCP.",
+    id: "low-energy-headache",
+    title: "Low energy and headaches",
+    summary: "See what may matter when you feel run down and not quite like yourself.",
     input: DEFAULT_SIMULATOR_INPUT,
   },
   {
-    id: "med-adherence-swing",
-    title: "Medication Adherence Dip",
-    summary: "See impact on risk priority when adherence falls over 30 days.",
+    id: "missed-medication-routine",
+    title: "Missed medication routine",
+    summary: "Explore how missed medication can change what VeeVee suggests next.",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       medication: {
@@ -103,20 +103,44 @@ export const STARTER_SCENARIOS: StarterScenario[] = [
     },
   },
   {
-    id: "behavior-improvement",
-    title: "Lifestyle Improvement Plan",
-    summary: "Test how better sleep and activity can shift the recommendation ranking.",
+    id: "better-sleep-better-routine",
+    title: "Poor sleep this week",
+    summary: "See how sleep and routine changes may affect your next steps.",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       behaviorChange: {
-        sleepHours: 7,
-        exerciseDaysPerWeek: 4,
+        sleepHours: 4,
+        exerciseDaysPerWeek: 1,
       },
       lifestyleEvent: {
-        event: "Started a structured morning routine",
+        event: "Sleep schedule has been off all week",
+        timing: "recent",
+      },
+    },
+  },
+  {
+    id: "starting-health-reset",
+    title: "Trying to get back on track",
+    summary: "Start with a simple reset scenario and see what support may help.",
+    input: {
+      ...DEFAULT_SIMULATOR_INPUT,
+      symptom: {
+        description: "Feeling off, low energy, and trying to rebuild healthy habits",
+        durationDays: 6,
+        severity: "low",
+      },
+      behaviorChange: {
+        sleepHours: 6,
+        exerciseDaysPerWeek: 2,
+      },
+      medication: {
+        currentlyTaking: ["Metformin"],
+        adherencePercent: 80,
+      },
+      lifestyleEvent: {
+        event: "Trying to restart healthy routines",
         timing: "current",
       },
     },
   },
 ];
-
