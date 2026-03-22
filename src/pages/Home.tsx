@@ -163,22 +163,22 @@ export default function Home() {
               _focus={{ outline: "none" }}
               style={{ textDecoration: "none" }}
             >
-              <Heading
-                as="h1"
-                size={{ base: "xl", md: "2xl" }}
-                fontWeight="800"
-                lineHeight="1.1"
-                color="text.primary"
-              >
-                One smart wellness platform.<br></br>
-                <Box as="span" color="accent.primary">
-                  {" "}More peace of mind.
-                </Box>
-              </Heading>
+            <Heading
+              as="h1"
+              size={{ base: "xl", md: "2xl" }}
+              fontWeight="800"
+              lineHeight="1.1"
+              color="text.primary"
+            >
+              Connected care from hospital to home.<br></br>
+              <Box as="span" color="accent.primary">
+                {" "}More peace of mind.
+              </Box>
+            </Heading>
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VeeVee helps people feel more confident about their everyday life and helps hospitals respond faster. It is built to be simple, safe, private, and ready when you need it.
+              VeeVee helps patients, families, nurses, doctors, and hospitals stay more connected. It is built to be simple, safe, private, and ready when you need it.
             </Text>
 
             <Stack spacing={3}>
@@ -195,7 +195,7 @@ export default function Home() {
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
-                Private | Helpful | Fast
+                Connected | Private | Fast
               </Text>
             </Stack>
           </Stack>
@@ -278,7 +278,7 @@ export default function Home() {
             py={{ base: 6, md: 7 }}
           >
             <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="#FFFFFF" mb={{ base: 4, md: 5 }}>
-              Built for real life, real care decisions, and real hospital workflows.
+              Built for connected care, real-life decisions, and real hospital workflows.
             </Text>
 
             <Box overflow="hidden">
@@ -326,7 +326,7 @@ export default function Home() {
               letterSpacing="0.16em"
               color="accent.soft"
             >
-              How VeeVee helps you
+              Shared value across care
             </Text>
             <CLink
               as={RouterLink}
@@ -357,10 +357,10 @@ export default function Home() {
                 For patients
               </Text>
               <Heading as="h3" size="md" mb={3}>
-                A wellness companion that stays with you between visits.
+                Support that stays with you after the visit.
               </Heading>
               <Text color={muted}>
-                Ask everyday questions, find benefits and perks, stay connected to your care, track your health, and explore your digital twin in a way that feels personal, private, and easy to understand.
+                Ask everyday questions, find benefits and perks, stay connected to your care, and feel more supported at home in a way that stays personal, private, and easy to understand.
               </Text>
               <Button onClick={onPatientOpen} size="sm" borderRadius="full" fontWeight="700" alignSelf="flex-start">
                 See how it works
@@ -380,10 +380,10 @@ export default function Home() {
                 For hospitals
               </Text>
               <Heading as="h3" size="md" mb={3}>
-                Edge AI built for the modern hospital.
+                Better visibility from bedside to home.
               </Heading>
               <Text color={muted} mb={4}>
-                VeeVee helps hospitals watch over patients, catch risk sooner, reduce busywork, and keep sensitive data closer to home.
+                VeeVee helps hospitals watch over patients, catch risk sooner, reduce busywork, and stay more connected to what happens after discharge.
               </Text>
               <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
                 <Button onClick={onValueOpen} size="sm" borderRadius="full" fontWeight="700">
@@ -428,10 +428,10 @@ export default function Home() {
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 5, md: 8 }}>
                 <Stack spacing={3}>
                   <Heading as="h3" size="md" color="text.primary">
-                    Safe, fast AI behind the scenes.
+                    Safe, fast technology behind connected care.
                   </Heading>
                   <Text color={muted}>
-                    VeeVee runs on NVIDIA-based technology so it can keep video local, respond quickly, and make the app feel smooth and smart without overcomplicating the experience.
+                    VeeVee runs on NVIDIA-based technology so it can keep video local, respond quickly, and support both bedside workflows and the app experience without overcomplicating the experience.
                   </Text>
                 </Stack>
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={3}>

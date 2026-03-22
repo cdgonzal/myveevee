@@ -27,7 +27,7 @@ type FeatureBlock = {
 
 const FEATURE_BLOCKS: FeatureBlock[] = [
   {
-    eyebrow: "Shared feature 1",
+    eyebrow: "Transition",
     title: "Hospital-to-home connection",
     body:
       "VeeVee helps care continue after discharge instead of stopping at the hospital door.",
@@ -38,10 +38,10 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Shared feature 2",
+    eyebrow: "Family",
     title: "Family engagement without more confusion",
     body:
-      "Loved ones often want to help but do not know what is happening. VeeVee makes it easier for families to feel included and supportive.",
+      "Loved ones often want to help but do not know what is happening. VeeVee makes it easier for families to feel included and useful.",
     points: [
       "A shared view of updates and next steps.",
       "More meaningful support between visits.",
@@ -49,7 +49,7 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Shared feature 3",
+    eyebrow: "Care team",
     title: "Better visibility for care teams",
     body:
       "Doctors, nurses, care managers, and hospitals all benefit when the patient story is easier to follow.",
@@ -60,7 +60,7 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Shared feature 4",
+    eyebrow: "Safety",
     title: "Safer monitoring and faster response",
     body:
       "VeeVee supports monitoring in ways that help teams catch concerns sooner while keeping the experience simple for patients.",
@@ -71,7 +71,7 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Shared feature 5",
+    eyebrow: "Clarity",
     title: "Guidance people can actually use",
     body:
       "Patients want plain answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
@@ -82,7 +82,7 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Shared feature 6",
+    eyebrow: "Platform",
     title: "One platform, many users",
     body:
       "The same platform can support patients, families, nurses, doctors, and hospital teams without forcing each group into a separate experience.",
@@ -103,6 +103,8 @@ export default function Features() {
   const muted = useColorModeValue("text.muted", "text.muted");
   const introBg = useColorModeValue("rgba(255, 255, 255, 0.78)", "rgba(6, 37, 76, 0.72)");
   const cardBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.66)");
+  const heroPanelBg = useColorModeValue("rgba(255, 255, 255, 0.70)", "rgba(6, 37, 76, 0.58)");
+  const accentSurface = useColorModeValue("rgba(17, 119, 186, 0.08)", "rgba(17, 119, 186, 0.16)");
 
   return (
     <Box
@@ -113,22 +115,62 @@ export default function Features() {
       py={{ base: 10, md: 20 }}
     >
       <Stack spacing={{ base: 10, md: 14 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
-        <MotionBox textAlign="center" variants={fadeUp} initial="hidden" animate="visible">
-          <Text
-            fontSize="sm"
-            letterSpacing="0.18em"
-            textTransform="uppercase"
-            color="accent.soft"
-            mb={3}
+        <MotionBox variants={fadeUp} initial="hidden" animate="visible">
+          <Box
+            bg={heroPanelBg}
+            borderWidth="1px"
+            borderColor={border}
+            borderRadius="3xl"
+            boxShadow="0 24px 50px rgba(6, 37, 76, 0.12)"
+            px={{ base: 5, md: 8 }}
+            py={{ base: 6, md: 8 }}
           >
-            FEATURES
-          </Text>
-          <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={3}>
-            A connected care experience from hospital to home.
-          </Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
-            VeeVee is strongest when everyone around the patient can stay more connected: the patient, the family, the nurse, the doctor, and the hospital team.
-          </Text>
+            <Stack spacing={6}>
+              <Stack spacing={3} textAlign="center">
+                <Text
+                  fontSize="sm"
+                  letterSpacing="0.18em"
+                  textTransform="uppercase"
+                  color="accent.soft"
+                >
+                  FEATURES
+                </Text>
+                <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800">
+                  A connected care experience from hospital to home.
+                </Heading>
+                <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
+                  VeeVee works best when everyone around the patient can stay more connected: the patient, the family, the nurse, the doctor, and the hospital team.
+                </Text>
+              </Stack>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={accentSurface} p={4}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
+                    Before discharge
+                  </Text>
+                  <Text fontSize="sm" color="text.primary">
+                    Better handoffs and a clearer patient story.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={accentSurface} p={4}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
+                    At home
+                  </Text>
+                  <Text fontSize="sm" color="text.primary">
+                    Families stay engaged while patients stay supported.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={accentSurface} p={4}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
+                    Across the system
+                  </Text>
+                  <Text fontSize="sm" color="text.primary">
+                    Nurses, doctors, and hospitals get better visibility with less friction.
+                  </Text>
+                </Box>
+              </SimpleGrid>
+            </Stack>
+          </Box>
         </MotionBox>
 
         <Box
@@ -141,10 +183,10 @@ export default function Features() {
         >
           <Stack spacing={4}>
             <Heading as="h2" size="md">
-              What people on every side actually want
+              What every side of care is asking for
             </Heading>
             <Text color={muted}>
-              Patients want simple support. Families want to stay involved. Nurses and doctors want better visibility. Hospitals want safer monitoring and smoother transitions. VeeVee brings those needs together in one platform.
+              Patients want simple support. Families want to stay involved. Nurses and doctors want better visibility. Hospitals want safer monitoring and smoother transitions. VeeVee brings those needs together without making the experience feel heavy or complicated.
             </Text>
           </Stack>
         </Box>
@@ -163,10 +205,20 @@ export default function Features() {
                 borderWidth="1px"
                 borderColor={border}
                 borderRadius="2xl"
-                boxShadow="0 12px 32px rgba(6, 37, 76, 0.10)"
+                boxShadow="0 14px 34px rgba(6, 37, 76, 0.10)"
                 p={{ base: 5, md: 6 }}
                 h="100%"
+                position="relative"
+                overflow="hidden"
               >
+                <Box
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  right={0}
+                  h="4px"
+                  bgGradient="linear(to-r, #1177BA, #9CE7FF)"
+                />
                 <Stack spacing={4}>
                   <Text
                     fontSize="xs"
@@ -205,7 +257,7 @@ export default function Features() {
               Especially powerful after discharge
             </Heading>
             <Text fontSize="sm" color={muted} maxW="3xl" mx="auto">
-              One of the biggest gaps in healthcare is what happens after a patient leaves the hospital. VeeVee helps close that gap by supporting engagement at home while still giving families, nurses, and doctors a clearer line of sight.
+              One of the biggest gaps in healthcare is what happens after a patient leaves the hospital. VeeVee helps close that gap by keeping patients engaged at home while still giving families, nurses, and doctors a clearer line of sight.
             </Text>
             <Button
               as={RouterLink}
