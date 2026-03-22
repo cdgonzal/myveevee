@@ -1,15 +1,10 @@
-import React from "react";
 import {
   Box,
   Button,
   Heading,
-  Text,
   SimpleGrid,
   Stack,
-  Card,
-  CardBody,
-  useBreakpointValue,
-  Image,
+  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -17,190 +12,97 @@ import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 
 const MotionBox = motion(Box);
-const MotionCard = motion(Card);
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
 };
 
-type Pillar = {
+type FeatureBlock = {
   eyebrow: string;
   title: string;
-  front: string;
-  back: string;
-  imageSrc: string;
-  imageAlt: string;
+  body: string;
+  points: string[];
 };
 
-const PILLARS: Pillar[] = [
+const FEATURE_BLOCKS: FeatureBlock[] = [
   {
-    eyebrow: "Pillar 1",
-    title: "Everyday Health Companion",
-    front: "Answers, guidance, and next steps for the questions people have every day.",
-    back: "VeeVee helps users understand symptoms, routines, and wellness questions in plain language, then points them toward appropriate actions, resources, and care pathways.",
-    imageSrc: "/images/features/support.webp",
-    imageAlt: "Everyday health companion workflow",
+    eyebrow: "Shared feature 1",
+    title: "Hospital-to-home connection",
+    body:
+      "VeeVee helps care continue after discharge instead of stopping at the hospital door.",
+    points: [
+      "Patients stay connected after they go home.",
+      "Families can stay involved and informed.",
+      "Nurses and doctors can keep a clearer view of progress.",
+    ],
   },
   {
-    eyebrow: "Pillar 2",
-    title: "Benefits, Perks, and Coverage",
-    front: "Find the benefits you already have before you spend more than you need to.",
-    back: "VeeVee maps care options against plan details, wellness perks, and available programs so users can unlock coverage, reduce friction, and make financially smarter choices.",
-    imageSrc: "/images/features/benefits.webp",
-    imageAlt: "Benefits and coverage optimization",
+    eyebrow: "Shared feature 2",
+    title: "Family engagement without more confusion",
+    body:
+      "Loved ones often want to help but do not know what is happening. VeeVee makes it easier for families to feel included and supportive.",
+    points: [
+      "A shared view of updates and next steps.",
+      "More meaningful support between visits.",
+      "Less stress around handoffs and recovery.",
+    ],
   },
   {
-    eyebrow: "Pillar 3",
-    title: "Doctor Connection and Monitoring",
-    front: "Stay engaged between visits with a more complete view of your health.",
-    back: "By keeping health context, observations, and questions organized, VeeVee helps people show up better prepared for appointments and stay more connected to their clinicians over time.",
-    imageSrc: "/images/features/trajectory.webp",
-    imageAlt: "Health monitoring and clinician connection",
+    eyebrow: "Shared feature 3",
+    title: "Better visibility for care teams",
+    body:
+      "Doctors, nurses, care managers, and hospitals all benefit when the patient story is easier to follow.",
+    points: [
+      "Health context is easier to review.",
+      "Questions and changes are easier to spot.",
+      "Patients show up more prepared and engaged.",
+    ],
   },
   {
-    eyebrow: "Pillar 4",
-    title: "Digital Twin Simulation",
-    front: "Create a personalized avatar to explore what-if scenarios before acting.",
-    back: "VeeVee's digital twin layer helps users model changes in habits, symptoms, and care decisions so they can better understand possible outcomes before making a move.",
-    imageSrc: "/images/features/health-story.webp",
-    imageAlt: "Digital twin and avatar simulation",
+    eyebrow: "Shared feature 4",
+    title: "Safer monitoring and faster response",
+    body:
+      "VeeVee supports monitoring in ways that help teams catch concerns sooner while keeping the experience simple for patients.",
+    points: [
+      "Risk signals can be noticed earlier.",
+      "Hospitals can reduce avoidable busywork.",
+      "Sensitive information can stay closer to home.",
+    ],
   },
   {
-    eyebrow: "Pillar 5",
-    title: "Edge AI for Hospitals",
-    front: "A high-performance platform for real-time, low-latency hospital intelligence.",
-    back: "VeeVee brings agentic computer vision to the edge so hospitals can act on visual signals in real time without depending on delayed or centralized workflows.",
-    imageSrc: "/images/features/support.webp",
-    imageAlt: "Hospital edge AI platform",
+    eyebrow: "Shared feature 5",
+    title: "Guidance people can actually use",
+    body:
+      "Patients want plain answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
+    points: [
+      "Everyday questions answered more clearly.",
+      "Benefits and coverage easier to understand.",
+      "Next steps feel simpler, calmer, and more actionable.",
+    ],
   },
   {
-    eyebrow: "Pillar 6",
-    title: "Continuous Vigilance and Documentation",
-    front: "Reduce risk, cut hard costs, and support revenue-generating workflows.",
-    back: "The platform supports automated clinical documentation, fall prevention, hand hygiene observation, continuous vigilance programs, and alternatives to labor-intensive one-to-one sitter models.",
-    imageSrc: "/images/features/trajectory.webp",
-    imageAlt: "Continuous vigilance and automated documentation",
+    eyebrow: "Shared feature 6",
+    title: "One platform, many users",
+    body:
+      "The same platform can support patients, families, nurses, doctors, and hospital teams without forcing each group into a separate experience.",
+    points: [
+      "Better coordination across the care journey.",
+      "Stronger engagement from bedside to home.",
+      "A more connected and modern care experience.",
+    ],
   },
 ];
 
-function PillarCard({ pillar }: { pillar: Pillar }) {
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const [open, setOpen] = React.useState(false);
-  const borderColor = useColorModeValue("border.default", "border.default");
-  const subtle = useColorModeValue("text.subtle", "text.subtle");
-  const muted = useColorModeValue("text.muted", "text.muted");
-
-  const frontOpacity = isMobile ? (open ? 0.08 : 1) : 1;
-  const backOpacity = isMobile ? (open ? 1 : 0) : 0;
-
-  return (
-    <MotionCard
-      role="group"
-      bg="bg.surface"
-      borderRadius="2xl"
-      borderWidth="1px"
-      borderColor={borderColor}
-      overflow="hidden"
-      cursor={isMobile ? "pointer" : "default"}
-      onClick={isMobile ? () => setOpen((v) => !v) : undefined}
-      whileHover={{ y: -3, boxShadow: "0 0 30px rgba(17, 119, 186, 0.35)" }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-    >
-      <CardBody p={0}>
-        <Box px={{ base: 4, md: 6 }} pt={{ base: 4, md: 6 }} pb={{ base: 3, md: 4 }}>
-          <Box
-            borderRadius="xl"
-            overflow="hidden"
-            borderWidth="1px"
-            borderColor={borderColor}
-            bg="surface.700"
-          >
-            <Box position="relative" w="100%" aspectRatio="16 / 10">
-              <Image
-                src={pillar.imageSrc}
-                alt={pillar.imageAlt}
-                w="100%"
-                h="100%"
-                objectFit={isMobile ? "contain" : "cover"}
-                opacity={0.96}
-                loading="lazy"
-              />
-            </Box>
-          </Box>
-        </Box>
-
-        <Box position="relative" px={{ base: 5, md: 6 }} pb={{ base: 5, md: 6 }}>
-          <Box opacity={frontOpacity} transition="opacity 0.25s ease-out" _groupHover={{ opacity: 0.08 }}>
-            <Text
-              fontSize="xs"
-              textTransform="uppercase"
-              letterSpacing="0.16em"
-              color="accent.soft"
-              mb={2}
-            >
-              {pillar.eyebrow}
-            </Text>
-            <Heading as="h3" size="sm" mb={2} color="text.primary">
-              {pillar.title}
-            </Heading>
-            <Text fontSize="sm" color={muted}>
-              {pillar.front}
-            </Text>
-            {isMobile && (
-              <Text mt={3} fontSize="xs" color={subtle}>
-                Tap to learn more
-              </Text>
-            )}
-          </Box>
-
-          <Box
-            position="absolute"
-            inset={0}
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            justifyContent="flex-start"
-            gap={2}
-            opacity={backOpacity}
-            transition="opacity 0.25s ease-out"
-            _groupHover={{ opacity: 1 }}
-            pointerEvents={isMobile ? (open ? "auto" : "none") : "auto"}
-          >
-            <Text
-              fontSize="xs"
-              textTransform="uppercase"
-              letterSpacing="0.16em"
-              color="accent.soft"
-              mb={2}
-            >
-              {pillar.eyebrow}
-            </Text>
-            <Heading as="h3" size="sm" mb={2} color="accent.soft">
-              {pillar.title}
-            </Heading>
-            <Text fontSize="sm" color="text.primary">
-              {pillar.back}
-            </Text>
-            {isMobile && (
-              <Text mt={3} fontSize="xs" color={subtle}>
-                Tap again to close
-              </Text>
-            )}
-          </Box>
-        </Box>
-      </CardBody>
-    </MotionCard>
-  );
-}
-
 export default function Features() {
-  const isMobile = useBreakpointValue({ base: true, md: false });
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
   );
+  const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
+  const introBg = useColorModeValue("rgba(255, 255, 255, 0.78)", "rgba(6, 37, 76, 0.72)");
+  const cardBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.66)");
 
   return (
     <Box
@@ -219,53 +121,107 @@ export default function Features() {
             color="accent.soft"
             mb={3}
           >
-            WHY VEEVEE
+            FEATURES
           </Text>
           <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={3}>
-            One platform serving both the patient journey and the modern hospital.
+            A connected care experience from hospital to home.
           </Heading>
           <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
-            VeeVee combines personal health companionship with edge AI infrastructure so people get clearer guidance and health systems get real-time operational intelligence.
+            VeeVee is strongest when everyone around the patient can stay more connected: the patient, the family, the nurse, the doctor, and the hospital team.
           </Text>
         </MotionBox>
 
+        <Box
+          bg={introBg}
+          borderWidth="1px"
+          borderColor={border}
+          borderRadius="2xl"
+          boxShadow="0 18px 40px rgba(6, 37, 76, 0.10)"
+          p={{ base: 5, md: 7 }}
+        >
+          <Stack spacing={4}>
+            <Heading as="h2" size="md">
+              What people on every side actually want
+            </Heading>
+            <Text color={muted}>
+              Patients want simple support. Families want to stay involved. Nurses and doctors want better visibility. Hospitals want safer monitoring and smoother transitions. VeeVee brings those needs together in one platform.
+            </Text>
+          </Stack>
+        </Box>
+
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 4, md: 6 }}>
-          {PILLARS.map((pillar, index) => (
+          {FEATURE_BLOCKS.map((feature, index) => (
             <MotionBox
-              key={pillar.title}
+              key={feature.title}
               variants={fadeUp}
               initial="hidden"
               animate="visible"
               transition={{ delay: index * 0.04 }}
             >
-              <PillarCard pillar={pillar} />
+              <Box
+                bg={cardBg}
+                borderWidth="1px"
+                borderColor={border}
+                borderRadius="2xl"
+                boxShadow="0 12px 32px rgba(6, 37, 76, 0.10)"
+                p={{ base: 5, md: 6 }}
+                h="100%"
+              >
+                <Stack spacing={4}>
+                  <Text
+                    fontSize="xs"
+                    textTransform="uppercase"
+                    letterSpacing="0.16em"
+                    color="accent.soft"
+                  >
+                    {feature.eyebrow}
+                  </Text>
+                  <Heading as="h3" size="md">
+                    {feature.title}
+                  </Heading>
+                  <Text color={muted}>{feature.body}</Text>
+                  <Stack spacing={2}>
+                    {feature.points.map((point) => (
+                      <Text key={point} fontSize="sm" color="text.primary">
+                        - {point}
+                      </Text>
+                    ))}
+                  </Stack>
+                </Stack>
+              </Box>
             </MotionBox>
           ))}
         </SimpleGrid>
 
-        <Stack spacing={4} textAlign="center" pt={{ base: 4, md: 6 }}>
-          <Heading as="h2" size="md">
-            Ready to see how VeeVee fits your world?
-          </Heading>
-          <Text fontSize="sm" color={muted} maxW="2xl" mx="auto" textAlign={isMobile ? "left" : "center"}>
-            Start with the patient experience, then explore the broader platform story behind benefits guidance, digital twin simulation, and hospital-grade edge AI.
-          </Text>
-          <Button
-            as={RouterLink}
-            to={APP_LINKS.cta.getStarted}
-            size="md"
-            borderRadius="full"
-            fontWeight="700"
-            px={8}
-            alignSelf="center"
-            boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
-          >
-            Start for free
-          </Button>
-        </Stack>
+        <Box
+          borderWidth="1px"
+          borderColor={border}
+          borderRadius="2xl"
+          bg={introBg}
+          p={{ base: 5, md: 7 }}
+        >
+          <Stack spacing={4} textAlign="center">
+            <Heading as="h2" size="md">
+              Especially powerful after discharge
+            </Heading>
+            <Text fontSize="sm" color={muted} maxW="3xl" mx="auto">
+              One of the biggest gaps in healthcare is what happens after a patient leaves the hospital. VeeVee helps close that gap by supporting engagement at home while still giving families, nurses, and doctors a clearer line of sight.
+            </Text>
+            <Button
+              as={RouterLink}
+              to={APP_LINKS.internal.simulator}
+              size="md"
+              borderRadius="full"
+              fontWeight="700"
+              px={8}
+              alignSelf="center"
+              boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
+            >
+              Try VeeVee Simulator®
+            </Button>
+          </Stack>
+        </Box>
       </Stack>
     </Box>
   );
 }
-
-
