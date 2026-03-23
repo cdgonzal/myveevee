@@ -27,12 +27,34 @@ type FeatureBlock = {
 
 const FEATURE_BLOCKS: FeatureBlock[] = [
   {
+    eyebrow: "Platform",
+    title: "One platform, many users",
+    body:
+      "The same platform can support everyone. Users, families, nurses, doctors, and hospital teams without forcing each group into a separate experience.",
+    points: [
+      "Better coordination across the wellness journey.",
+      "Stronger personalized engagement.",
+      "A more connected and modern experience.",
+    ],
+  },
+  {
+    eyebrow: "Safety",
+    title: "Safer monitoring and faster response",
+    body:
+      "VeeVee supports monitoring in ways that help teams catch concerns sooner while keeping the experience simple.",
+    points: [
+      "Risk signals can be noticed earlier.",
+      "Hospitals can reduce avoidable busywork.",
+      "Sensitive information can stay closer to home.",
+    ],
+  },
+  {
     eyebrow: "Transition",
     title: "Hospital-to-home connection",
     body:
-      "VeeVee helps care continue after discharge instead of stopping at the hospital door.",
+      "VeeVee helps care continue before, during, and after discharge instead of stopping at the clinical door.",
     points: [
-      "Patients stay connected after they go home.",
+      "Users stay connected after they go home.",
       "Families can stay involved and informed.",
       "Nurses and doctors can keep a clearer view of progress.",
     ],
@@ -60,17 +82,6 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Safety",
-    title: "Safer monitoring and faster response",
-    body:
-      "VeeVee supports monitoring in ways that help teams catch concerns sooner while keeping the experience simple for patients.",
-    points: [
-      "Risk signals can be noticed earlier.",
-      "Hospitals can reduce avoidable busywork.",
-      "Sensitive information can stay closer to home.",
-    ],
-  },
-  {
     eyebrow: "Clarity",
     title: "Guidance people can actually use",
     body:
@@ -79,17 +90,6 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
       "Everyday questions answered more clearly.",
       "Benefits and coverage easier to understand.",
       "Next steps feel simpler, calmer, and more actionable.",
-    ],
-  },
-  {
-    eyebrow: "Platform",
-    title: "One platform, many users",
-    body:
-      "The same platform can support patients, families, nurses, doctors, and hospital teams without forcing each group into a separate experience.",
-    points: [
-      "Better coordination across the care journey.",
-      "Stronger engagement from bedside to home.",
-      "A more connected and modern care experience.",
     ],
   },
 ];
