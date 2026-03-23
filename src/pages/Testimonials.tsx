@@ -28,60 +28,81 @@ type TestimonialVoice = {
   situation: string;
   outcomeLabel: string;
   outcome: string;
+  outcomePoints: string[];
 };
 
 const TESTIMONIALS: TestimonialVoice[] = [
   {
     id: "ashley",
     pillLabel: "Ashley | Caregiver",
-    roleLine: "Ashley Cooper, 45 | Working mom and caregiver",
+    roleLine: "Ashley Cooper, 45 | Working mom in East Tennessee",
     quote: "AI and health felt scary to me until VeeVee made it simple.",
-    summary: "A caregiver who wanted help without feeling overwhelmed by apps or medical language.",
+    summary: "A caregiver from the Smoky Mountain region who wanted help without feeling overwhelmed by apps or medical language.",
     situationLabel: "Situation",
     situation:
-      "Ashley was juggling work, family, and health paperwork. She felt cautious about AI, unsure what benefits were available, and nervous about putting personal information into another app.",
+      "Ashley was juggling work, family, and health paperwork in East Tennessee. She felt cautious about AI, unsure what benefits were available, and nervous about putting personal information into another app.",
     outcomeLabel: "Outcome",
     outcome:
-      "VeeVee translated cards and documents into plain language, surfaced hidden benefits, and helped her feel more confident and less afraid of making the wrong move.",
+      "VeeVee turned a stressful health admin experience into something she could actually understand and use.",
+    outcomePoints: [
+      "Plain-language help with cards and documents",
+      "Hidden benefits surfaced clearly",
+      "More confidence and less fear about next steps",
+    ],
   },
   {
     id: "ryan",
     pillLabel: "Ryan | Sales Professional",
-    roleLine: "Ryan Blake, 29 | Tech sales professional",
+    roleLine: "Ryan Blake, 29 | Midwest-born sales professional in Austin",
     quote: "VeeVee is finally the health app I have been waiting for.",
-    summary: "A digitally fluent user who wanted healthcare to feel as smart and responsive as the rest of his life.",
+    summary: "A Midwest-born guy now living in Austin who wanted healthcare to feel as smart and responsive as the rest of his life.",
     situationLabel: "Situation",
     situation:
-      "Ryan already uses AI for work, planning, and fitness. Most health tools felt disconnected, static, and unable to connect his habits, coverage, and day-to-day decisions.",
+      "Ryan already uses AI for work, planning, and fitness. After moving from the Midwest to Austin, he wanted health tools that matched his fast, digital routine, but most felt disconnected, static, and unable to connect his habits, coverage, and day-to-day decisions.",
     outcomeLabel: "Outcome",
     outcome:
-      "VeeVee gave him one place to understand patterns, coverage, and smarter next steps, making healthcare feel more useful instead of reactive.",
+      "VeeVee made healthcare feel closer to the way he already lives: connected, responsive, and useful.",
+    outcomePoints: [
+      "One place to see patterns and coverage together",
+      "Smarter next-step guidance",
+      "A more proactive health experience",
+    ],
   },
   {
     id: "walter",
     pillLabel: "Walter | Medicare",
-    roleLine: "Walter Harris, 72 | Retired teacher on Medicare",
+    roleLine: "Walter Harris, 72 | Retired teacher in Boca Raton",
     quote: "Even I can use VeeVee, and that says everything.",
-    summary: "A Medicare patient who wanted something simple, calm, and easy to stick with.",
+    summary: "A retired Medicare patient in Boca who wanted something simple, calm, and easy to stick with.",
     situationLabel: "Situation",
     situation:
-      "Walter does not usually rely on apps and often felt lost trying to understand what Medicare covered or what he should do next after a visit.",
+      "Walter now enjoys the sun in Boca Raton after leaving behind bitter northern winters. He does not usually rely on apps and often felt lost trying to understand what Medicare covered or what he should do next after a visit.",
     outcomeLabel: "Outcome",
     outcome:
-      "With a simple setup and clear questions, VeeVee helped him understand coverage, follow his care more easily, and feel less lost in the system.",
+      "VeeVee gave him a calmer, simpler way to follow his care without feeling lost in the system.",
+    outcomePoints: [
+      "Simple setup and easy questions",
+      "Clearer Medicare coverage understanding",
+      "More confidence after appointments",
+    ],
   },
   {
     id: "dr_rostant",
     pillLabel: "Dr. Rostant | Physician",
-    roleLine: "Carlo Rostant, MD",
+    roleLine: "Carlo Rostant, MD | Physician",
     quote: "VeeVee helps patients show up informed and prepared.",
-    summary: "A clinician who wants patients, families, and care teams more aligned before and after visits.",
+    summary: "A physician who wants patients, families, and care teams more aligned before and after visits.",
     situationLabel: "Situation",
     situation:
       "Many patients arrive overwhelmed and families are not always aligned on benefits, concerns, or the right questions. That slows visits and weakens follow-through at home.",
     outcomeLabel: "Outcome",
     outcome:
-      "VeeVee helps patients come in with better context, better questions, and clearer follow-up, improving the quality of conversations and decisions.",
+      "VeeVee helps the whole care conversation start at a better place and continue more clearly after the visit.",
+    outcomePoints: [
+      "Patients arrive with better context",
+      "Better questions during visits",
+      "Clearer follow-up for home and family",
+    ],
   },
 ];
 
@@ -110,6 +131,38 @@ function StoryBlock({
       <Text fontSize="sm" lineHeight="1.7">
         {text}
       </Text>
+    </Box>
+  );
+}
+
+function OutcomeBlock({
+  label,
+  summary,
+  points,
+  borderColor,
+  bg,
+}: {
+  label: string;
+  summary: string;
+  points: string[];
+  borderColor: string;
+  bg: string;
+}) {
+  return (
+    <Box borderWidth="1px" borderColor={borderColor} borderRadius="xl" bg={bg} px={4} py={4}>
+      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
+        {label}
+      </Text>
+      <Text fontSize="sm" lineHeight="1.7" fontWeight="600" mb={3}>
+        {summary}
+      </Text>
+      <Stack spacing={2}>
+        {points.map((point) => (
+          <Box key={point} borderWidth="1px" borderColor={borderColor} borderRadius="lg" bg="rgba(255,255,255,0.42)" px={3} py={2}>
+            <Text fontSize="sm">{point}</Text>
+          </Box>
+        ))}
+      </Stack>
     </Box>
   );
 }
@@ -236,9 +289,10 @@ export default function Testimonials() {
                     borderColor={borderColor}
                     bg={detailBg}
                   />
-                  <StoryBlock
+                  <OutcomeBlock
                     label={activeVoice.outcomeLabel}
-                    text={activeVoice.outcome}
+                    summary={activeVoice.outcome}
+                    points={activeVoice.outcomePoints}
                     borderColor="accent.primary"
                     bg={quoteBg}
                   />
