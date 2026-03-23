@@ -41,7 +41,7 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     eyebrow: "Clarity",
     title: "Guidance people can actually use",
     body:
-      "Patients want plain answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
+      "People want reliable answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
     points: [
       "Everyday questions answered more clearly.",
       "Benefits and coverage easier to understand.",
