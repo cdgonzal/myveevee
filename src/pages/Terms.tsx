@@ -76,6 +76,60 @@ export default function Terms() {
             resolved only in the courts located in Broward County, Florida, USA.
           </Text>
         </Stack>
+
+        <Stack spacing={4} fontSize={{ base: "sm", md: "md" }} color="text.primary" mt={10}>
+          <Heading as="h2" size="md" fontWeight="800">
+            For Hospitals and Care Teams
+          </Heading>
+
+          <Text>
+            This section applies to hospitals, health systems, clinics, care teams, and other
+            organizations using VeeVee in a clinical, operational, or monitoring setting.
+          </Text>
+
+          <Text>
+            Support tool, not a substitute for care. VeeVee can help surface signals, support
+            monitoring, assist with documentation, and make workflows easier to follow. It does not
+            replace licensed clinical judgment, bedside care, staffing decisions, supervision, or
+            emergency response.
+          </Text>
+
+          <Text>
+            Alerts are helpful, not guaranteed. No monitoring, computer vision, or AI system catches
+            everything every time. Hospitals and care teams are still responsible for reviewing the
+            situation, deciding what matters, and choosing what to do next.
+          </Text>
+
+          <Text>
+            Your workflow is still your responsibility. Hospitals remain responsible for staffing,
+            escalation paths, alarm response, documentation review, patient supervision, discharge
+            planning, and day-to-day clinical operations.
+          </Text>
+
+          <Text>
+            Billing and compliance stay with you. VeeVee may support workflows connected to
+            reimbursement, monitoring, or documentation, but hospitals are responsible for coding,
+            claims, regulatory use, consent, notice, and legal compliance.
+          </Text>
+
+          <Text>
+            Performance depends on the real world. Results can be affected by hardware placement,
+            room setup, lighting, connectivity, integrations, third-party systems, and how the
+            platform is configured and used in practice.
+          </Text>
+
+          <Text>
+            We are not taking over hospital duties. VeeVee is not responsible for missed events,
+            delayed responses, clinical decisions, staffing coverage, reimbursement outcomes, or
+            other operational results that remain under the hospital's control.
+          </Text>
+
+          <Text>
+            Contracts come first. If a hospital, health system, or partner has a signed services
+            agreement, order form, or business associate agreement with VeeVee, that agreement will
+            control if it conflicts with this page.
+          </Text>
+        </Stack>
       </Box>
     </Box>
   );
