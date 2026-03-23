@@ -43,6 +43,8 @@ interface QuickInput {
   sleepHours: number;
 }
 
+const PAYER_OPTIONS = ["Aetna", "Blue Cross Blue Shield", "Cigna", "Medicare", "UnitedHealthcare"] as const;
+
 function quickInputToSimulatorInput(quick: QuickInput, base: SimulatorInput): SimulatorInput {
   return {
     ...base,
@@ -111,7 +113,7 @@ export default function Simulator() {
   );
 
   const [quickInput, setQuickInput] = useState<QuickInput>({
-    payer: DEFAULT_SIMULATOR_INPUT.insurance.payer,
+    payer: "Aetna",
     severity: DEFAULT_SIMULATOR_INPUT.symptom.severity,
     durationDays: DEFAULT_SIMULATOR_INPUT.symptom.durationDays,
     sleepHours: DEFAULT_SIMULATOR_INPUT.behaviorChange.sleepHours,
@@ -171,7 +173,7 @@ export default function Simulator() {
     }
 
     const nextQuick = {
-      payer: selectedScenario.input.insurance.payer,
+      payer: "Aetna",
       severity: selectedScenario.input.symptom.severity,
       durationDays: selectedScenario.input.symptom.durationDays,
       sleepHours: selectedScenario.input.behaviorChange.sleepHours,
@@ -293,15 +295,21 @@ export default function Simulator() {
                     <FormLabel htmlFor="quick-payer" fontSize="sm">
                       Insurance payer
                     </FormLabel>
-                    <Input
+                    <Select
                       id="quick-payer"
                       value={quickInput.payer}
                       onChange={(e) => {
                         setQuickInput((prev) => ({ ...prev, payer: e.target.value }));
                         trackInputChange("quick.insurance.payer");
                       }}
-                    />
-                    <FormHelperText fontSize="xs">Optional, but helpful for benefits context</FormHelperText>
+                    >
+                      {PAYER_OPTIONS.map((payer) => (
+                        <option key={payer} value={payer}>
+                          {payer}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormHelperText fontSize="xs">Helpful for benefits context</FormHelperText>
                   </FormControl>
 
                   <FormControl>
