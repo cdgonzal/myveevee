@@ -317,8 +317,10 @@ export default function Testimonials() {
                     </Text>
                   </Box>
                   <Button
-                    as={RouterLink}
-                    to={APP_LINKS.cta.getStarted}
+                    as="a"
+                    href="https://veevee.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     size="md"
                     borderRadius="full"
                     fontWeight="700"

@@ -22,7 +22,7 @@ Build Year: 2025
 We believe healthcare should feel human again.
 VeeVee is a health companion for patients and a high-performance
 edge AI ecosystem for hospitals, connecting benefits discovery,
-everyday guidance, doctor engagement, digital twin simulation,
+everyday guidance, doctor engagement, simulation previews,
 continuous vigilance, and automated clinical documentation.
 
 Got Health?

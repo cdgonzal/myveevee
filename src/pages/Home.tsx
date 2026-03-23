@@ -149,7 +149,7 @@ export default function Home() {
               textTransform="uppercase"
               color="accent.soft"
               as={RouterLink}
-              to={APP_LINKS.cta.getStarted}
+              to={APP_LINKS.internal.home}
               _hover={{ textDecoration: "none" }}
               _focus={{ outline: "none" }}
             >
@@ -158,7 +158,7 @@ export default function Home() {
 
             <CLink
               as={RouterLink}
-              to={APP_LINKS.cta.getStarted}
+              to={APP_LINKS.internal.home}
               _hover={{ textDecoration: "none" }}
               _focus={{ outline: "none" }}
               style={{ textDecoration: "none" }}
@@ -211,7 +211,7 @@ export default function Home() {
           >
             <CLink
               as={RouterLink}
-              to={APP_LINKS.cta.getStarted}
+              to={APP_LINKS.internal.home}
               _hover={{ textDecoration: "none" }}
               _focus={{ boxShadow: "none" }}
               display="block"
@@ -248,7 +248,7 @@ export default function Home() {
               </Box>
             </CLink>
 
-            <CLink as={RouterLink} to={APP_LINKS.cta.getStarted}>
+            <CLink as={RouterLink} to={APP_LINKS.internal.home}>
               <Image
                 src={heroWebpSrc}
                 alt="VeeVee marketing image showing connected care and benefits optimization"
@@ -464,7 +464,7 @@ export default function Home() {
                       Smooth app experience
                     </Text>
                     <Text fontSize="sm" color={muted}>
-                      The same foundation helps power the avatar, simulation, and VeeVee brain in the app.
+                      The same foundation helps power simulation, guidance, and a smooth VeeVee app experience.
                     </Text>
                   </Box>
                 </SimpleGrid>
@@ -493,7 +493,7 @@ export default function Home() {
                   How it works
                 </Text>
                 <Heading as="h2" size="lg" fontWeight="800" mb={3}>
-                  Your wellness questions answered in 3 simple steps.
+                  Your health questions answered in 3 simple steps.
                 </Heading>
                 <Text color={muted} maxW="3xl">
                   Start <Box as="span" fontWeight="800" color={freeAccent}>free</Box>. Tell VeeVee what is going on and get calm, clear next steps.
@@ -577,7 +577,7 @@ export default function Home() {
                   fontWeight="600"
                   textDecoration="underline"
                 >
-                  Already ready?
+                  Already have an account? Log in
                 </CLink>
               </Stack>
             </Stack>
@@ -742,10 +742,10 @@ export default function Home() {
                     Mobile app intelligence
                   </Text>
                   <Heading as="h3" size="sm" mb={2}>
-                    Avatar, simulation, and VeeVee brain
+                    Simulation and app intelligence
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    The same core technology helps power the avatar, simulation, and digital twin experience in the app.
+                    The same core technology helps power VeeVee Simulator, personalized guidance, and a fast app experience.
                   </Text>
                 </Box>
               </SimpleGrid>
