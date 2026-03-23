@@ -45,6 +45,34 @@ interface QuickInput {
 
 const PAYER_OPTIONS = ["Aetna", "Blue Cross Blue Shield", "Cigna", "Medicare", "UnitedHealthcare"] as const;
 
+const PAYER_INSIGHTS: Record<string, { headline: string; value: string; note: string }> = {
+  Aetna: {
+    headline: "Telehealth, preventive care, and care navigation are often part of commercial plan value.",
+    value: "$25-$75",
+    note: "Illustrative support value based on common plan patterns.",
+  },
+  "Blue Cross Blue Shield": {
+    headline: "PCP and specialist network access is often one of the biggest sources of plan value.",
+    value: "$20-$60",
+    note: "Illustrative care-navigation value based on common plan patterns.",
+  },
+  Cigna: {
+    headline: "Virtual care and wellness coaching may be available depending on the plan.",
+    value: "$20-$65",
+    note: "Illustrative support value based on common plan patterns.",
+  },
+  Medicare: {
+    headline: "Primary care, annual wellness visits, and chronic care support may help lower near-term costs.",
+    value: "$0-$50",
+    note: "Illustrative out-of-pocket reduction based on common plan patterns.",
+  },
+  UnitedHealthcare: {
+    headline: "Urgent care, telehealth, and care management support may be available depending on network.",
+    value: "$20-$70",
+    note: "Illustrative convenience value based on common plan patterns.",
+  },
+};
+
 function quickInputToSimulatorInput(quick: QuickInput, base: SimulatorInput): SimulatorInput {
   return {
     ...base,
@@ -188,6 +216,7 @@ export default function Simulator() {
     () => quickInputToSimulatorInput(quickInput, selectedScenario?.input ?? DEFAULT_SIMULATOR_INPUT),
     [quickInput, selectedScenario]
   );
+  const payerInsight = PAYER_INSIGHTS[simulatedInput.insurance.payer] ?? PAYER_INSIGHTS.Aetna;
 
   const handleRunPreview = () => {
     trackEvent("wm_quick_preview_start");
@@ -430,7 +459,7 @@ export default function Simulator() {
                   </Box>
                 </Stack>
 
-                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
                   <Box borderWidth="1px" borderColor={outputBorder} borderRadius="xl" bg={outputCardBg} px={4} py={3}>
                     <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
                       Overall outcome
@@ -448,6 +477,20 @@ export default function Simulator() {
                     </Text>
                     <Text fontSize="sm" color={muted}>
                       {simulatedInput.symptom.durationDays} day symptoms, {simulatedInput.behaviorChange.sleepHours} hours of sleep, payer {simulatedInput.insurance.payer}.
+                    </Text>
+                  </Box>
+                  <Box borderWidth="1px" borderColor={outputBorder} borderRadius="xl" bg={outputCardBg} px={4} py={3}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                      Benefits snapshot
+                    </Text>
+                    <Text fontSize="sm" fontWeight="700" mb={1}>
+                      {simulatedInput.insurance.payer}: {payerInsight.value}
+                    </Text>
+                    <Text fontSize="sm" color={muted} mb={2}>
+                      {payerInsight.headline}
+                    </Text>
+                    <Text fontSize="xs" color={muted}>
+                      {payerInsight.note} Actual benefits depend on your specific plan.
                     </Text>
                   </Box>
                 </SimpleGrid>
