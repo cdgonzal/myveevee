@@ -30,66 +30,66 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     eyebrow: "Platform",
     title: "One platform, many users",
     body:
-      "The same platform can support everyone. Users, families, nurses, doctors, and hospital teams without forcing each group into a separate experience.",
+      "One connected experience for people, families, clinicians, and hospitals.",
     points: [
-      "Better coordination across the wellness journey.",
-      "Stronger personalized engagement.",
-      "A more connected and modern experience.",
+      "Better coordination across the care journey.",
+      "Less fragmentation between people and teams.",
+      "A simpler, more modern experience.",
     ],
   },
   {
     eyebrow: "Clarity",
     title: "Guidance people can actually use",
     body:
-      "People want reliable answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
+      "Clear answers, simpler next steps, and less confusion.",
     points: [
       "Everyday questions answered more clearly.",
       "Benefits and coverage easier to understand.",
-      "Next steps feel simpler, calmer, and more actionable.",
+      "Next steps that feel calmer and more actionable.",
     ],
   },
   {
-    eyebrow: "Safety",
-    title: "Safer monitoring and faster response",
+    eyebrow: "Simulation",
+    title: "See what could happen before you decide",
     body:
-      "VeeVee supports monitoring in ways that help teams catch concerns sooner while keeping the experience simple.",
+      "VeeVee Simulator® helps people explore simple what-if scenarios before taking the next step.",
     points: [
-      "Risk signals can be noticed earlier.",
-      "Hospitals can reduce avoidable busywork.",
-      "Sensitive information can stay closer to home.",
+      "Try different health and routine scenarios.",
+      "See possible next steps and questions to ask.",
+      "Powered by a more personal picture of your health story over time.",
     ],
   },
   {
     eyebrow: "Family",
     title: "Family engagement without more confusion",
     body:
-      "Loved ones often want to help but do not know what is happening. VeeVee makes it easier for families to feel included and useful.",
+      "Loved ones can stay involved without adding more stress.",
     points: [
       "A shared view of updates and next steps.",
-      "More meaningful support between visits.",
-      "Less stress around handoffs and recovery.",
+      "More useful support between visits.",
+      "Less confusion during recovery and handoffs.",
     ],
   },
   {
     eyebrow: "Care team",
     title: "Better visibility for care teams",
     body:
-      "Doctors, nurses, care managers, and hospitals all benefit when the patient story is easier to follow.",
+      "Doctors, nurses, and care teams work better when the story is easier to follow.",
     points: [
       "Health context is easier to review.",
-      "Questions and changes are easier to spot.",
-      "Patients show up more prepared and engaged.",
+      "Changes and questions are easier to spot.",
+      "People show up more prepared and engaged.",
     ],
   },
   {
     eyebrow: "Transition",
     title: "Hospital-to-home connection",
     body:
-      "VeeVee helps care continue before, during, and after discharge instead of stopping at the clinical door.",
+      "Care does not have to stop when the visit ends.",
     points: [
-      "Users stay connected after they go home.",
+      "People stay connected after they go home.",
       "Families can stay involved and informed.",
-      "Nurses and doctors can keep a clearer view of progress.",
+      "Care teams keep a clearer view of progress.",
     ],
   },
 ];
@@ -139,7 +139,7 @@ export default function Features() {
                   A connected wellness experience.
                 </Heading>
                 <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
-                  VeeVee works best when everyone communicates and stays connected: the users, the family, the nurse, the doctor, and the hospital team.
+                  VeeVee works best when people, families, clinicians, and hospitals can stay more connected without making care feel harder.
                 </Text>
               </Stack>
 
@@ -183,10 +183,10 @@ export default function Features() {
         >
           <Stack spacing={4}>
             <Heading as="h2" size="md">
-              What everyoe is asking for
+              What everyone is asking for
             </Heading>
             <Text color={muted}>
-              Support. People want support. Families want to stay involved. Nurses and doctors want better visibility. Hospitals want safer monitoring and smoother transitions. VeeVee brings those needs together without making the experience feel heavy or complicated.
+              People want support. Families want to stay involved. Clinicians want better visibility. Hospitals want smoother transitions. VeeVee brings those needs together in one simpler experience.
             </Text>
           </Stack>
         </Box>
