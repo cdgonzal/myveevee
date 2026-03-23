@@ -175,7 +175,7 @@ export default function Home() {
               _hover={{ textDecoration: "none" }}
               _focus={{ outline: "none" }}
             >
-              For the wellness community, by the wellness community
+              For everyone, for free. 
             </Text>
 
             <CLink
@@ -271,22 +271,32 @@ export default function Home() {
             </CLink>
 
             <CLink as={RouterLink} to={APP_LINKS.internal.home} display="block">
-              <Image
-                key={currentHero.webp}
-                src={`${import.meta.env.BASE_URL}${currentHero.webp}`}
-                alt={currentHero.alt}
-                objectFit="cover"
-                maxH="420px"
-                w="100%"
-                transition="opacity 0.35s ease"
-                onError={(e) => {
-                  const img = e.currentTarget;
-                  if (img.src.endsWith(".webp")) {
-                    img.src = `${import.meta.env.BASE_URL}${currentHero.jpg}`;
-                    return;
-                  }
-                }}
-              />
+              <Box position="relative" h={{ base: "260px", md: "420px" }}>
+                {HERO_IMAGES.map((hero, index) => {
+                  const isActive = index === activeHeroIndex;
+
+                  return (
+                    <Image
+                      key={hero.webp}
+                      src={`${import.meta.env.BASE_URL}${hero.webp}`}
+                      alt={hero.alt}
+                      objectFit="cover"
+                      h="100%"
+                      w="100%"
+                      position="absolute"
+                      inset={0}
+                      opacity={isActive ? 1 : 0}
+                      transition="opacity 0.8s ease"
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        if (img.src.endsWith(".webp")) {
+                          img.src = `${import.meta.env.BASE_URL}${hero.jpg}`;
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </Box>
             </CLink>
 
             <Box
