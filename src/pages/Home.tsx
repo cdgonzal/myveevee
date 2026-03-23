@@ -192,7 +192,7 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Connected wellness. Everyday.<br></br>
+              Connected wellness.<br></br>
               <Box as="span" color="accent.primary">
                 {" "}Peace of mind.
               </Box>
