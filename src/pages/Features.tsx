@@ -139,7 +139,7 @@ export default function Features() {
                   A connected care experience from hospital to home.
                 </Heading>
                 <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
-                  VeeVee works best when everyone around the patient can stay more connected: the patient, the family, the nurse, the doctor, and the hospital team.
+                  VeeVee works best when everyone communicates and stays connected: the patient, the family, the nurse, the doctor, and the hospital team.
                 </Text>
               </Stack>
 
