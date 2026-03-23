@@ -183,10 +183,10 @@ export default function Features() {
         >
           <Stack spacing={4}>
             <Heading as="h2" size="md">
-              What every side of care is asking for
+              What everyoe is asking for
             </Heading>
             <Text color={muted}>
-              Patients want simple support. Families want to stay involved. Nurses and doctors want better visibility. Hospitals want safer monitoring and smoother transitions. VeeVee brings those needs together without making the experience feel heavy or complicated.
+              Support. People want support. Families want to stay involved. Nurses and doctors want better visibility. Hospitals want safer monitoring and smoother transitions. VeeVee brings those needs together without making the experience feel heavy or complicated.
             </Text>
           </Stack>
         </Box>
