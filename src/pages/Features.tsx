@@ -38,6 +38,17 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
+    eyebrow: "Clarity",
+    title: "Guidance people can actually use",
+    body:
+      "Patients want plain answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
+    points: [
+      "Everyday questions answered more clearly.",
+      "Benefits and coverage easier to understand.",
+      "Next steps feel simpler, calmer, and more actionable.",
+    ],
+  },
+  {
     eyebrow: "Safety",
     title: "Safer monitoring and faster response",
     body:
@@ -46,17 +57,6 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
       "Risk signals can be noticed earlier.",
       "Hospitals can reduce avoidable busywork.",
       "Sensitive information can stay closer to home.",
-    ],
-  },
-  {
-    eyebrow: "Transition",
-    title: "Hospital-to-home connection",
-    body:
-      "VeeVee helps care continue before, during, and after discharge instead of stopping at the clinical door.",
-    points: [
-      "Users stay connected after they go home.",
-      "Families can stay involved and informed.",
-      "Nurses and doctors can keep a clearer view of progress.",
     ],
   },
   {
@@ -82,14 +82,14 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Clarity",
-    title: "Guidance people can actually use",
+    eyebrow: "Transition",
+    title: "Hospital-to-home connection",
     body:
-      "Patients want plain answers. Providers want better follow-through. Hospitals want smoother transitions. VeeVee helps all three.",
+      "VeeVee helps care continue before, during, and after discharge instead of stopping at the clinical door.",
     points: [
-      "Everyday questions answered more clearly.",
-      "Benefits and coverage easier to understand.",
-      "Next steps feel simpler, calmer, and more actionable.",
+      "Users stay connected after they go home.",
+      "Families can stay involved and informed.",
+      "Nurses and doctors can keep a clearer view of progress.",
     ],
   },
 ];
