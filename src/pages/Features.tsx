@@ -146,26 +146,26 @@ export default function Features() {
               <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
                 <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={accentSurface} p={4}>
                   <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
-                    Before discharge
+                    Before
                   </Text>
                   <Text fontSize="sm" color="text.primary">
-                    Better handoffs and a clearer patient story.
+                    Better understanding and an accurate history.
                   </Text>
                 </Box>
                 <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={accentSurface} p={4}>
                   <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
-                    At home
+                    During
                   </Text>
                   <Text fontSize="sm" color="text.primary">
-                    Families stay engaged while patients stay supported.
+                    Everyone stays engaged while wellness goals are achieved.
                   </Text>
                 </Box>
                 <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={accentSurface} p={4}>
                   <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={2}>
-                    Across the system
+                    After
                   </Text>
                   <Text fontSize="sm" color="text.primary">
-                    Nurses, doctors, and hospitals get better visibility with less friction.
+                    Nurses, doctors, and hospitals get continued visibility with less friction.
                   </Text>
                 </Box>
               </SimpleGrid>
