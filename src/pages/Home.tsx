@@ -200,7 +200,7 @@ export default function Home() {
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VeeVee helps people, families, nurses, doctors, and hospitals stay more connected. It is built to be simple, safe, private, and ready when you need it.
+              VeeVee connects your care across life. From everyday wellness to hospital recovery and everything in between. Built to be simple, safe, private, and ready when you need it.
             </Text>
 
             <Stack spacing={3}>
@@ -213,7 +213,7 @@ export default function Home() {
                 px={10}
                 boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
               >
-                Features
+                Explore Your Care Journey
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
@@ -431,7 +431,7 @@ export default function Home() {
                 Ask everyday questions, find benefits and perks, stay connected to your care, and feel more supported at home in a way that stays personal, private, and easy to understand.
               </Text>
               <Button onClick={onPatientOpen} size="sm" borderRadius="full" fontWeight="700" alignSelf="flex-start">
-                See how it works
+                Explore Your Care Journey
               </Button>
             </Box>
 
