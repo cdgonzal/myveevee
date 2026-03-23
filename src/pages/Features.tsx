@@ -136,7 +136,7 @@ export default function Features() {
                   FEATURES
                 </Text>
                 <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800">
-                  A connected care experience from hospital to home.
+                  A connected wellness experience.
                 </Heading>
                 <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
                   VeeVee works best when everyone communicates and stays connected: the users, the family, the nurse, the doctor, and the hospital team.
