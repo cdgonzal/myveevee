@@ -269,7 +269,7 @@ export default function Features() {
               alignSelf="center"
               boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
             >
-              Try VeeVee Simulator
+              Try VeeVee Simulator®
             </Button>
           </Stack>
         </Box>

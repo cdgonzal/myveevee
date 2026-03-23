@@ -847,7 +847,7 @@ export default function Home() {
                     Simulation and app intelligence
                   </Heading>
                   <Text color={muted} fontSize="sm">
-                    The same core technology helps power VeeVee Simulator, personalized guidance, and a fast app experience.
+                    The same core technology helps power VeeVee Simulator®, personalized guidance, and a fast app experience.
                   </Text>
                 </Box>
               </SimpleGrid>

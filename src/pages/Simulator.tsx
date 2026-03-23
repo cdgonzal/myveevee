@@ -199,7 +199,7 @@ export default function Simulator() {
       bgGradient={pageGradient}
       color="text.primary"
       py={{ base: 10, md: 20 }}
-      aria-label="VeeVee Simulator"
+      aria-label="VeeVee Simulator®"
     >
       <Stack spacing={{ base: 8, md: 10 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
         <Stack spacing={3}>
@@ -211,13 +211,13 @@ export default function Simulator() {
             py={1}
             borderRadius="full"
           >
-            VeeVee Simulator Preview
+            VeeVee Simulator® Preview
           </Badge>
           <Heading as="h1" size={{ base: "lg", md: "xl" }}>
             Try a simple what-if health scenario.
           </Heading>
           <Text color={muted} maxW="4xl">
-            VeeVee Simulator gives you a quick preview of what may matter, what questions to ask, and what next steps may help. It is a simple teaser for the fuller app experience.
+            VeeVee Simulator® gives you a quick preview of what may matter, what questions to ask, and what next steps may help. It is a simple teaser for the fuller app experience.
           </Text>
         </Stack>
 
@@ -557,7 +557,7 @@ export default function Simulator() {
         <Alert status="info" borderRadius="lg" variant="subtle">
           <AlertIcon />
           <AlertDescription fontSize="sm">
-            VeeVee Simulator is a planning and education tool. It is not medical diagnosis or treatment.
+            VeeVee Simulator® is a planning and education tool. It is not medical diagnosis or treatment.
           </AlertDescription>
         </Alert>
 

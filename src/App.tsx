@@ -129,7 +129,7 @@ function Header() {
                   Features
                 </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
-                  VeeVee Simulator
+                  VeeVee Simulator®
                 </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.testimonials} color={navColor} fontWeight="600">
                   Testimonials
@@ -177,7 +177,7 @@ function Header() {
                 Features
               </CLink>
               <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
-                VeeVee Simulator
+                VeeVee Simulator®
               </CLink>
               <CLink as={Link} to={APP_LINKS.internal.testimonials} onClick={onClose} fontWeight="600" color={navColor}>
                 Testimonials
@@ -222,7 +222,7 @@ function Footer() {
               Log In
             </CLink>
             <CLink as={Link} to={APP_LINKS.internal.simulator} color={primaryText}>
-              VeeVee Simulator
+              VeeVee Simulator®
             </CLink>
             <CLink href={APP_LINKS.external.investors} isExternal color={primaryText}>
               Investor Info
