@@ -153,7 +153,7 @@ export default function Home() {
               _hover={{ textDecoration: "none" }}
               _focus={{ outline: "none" }}
             >
-              For patients and hospitals
+              For the wellness community, by the wellness community
             </Text>
 
             <CLink
@@ -170,15 +170,15 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Connected care from hospital to home.<br></br>
+              Connected wellness. Everyday.<br></br>
               <Box as="span" color="accent.primary">
-                {" "}More peace of mind.
+                {" "}Peace of mind.
               </Box>
             </Heading>
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VeeVee helps patients, families, nurses, doctors, and hospitals stay more connected. It is built to be simple, safe, private, and ready when you need it.
+              VeeVee helps people, families, nurses, doctors, and hospitals stay more connected. It is built to be simple, safe, private, and ready when you need it.
             </Text>
 
             <Stack spacing={3}>
@@ -354,7 +354,7 @@ export default function Home() {
               backdropFilter="blur(14px)"
             >
               <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
-                For patients
+                For everyday users
               </Text>
               <Heading as="h3" size="md" mb={3}>
                 Support that stays with you after the visit.
