@@ -228,7 +228,7 @@ export default function Home() {
                 px={10}
                 boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
               >
-                Explore Your Care Journey
+                Explore Your Wellness Journey
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
@@ -465,7 +465,7 @@ export default function Home() {
                 Ask everyday questions, find benefits and perks, stay connected to your care, and feel more supported at home in a way that stays personal, private, and easy to understand.
               </Text>
               <Button onClick={onPatientOpen} size="sm" borderRadius="full" fontWeight="700" alignSelf="flex-start">
-                Explore Your Care Journey
+                Explore Your Wellness Journey
               </Button>
             </Box>
 
