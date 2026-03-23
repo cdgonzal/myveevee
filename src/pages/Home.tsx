@@ -89,14 +89,28 @@ const scrollLogos = keyframes`
 
 const HERO_IMAGES = [
   {
-    webp: "images/marketing/hero-2026-v2.webp",
-    jpg: "images/marketing/hero-2026.jpg",
-    alt: "VeeVee hero image showing connected care and benefits support",
+    webp: "images/marketing/car1.webp",
+    jpg: "images/marketing/car1.jpg",
+    alt: "VeeVee carousel slide showing everyday wellness support",
+    title: "Everyday support that feels simple",
   },
   {
-    webp: "images/marketing/hero-2027.webp",
-    jpg: "images/marketing/hero-2027.jpg",
-    alt: "VeeVee hero image showing a modern wellness and care experience",
+    webp: "images/marketing/car2.webp",
+    jpg: "images/marketing/car2.jpg",
+    alt: "VeeVee carousel slide showing care that stays connected",
+    title: "Clear next steps, without the stress",
+  },
+  {
+    webp: "images/marketing/car3.webp",
+    jpg: "images/marketing/car3.jpg",
+    alt: "VeeVee carousel slide showing support after the visit",
+    title: "Support that stays with you at home",
+  },
+  {
+    webp: "images/marketing/car4.webp",
+    jpg: "images/marketing/car4.jpg",
+    alt: "VeeVee carousel slide showing a connected care experience",
+    title: "Connected care across your life",
   },
 ];
 
@@ -135,6 +149,7 @@ export default function Home() {
   const positiveColor = useColorModeValue("green.600", "green.300");
   const nvidiaAccent = "#76B900";
   const nvidiaSoftBg = useColorModeValue("rgba(118, 185, 0, 0.08)", "rgba(118, 185, 0, 0.14)");
+  const heroStageBg = useColorModeValue("rgba(255, 255, 255, 0.94)", "rgba(6, 37, 76, 0.88)");
   const stepCircleColor = "white";
   const freeAccent = useColorModeValue("#001A52", "#9CE7FF");
   const currentHero = HERO_IMAGES[activeHeroIndex];
@@ -241,7 +256,8 @@ export default function Home() {
               <Box
                 display="flex"
                 alignItems="center"
-                gap={2}
+                justifyContent="space-between"
+                gap={3}
                 px={4}
                 py={3}
                 bg={heroStripBg}
@@ -249,29 +265,46 @@ export default function Home() {
                 borderColor={border}
                 cursor="pointer"
               >
-                <Image
-                  src="/brand/2026/icon.svg"
-                  alt="VeeVee icon"
-                  h={{ base: "20px", md: "24px" }}
-                  w="auto"
-                  objectFit="contain"
-                  draggable="false"
-                  filter={logoFilter}
-                />
-                <Image
-                  src="/brand/2026/wordmark.svg"
-                  alt="VeeVee"
-                  h={{ base: "9px", md: "11px" }}
-                  w="auto"
-                  objectFit="contain"
-                  draggable="false"
-                  filter={logoFilter}
-                />
+                <Box display="flex" alignItems="center" gap={2} minW={0}>
+                  <Image
+                    src="/brand/2026/icon.svg"
+                    alt="VeeVee icon"
+                    h={{ base: "15px", md: "18px" }}
+                    w="auto"
+                    objectFit="contain"
+                    draggable="false"
+                    filter={logoFilter}
+                    flexShrink={0}
+                  />
+                  <Image
+                    src="/brand/2026/wordmark.svg"
+                    alt="VeeVee"
+                    h={{ base: "7px", md: "9px" }}
+                    w="auto"
+                    objectFit="contain"
+                    draggable="false"
+                    filter={logoFilter}
+                    flexShrink={0}
+                  />
+                </Box>
+                <Text
+                  fontSize={{ base: "xs", md: "sm" }}
+                  fontWeight="700"
+                  color="text.primary"
+                  textAlign="right"
+                  noOfLines={2}
+                >
+                  {currentHero.title}
+                </Text>
               </Box>
             </CLink>
 
             <CLink as={RouterLink} to={APP_LINKS.internal.home} display="block">
-              <Box position="relative" h={{ base: "260px", md: "420px" }}>
+              <Box
+                position="relative"
+                h={{ base: "440px", md: "540px" }}
+                bg={heroStageBg}
+              >
                 {HERO_IMAGES.map((hero, index) => {
                   const isActive = index === activeHeroIndex;
 
@@ -280,11 +313,12 @@ export default function Home() {
                       key={hero.webp}
                       src={`${import.meta.env.BASE_URL}${hero.webp}`}
                       alt={hero.alt}
-                      objectFit="cover"
+                      objectFit="contain"
                       h="100%"
                       w="100%"
                       position="absolute"
                       inset={0}
+                      p={{ base: 4, md: 5 }}
                       opacity={isActive ? 1 : 0}
                       transition="opacity 0.8s ease"
                       onError={(e) => {
