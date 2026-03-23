@@ -24,6 +24,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { Link as CLink } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
@@ -86,6 +87,19 @@ const scrollLogos = keyframes`
   100% { transform: translateX(-50%); }
 `;
 
+const HERO_IMAGES = [
+  {
+    webp: "images/marketing/hero-2026-v2.webp",
+    jpg: "images/marketing/hero-2026.jpg",
+    alt: "VeeVee hero image showing connected care and benefits support",
+  },
+  {
+    webp: "images/marketing/hero-2027.webp",
+    jpg: "images/marketing/hero-2027.jpg",
+    alt: "VeeVee hero image showing a modern wellness and care experience",
+  },
+];
+
 export default function Home() {
   const {
     isOpen: isPatientOpen,
@@ -102,8 +116,7 @@ export default function Home() {
     onOpen: onArchitectureOpen,
     onClose: onArchitectureClose,
   } = useDisclosure();
-  const heroWebpSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026-v2.webp`;
-  const heroJpgSrc = `${import.meta.env.BASE_URL}images/marketing/hero-2026.jpg`;
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -124,6 +137,15 @@ export default function Home() {
   const nvidiaSoftBg = useColorModeValue("rgba(118, 185, 0, 0.08)", "rgba(118, 185, 0, 0.14)");
   const stepCircleColor = "white";
   const freeAccent = useColorModeValue("#001A52", "#9CE7FF");
+  const currentHero = HERO_IMAGES[activeHeroIndex];
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveHeroIndex((current) => (current + 1) % HERO_IMAGES.length);
+    }, 4000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   return (
     <>
@@ -248,22 +270,58 @@ export default function Home() {
               </Box>
             </CLink>
 
-            <CLink as={RouterLink} to={APP_LINKS.internal.home}>
+            <CLink as={RouterLink} to={APP_LINKS.internal.home} display="block">
               <Image
-                src={heroWebpSrc}
-                alt="VeeVee marketing image showing connected care and benefits optimization"
+                key={currentHero.webp}
+                src={`${import.meta.env.BASE_URL}${currentHero.webp}`}
+                alt={currentHero.alt}
                 objectFit="cover"
                 maxH="420px"
                 w="100%"
+                transition="opacity 0.35s ease"
                 onError={(e) => {
                   const img = e.currentTarget;
                   if (img.src.endsWith(".webp")) {
-                    img.src = heroJpgSrc;
+                    img.src = `${import.meta.env.BASE_URL}${currentHero.jpg}`;
                     return;
                   }
                 }}
               />
             </CLink>
+
+            <Box
+              position="absolute"
+              bottom={4}
+              left="50%"
+              transform="translateX(-50%)"
+              display="flex"
+              alignItems="center"
+              gap={2}
+              px={3}
+              py={2}
+              borderRadius="full"
+              bg="rgba(6, 37, 76, 0.46)"
+              backdropFilter="blur(8px)"
+            >
+              {HERO_IMAGES.map((hero, index) => {
+                const isActive = index === activeHeroIndex;
+
+                return (
+                  <Box
+                    as="button"
+                    key={hero.webp}
+                    type="button"
+                    aria-label={`Show hero image ${index + 1}`}
+                    onClick={() => setActiveHeroIndex(index)}
+                    w={isActive ? "28px" : "10px"}
+                    h="10px"
+                    borderRadius="full"
+                    bg={isActive ? "white" : "rgba(255,255,255,0.5)"}
+                    transition="all 0.2s ease"
+                  />
+                );
+              })}
+            </Box>
           </Box>
         </Grid>
 
