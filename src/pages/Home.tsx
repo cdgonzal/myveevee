@@ -104,13 +104,13 @@ const HERO_IMAGES = [
     webp: "images/marketing/car3.webp",
     jpg: "images/marketing/car3.jpg",
     alt: "VeeVee carousel slide showing support after the visit",
-    title: "Support that stays with you at home",
+    title: "Support that stays with you",
   },
   {
     webp: "images/marketing/car4.webp",
     jpg: "images/marketing/car4.jpg",
     alt: "VeeVee carousel slide showing a connected care experience",
-    title: "Connected care across your life",
+    title: "Be your ideal self",
   },
 ];
 
@@ -485,7 +485,7 @@ export default function Home() {
                 Better visibility from bedside to home.
               </Heading>
               <Text color={muted} mb={4}>
-                VeeVee helps hospitals watch over patients, catch risk sooner, reduce busywork, and stay more connected to what happens after discharge.
+                VeeVee helps users uncover their benefits, hospitals watch over patients, catch risk sooner, reduce busywork, and stay more connected to what happens after discharge.
               </Text>
               <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
                 <Button onClick={onValueOpen} size="sm" borderRadius="full" fontWeight="700">
@@ -501,7 +501,7 @@ export default function Home() {
                   color={nvidiaAccent}
                   _hover={{ bg: nvidiaSoftBg }}
                 >
-                  See the technology backbone
+                  See the technology:
                 </Button>
               </Stack>
             </Box>
