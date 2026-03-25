@@ -26,6 +26,7 @@ import { APP_LINKS } from "./config/links";
 
 const Home = lazy(() => import("./pages/Home"));
 const Features = lazy(() => import("./pages/Features"));
+const Technology = lazy(() => import("./pages/Technology"));
 const Simulator = lazy(() => import("./pages/Simulator"));
 const Testimonials = lazy(() => import("./pages/Testimonials"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -64,6 +65,7 @@ export default function App() {
             <Routes>
               <Route path={APP_LINKS.internal.home} element={<Home />} />
               <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
+              <Route path={APP_LINKS.internal.technology} element={<Technology />} />
               <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
               <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
               <Route path={APP_LINKS.internal.terms} element={<Terms />} />
@@ -128,6 +130,9 @@ function Header() {
                 <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
                   Features
                 </CLink>
+                <CLink as={Link} to={APP_LINKS.internal.technology} color={navColor} fontWeight="600">
+                  Technology
+                </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
                   VeeVee Simulator®
                 </CLink>
@@ -176,6 +181,9 @@ function Header() {
               <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
                 Features
               </CLink>
+              <CLink as={Link} to={APP_LINKS.internal.technology} onClick={onClose} fontWeight="600" color={navColor}>
+                Technology
+              </CLink>
               <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
                 VeeVee Simulator®
               </CLink>
@@ -220,6 +228,9 @@ function Footer() {
           <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }} align={{ base: "center", md: "flex-start" }}>
             <CLink href={APP_LINKS.external.authenticatedConsole} isExternal color={primaryText}>
               Log In
+            </CLink>
+            <CLink as={Link} to={APP_LINKS.internal.technology} color={primaryText}>
+              Technology
             </CLink>
             <CLink as={Link} to={APP_LINKS.internal.simulator} color={primaryText}>
               VeeVee Simulator®
