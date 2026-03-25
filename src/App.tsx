@@ -130,14 +130,14 @@ function Header() {
                 <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
                   Features
                 </CLink>
-                <CLink as={Link} to={APP_LINKS.internal.technology} color={navColor} fontWeight="600">
-                  Technology
-                </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
                   VeeVee Simulator®
                 </CLink>
                 <CLink as={Link} to={APP_LINKS.internal.testimonials} color={navColor} fontWeight="600">
                   Testimonials
+                </CLink>
+                <CLink as={Link} to={APP_LINKS.internal.technology} color={navColor} fontWeight="600">
+                  Tech
                 </CLink>
               </HStack>
 
@@ -181,14 +181,14 @@ function Header() {
               <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
                 Features
               </CLink>
-              <CLink as={Link} to={APP_LINKS.internal.technology} onClick={onClose} fontWeight="600" color={navColor}>
-                Technology
-              </CLink>
               <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
                 VeeVee Simulator®
               </CLink>
               <CLink as={Link} to={APP_LINKS.internal.testimonials} onClick={onClose} fontWeight="600" color={navColor}>
                 Testimonials
+              </CLink>
+              <CLink as={Link} to={APP_LINKS.internal.technology} onClick={onClose} fontWeight="600" color={navColor}>
+                Tech
               </CLink>
               <CLink href={APP_LINKS.external.authenticatedConsole} isExternal onClick={onClose} fontWeight="700" color="accent.soft">
                 Log in
