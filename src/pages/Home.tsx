@@ -101,16 +101,16 @@ const HERO_IMAGES = [
     title: "Clear next steps, without the stress",
   },
   {
-    webp: "images/marketing/car3.webp",
-    jpg: "images/marketing/car3.jpg",
-    alt: "VeeVee carousel slide showing support after the visit",
-    title: "Support that stays with you",
-  },
-  {
     webp: "images/marketing/car4.webp",
     jpg: "images/marketing/car4.jpg",
     alt: "VeeVee carousel slide showing a connected care experience",
     title: "Be your ideal self",
+  },
+  {
+    webp: "images/marketing/car3.webp",
+    jpg: "images/marketing/car3.jpg",
+    alt: "VeeVee carousel slide showing support after the visit",
+    title: "Support that stays with you",
   },
 ];
 
