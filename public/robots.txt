@@ -8,6 +8,7 @@ Allow: /
 Disallow: /amplify/
 Disallow: /api/
 Disallow: /admin/
+Disallow: /briefs/
 Disallow: /static/js/test/
 
 # Sitemap location (important for SEO)
