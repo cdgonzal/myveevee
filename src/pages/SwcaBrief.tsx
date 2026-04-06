@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+ï»¿import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -321,7 +321,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 <body>
   <div class="page">
     <section class="hero">
-      <div class="eyebrow">For Michael Segura · Head of Operations · SWCA</div>
+      <div class="eyebrow">For Michael Segura Â· Head of Operations Â· SWCA</div>
       <div class="hero-grid">
         <div>
           <h1>SWCA pilot brief: drive registration, prove patient utility, and show measurable business value.</h1>
@@ -362,8 +362,10 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             </thead>
             <tbody>
               <tr><td>Patients identified</td><td>25</td><td>25</td><td>Confirms the initial cohort for SWCA outreach</td></tr>
-              <tr><td>Registrations</td><td>0</td><td>15+</td><td>Measures whether outreach is converting into accounts</td></tr>
-              <tr><td>Activated patients</td><td>0</td><td>10+</td><td>Shows whether registered patients reach first value</td></tr>
+              <tr><td>Patients reached</td><td>4</td><td>20+</td><td>Shows whether the outreach motion is getting real contact</td></tr>
+              <tr><td>Registrations</td><td>0</td><td>12-15</td><td>Measures whether outreach is converting into accounts</td></tr>
+              <tr><td>Activated patients</td><td>0</td><td>8-10</td><td>Shows whether registered patients reach first value</td></tr>
+              <tr><td>7-day engaged patients</td><td>0</td><td>6+</td><td>Tests whether the product keeps patients engaged after signup</td></tr>
               <tr><td>ROI review checkpoint</td><td>Not started</td><td>Day 90</td><td>Sets the decision window for expansion and dashboard transition</td></tr>
             </tbody>
           </table>
@@ -424,38 +426,38 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         <div class="cards">
           <div class="card">
             <h3>Simple Registration &amp; Onboarding</h3>
-            <p>Make account creation and first entry into the platform easy enough to complete without friction.</p>
+            <p>Make account creation and first entry into the platform easy enough to complete without friction or extra staff hand-holding.</p>
             <ul>
-              <li>Guided onboarding path</li>
+              <li>Guided invite-to-registration flow</li>
               <li>Simple explanation of why the patient was invited</li>
-              <li>Low-friction setup for first use</li>
+              <li>Low-friction setup for first use on mobile</li>
             </ul>
           </div>
           <div class="card">
             <h3>Personalized Check-Ins</h3>
-            <p>Give patients a reason to come back by making follow-up feel relevant and lightweight.</p>
+            <p>Give patients a reason to come back by making follow-up feel relevant, lightweight, and easy to complete.</p>
             <ul>
               <li>Structured prompts and check-ins</li>
               <li>Capture changing needs over time</li>
-              <li>Create engagement beyond the first visit</li>
+              <li>Create an early repeat-use habit after registration</li>
             </ul>
           </div>
           <div class="card">
             <h3>VeeVee Chat &amp; Guidance</h3>
-            <p>Help patients ask questions and move to the next step with less confusion.</p>
+            <p>Help patients ask questions and move to the next step with less confusion and less staff intervention.</p>
             <ul>
               <li>Clear next-step guidance</li>
               <li>Ongoing touchpoint between formal interactions</li>
-              <li>More confidence after onboarding</li>
+              <li>More confidence after onboarding and first use</li>
             </ul>
           </div>
           <div class="card">
             <h3>Reminders, Feed, and Support</h3>
-            <p>Turn registration into ongoing utility by surfacing reminders, content, and support that matter to the patient.</p>
+            <p>Turn registration into ongoing utility by surfacing reminders, tailored content, and support that matter to the patient in the first 30 days.</p>
             <ul>
               <li>Relevant follow-up nudges</li>
-              <li>Personalized feed and content</li>
-              <li>Benefits or care-navigation support as applicable</li>
+              <li>Personalized feed and educational content</li>
+              <li>Benefits or care-navigation support where appropriate</li>
             </ul>
           </div>
         </div>
@@ -513,8 +515,8 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Patient Name</th>
-                <th>Contact Detail</th>
+                <th>Patient Alias</th>
+                <th>Age Group</th>
                 <th>Owner</th>
                 <th>Contact Status</th>
                 <th>Registration Status</th>
@@ -524,31 +526,31 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td>Wolf, Jorge</td><td>DOB: 11/15/1967</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
-              <tr><td>2</td><td>Freile, Guillermo</td><td>DOB: 10/06/1957</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>3</td><td>Landivar, Vanessa</td><td>DOB: 09/20/1983</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr><td>4</td><td>Quiroga, Jacqueline</td><td>DOB: 11/29/1962</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr><td>5</td><td>Brown, William</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr><td>6</td><td>Rankin, Rebecca</td><td>DOB: 01/25/1948</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>7</td><td>Natale, Augustine</td><td>DOB: 06/11/1954</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>8</td><td>Hodge, James</td><td>DOB: 12/09/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>9</td><td>Zwade, Karli</td><td>DOB: 03/01/1993</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>10</td><td>Klein, William</td><td>DOB: 02/25/1954</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>11</td><td>Blum, Laurie</td><td>DOB: 07/27/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>12</td><td>Owens, Wendy</td><td>DOB: 12/08/1955</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>13</td><td>Cimino, Michael B</td><td>DOB: 02/05/1987</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>14</td><td>Cohen, Sue</td><td>DOB: 05/06/1948</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>15</td><td>Labaton, Sandy</td><td>DOB: 08/30/1956</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>16</td><td>Dorfman, Steven</td><td>DOB: 08/21/1957</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>17</td><td>Dorfman, Beth</td><td>DOB: 10/06/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>18</td><td>Labaton, Gail</td><td>DOB: 03/14/1951</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>19</td><td>Moore, Bill</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr><td>20</td><td>Moore, Julie</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr><td>21</td><td>Weisman, Jerry</td><td>DOB: 08/05/1962</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>22</td><td>Meier, Richard</td><td>DOB: 10/12/1934</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>23</td><td>Socarras, Guillermo</td><td>DOB: 07/04/1975</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>24</td><td>Chase, Berry</td><td>DOB: 12/12/1945</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>25</td><td>Shinners, Helen</td><td>DOB: 08/28/1952</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr><td>1</td><td>Jorge W.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
+              <tr><td>2</td><td>Guillermo F.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>3</td><td>Vanessa L.</td><td>33-45</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr><td>4</td><td>Jacqueline Q.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr><td>5</td><td>William B.</td><td>Unknown</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr><td>6</td><td>Rebecca R.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>7</td><td>Augustine N.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>8</td><td>James H.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>9</td><td>Karli Z.</td><td>33-45</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>10</td><td>William K.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>11</td><td>Laurie B.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>12</td><td>Wendy O.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>13</td><td>Michael C.</td><td>33-45</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>14</td><td>Sue C.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>15</td><td>Sandy L.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>16</td><td>Steven D.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>17</td><td>Beth D.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>18</td><td>Gail L.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>19</td><td>Bill M.</td><td>Unknown</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr><td>20</td><td>Julie M.</td><td>Unknown</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr><td>21</td><td>Jerry W.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>22</td><td>Richard M.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>23</td><td>Guillermo S.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>24</td><td>Berry C.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>25</td><td>Helen S.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
             </tbody>
           </table>
         </div>
@@ -637,7 +639,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     </section>
 
     <div class="footer">
-      VeeVee · Working brief for SWCA registration, activation, ROI, and milestone review
+      VeeVee Â· Working brief for SWCA registration, activation, ROI, and milestone review
     </div>
   </div>
 
@@ -783,3 +785,4 @@ export default function SwcaBrief() {
     </Box>
   );
 }
+
