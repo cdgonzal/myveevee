@@ -250,6 +250,49 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       color: rgba(255, 255, 255, 0.8);
     }
 
+    .progress-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .progress-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .progress-card .label {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #6ee7f2 0%, #53d769 100%);
+    }
+
+    .progress-meta {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
     .weekly-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -464,6 +507,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       .launch-command,
       .countdown-grid,
       .metric-strip,
+      .progress-strip,
       .weekly-grid,
       .cards,
       .bottom,
@@ -541,6 +585,29 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         </div>
       </div>
 
+      <div class="progress-strip">
+        <div class="progress-card">
+          <p class="label">Outreach Readiness</p>
+          <div class="progress-bar"><div class="progress-fill" style="width: 68%"></div></div>
+          <p class="progress-meta">Plan, ownership, and tracking mostly defined</p>
+        </div>
+        <div class="progress-card">
+          <p class="label">Patient Reach</p>
+          <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
+          <p class="progress-meta">4 of 20+ target contacts reached</p>
+        </div>
+        <div class="progress-card">
+          <p class="label">Registration Progress</p>
+          <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+          <p class="progress-meta">0 of 12-15 registration target</p>
+        </div>
+        <div class="progress-card">
+          <p class="label">Launch Readiness</p>
+          <div class="progress-bar"><div class="progress-fill" style="width: 35%"></div></div>
+          <p class="progress-meta">On track toward April 15 soft launch</p>
+        </div>
+      </div>
+
       <div class="weekly-grid">
         <div class="weekly-card">
           <h3>This Week</h3>
@@ -575,7 +642,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="overview" class="tab-panel active">
         <div class="section-title">Program Objective</div>
         <p class="section-copy">
-          The immediate objective is to help SWCA increase patient registration, clarify what utility patients will receive in this rollout, and create a simple operating model with clear metrics, ROI, and milestone accountability.
+          Increase registrations, get patients to first value quickly, and prove enough business impact to justify broader rollout.
         </p>
         <div class="table-wrap">
           <table>
