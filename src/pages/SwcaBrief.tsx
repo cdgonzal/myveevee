@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const ACCESS_PIN = "4821";
+const ACCESS_PIN = "5353";
 const ACCESS_KEY = "veevee-soft-gate:swca-4821";
 
 const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
