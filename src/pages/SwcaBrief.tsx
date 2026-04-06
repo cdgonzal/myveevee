@@ -95,11 +95,12 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     }
 
     .mini-panel {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 20px;
-      padding: 18px;
-      backdrop-filter: blur(8px);
+      padding: 16px 18px;
+      backdrop-filter: blur(6px);
+      align-self: start;
     }
 
     .mini-panel h3,
@@ -368,6 +369,136 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       padding-left: 18px;
     }
 
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .story-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.04);
+    }
+
+    .story-card h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue-800);
+    }
+
+    .story-card p,
+    .story-card li {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .story-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .funnel-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .funnel-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.04);
+    }
+
+    .funnel-stage {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue-800);
+    }
+
+    .funnel-value {
+      margin: 0 0 4px;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--blue-900);
+    }
+
+    .funnel-meta {
+      margin: 0 0 8px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .funnel-tip {
+      margin: 0;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .driver-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .driver-item {
+      display: grid;
+      grid-template-columns: 1.2fr 0.7fr 1.6fr;
+      gap: 12px;
+      align-items: start;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .driver-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .driver-name {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue-900);
+    }
+
+    .driver-status {
+      width: fit-content;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--blue-100);
+      color: var(--blue-800);
+    }
+
+    .driver-note {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
     .tabs {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -378,6 +509,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       border-radius: 20px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .tab-btn {
@@ -400,14 +532,16 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     }
 
     .tab-btn.active {
-      background: var(--white);
+      background: linear-gradient(135deg, #9ce7ff 0%, #ffffff 100%);
       color: var(--blue-900);
-      border-color: var(--white);
-      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.18);
+      border-color: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 22px rgba(6, 37, 76, 0.24);
     }
 
     .content {
       padding: 34px 44px 42px;
+      border-top: 1px solid #dce6f5;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     }
 
     .tab-panel { display: none; }
@@ -564,6 +698,8 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       .metric-strip,
       .progress-strip,
       .weekly-grid,
+      .story-grid,
+      .funnel-row,
       .tabs,
       .cards,
       .bottom,
@@ -624,97 +760,136 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="dashboard" class="tab-panel active">
         <div class="section-title">Launch Dashboard</div>
         <p class="section-copy">
-          A compact weekly view of countdowns, funnel metrics, readiness, and immediate priorities.
+          This dashboard should explain where the launch stands, where the funnel is stuck, what is driving movement, and what the team needs to do next.
         </p>
 
-        <div class="countdown-grid">
-          <div class="countdown-card" data-countdown="2026-04-08T09:00:00-04:00">
-            <p class="countdown-label">Planning Meeting</p>
-            <p class="countdown-value" data-countdown-value>--</p>
-            <p class="countdown-date">Wednesday, April 8 at 9:00 AM</p>
+        <div class="story-grid">
+          <div class="story-card">
+            <h3>Launch Status</h3>
+            <div class="countdown-grid">
+              <div class="countdown-card" data-countdown="2026-04-08T09:00:00-04:00">
+                <p class="countdown-label">Planning Meeting</p>
+                <p class="countdown-value" data-countdown-value>--</p>
+                <p class="countdown-date">Days until Michael and Charlie finalize outreach ownership, channels, and tracking.</p>
+              </div>
+              <div class="countdown-card" data-countdown="2026-04-15T18:00:00-04:00">
+                <p class="countdown-label">Soft Launch</p>
+                <p class="countdown-value" data-countdown-value>--</p>
+                <p class="countdown-date">Days until the first activation moment for early patients.</p>
+              </div>
+              <div class="countdown-card" data-countdown="2026-05-29T18:00:00-04:00">
+                <p class="countdown-label">Formal Launch</p>
+                <p class="countdown-value" data-countdown-value>--</p>
+                <p class="countdown-date">Days until broader launch based on what this pilot proves.</p>
+              </div>
+            </div>
           </div>
-          <div class="countdown-card" data-countdown="2026-04-15T18:00:00-04:00">
-            <p class="countdown-label">Soft Launch</p>
-            <p class="countdown-value" data-countdown-value>--</p>
-            <p class="countdown-date">Wednesday, April 15, 2026</p>
-          </div>
-          <div class="countdown-card" data-countdown="2026-05-29T18:00:00-04:00">
-            <p class="countdown-label">Formal Launch</p>
-            <p class="countdown-value" data-countdown-value>--</p>
-            <p class="countdown-date">Friday, May 29, 2026</p>
-          </div>
-        </div>
-
-        <div class="metric-strip">
-          <div class="metric-card">
-            <p class="label">Identified</p>
-            <p class="value">25</p>
-            <p class="help">Initial candidate pool</p>
-          </div>
-          <div class="metric-card">
-            <p class="label">Reached</p>
-            <p class="value">4</p>
-            <p class="help">Real contact so far</p>
-          </div>
-          <div class="metric-card">
-            <p class="label">Registered</p>
-            <p class="value">0</p>
-            <p class="help">Target: 12-15</p>
-          </div>
-          <div class="metric-card">
-            <p class="label">Activated</p>
-            <p class="value">0</p>
-            <p class="help">Target: 8-10</p>
-          </div>
-          <div class="metric-card">
-            <p class="label">7-Day Engaged</p>
-            <p class="value">0</p>
-            <p class="help">Target: 6+</p>
+          <div class="story-card">
+            <h3>What The Dashboard Is Saying</h3>
+            <ul>
+              <li>The timeline is defined, but the funnel is still stalled before registration.</li>
+              <li>The immediate challenge is not product engagement yet. It is getting from outreach readiness to real patient responses.</li>
+              <li>The next proof point is simple: convert first contacts into first registrations before the April 15 launch event.</li>
+            </ul>
           </div>
         </div>
 
-        <div class="progress-strip">
-          <div class="progress-card">
-            <p class="label">Outreach Readiness</p>
-            <div class="progress-bar"><div class="progress-fill" style="width: 68%"></div></div>
-            <p class="progress-meta">Plan, ownership, and tracking mostly defined</p>
+        <div class="section-title">Funnel Story</div>
+        <p class="section-copy">
+          These are not just counts. They show where patients are stopping and what has to move next.
+        </p>
+
+        <div class="funnel-row">
+          <div class="funnel-card">
+            <p class="funnel-stage">Identified</p>
+            <p class="funnel-value">25</p>
+            <p class="funnel-meta">Initial candidate pool selected for outreach.</p>
+            <p class="funnel-tip">This number defines the size of the first opportunity.</p>
           </div>
-          <div class="progress-card">
-            <p class="label">Patient Reach</p>
-            <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
-            <p class="progress-meta">4 of 20+ target contacts reached</p>
+          <div class="funnel-card">
+            <p class="funnel-stage">Reached</p>
+            <p class="funnel-value">4</p>
+            <p class="funnel-meta">4 of 20+ target contacts reached so far.</p>
+            <p class="funnel-tip">This tells us whether outreach is landing with real people.</p>
           </div>
-          <div class="progress-card">
-            <p class="label">Registration Progress</p>
-            <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
-            <p class="progress-meta">0 of 12-15 registration target</p>
+          <div class="funnel-card">
+            <p class="funnel-stage">Registered</p>
+            <p class="funnel-value">0</p>
+            <p class="funnel-meta">Target is 12-15 registrations.</p>
+            <p class="funnel-tip">This is the first hard proof that outreach is converting into accounts.</p>
           </div>
-          <div class="progress-card">
-            <p class="label">Launch Readiness</p>
-            <div class="progress-bar"><div class="progress-fill" style="width: 35%"></div></div>
-            <p class="progress-meta">On track toward April 15 soft launch</p>
+          <div class="funnel-card">
+            <p class="funnel-stage">Activated</p>
+            <p class="funnel-value">0</p>
+            <p class="funnel-meta">Target is 8-10 first meaningful uses.</p>
+            <p class="funnel-tip">This shows whether patients actually get to first value after signup.</p>
+          </div>
+          <div class="funnel-card">
+            <p class="funnel-stage">7-Day Engaged</p>
+            <p class="funnel-value">0</p>
+            <p class="funnel-meta">Target is 6+ repeat users after activation.</p>
+            <p class="funnel-tip">This tells us whether the rollout is creating habit, not just curiosity.</p>
           </div>
         </div>
+
+        <div class="section-title">What Is Driving Movement</div>
+        <p class="section-copy">
+          These are the few operating factors most likely to move the funnel forward or keep it stuck.
+        </p>
+
+        <div class="story-card">
+          <div class="driver-list">
+            <div class="driver-item">
+              <p class="driver-name">Contact readiness</p>
+              <div class="driver-status">Watch</div>
+              <p class="driver-note">Some patient records still need validated contact details before outreach can scale cleanly.</p>
+            </div>
+            <div class="driver-item">
+              <p class="driver-name">Outreach ownership</p>
+              <div class="driver-status">Good</div>
+              <p class="driver-note">The April 8 planning meeting should lock in channels, owner sequence, and accountability.</p>
+            </div>
+            <div class="driver-item">
+              <p class="driver-name">Registration conversion</p>
+              <div class="driver-status">Blocked</div>
+              <p class="driver-note">No registrations yet, so the main issue is still before activation and engagement.</p>
+            </div>
+            <div class="driver-item">
+              <p class="driver-name">Staff efficiency</p>
+              <div class="driver-status">Watch</div>
+              <p class="driver-note">Track touches per successful registration so the pilot can support a broader rollout later.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">This Week</div>
+        <p class="section-copy">
+          The weekly action board should make the next move obvious without reading the whole brief.
+        </p>
 
         <div class="weekly-grid">
           <div class="weekly-card">
-            <h3>This Week</h3>
+            <h3>What Happened</h3>
             <ul>
-              <li>Finalize the April 8 planning meeting agenda</li>
-              <li>Confirm ownership and contact sequencing</li>
-              <li>Start outreach against the first wave</li>
+              <li>Initial cohort is identified</li>
+              <li>Some patients have been reached</li>
+              <li>No registrations have happened yet</li>
             </ul>
           </div>
           <div class="weekly-card">
-            <h3>Next Milestone</h3>
-            <p>Use the April 15 soft launch as both a kickoff moment and an activation event for the first patient cohort.</p>
+            <h3>What Happens Next</h3>
+            <ul>
+              <li>Finalize the April 8 planning meeting agenda</li>
+              <li>Confirm contact sequencing and message ownership</li>
+              <li>Execute the first organized outreach wave</li>
+            </ul>
           </div>
           <div class="weekly-card">
-            <h3>Blockers</h3>
+            <h3>Decision Needed</h3>
             <ul>
-              <li>Response count is still at zero</li>
-              <li>Contact readiness needs validation for some patients</li>
-              <li>Tracking discipline has to stay weekly</li>
+              <li>Which outreach framing should be standard for wave one</li>
+              <li>What counts as first meaningful activation for this pilot</li>
+              <li>Which dashboard metrics should become source-of-truth later</li>
             </ul>
           </div>
         </div>
