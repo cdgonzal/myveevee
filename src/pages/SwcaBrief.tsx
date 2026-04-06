@@ -183,9 +183,9 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     .countdown-card {
       padding: 16px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.05);
     }
 
     .countdown-label {
@@ -194,7 +194,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--cyan);
+      color: var(--blue-800);
     }
 
     .countdown-value {
@@ -202,14 +202,14 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       font-size: 34px;
       line-height: 1;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--blue-900);
     }
 
     .countdown-date {
       margin: 0;
       font-size: 13px;
       line-height: 1.5;
-      color: rgba(255, 255, 255, 0.82);
+      color: var(--muted);
     }
 
     .metric-strip {
@@ -222,8 +222,9 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     .metric-card {
       padding: 16px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.04);
     }
 
     .metric-card .label {
@@ -232,7 +233,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.74);
+      color: var(--blue-800);
     }
 
     .metric-card .value {
@@ -240,14 +241,14 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       font-size: 28px;
       line-height: 1;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--blue-900);
     }
 
     .metric-card .help {
       margin: 0;
       font-size: 12px;
       line-height: 1.5;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--muted);
     }
 
     .hero-metrics {
@@ -298,8 +299,9 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     .progress-card {
       padding: 14px 16px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.04);
     }
 
     .progress-card .label {
@@ -308,7 +310,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.76);
+      color: var(--blue-800);
     }
 
     .progress-bar {
@@ -316,7 +318,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       height: 8px;
       border-radius: 999px;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.12);
+      background: #d9e6f5;
     }
 
     .progress-fill {
@@ -328,7 +330,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     .progress-meta {
       margin: 8px 0 0;
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.82);
+      color: var(--muted);
     }
 
     .weekly-grid {
@@ -340,8 +342,9 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     .weekly-card {
       padding: 16px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.04);
     }
 
     .weekly-card h3 {
@@ -350,14 +353,14 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--cyan);
+      color: var(--blue-800);
     }
 
     .weekly-card p,
     .weekly-card li {
       font-size: 13px;
       line-height: 1.55;
-      color: rgba(255, 255, 255, 0.86);
+      color: var(--muted);
     }
 
     .weekly-card ul {
@@ -366,28 +369,41 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     }
 
     .tabs {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       margin-top: 22px;
-      flex-wrap: wrap;
+      width: 100%;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
     }
 
     .tab-btn {
       appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.9);
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.92);
       border-radius: 999px;
-      padding: 11px 16px;
-      font-size: 14px;
+      padding: 13px 16px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.24);
     }
 
     .tab-btn.active {
       background: var(--white);
       color: var(--blue-900);
       border-color: var(--white);
+      box-shadow: 0 8px 20px rgba(6, 37, 76, 0.18);
     }
 
     .content {
@@ -548,6 +564,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       .metric-strip,
       .progress-strip,
       .weekly-grid,
+      .tabs,
       .cards,
       .bottom,
       .flow {
