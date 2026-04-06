@@ -250,6 +250,44 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       color: rgba(255, 255, 255, 0.8);
     }
 
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .hero-metric {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .hero-metric .label {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.74);
+    }
+
+    .hero-metric .value {
+      margin: 0 0 4px;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .hero-metric .help {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
     .progress-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -506,6 +544,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       .hero-grid,
       .launch-command,
       .countdown-grid,
+      .hero-metrics,
       .metric-strip,
       .progress-strip,
       .weekly-grid,
@@ -530,7 +569,24 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           <div class="phase-pill"><span class="phase-dot"></span> Current Phase: Planning and Outreach Readiness</div>
           <div>
             <h1>SWCA Launch Tracker</h1>
-            <p class="hero-note">Registration, activation, and launch readiness through the April 15 soft launch and the May 29 formal launch.</p>
+            <p class="hero-note">Pilot status for registration, activation, and launch readiness.</p>
+          </div>
+          <div class="hero-metrics">
+            <div class="hero-metric">
+              <p class="label">Soft Launch</p>
+              <p class="value" data-countdown-value-hero="soft">--</p>
+              <p class="help">Days until April 15</p>
+            </div>
+            <div class="hero-metric">
+              <p class="label">Reached</p>
+              <p class="value">4</p>
+              <p class="help">Patients contacted so far</p>
+            </div>
+            <div class="hero-metric">
+              <p class="label">Registered</p>
+              <p class="value">0</p>
+              <p class="help">Target: 12-15</p>
+            </div>
           </div>
         </div>
         <div class="mini-panel">
@@ -539,107 +595,115 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         </div>
       </div>
 
-      <div class="countdown-grid">
-        <div class="countdown-card" data-countdown="2026-04-08T09:00:00-04:00">
-          <p class="countdown-label">Planning Meeting</p>
-          <p class="countdown-value" data-countdown-value>--</p>
-          <p class="countdown-date">Wednesday, April 8 at 9:00 AM</p>
-        </div>
-        <div class="countdown-card" data-countdown="2026-04-15T18:00:00-04:00">
-          <p class="countdown-label">Soft Launch</p>
-          <p class="countdown-value" data-countdown-value>--</p>
-          <p class="countdown-date">Wednesday, April 15, 2026</p>
-        </div>
-        <div class="countdown-card" data-countdown="2026-05-29T18:00:00-04:00">
-          <p class="countdown-label">Formal Launch</p>
-          <p class="countdown-value" data-countdown-value>--</p>
-          <p class="countdown-date">Friday, May 29, 2026</p>
-        </div>
-      </div>
-
-      <div class="metric-strip">
-        <div class="metric-card">
-          <p class="label">Identified</p>
-          <p class="value">25</p>
-          <p class="help">Initial candidate pool</p>
-        </div>
-        <div class="metric-card">
-          <p class="label">Reached</p>
-          <p class="value">4</p>
-          <p class="help">Real contact so far</p>
-        </div>
-        <div class="metric-card">
-          <p class="label">Registered</p>
-          <p class="value">0</p>
-          <p class="help">Target: 12-15</p>
-        </div>
-        <div class="metric-card">
-          <p class="label">Activated</p>
-          <p class="value">0</p>
-          <p class="help">Target: 8-10</p>
-        </div>
-        <div class="metric-card">
-          <p class="label">7-Day Engaged</p>
-          <p class="value">0</p>
-          <p class="help">Target: 6+</p>
-        </div>
-      </div>
-
-      <div class="progress-strip">
-        <div class="progress-card">
-          <p class="label">Outreach Readiness</p>
-          <div class="progress-bar"><div class="progress-fill" style="width: 68%"></div></div>
-          <p class="progress-meta">Plan, ownership, and tracking mostly defined</p>
-        </div>
-        <div class="progress-card">
-          <p class="label">Patient Reach</p>
-          <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
-          <p class="progress-meta">4 of 20+ target contacts reached</p>
-        </div>
-        <div class="progress-card">
-          <p class="label">Registration Progress</p>
-          <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
-          <p class="progress-meta">0 of 12-15 registration target</p>
-        </div>
-        <div class="progress-card">
-          <p class="label">Launch Readiness</p>
-          <div class="progress-bar"><div class="progress-fill" style="width: 35%"></div></div>
-          <p class="progress-meta">On track toward April 15 soft launch</p>
-        </div>
-      </div>
-
-      <div class="weekly-grid">
-        <div class="weekly-card">
-          <h3>This Week</h3>
-          <ul>
-            <li>Finalize the April 8 planning meeting agenda</li>
-            <li>Confirm ownership and contact sequencing</li>
-            <li>Start outreach against the first wave</li>
-          </ul>
-        </div>
-        <div class="weekly-card">
-          <h3>Next Milestone</h3>
-          <p>Use the April 15 soft launch as both a kickoff moment and an activation event for the first patient cohort.</p>
-        </div>
-        <div class="weekly-card">
-          <h3>Blockers</h3>
-          <ul>
-            <li>Response count is still at zero</li>
-            <li>Contact readiness needs validation for some patients</li>
-            <li>Tracking discipline has to stay weekly</li>
-          </ul>
-        </div>
-      </div>
-
       <div class="tabs">
-        <button class="tab-btn active" data-tab="overview">Executive Brief</button>
+        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="overview">Executive Brief</button>
         <button class="tab-btn" data-tab="patients">Rollout Tracker</button>
         <button class="tab-btn" data-tab="learnings">Learnings &amp; Decisions</button>
       </div>
     </section>
 
     <section class="content">
-      <div id="overview" class="tab-panel active">
+      <div id="dashboard" class="tab-panel active">
+        <div class="section-title">Launch Dashboard</div>
+        <p class="section-copy">
+          A compact weekly view of countdowns, funnel metrics, readiness, and immediate priorities.
+        </p>
+
+        <div class="countdown-grid">
+          <div class="countdown-card" data-countdown="2026-04-08T09:00:00-04:00">
+            <p class="countdown-label">Planning Meeting</p>
+            <p class="countdown-value" data-countdown-value>--</p>
+            <p class="countdown-date">Wednesday, April 8 at 9:00 AM</p>
+          </div>
+          <div class="countdown-card" data-countdown="2026-04-15T18:00:00-04:00">
+            <p class="countdown-label">Soft Launch</p>
+            <p class="countdown-value" data-countdown-value>--</p>
+            <p class="countdown-date">Wednesday, April 15, 2026</p>
+          </div>
+          <div class="countdown-card" data-countdown="2026-05-29T18:00:00-04:00">
+            <p class="countdown-label">Formal Launch</p>
+            <p class="countdown-value" data-countdown-value>--</p>
+            <p class="countdown-date">Friday, May 29, 2026</p>
+          </div>
+        </div>
+
+        <div class="metric-strip">
+          <div class="metric-card">
+            <p class="label">Identified</p>
+            <p class="value">25</p>
+            <p class="help">Initial candidate pool</p>
+          </div>
+          <div class="metric-card">
+            <p class="label">Reached</p>
+            <p class="value">4</p>
+            <p class="help">Real contact so far</p>
+          </div>
+          <div class="metric-card">
+            <p class="label">Registered</p>
+            <p class="value">0</p>
+            <p class="help">Target: 12-15</p>
+          </div>
+          <div class="metric-card">
+            <p class="label">Activated</p>
+            <p class="value">0</p>
+            <p class="help">Target: 8-10</p>
+          </div>
+          <div class="metric-card">
+            <p class="label">7-Day Engaged</p>
+            <p class="value">0</p>
+            <p class="help">Target: 6+</p>
+          </div>
+        </div>
+
+        <div class="progress-strip">
+          <div class="progress-card">
+            <p class="label">Outreach Readiness</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 68%"></div></div>
+            <p class="progress-meta">Plan, ownership, and tracking mostly defined</p>
+          </div>
+          <div class="progress-card">
+            <p class="label">Patient Reach</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
+            <p class="progress-meta">4 of 20+ target contacts reached</p>
+          </div>
+          <div class="progress-card">
+            <p class="label">Registration Progress</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+            <p class="progress-meta">0 of 12-15 registration target</p>
+          </div>
+          <div class="progress-card">
+            <p class="label">Launch Readiness</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 35%"></div></div>
+            <p class="progress-meta">On track toward April 15 soft launch</p>
+          </div>
+        </div>
+
+        <div class="weekly-grid">
+          <div class="weekly-card">
+            <h3>This Week</h3>
+            <ul>
+              <li>Finalize the April 8 planning meeting agenda</li>
+              <li>Confirm ownership and contact sequencing</li>
+              <li>Start outreach against the first wave</li>
+            </ul>
+          </div>
+          <div class="weekly-card">
+            <h3>Next Milestone</h3>
+            <p>Use the April 15 soft launch as both a kickoff moment and an activation event for the first patient cohort.</p>
+          </div>
+          <div class="weekly-card">
+            <h3>Blockers</h3>
+            <ul>
+              <li>Response count is still at zero</li>
+              <li>Contact readiness needs validation for some patients</li>
+              <li>Tracking discipline has to stay weekly</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="overview" class="tab-panel">
         <div class="section-title">Program Objective</div>
         <p class="section-copy">
           Increase registrations, get patients to first value quickly, and prove enough business impact to justify broader rollout.
@@ -952,6 +1016,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
     function updateCountdowns() {
       const now = new Date();
+      const heroSoftLaunch = document.querySelector("[data-countdown-value-hero='soft']");
 
       countdownCards.forEach((card) => {
         const target = new Date(card.getAttribute("data-countdown"));
@@ -964,6 +1029,13 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         const diff = target.getTime() - now.getTime();
         const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
         valueNode.textContent = diff <= 0 ? "Live" : String(days);
+
+        if (
+          heroSoftLaunch &&
+          card.getAttribute("data-countdown") === "2026-04-15T18:00:00-04:00"
+        ) {
+          heroSoftLaunch.textContent = diff <= 0 ? "Live" : String(days);
+        }
       });
     }
 
