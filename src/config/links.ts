@@ -6,6 +6,7 @@ export const APP_LINKS = {
     simulator: "/simulator",
     testimonials: "/testimonials",
     terms: "/terms",
+    swcaBrief: "/briefs/swca-4821.html",
   },
   cta: {
     getStarted: "/",

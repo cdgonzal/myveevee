@@ -30,6 +30,7 @@ const Technology = lazy(() => import("./pages/Technology"));
 const Simulator = lazy(() => import("./pages/Simulator"));
 const Testimonials = lazy(() => import("./pages/Testimonials"));
 const Terms = lazy(() => import("./pages/Terms"));
+const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -50,6 +51,8 @@ function PageFallback() {
 }
 
 export default function App() {
+  const { pathname } = useLocation();
+  const isStandalonePage = pathname === APP_LINKS.internal.swcaBrief;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -57,23 +60,35 @@ export default function App() {
 
   return (
     <Flex minH="100vh" direction="column" bgGradient={pageGradient}>
-      <Header />
+      {!isStandalonePage && <Header />}
       <Box as="main" flex="1">
-        <Container maxW="6xl" py={{ base: 8, md: 12 }}>
-          <ScrollToTop />
-          <Suspense fallback={<PageFallback />}>
-            <Routes>
-              <Route path={APP_LINKS.internal.home} element={<Home />} />
-              <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
-              <Route path={APP_LINKS.internal.technology} element={<Technology />} />
-              <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
-              <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
-              <Route path={APP_LINKS.internal.terms} element={<Terms />} />
-            </Routes>
-          </Suspense>
-        </Container>
+        {isStandalonePage ? (
+          <>
+            <ScrollToTop />
+            <Suspense fallback={<PageFallback />}>
+              <Routes>
+                <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
+              </Routes>
+            </Suspense>
+          </>
+        ) : (
+          <Container maxW="6xl" py={{ base: 8, md: 12 }}>
+            <ScrollToTop />
+            <Suspense fallback={<PageFallback />}>
+              <Routes>
+                <Route path={APP_LINKS.internal.home} element={<Home />} />
+                <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
+                <Route path={APP_LINKS.internal.technology} element={<Technology />} />
+                <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
+                <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
+                <Route path={APP_LINKS.internal.terms} element={<Terms />} />
+                <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
+              </Routes>
+            </Suspense>
+          </Container>
+        )}
       </Box>
-      <Footer />
+      {!isStandalonePage && <Footer />}
     </Flex>
   );
 }
