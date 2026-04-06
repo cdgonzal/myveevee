@@ -503,13 +503,22 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-top: 22px;
+      margin-top: 8px;
       width: 100%;
       padding: 10px;
       border-radius: 20px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.14);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .tabs-label {
+      margin: 22px 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.74);
     }
 
     .tab-btn {
@@ -748,6 +757,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         </div>
       </div>
 
+      <div class="tabs-label">Menu</div>
       <div class="tabs">
         <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="overview">Executive Brief</button>
