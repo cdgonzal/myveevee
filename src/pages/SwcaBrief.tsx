@@ -129,6 +129,161 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       color: rgba(255, 255, 255, 0.88);
     }
 
+    .launch-command {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+
+    .hero-summary {
+      display: grid;
+      gap: 12px;
+    }
+
+    .phase-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .phase-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 12px rgba(83, 215, 105, 0.8);
+    }
+
+    .hero-note {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.86);
+      max-width: 680px;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .countdown-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(8px);
+    }
+
+    .countdown-label {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .countdown-value {
+      margin: 0 0 6px;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .countdown-date {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .metric-card .label {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.74);
+    }
+
+    .metric-card .value {
+      margin: 0 0 4px;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .metric-card .help {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .weekly-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .weekly-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .weekly-card h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .weekly-card p,
+    .weekly-card li {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .weekly-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
     .tabs {
       display: flex;
       gap: 10px;
@@ -306,6 +461,10 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
     @media (max-width: 980px) {
       .hero-grid,
+      .launch-command,
+      .countdown-grid,
+      .metric-strip,
+      .weekly-grid,
       .cards,
       .bottom,
       .flow {
@@ -322,18 +481,86 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
   <div class="page">
     <section class="hero">
       <div class="eyebrow">For Michael Segura · Head of Operations · SWCA</div>
-      <div class="hero-grid">
-        <div>
-          <h1>SWCA pilot brief: drive registration, prove patient utility, and show measurable business value.</h1>
-          <p class="subtitle">
-            This page is now the working brief for the SWCA rollout. It should help Michael and the VeeVee team track registration progress, patient value delivered, ROI signals, and milestone decisions until those metrics are stable enough to live inside the platform dashboards.
-          </p>
+      <div class="launch-command">
+        <div class="hero-summary">
+          <div class="phase-pill"><span class="phase-dot"></span> Current Phase: Planning and Outreach Readiness</div>
+          <div>
+            <h1>SWCA Launch Tracker</h1>
+            <p class="hero-note">Registration, activation, and launch readiness through the April 15 soft launch and the May 29 formal launch.</p>
+          </div>
         </div>
         <div class="mini-panel">
           <h3>Current Focus</h3>
-          <p>
-            Convert identified patients into registered users, get them to first meaningful use quickly, and document what workflow and product utilities actually move conversion and engagement.
-          </p>
+          <p>Finalize the outreach plan, start converting the first patient wave into registrations, and use the April 15 launch event to create early activation momentum.</p>
+        </div>
+      </div>
+
+      <div class="countdown-grid">
+        <div class="countdown-card" data-countdown="2026-04-08T09:00:00-04:00">
+          <p class="countdown-label">Planning Meeting</p>
+          <p class="countdown-value" data-countdown-value>--</p>
+          <p class="countdown-date">Wednesday, April 8 at 9:00 AM</p>
+        </div>
+        <div class="countdown-card" data-countdown="2026-04-15T18:00:00-04:00">
+          <p class="countdown-label">Soft Launch</p>
+          <p class="countdown-value" data-countdown-value>--</p>
+          <p class="countdown-date">Wednesday, April 15, 2026</p>
+        </div>
+        <div class="countdown-card" data-countdown="2026-05-29T18:00:00-04:00">
+          <p class="countdown-label">Formal Launch</p>
+          <p class="countdown-value" data-countdown-value>--</p>
+          <p class="countdown-date">Friday, May 29, 2026</p>
+        </div>
+      </div>
+
+      <div class="metric-strip">
+        <div class="metric-card">
+          <p class="label">Identified</p>
+          <p class="value">25</p>
+          <p class="help">Initial candidate pool</p>
+        </div>
+        <div class="metric-card">
+          <p class="label">Reached</p>
+          <p class="value">4</p>
+          <p class="help">Real contact so far</p>
+        </div>
+        <div class="metric-card">
+          <p class="label">Registered</p>
+          <p class="value">0</p>
+          <p class="help">Target: 12-15</p>
+        </div>
+        <div class="metric-card">
+          <p class="label">Activated</p>
+          <p class="value">0</p>
+          <p class="help">Target: 8-10</p>
+        </div>
+        <div class="metric-card">
+          <p class="label">7-Day Engaged</p>
+          <p class="value">0</p>
+          <p class="help">Target: 6+</p>
+        </div>
+      </div>
+
+      <div class="weekly-grid">
+        <div class="weekly-card">
+          <h3>This Week</h3>
+          <ul>
+            <li>Finalize the April 8 planning meeting agenda</li>
+            <li>Confirm ownership and contact sequencing</li>
+            <li>Start outreach against the first wave</li>
+          </ul>
+        </div>
+        <div class="weekly-card">
+          <h3>Next Milestone</h3>
+          <p>Use the April 15 soft launch as both a kickoff moment and an activation event for the first patient cohort.</p>
+        </div>
+        <div class="weekly-card">
+          <h3>Blockers</h3>
+          <ul>
+            <li>Response count is still at zero</li>
+            <li>Contact readiness needs validation for some patients</li>
+            <li>Tracking discipline has to stay weekly</li>
+          </ul>
         </div>
       </div>
 
@@ -646,6 +873,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
   <script>
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabPanels = document.querySelectorAll(".tab-panel");
+    const countdownCards = document.querySelectorAll("[data-countdown]");
 
     function sendHeight() {
       const height = Math.max(
@@ -653,6 +881,23 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         document.documentElement.scrollHeight
       );
       window.parent.postMessage({ type: "swca-brief-height", height }, "*");
+    }
+
+    function updateCountdowns() {
+      const now = new Date();
+
+      countdownCards.forEach((card) => {
+        const target = new Date(card.getAttribute("data-countdown"));
+        const valueNode = card.querySelector("[data-countdown-value]");
+
+        if (!valueNode || Number.isNaN(target.getTime())) {
+          return;
+        }
+
+        const diff = target.getTime() - now.getTime();
+        const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+        valueNode.textContent = diff <= 0 ? "Live" : String(days);
+      });
     }
 
     tabButtons.forEach((button) => {
@@ -666,6 +911,8 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       });
     });
 
+    updateCountdowns();
+    setInterval(updateCountdowns, 60000);
     window.addEventListener("load", sendHeight);
     window.addEventListener("resize", sendHeight);
     setTimeout(sendHeight, 50);
