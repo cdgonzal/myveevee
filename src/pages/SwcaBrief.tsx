@@ -760,7 +760,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="dashboard" class="tab-panel active">
         <div class="section-title">Launch Dashboard</div>
         <p class="section-copy">
-          This dashboard should explain where the launch stands, where the funnel is stuck, what is driving movement, and what the team needs to do next.
+          Where we are, what is stuck, and what happens next.
         </p>
 
         <div class="story-grid">
@@ -787,54 +787,54 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           <div class="story-card">
             <h3>What The Dashboard Is Saying</h3>
             <ul>
-              <li>The timeline is defined, but the funnel is still stalled before registration.</li>
-              <li>The immediate challenge is not product engagement yet. It is getting from outreach readiness to real patient responses.</li>
-              <li>The next proof point is simple: convert first contacts into first registrations before the April 15 launch event.</li>
+              <li>Dates are set.</li>
+              <li>The funnel is stuck before registration.</li>
+              <li>Next goal: turn first contacts into first registrations before April 15.</li>
             </ul>
           </div>
         </div>
 
         <div class="section-title">Funnel Story</div>
         <p class="section-copy">
-          These are not just counts. They show where patients are stopping and what has to move next.
+          This shows where patients are stopping.
         </p>
 
         <div class="funnel-row">
           <div class="funnel-card">
             <p class="funnel-stage">Identified</p>
             <p class="funnel-value">25</p>
-            <p class="funnel-meta">Initial candidate pool selected for outreach.</p>
-            <p class="funnel-tip">This number defines the size of the first opportunity.</p>
+            <p class="funnel-meta">Starting pool.</p>
+            <p class="funnel-tip">This is the total first-wave opportunity.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">Reached</p>
             <p class="funnel-value">4</p>
-            <p class="funnel-meta">4 of 20+ target contacts reached so far.</p>
-            <p class="funnel-tip">This tells us whether outreach is landing with real people.</p>
+            <p class="funnel-meta">4 of 20+ target reached.</p>
+            <p class="funnel-tip">This shows whether outreach is landing.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">Registered</p>
             <p class="funnel-value">0</p>
-            <p class="funnel-meta">Target is 12-15 registrations.</p>
-            <p class="funnel-tip">This is the first hard proof that outreach is converting into accounts.</p>
+            <p class="funnel-meta">Target: 12-15.</p>
+            <p class="funnel-tip">This is the first real conversion point.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">Activated</p>
             <p class="funnel-value">0</p>
-            <p class="funnel-meta">Target is 8-10 first meaningful uses.</p>
-            <p class="funnel-tip">This shows whether patients actually get to first value after signup.</p>
+            <p class="funnel-meta">Target: 8-10.</p>
+            <p class="funnel-tip">This shows first real product value.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">7-Day Engaged</p>
             <p class="funnel-value">0</p>
-            <p class="funnel-meta">Target is 6+ repeat users after activation.</p>
-            <p class="funnel-tip">This tells us whether the rollout is creating habit, not just curiosity.</p>
+            <p class="funnel-meta">Target: 6+.</p>
+            <p class="funnel-tip">This shows repeat use, not just signup.</p>
           </div>
         </div>
 
         <div class="section-title">What Is Driving Movement</div>
         <p class="section-copy">
-          These are the few operating factors most likely to move the funnel forward or keep it stuck.
+          These are the key drivers right now.
         </p>
 
         <div class="story-card">
@@ -842,29 +842,29 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             <div class="driver-item">
               <p class="driver-name">Contact readiness</p>
               <div class="driver-status">Watch</div>
-              <p class="driver-note">Some patient records still need validated contact details before outreach can scale cleanly.</p>
+              <p class="driver-note">Some contact details still need validation.</p>
             </div>
             <div class="driver-item">
               <p class="driver-name">Outreach ownership</p>
               <div class="driver-status">Good</div>
-              <p class="driver-note">The April 8 planning meeting should lock in channels, owner sequence, and accountability.</p>
+              <p class="driver-note">April 8 should lock owners, channels, and sequence.</p>
             </div>
             <div class="driver-item">
               <p class="driver-name">Registration conversion</p>
               <div class="driver-status">Blocked</div>
-              <p class="driver-note">No registrations yet, so the main issue is still before activation and engagement.</p>
+              <p class="driver-note">No registrations yet. This is the main blocker.</p>
             </div>
             <div class="driver-item">
               <p class="driver-name">Staff efficiency</p>
               <div class="driver-status">Watch</div>
-              <p class="driver-note">Track touches per successful registration so the pilot can support a broader rollout later.</p>
+              <p class="driver-note">Track touches per registration now so scaling is easier later.</p>
             </div>
           </div>
         </div>
 
         <div class="section-title">This Week</div>
         <p class="section-copy">
-          The weekly action board should make the next move obvious without reading the whole brief.
+          This should make the next move obvious.
         </p>
 
         <div class="weekly-grid">
@@ -898,7 +898,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="overview" class="tab-panel">
         <div class="section-title">Program Objective</div>
         <p class="section-copy">
-          Increase registrations, get patients to first value quickly, and prove enough business impact to justify broader rollout.
+          Get registrations moving, get patients to first value fast, and show enough proof to expand.
         </p>
         <div class="table-wrap">
           <table>
@@ -923,13 +923,13 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
         <div class="section-title">30 / 60 / 90 Day Milestones</div>
         <p class="section-copy">
-          The brief should align the team on what success looks like at each stage, what Michael is helping shape, and what business signals are expected before the work moves into the platform dashboards.
+          What success should look like at each stage.
         </p>
 
         <div class="cards">
           <div class="card">
             <h3>Day 30</h3>
-            <p>Build and stabilize the registration push.</p>
+            <p>Get the registration push working.</p>
             <ul>
               <li>Finalize outreach workflow, scripts, and owners</li>
               <li>Reach the majority of the identified cohort</li>
@@ -939,7 +939,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="card">
             <h3>Day 60</h3>
-            <p>Prove early patient utility and engagement.</p>
+            <p>Show early patient use and engagement.</p>
             <ul>
               <li>Track 7-day and 30-day engagement for registered patients</li>
               <li>Measure time to first meaningful action</li>
@@ -949,7 +949,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="card">
             <h3>Day 90</h3>
-            <p>Review ROI and decide how the pilot should expand.</p>
+            <p>Review ROI and decide whether to expand.</p>
             <ul>
               <li>Compare targets against actual conversion and activation</li>
               <li>Estimate cost per enrolled patient and staff time saved</li>
@@ -959,7 +959,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="card closing">
             <h3>Decision Rule</h3>
-            <p>Keep this brief as the working document while the pilot is still changing weekly and while key metrics are still partly manual.</p>
+            <p>Use this brief while the pilot is still changing and metrics are still partly manual.</p>
             <ul>
               <li>Stay here during alignment and experimentation</li>
               <li>Move to dashboards when KPI reporting is system-generated</li>
@@ -970,13 +970,13 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
         <div class="section-title">What Patients Get In This Rollout</div>
         <p class="section-copy">
-          This section should stay concrete. The value proposition for Michael is not generic platform capability. It is the set of patient-facing utilities that help drive registration, activation, and repeat engagement in this pilot.
+          Patient-facing value in this phase.
         </p>
 
         <div class="cards">
           <div class="card">
             <h3>Simple Registration &amp; Onboarding</h3>
-            <p>Make account creation and first entry into the platform easy enough to complete without friction or extra staff hand-holding.</p>
+            <p>Make signup and first use easy.</p>
             <ul>
               <li>Guided invite-to-registration flow</li>
               <li>Simple explanation of why the patient was invited</li>
@@ -985,7 +985,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="card">
             <h3>Personalized Check-Ins</h3>
-            <p>Give patients a reason to come back by making follow-up feel relevant, lightweight, and easy to complete.</p>
+            <p>Make follow-up simple enough that patients return.</p>
             <ul>
               <li>Structured prompts and check-ins</li>
               <li>Capture changing needs over time</li>
@@ -994,7 +994,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="card">
             <h3>VeeVee Chat &amp; Guidance</h3>
-            <p>Help patients ask questions and move to the next step with less confusion and less staff intervention.</p>
+            <p>Help patients get answers and move forward with less confusion.</p>
             <ul>
               <li>Clear next-step guidance</li>
               <li>Ongoing touchpoint between formal interactions</li>
@@ -1003,7 +1003,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="card">
             <h3>Reminders, Feed, and Support</h3>
-            <p>Turn registration into ongoing utility by surfacing reminders, tailored content, and support that matter to the patient in the first 30 days.</p>
+            <p>Keep the first 30 days useful after signup.</p>
             <ul>
               <li>Relevant follow-up nudges</li>
               <li>Personalized feed and educational content</li>
@@ -1014,7 +1014,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
         <div class="section-title">Business Value and ROI Scoreboard</div>
         <p class="section-copy">
-          These measures should become the bridge between the operating brief and the eventual admin dashboards. Early on, they may be partly manual. Over time, most of them should become system-derived.
+          The few metrics that matter for ROI.
         </p>
 
         <div class="table-wrap">
@@ -1043,7 +1043,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="patients" class="tab-panel">
         <div class="section-title">Rollout Tracker</div>
         <p class="section-copy">
-          This tab should function as the short-term operating tracker for the initial 25 patients. It should help the team manage the funnel from identified patient to registration, activation, and early engagement.
+          Working tracker for the first 25 patients.
         </p>
         <div class="bottom">
           <div class="panel">
@@ -1146,7 +1146,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="learnings" class="tab-panel">
         <div class="section-title">Learnings and Decisions</div>
         <p class="section-copy">
-          This tab should become the running memory for the pilot. Use it to record what patients respond to, what creates friction, what Michael and SWCA need next, and what decisions should migrate into product and dashboard work.
+          Running notes on what is working, what is blocked, and what needs a decision.
         </p>
 
         <div class="bottom">
@@ -1162,7 +1162,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
           <div class="panel closing">
             <h3>When To Move Into Dashboards</h3>
-            <p>Shift from this brief to in-platform dashboards when most KPI reporting is system-generated, the cohort tracker is managed inside the product, and the leadership audience no longer needs narrative context to interpret progress.</p>
+            <p>Move into dashboards when most KPI reporting is system-generated and this brief starts repeating what the product already shows.</p>
           </div>
         </div>
 
