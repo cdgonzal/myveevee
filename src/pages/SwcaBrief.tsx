@@ -757,7 +757,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         </div>
       </div>
 
-      <div class="tabs-label">Menu</div>
+      <div class="tabs-label">Sections</div>
       <div class="tabs">
         <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="overview">Executive Brief</button>
@@ -801,6 +801,18 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
               <li>The funnel is stuck before registration.</li>
               <li>Next goal: turn first contacts into first registrations before April 15.</li>
             </ul>
+          </div>
+        </div>
+
+        <div class="bottom">
+          <div class="panel">
+            <h3>Current Bottleneck</h3>
+            <p>Contact-to-registration conversion.</p>
+          </div>
+          <div class="panel closing">
+            <h3>Review Cadence</h3>
+            <p>Last updated: April 6, 2026</p>
+            <p>Next review: April 8, 2026</p>
           </div>
         </div>
 
@@ -906,7 +918,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       </div>
 
       <div id="overview" class="tab-panel">
-        <div class="section-title">Program Objective</div>
+        <div class="section-title">Goal</div>
         <p class="section-copy">
           Get registrations moving, get patients to first value fast, and show enough proof to expand.
         </p>
@@ -931,7 +943,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </table>
         </div>
 
-        <div class="section-title">30 / 60 / 90 Day Milestones</div>
+        <div class="section-title">30 / 60 / 90</div>
         <p class="section-copy">
           What success should look like at each stage.
         </p>
@@ -978,7 +990,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
         </div>
 
-        <div class="section-title">What Patients Get In This Rollout</div>
+        <div class="section-title">Patient Value</div>
         <p class="section-copy">
           Patient-facing value in this phase.
         </p>
@@ -1022,7 +1034,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
         </div>
 
-        <div class="section-title">Business Value and ROI Scoreboard</div>
+        <div class="section-title">ROI</div>
         <p class="section-copy">
           The few metrics that matter for ROI.
         </p>
@@ -1078,6 +1090,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
                 <th>Patient Alias</th>
                 <th>Age Group</th>
                 <th>Owner</th>
+                <th>Last Touch</th>
                 <th>Contact Status</th>
                 <th>Registration Status</th>
                 <th>Activation Status</th>
@@ -1086,31 +1099,31 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td>Jorge W.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
-              <tr><td>2</td><td>Guillermo F.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>3</td><td>Vanessa L.</td><td>33-45</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr><td>4</td><td>Jacqueline Q.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr><td>5</td><td>William B.</td><td>Unknown</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr><td>6</td><td>Rebecca R.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>7</td><td>Augustine N.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>8</td><td>James H.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>9</td><td>Karli Z.</td><td>33-45</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>10</td><td>William K.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>11</td><td>Laurie B.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>12</td><td>Wendy O.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>13</td><td>Michael C.</td><td>33-45</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>14</td><td>Sue C.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>15</td><td>Sandy L.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>16</td><td>Steven D.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>17</td><td>Beth D.</td><td>65-72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>18</td><td>Gail L.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>19</td><td>Bill M.</td><td>Unknown</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr><td>20</td><td>Julie M.</td><td>Unknown</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr><td>21</td><td>Jerry W.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>22</td><td>Richard M.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>23</td><td>Guillermo S.</td><td>46-65</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>24</td><td>Berry C.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr><td>25</td><td>Helen S.</td><td>Older than 72</td><td>SWCA Team</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr><td>1</td><td>Jorge W.</td><td>46-65</td><td>SWCA Team</td><td>Apr 6</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
+              <tr><td>2</td><td>Guillermo F.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>3</td><td>Vanessa L.</td><td>33-45</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr><td>4</td><td>Jacqueline Q.</td><td>46-65</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr><td>5</td><td>William B.</td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr><td>6</td><td>Rebecca R.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>7</td><td>Augustine N.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>8</td><td>James H.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>9</td><td>Karli Z.</td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>10</td><td>William K.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>11</td><td>Laurie B.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>12</td><td>Wendy O.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>13</td><td>Michael C.</td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>14</td><td>Sue C.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>15</td><td>Sandy L.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>16</td><td>Steven D.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>17</td><td>Beth D.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>18</td><td>Gail L.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>19</td><td>Bill M.</td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr><td>20</td><td>Julie M.</td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr><td>21</td><td>Jerry W.</td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>22</td><td>Richard M.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>23</td><td>Guillermo S.</td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>24</td><td>Berry C.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr><td>25</td><td>Helen S.</td><td>Older than 72</td><td>SWCA Team</td><td>Apr 4</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
             </tbody>
           </table>
         </div>
@@ -1154,20 +1167,18 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         </div>
       </div>
       <div id="learnings" class="tab-panel">
-        <div class="section-title">Learnings and Decisions</div>
+        <div class="section-title">Learnings</div>
         <p class="section-copy">
           Running notes on what is working, what is blocked, and what needs a decision.
         </p>
 
         <div class="bottom">
           <div class="panel">
-            <h3>What We Need To Learn</h3>
+            <h3>This Week</h3>
             <ul>
-              <li>What outreach framing gets the highest registration conversion</li>
-              <li>Which features patients use first after registration</li>
-              <li>Where patients stall in onboarding or activation</li>
-              <li>How much staff follow-up is required per successful registration</li>
-              <li>What metrics should later be pulled directly from admin reporting</li>
+              <li>First contacts are happening, but they are not turning into registrations yet.</li>
+              <li>The main pressure point is still outreach and signup, not engagement.</li>
+              <li>The April 8 meeting is the main chance to tighten ownership and message flow.</li>
             </ul>
           </div>
           <div class="panel closing">
@@ -1176,22 +1187,41 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
         </div>
 
+        <div class="section-title">What We Learned</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Area</th>
-                <th>Current Observation</th>
-                <th>Action</th>
-                <th>Owner</th>
-                <th>Decision Needed</th>
+                <th>Observation</th>
+                <th>Impact</th>
+                <th>Next Step</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Registration messaging</td><td>Need to validate what invitation framing converts best</td><td>Test outreach script variants</td><td>SWCA + VeeVee</td><td>Standardize one outreach approach</td></tr>
-              <tr><td>Patient utility</td><td>Need to confirm which feature creates first clear value</td><td>Track first-use behavior after signup</td><td>VeeVee</td><td>Prioritize feature emphasis in onboarding</td></tr>
-              <tr><td>ROI reporting</td><td>Manual tracking still required</td><td>Define dashboard-source metrics now</td><td>VeeVee</td><td>Set threshold for dashboard handoff</td></tr>
-              <tr><td>Operational workflow</td><td>Owner and follow-up cadence must stay explicit</td><td>Review weekly and tighten handoffs</td><td>Michael / SWCA</td><td>Confirm pilot operating cadence</td></tr>
+              <tr><td>Outreach</td><td>Early contact is happening, but scale is still limited.</td><td>The top of funnel is moving slowly.</td><td>Finalize channel ownership and execution order.</td></tr>
+              <tr><td>Registration</td><td>No one has converted yet.</td><td>The pilot still lacks first proof of conversion.</td><td>Tighten invite message and first signup path.</td></tr>
+              <tr><td>Operations</td><td>Tracking needs weekly discipline.</td><td>Without cadence, the story gets stale fast.</td><td>Update counts, tracker, and decisions at each review.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-title">Decisions Needed</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Decision</th>
+                <th>Why It Matters</th>
+                <th>Owner</th>
+                <th>Next Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Standard outreach script</td><td>Without one message, conversion testing stays noisy.</td><td>SWCA + VeeVee</td><td>Lock a wave-one script after April 8.</td></tr>
+              <tr><td>Definition of activation</td><td>This determines what success means after signup.</td><td>VeeVee</td><td>Pick one clear first-value action.</td></tr>
+              <tr><td>Dashboard handoff threshold</td><td>This decides when the brief stops being the main source.</td><td>VeeVee</td><td>Define what must be automated first.</td></tr>
+              <tr><td>Weekly review owner</td><td>The brief needs one clear owner to stay current.</td><td>Michael / SWCA</td><td>Confirm who updates it each week.</td></tr>
             </tbody>
           </table>
         </div>
