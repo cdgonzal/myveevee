@@ -795,11 +795,11 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             </div>
           </div>
           <div class="story-card">
-            <h3>What The Dashboard Is Saying</h3>
+            <h3>Readout</h3>
             <ul>
-              <li>Dates are set.</li>
-              <li>The funnel is stuck before registration.</li>
-              <li>Next goal: turn first contacts into first registrations before April 15.</li>
+              <li>Timeline is set and the pilot is still in setup.</li>
+              <li>The funnel is moving at contact, but not yet at registration.</li>
+              <li>This week matters because first registrations should start before soft launch.</li>
             </ul>
           </div>
         </div>
@@ -920,123 +920,190 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       <div id="overview" class="tab-panel">
         <div class="section-title">Goal</div>
         <p class="section-copy">
-          Get registrations moving, get patients to first value fast, and show enough proof to expand.
+          Prove that SWCA can turn a targeted patient list into registrations, activation, and early engagement without adding avoidable staff burden.
         </p>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Headline KPI</th>
+                <th>Measure</th>
+                <th>Baseline</th>
                 <th>Current</th>
                 <th>Target</th>
                 <th>Why It Matters</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Patients identified</td><td>25</td><td>25</td><td>Confirms the initial cohort for SWCA outreach</td></tr>
-              <tr><td>Patients reached</td><td>4</td><td>20+</td><td>Shows whether the outreach motion is getting real contact</td></tr>
-              <tr><td>Registrations</td><td>0</td><td>12-15</td><td>Measures whether outreach is converting into accounts</td></tr>
-              <tr><td>Activated patients</td><td>0</td><td>8-10</td><td>Shows whether registered patients reach first value</td></tr>
-              <tr><td>7-day engaged patients</td><td>0</td><td>6+</td><td>Tests whether the product keeps patients engaged after signup</td></tr>
-              <tr><td>ROI review checkpoint</td><td>Not started</td><td>Day 90</td><td>Sets the decision window for expansion and dashboard transition</td></tr>
+              <tr><td>Patients identified</td><td>25 in first wave</td><td>25</td><td>25</td><td>Confirms the starting cohort and outreach scope</td></tr>
+              <tr><td>Patients reached</td><td>Not tracked before pilot</td><td>4</td><td>20+</td><td>Shows whether contact data and outreach are working</td></tr>
+              <tr><td>Registrations</td><td>No VeeVee registrations yet</td><td>0</td><td>12-15</td><td>This is the first hard proof of conversion</td></tr>
+              <tr><td>Activated patients</td><td>No activation baseline yet</td><td>0</td><td>8-10</td><td>Shows whether the product gets patients to first value</td></tr>
+              <tr><td>7-day engaged patients</td><td>No engagement baseline yet</td><td>0</td><td>6+</td><td>Shows whether use continues beyond signup</td></tr>
+              <tr><td>Staff touches per registration</td><td>Unknown today</td><td>Not yet tracked</td><td>Trend down over time</td><td>Tests whether this scales without extra staff drag</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div class="section-title">30 / 60 / 90</div>
+        <div class="section-title">Pilot Success</div>
         <p class="section-copy">
-          What success should look like at each stage.
+          What has to be true for this pilot to count as a win.
         </p>
 
         <div class="cards">
           <div class="card">
-            <h3>Day 30</h3>
-            <p>Get the registration push working.</p>
+            <h3>By Soft Launch</h3>
+            <p>Show the motion works.</p>
             <ul>
-              <li>Finalize outreach workflow, scripts, and owners</li>
-              <li>Reach the majority of the identified cohort</li>
-              <li>Show first registrations and first activations</li>
-              <li>Identify the features patients respond to first</li>
+              <li>Outreach ownership and scripts are locked</li>
+              <li>Most of the first-wave cohort has been reached</li>
+              <li>First registrations have started</li>
+              <li>Activation definition is set and measurable</li>
             </ul>
           </div>
           <div class="card">
-            <h3>Day 60</h3>
-            <p>Show early patient use and engagement.</p>
+            <h3>By Day 60</h3>
+            <p>Show early value.</p>
             <ul>
-              <li>Track 7-day and 30-day engagement for registered patients</li>
-              <li>Measure time to first meaningful action</li>
-              <li>Refine onboarding, prompts, and follow-up based on patient behavior</li>
-              <li>Show where staff effort is creating lift or drag</li>
+              <li>Registration and activation are both moving</li>
+              <li>7-day engagement is visible for early users</li>
+              <li>First workflow pain points are known</li>
+              <li>Staff effort per registration is being tracked</li>
             </ul>
           </div>
           <div class="card">
-            <h3>Day 90</h3>
-            <p>Review ROI and decide whether to expand.</p>
+            <h3>By Day 90</h3>
+            <p>Make the next decision.</p>
             <ul>
-              <li>Compare targets against actual conversion and activation</li>
-              <li>Estimate cost per enrolled patient and staff time saved</li>
-              <li>Determine what reporting can move into platform dashboards</li>
-              <li>Decide on broader rollout, feature changes, or cohort expansion</li>
+              <li>Targets are compared against actual results</li>
+              <li>ROI has enough data for leadership review</li>
+              <li>Dashboard handoff is clear for system-generated metrics</li>
+              <li>SWCA chooses expand, adjust, or stop</li>
             </ul>
           </div>
           <div class="card closing">
-            <h3>Decision Rule</h3>
-            <p>Use this brief while the pilot is still changing and metrics are still partly manual.</p>
+            <h3>Reset Trigger</h3>
+            <p>Do not wait until Day 90 if the top of funnel never converts.</p>
             <ul>
-              <li>Stay here during alignment and experimentation</li>
-              <li>Move to dashboards when KPI reporting is system-generated</li>
-              <li>Use the brief later as executive summary only</li>
+              <li>If registration remains flat after first outreach wave, rewrite the handoff</li>
+              <li>If activation is weak, tighten the first-use flow before scaling</li>
+              <li>If staff burden climbs, simplify workflow before expanding</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-title">Ownership</div>
+        <p class="section-copy">
+          Leadership should be able to see who owns each move.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Owner</th>
+                <th>Support</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Patient list and contact readiness</td><td>SWCA</td><td>Michael</td><td>In progress</td></tr>
+              <tr><td>Outreach script and sequence</td><td>Michael + SWCA</td><td>VeeVee</td><td>Decision needed</td></tr>
+              <tr><td>Registration handoff</td><td>SWCA</td><td>VeeVee</td><td>Not proven yet</td></tr>
+              <tr><td>Activation definition and reporting</td><td>VeeVee</td><td>Michael</td><td>In progress</td></tr>
+              <tr><td>Weekly KPI update</td><td>Michael</td><td>VeeVee</td><td>Needs cadence</td></tr>
+              <tr><td>Go / no-go recommendation</td><td>SWCA leadership</td><td>Michael + VeeVee</td><td>Day 90 decision</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-title">Workflow Impact</div>
+        <p class="section-copy">
+          This has to help operations, not create extra chasing.
+        </p>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Today</h3>
+            <ul>
+              <li>SWCA identifies who should be contacted</li>
+              <li>Staff manually reach out and explain next steps</li>
+              <li>Follow-up depends on consistency and time available</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>With VeeVee</h3>
+            <ul>
+              <li>Patients get a clearer path into registration</li>
+              <li>First-use guidance is more consistent</li>
+              <li>Follow-up can shift from ad hoc to structured</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>What Should Improve</h3>
+            <ul>
+              <li>Fewer manual touches per successful registration</li>
+              <li>Faster movement from outreach to first use</li>
+              <li>Better visibility into who is stuck and why</li>
+            </ul>
+          </div>
+          <div class="card closing">
+            <h3>Where It Can Fail</h3>
+            <ul>
+              <li>Contact details are wrong</li>
+              <li>Message framing is weak</li>
+              <li>Registration handoff is unclear</li>
+              <li>Patients do not see value after signup</li>
             </ul>
           </div>
         </div>
 
         <div class="section-title">Patient Value</div>
         <p class="section-copy">
-          Patient-facing value in this phase.
+          This should read like patient benefit, not product features.
         </p>
 
         <div class="cards">
           <div class="card">
-            <h3>Simple Registration &amp; Onboarding</h3>
-            <p>Make signup and first use easy.</p>
+            <h3>Why This Helps Patients</h3>
             <ul>
-              <li>Guided invite-to-registration flow</li>
-              <li>Simple explanation of why the patient was invited</li>
-              <li>Low-friction setup for first use on mobile</li>
+              <li>Easier start into the program</li>
+              <li>Clearer next steps after registration</li>
+              <li>Less confusion between touchpoints</li>
+              <li>Better follow-through in the first 30 days</li>
             </ul>
           </div>
           <div class="card">
-            <h3>Personalized Check-Ins</h3>
-            <p>Make follow-up simple enough that patients return.</p>
+            <h3>Why This Helps SWCA</h3>
             <ul>
-              <li>Structured prompts and check-ins</li>
-              <li>Capture changing needs over time</li>
-              <li>Create an early repeat-use habit after registration</li>
+              <li>Less manual chasing</li>
+              <li>Better visibility into who is moving or stalled</li>
+              <li>More consistent follow-up</li>
+              <li>Stronger proof before broader rollout</li>
             </ul>
           </div>
           <div class="card">
-            <h3>VeeVee Chat &amp; Guidance</h3>
-            <p>Help patients get answers and move forward with less confusion.</p>
+            <h3>Clinical Fit</h3>
             <ul>
+              <li>Supports patient onboarding and follow-through</li>
+              <li>Improves continuity between staff touchpoints</li>
+              <li>Does not replace clinician judgment or urgent follow-up</li>
+            </ul>
+          </div>
+          <div class="card closing">
+            <h3>What Patients Get First</h3>
+            <ul>
+              <li>Simple registration</li>
+              <li>Guided onboarding</li>
+              <li>Check-ins and reminders</li>
               <li>Clear next-step guidance</li>
-              <li>Ongoing touchpoint between formal interactions</li>
-              <li>More confidence after onboarding and first use</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Reminders, Feed, and Support</h3>
-            <p>Keep the first 30 days useful after signup.</p>
-            <ul>
-              <li>Relevant follow-up nudges</li>
-              <li>Personalized feed and educational content</li>
-              <li>Benefits or care-navigation support where appropriate</li>
             </ul>
           </div>
         </div>
 
         <div class="section-title">ROI</div>
         <p class="section-copy">
-          The few metrics that matter for ROI.
+          This needs to support a business decision, not just show activity.
         </p>
 
         <div class="table-wrap">
@@ -1051,12 +1118,36 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Outreach to registration conversion</td><td>Not yet measured</td><td>In progress</td><td>60% of engaged patients</td><td>Shows whether the registration motion is working</td></tr>
-              <tr><td>Registration to activation conversion</td><td>Not yet measured</td><td>In progress</td><td>70% of registered patients</td><td>Shows whether patients get to first value fast enough</td></tr>
-              <tr><td>Average staff touches per registration</td><td>Unknown</td><td>Track weekly</td><td>Reduce over time</td><td>Indicates operational efficiency and scalability</td></tr>
-              <tr><td>Time from first outreach to registration</td><td>Unknown</td><td>Track weekly</td><td>Under 7 days</td><td>Measures funnel speed and process friction</td></tr>
-              <tr><td>7-day patient engagement</td><td>0%</td><td>Track after launch</td><td>65%+</td><td>Signals whether the product is useful beyond signup</td></tr>
-              <tr><td>Estimated cost per enrolled patient</td><td>Unknown</td><td>Track monthly</td><td>Declining trend</td><td>Creates the ROI case for broader deployment</td></tr>
+              <tr><td>Outreach to registration conversion</td><td>Not yet measured</td><td>0%</td><td>50%+</td><td>Shows whether the outreach and handoff are worth scaling</td></tr>
+              <tr><td>Registration to activation conversion</td><td>Not yet measured</td><td>0%</td><td>70%+</td><td>Shows whether patients reach first value fast enough</td></tr>
+              <tr><td>Average staff touches per registration</td><td>Unknown</td><td>Not yet tracked</td><td>Declining trend</td><td>Tests whether labor burden goes down, not up</td></tr>
+              <tr><td>Time from first outreach to registration</td><td>Unknown</td><td>Not yet tracked</td><td>Under 7 days</td><td>Shows whether the process is simple enough to move quickly</td></tr>
+              <tr><td>7-day patient engagement</td><td>No pilot baseline</td><td>0%</td><td>65%+</td><td>Shows whether value continues after signup</td></tr>
+              <tr><td>Estimated cost per enrolled patient</td><td>Unknown</td><td>Not yet tracked</td><td>Visible by Day 90</td><td>Supports the leadership decision on expansion</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-title">Decision Points</div>
+        <p class="section-copy">
+          Leadership should know when to expand, adjust, or stop.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Decision Point</th>
+                <th>Trigger Date</th>
+                <th>Owner</th>
+                <th>Action If Missed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>First registrations should appear</td><td>By April 15, 2026</td><td>Michael + SWCA</td><td>Rewrite outreach framing and tighten registration handoff</td></tr>
+              <tr><td>Activation should be measurable</td><td>By Day 60</td><td>VeeVee</td><td>Simplify first-use flow and redefine first value</td></tr>
+              <tr><td>ROI review should be credible</td><td>By Day 90</td><td>SWCA leadership</td><td>Hold expansion and keep pilot in adjustment mode</td></tr>
+              <tr><td>Dashboard handoff should be clear</td><td>By broader rollout</td><td>VeeVee</td><td>Keep the brief as the source until system reporting is ready</td></tr>
             </tbody>
           </table>
         </div>
@@ -1174,16 +1265,16 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
         <div class="bottom">
           <div class="panel">
-            <h3>This Week</h3>
+            <h3>Top Risks</h3>
             <ul>
-              <li>First contacts are happening, but they are not turning into registrations yet.</li>
-              <li>The main pressure point is still outreach and signup, not engagement.</li>
-              <li>The April 8 meeting is the main chance to tighten ownership and message flow.</li>
+              <li>Contact details may be incomplete or outdated.</li>
+              <li>Patients may not understand why they should register now.</li>
+              <li>The registration handoff may still rely too much on staff follow-up.</li>
             </ul>
           </div>
           <div class="panel closing">
-            <h3>When To Move Into Dashboards</h3>
-            <p>Move into dashboards when most KPI reporting is system-generated and this brief starts repeating what the product already shows.</p>
+            <h3>Assumptions</h3>
+            <p>This pilot assumes the first-wave list is valid, outreach ownership is consistent, and patient value is clear enough to drive first-use behavior.</p>
           </div>
         </div>
 
@@ -1199,9 +1290,10 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Outreach</td><td>Early contact is happening, but scale is still limited.</td><td>The top of funnel is moving slowly.</td><td>Finalize channel ownership and execution order.</td></tr>
-              <tr><td>Registration</td><td>No one has converted yet.</td><td>The pilot still lacks first proof of conversion.</td><td>Tighten invite message and first signup path.</td></tr>
-              <tr><td>Operations</td><td>Tracking needs weekly discipline.</td><td>Without cadence, the story gets stale fast.</td><td>Update counts, tracker, and decisions at each review.</td></tr>
+              <tr><td>Outreach</td><td>Early contact is happening, but scale is still limited.</td><td>Reach is not yet high enough to judge conversion.</td><td>Finalize channel ownership and execution order.</td></tr>
+              <tr><td>Registration</td><td>No one has converted yet.</td><td>The pilot still lacks first proof that the handoff works.</td><td>Tighten invite message and first signup path.</td></tr>
+              <tr><td>Operations</td><td>Tracking needs weekly discipline.</td><td>Without cadence, leadership loses trust in the readout.</td><td>Update counts, tracker, and decisions at each review.</td></tr>
+              <tr><td>Clinical fit</td><td>The brief needs to stay clear about what VeeVee supports.</td><td>Doctors will want patient value, not only activity metrics.</td><td>Keep patient outcome language visible in the brief.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1219,9 +1311,9 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             </thead>
             <tbody>
               <tr><td>Standard outreach script</td><td>Without one message, conversion testing stays noisy.</td><td>SWCA + VeeVee</td><td>Lock a wave-one script after April 8.</td></tr>
-              <tr><td>Definition of activation</td><td>This determines what success means after signup.</td><td>VeeVee</td><td>Pick one clear first-value action.</td></tr>
-              <tr><td>Dashboard handoff threshold</td><td>This decides when the brief stops being the main source.</td><td>VeeVee</td><td>Define what must be automated first.</td></tr>
-              <tr><td>Weekly review owner</td><td>The brief needs one clear owner to stay current.</td><td>Michael / SWCA</td><td>Confirm who updates it each week.</td></tr>
+              <tr><td>Definition of activation</td><td>This sets what counts as first value after signup.</td><td>VeeVee</td><td>Pick one clear first-value action.</td></tr>
+              <tr><td>Weekly review owner</td><td>The brief needs one clear owner to stay current.</td><td>Michael / SWCA</td><td>Confirm who updates counts and risks each week.</td></tr>
+              <tr><td>Expansion threshold</td><td>Leadership needs a clear rule before broader rollout.</td><td>SWCA leadership</td><td>Set the minimum result needed by Day 90.</td></tr>
             </tbody>
           </table>
         </div>
