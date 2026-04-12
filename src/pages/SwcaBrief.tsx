@@ -501,7 +501,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
 
     .tabs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-top: 8px;
       width: 100%;
@@ -764,84 +764,52 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         <div class="hero-summary">
           <div class="phase-pill"><span class="phase-dot"></span> Current Phase: Planning and Outreach Readiness</div>
           <div>
-            <h1>SWCA Launch Tracker</h1>
-            <p class="hero-note">Pilot status for registration, activation, and launch readiness.</p>
+            <h1>SWCA Pilot Brief</h1>
+            <p class="hero-note">A simpler working brief for what is happening now, what this pilot must prove, and which younger patients are in motion.</p>
           </div>
           <div class="hero-metrics">
             <div class="hero-metric">
-              <p class="label">Soft Launch</p>
-              <p class="value" data-countdown-value-hero="soft">--</p>
-              <p class="help">Days until April 15</p>
+              <p class="label">Younger Cohort</p>
+              <p class="value">7</p>
+              <p class="help">Current active focus</p>
             </div>
             <div class="hero-metric">
               <p class="label">Reached</p>
-              <p class="value">4</p>
-              <p class="help">Patients contacted so far</p>
+              <p class="value">3</p>
+              <p class="help">Younger patients contacted</p>
             </div>
             <div class="hero-metric">
               <p class="label">Registered</p>
-              <p class="value">0</p>
-              <p class="help">Target: 12-15</p>
+              <p class="value">1</p>
+              <p class="help">Younger patients registered</p>
             </div>
           </div>
         </div>
         <div class="mini-panel">
           <h3>Current Focus</h3>
-          <p>Finalize the outreach plan, start converting the first patient wave into registrations, and use the April 15 launch event to create early activation momentum.</p>
+          <p>Work the younger cohort first, get registrations moving, and keep the brief limited to current status, pilot rules, and patient actions.</p>
         </div>
       </div>
 
       <div class="tabs-label">Sections</div>
       <div class="tabs">
-        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
-        <button class="tab-btn" data-tab="overview">Executive Brief</button>
-        <button class="tab-btn" data-tab="patients">Rollout Tracker</button>
-        <button class="tab-btn" data-tab="learnings">Learnings &amp; Decisions</button>
+        <button class="tab-btn active" data-tab="now">Now</button>
+        <button class="tab-btn" data-tab="plan">Plan</button>
+        <button class="tab-btn" data-tab="patients">Patients</button>
       </div>
     </section>
 
     <section class="content">
-      <div id="dashboard" class="tab-panel active">
-        <div class="section-title">Launch Dashboard</div>
+      <div id="now" class="tab-panel active">
+        <div class="section-title">Current Status</div>
         <p class="section-copy">
-          Where we are, what is stuck, and what happens next.
+          One-page readout of where the pilot stands right now, what is blocked, and what has to happen next.
         </p>
-
-        <div class="story-grid">
-          <div class="story-card">
-            <h3>Launch Status</h3>
-            <div class="countdown-grid">
-              <div class="countdown-card" data-countdown="2026-04-08T09:00:00-04:00">
-                <p class="countdown-label">Planning Meeting</p>
-                <p class="countdown-value" data-countdown-value>--</p>
-                <p class="countdown-date">Days until Michael and Charlie finalize outreach ownership, channels, and tracking.</p>
-              </div>
-              <div class="countdown-card" data-countdown="2026-04-15T18:00:00-04:00">
-                <p class="countdown-label">Soft Launch</p>
-                <p class="countdown-value" data-countdown-value>--</p>
-                <p class="countdown-date">Days until the first activation moment for early patients.</p>
-              </div>
-              <div class="countdown-card" data-countdown="2026-05-29T18:00:00-04:00">
-                <p class="countdown-label">Formal Launch</p>
-                <p class="countdown-value" data-countdown-value>--</p>
-                <p class="countdown-date">Days until broader launch based on what this pilot proves.</p>
-              </div>
-            </div>
-          </div>
-          <div class="story-card">
-            <h3>Readout</h3>
-            <ul>
-              <li>Timeline is set and the pilot is still in setup.</li>
-              <li>The funnel is moving at contact, but not yet at registration.</li>
-              <li>This week matters because first registrations should start before soft launch.</li>
-            </ul>
-          </div>
-        </div>
 
         <div class="bottom">
           <div class="panel">
-            <h3>Current Bottleneck</h3>
-            <p>Contact-to-registration conversion.</p>
+            <h3>Status</h3>
+            <p>The pilot is still in setup. The younger cohort is the active workstream, first contact has started, and registration has only begun for one patient.</p>
           </div>
           <div class="panel closing">
             <h3>Review Cadence</h3>
@@ -850,298 +818,121 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
           </div>
         </div>
 
-        <div class="section-title">Funnel Story</div>
+        <div class="section-title">Key Numbers</div>
         <p class="section-copy">
-          This shows where patients are stopping.
+          These are the only numbers that matter on this page.
         </p>
 
         <div class="funnel-row">
           <div class="funnel-card">
-            <p class="funnel-stage">Identified</p>
-            <p class="funnel-value">25</p>
-            <p class="funnel-meta">Starting pool.</p>
-            <p class="funnel-tip">This is the total first-wave opportunity.</p>
+            <p class="funnel-stage">Young Cohort</p>
+            <p class="funnel-value">7</p>
+            <p class="funnel-meta">Current working group.</p>
+            <p class="funnel-tip">This is the list the team should be working first.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">Reached</p>
-            <p class="funnel-value">4</p>
-            <p class="funnel-meta">4 of 20+ target reached.</p>
-            <p class="funnel-tip">This shows whether outreach is landing.</p>
+            <p class="funnel-value">3</p>
+            <p class="funnel-meta">3 of 7 reached.</p>
+            <p class="funnel-tip">Shows whether the first outreach wave is landing.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">Registered</p>
-            <p class="funnel-value">0</p>
-            <p class="funnel-meta">Target: 12-15.</p>
-            <p class="funnel-tip">This is the first real conversion point.</p>
+            <p class="funnel-value">1</p>
+            <p class="funnel-meta">1 of 7 registered.</p>
+            <p class="funnel-tip">This is the first proof the handoff can work.</p>
           </div>
           <div class="funnel-card">
             <p class="funnel-stage">Activated</p>
             <p class="funnel-value">0</p>
-            <p class="funnel-meta">Target: 8-10.</p>
-            <p class="funnel-tip">This shows first real product value.</p>
+            <p class="funnel-meta">No younger activations yet.</p>
+            <p class="funnel-tip">Activation stays at zero until a patient completes first value.</p>
           </div>
           <div class="funnel-card">
-            <p class="funnel-stage">7-Day Engaged</p>
-            <p class="funnel-value">0</p>
-            <p class="funnel-meta">Target: 6+.</p>
-            <p class="funnel-tip">This shows repeat use, not just signup.</p>
+            <p class="funnel-stage">Next Review</p>
+            <p class="funnel-value" data-countdown-value-hero="soft">--</p>
+            <p class="funnel-meta">Days until April 8.</p>
+            <p class="funnel-tip">This is the next date for decisions on message, ownership, and follow-up.</p>
           </div>
         </div>
 
-        <div class="section-title">What Is Driving Movement</div>
+        <div class="section-title">What Is Blocked</div>
         <p class="section-copy">
-          These are the key drivers right now.
+          Keep this limited to the few blockers that actually slow movement right now.
         </p>
 
-        <div class="story-card">
-          <div class="driver-list">
-            <div class="driver-item">
-              <p class="driver-name">Contact readiness</p>
-              <div class="driver-status">Watch</div>
-              <p class="driver-note">Some contact details still need validation.</p>
-            </div>
-            <div class="driver-item">
-              <p class="driver-name">Outreach ownership</p>
-              <div class="driver-status">Good</div>
-              <p class="driver-note">April 8 should lock owners, channels, and sequence.</p>
-            </div>
-            <div class="driver-item">
-              <p class="driver-name">Registration conversion</p>
-              <div class="driver-status">Blocked</div>
-              <p class="driver-note">No registrations yet. This is the main blocker.</p>
-            </div>
-            <div class="driver-item">
-              <p class="driver-name">Staff efficiency</p>
-              <div class="driver-status">Watch</div>
-              <p class="driver-note">Track touches per registration now so scaling is easier later.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-title">This Week</div>
-        <p class="section-copy">
-          This should make the next move obvious.
-        </p>
-
-        <div class="weekly-grid">
-          <div class="weekly-card">
-            <h3>What Happened</h3>
+        <div class="cards">
+          <div class="card">
+            <h3>Blockers</h3>
             <ul>
-              <li>Initial cohort is identified</li>
-              <li>Some patients have been reached</li>
-              <li>No registrations have happened yet</li>
+              <li>Only one younger patient is registered.</li>
+              <li>Contact details still need validation for part of the list.</li>
+              <li>The registration handoff is not standardized yet.</li>
             </ul>
           </div>
-          <div class="weekly-card">
-            <h3>What Happens Next</h3>
-            <ul>
-              <li>Finalize the April 8 planning meeting agenda</li>
-              <li>Confirm contact sequencing and message ownership</li>
-              <li>Execute the first organized outreach wave</li>
-            </ul>
-          </div>
-          <div class="weekly-card">
+          <div class="card closing">
             <h3>Decision Needed</h3>
             <ul>
-              <li>Which outreach framing should be standard for wave one</li>
-              <li>What counts as first meaningful activation for this pilot</li>
-              <li>Which dashboard metrics should become source-of-truth later</li>
+              <li>Lock one standard outreach message for the younger cohort.</li>
+              <li>Agree on one definition of activation.</li>
+              <li>Confirm who owns weekly tracker updates.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-title">What Happens Next</div>
+        <p class="section-copy">
+          This page should make the next move obvious.
+        </p>
+
+        <div class="bottom">
+          <div class="panel">
+            <h3>Next Actions</h3>
+            <ul>
+              <li>Work the seven younger patients before broadening the list.</li>
+              <li>Follow up the three already reached.</li>
+              <li>Push the remaining younger patients into first registration attempts.</li>
+            </ul>
+          </div>
+          <div class="panel closing">
+            <h3>Upcoming Dates</h3>
+            <ul>
+              <li>April 8: lock ownership, script, and tracker cadence</li>
+              <li>April 15: show that registrations are moving</li>
+              <li>Day 60: show first activation and early engagement</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div id="overview" class="tab-panel">
-        <div class="section-title">Goal</div>
+      <div id="plan" class="tab-panel">
+        <div class="section-title">Pilot Objective</div>
         <p class="section-copy">
-          Prove that SWCA can turn a targeted patient list into registrations, activation, and early engagement without adding avoidable staff burden.
-        </p>
-        <div class="table-wrap">
-          <div class="patient-filter-tabs" aria-label="Patient age filters">
-            <button class="patient-filter-btn active" data-patient-filter="all">All Patients</button>
-            <button class="patient-filter-btn" data-patient-filter="younger">Younger Age Group</button>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Measure</th>
-                <th>Baseline</th>
-                <th>Current</th>
-                <th>Target</th>
-                <th>Why It Matters</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Patients identified</td><td>25 in first wave</td><td>25</td><td>25</td><td>Confirms the starting cohort and outreach scope</td></tr>
-              <tr><td>Patients reached</td><td>Not tracked before pilot</td><td>4</td><td>20+</td><td>Shows whether contact data and outreach are working</td></tr>
-              <tr><td>Registrations</td><td>No VeeVee registrations yet</td><td>0</td><td>12-15</td><td>This is the first hard proof of conversion</td></tr>
-              <tr><td>Activated patients</td><td>No activation baseline yet</td><td>0</td><td>8-10</td><td>Shows whether the product gets patients to first value</td></tr>
-              <tr><td>7-day engaged patients</td><td>No engagement baseline yet</td><td>0</td><td>6+</td><td>Shows whether use continues beyond signup</td></tr>
-              <tr><td>Staff touches per registration</td><td>Unknown today</td><td>Not yet tracked</td><td>Trend down over time</td><td>Tests whether this scales without extra staff drag</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="section-title">Pilot Success</div>
-        <p class="section-copy">
-          What has to be true for this pilot to count as a win.
+          Prove that SWCA can convert a focused younger cohort into registrations, activation, and early engagement without creating extra staff burden.
         </p>
 
         <div class="cards">
           <div class="card">
-            <h3>By Soft Launch</h3>
-            <p>Show the motion works.</p>
+            <h3>Target Cohort</h3>
             <ul>
-              <li>Outreach ownership and scripts are locked</li>
-              <li>Most of the first-wave cohort has been reached</li>
-              <li>First registrations have started</li>
-              <li>Activation definition is set and measurable</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>By Day 60</h3>
-            <p>Show early value.</p>
-            <ul>
-              <li>Registration and activation are both moving</li>
-              <li>7-day engagement is visible for early users</li>
-              <li>First workflow pain points are known</li>
-              <li>Staff effort per registration is being tracked</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>By Day 90</h3>
-            <p>Make the next decision.</p>
-            <ul>
-              <li>Targets are compared against actual results</li>
-              <li>ROI has enough data for leadership review</li>
-              <li>Dashboard handoff is clear for system-generated metrics</li>
-              <li>SWCA chooses expand, adjust, or stop</li>
+              <li>Use the younger age group as the first focused workstream.</li>
+              <li>Keep the younger list small enough to manage tightly.</li>
+              <li>Do not expand focus until the handoff is working.</li>
             </ul>
           </div>
           <div class="card closing">
-            <h3>Reset Trigger</h3>
-            <p>Do not wait until Day 90 if the top of funnel never converts.</p>
+            <h3>Why Start Here</h3>
             <ul>
-              <li>If registration remains flat after first outreach wave, rewrite the handoff</li>
-              <li>If activation is weak, tighten the first-use flow before scaling</li>
-              <li>If staff burden climbs, simplify workflow before expanding</li>
+              <li>This cohort is easier to concentrate on immediately.</li>
+              <li>It gives SWCA a cleaner signal on outreach and conversion.</li>
+              <li>It reduces noise while the workflow is still being proven.</li>
             </ul>
           </div>
         </div>
 
-        <div class="section-title">Ownership</div>
+        <div class="section-title">Success Metrics</div>
         <p class="section-copy">
-          Leadership should be able to see who owns each move.
-        </p>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Owner</th>
-                <th>Support</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Patient list and contact readiness</td><td>SWCA</td><td>Michael</td><td>In progress</td></tr>
-              <tr><td>Outreach script and sequence</td><td>Michael + SWCA</td><td>VeeVee</td><td>Decision needed</td></tr>
-              <tr><td>Registration handoff</td><td>SWCA</td><td>VeeVee</td><td>Not proven yet</td></tr>
-              <tr><td>Activation definition and reporting</td><td>VeeVee</td><td>Michael</td><td>In progress</td></tr>
-              <tr><td>Weekly KPI update</td><td>Michael</td><td>VeeVee</td><td>Needs cadence</td></tr>
-              <tr><td>Go / no-go recommendation</td><td>SWCA leadership</td><td>Michael + VeeVee</td><td>Day 90 decision</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="section-title">Workflow Impact</div>
-        <p class="section-copy">
-          This has to help operations, not create extra chasing.
-        </p>
-
-        <div class="cards">
-          <div class="card">
-            <h3>Today</h3>
-            <ul>
-              <li>SWCA identifies who should be contacted</li>
-              <li>Staff manually reach out and explain next steps</li>
-              <li>Follow-up depends on consistency and time available</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>With VeeVee</h3>
-            <ul>
-              <li>Patients get a clearer path into registration</li>
-              <li>First-use guidance is more consistent</li>
-              <li>Follow-up can shift from ad hoc to structured</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>What Should Improve</h3>
-            <ul>
-              <li>Fewer manual touches per successful registration</li>
-              <li>Faster movement from outreach to first use</li>
-              <li>Better visibility into who is stuck and why</li>
-            </ul>
-          </div>
-          <div class="card closing">
-            <h3>Where It Can Fail</h3>
-            <ul>
-              <li>Contact details are wrong</li>
-              <li>Message framing is weak</li>
-              <li>Registration handoff is unclear</li>
-              <li>Patients do not see value after signup</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="section-title">Patient Value</div>
-        <p class="section-copy">
-          This should read like patient benefit, not product features.
-        </p>
-
-        <div class="cards">
-          <div class="card">
-            <h3>Why This Helps Patients</h3>
-            <ul>
-              <li>Easier start into the program</li>
-              <li>Clearer next steps after registration</li>
-              <li>Less confusion between touchpoints</li>
-              <li>Better follow-through in the first 30 days</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Why This Helps SWCA</h3>
-            <ul>
-              <li>Less manual chasing</li>
-              <li>Better visibility into who is moving or stalled</li>
-              <li>More consistent follow-up</li>
-              <li>Stronger proof before broader rollout</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Clinical Fit</h3>
-            <ul>
-              <li>Supports patient onboarding and follow-through</li>
-              <li>Improves continuity between staff touchpoints</li>
-              <li>Does not replace clinician judgment or urgent follow-up</li>
-            </ul>
-          </div>
-          <div class="card closing">
-            <h3>What Patients Get First</h3>
-            <ul>
-              <li>Simple registration</li>
-              <li>Guided onboarding</li>
-              <li>Check-ins and reminders</li>
-              <li>Clear next-step guidance</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="section-title">ROI</div>
-        <p class="section-copy">
-          This needs to support a business decision, not just show activity.
+          This page should define what success means and how each stage is measured.
         </p>
 
         <div class="table-wrap">
@@ -1149,69 +940,163 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             <thead>
               <tr>
                 <th>Metric</th>
-                <th>Baseline</th>
+                <th>Definition</th>
                 <th>Current</th>
                 <th>Target</th>
-                <th>Business Meaning</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Outreach to registration conversion</td><td>Not yet measured</td><td>0%</td><td>50%+</td><td>Shows whether the outreach and handoff are worth scaling</td></tr>
-              <tr><td>Registration to activation conversion</td><td>Not yet measured</td><td>0%</td><td>70%+</td><td>Shows whether patients reach first value fast enough</td></tr>
-              <tr><td>Average staff touches per registration</td><td>Unknown</td><td>Not yet tracked</td><td>Declining trend</td><td>Tests whether labor burden goes down, not up</td></tr>
-              <tr><td>Time from first outreach to registration</td><td>Unknown</td><td>Not yet tracked</td><td>Under 7 days</td><td>Shows whether the process is simple enough to move quickly</td></tr>
-              <tr><td>7-day patient engagement</td><td>No pilot baseline</td><td>0%</td><td>65%+</td><td>Shows whether value continues after signup</td></tr>
-              <tr><td>Estimated cost per enrolled patient</td><td>Unknown</td><td>Not yet tracked</td><td>Visible by Day 90</td><td>Supports the leadership decision on expansion</td></tr>
+              <tr><td>Reached</td><td>Patient was successfully contacted</td><td>3</td><td>6 of 7</td></tr>
+              <tr><td>Registered</td><td>Patient completed signup</td><td>1</td><td>4+</td></tr>
+              <tr><td>Activated</td><td>Patient completed first meaningful action</td><td>0</td><td>3+</td></tr>
+              <tr><td>7-day engaged</td><td>Patient is still active after first week</td><td>0</td><td>2+</td></tr>
+              <tr><td>Staff touches</td><td>Manual follow-ups needed per registration</td><td>Not tracked</td><td>Visible by Day 60</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div class="section-title">Decision Points</div>
+        <div class="section-title">Definitions</div>
         <p class="section-copy">
-          Leadership should know when to expand, adjust, or stop.
+          Keep the stage definitions fixed so the tracker can be trusted.
+        </p>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Reached</h3>
+            <ul>
+              <li>Confirmed by phone, text, or email.</li>
+              <li>Patient knows why SWCA is contacting them.</li>
+              <li>Next step is assigned.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Registered</h3>
+            <ul>
+              <li>Signup is complete.</li>
+              <li>Patient can enter the product.</li>
+              <li>No longer counted as outreach-only.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Activated</h3>
+            <ul>
+              <li>Patient completes first check-in, onboarding, or first use of chat.</li>
+              <li>This is the first proof of value.</li>
+              <li>Activation must be counted the same way every week.</li>
+            </ul>
+          </div>
+          <div class="card closing">
+            <h3>Engaged</h3>
+            <ul>
+              <li>Patient returns after first week.</li>
+              <li>Use continues beyond signup.</li>
+              <li>This separates curiosity from real adoption.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-title">Owners</div>
+        <p class="section-copy">
+          Limit ownership to the workstreams that matter to this pilot.
         </p>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Decision Point</th>
-                <th>Trigger Date</th>
+                <th>Workstream</th>
                 <th>Owner</th>
-                <th>Action If Missed</th>
+                <th>Support</th>
+                <th>Output</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>First registrations should appear</td><td>By April 15, 2026</td><td>Michael + SWCA</td><td>Rewrite outreach framing and tighten registration handoff</td></tr>
-              <tr><td>Activation should be measurable</td><td>By Day 60</td><td>VeeVee</td><td>Simplify first-use flow and redefine first value</td></tr>
-              <tr><td>ROI review should be credible</td><td>By Day 90</td><td>SWCA leadership</td><td>Hold expansion and keep pilot in adjustment mode</td></tr>
-              <tr><td>Dashboard handoff should be clear</td><td>By broader rollout</td><td>VeeVee</td><td>Keep the brief as the source until system reporting is ready</td></tr>
+              <tr><td>Younger patient list</td><td>SWCA</td><td>Michael</td><td>Validated list with owners</td></tr>
+              <tr><td>Outreach message</td><td>Michael + SWCA</td><td>VeeVee</td><td>One standard script</td></tr>
+              <tr><td>Registration handoff</td><td>SWCA</td><td>VeeVee</td><td>Working signup path</td></tr>
+              <tr><td>Activation definition</td><td>VeeVee</td><td>Michael</td><td>One measurable first-value action</td></tr>
+              <tr><td>Weekly tracker update</td><td>Michael</td><td>VeeVee</td><td>Trusted counts and next actions</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-title">Decision Rules</div>
+        <p class="section-copy">
+          Keep the decision rules short and explicit.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Checkpoint</th>
+                <th>Date</th>
+                <th>Required Result</th>
+                <th>If Missed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Wave one setup</td><td>April 8</td><td>Owners, script, and definitions are locked</td><td>Do not broaden the cohort yet</td></tr>
+              <tr><td>Early conversion</td><td>April 15</td><td>Registrations are moving in the younger cohort</td><td>Rewrite the handoff before expanding</td></tr>
+              <tr><td>Pilot proof</td><td>Day 60</td><td>Activation and early engagement are visible</td><td>Simplify workflow and keep pilot in adjustment mode</td></tr>
+              <tr><td>Go / adjust / stop</td><td>Day 90</td><td>Results are strong enough for leadership review</td><td>Hold expansion until proof is credible</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
       <div id="patients" class="tab-panel">
-        <div class="section-title">Rollout Tracker</div>
+        <div class="section-title">Younger Cohort Tracker</div>
         <p class="section-copy">
-          Working tracker for the first 25 patients.
+          Working list for the current younger cohort. This page should stay focused on actual patient movement, not strategy notes.
         </p>
         <div class="bottom">
           <div class="panel">
-            <h3>Weekly Operating Cadence</h3>
+            <h3>Working Rules</h3>
             <ul>
-              <li>Monday: review funnel counts, owners, and blockers</li>
-              <li>Midweek: execute outreach and follow-up</li>
-              <li>Friday: update KPIs, learnings, and next decisions</li>
+              <li>Default view is the younger cohort.</li>
+              <li>Each row needs one owner and one next action.</li>
+              <li>Notes stay short and operational.</li>
             </ul>
           </div>
           <div class="panel closing">
-            <h3>Operational Goal</h3>
-            <p>Move from identified candidates to contacted patients, then to registered users, activated users, and early engagement. The goal is measurable movement through the funnel, not just outreach volume.</p>
+            <h3>Immediate Goal</h3>
+            <p>Move the younger cohort from identified to reached, then from reached to registered, before broadening attention back to the full list.</p>
+          </div>
+        </div>
+
+        <div class="funnel-row">
+          <div class="funnel-card">
+            <p class="funnel-stage">Young Patients</p>
+            <p class="funnel-value">7</p>
+            <p class="funnel-meta">Current focused list.</p>
+            <p class="funnel-tip">These are the patients the team should work first.</p>
+          </div>
+          <div class="funnel-card">
+            <p class="funnel-stage">Reached</p>
+            <p class="funnel-value">3</p>
+            <p class="funnel-meta">Already contacted.</p>
+            <p class="funnel-tip">These should move to follow-up or registration immediately.</p>
+          </div>
+          <div class="funnel-card">
+            <p class="funnel-stage">Registered</p>
+            <p class="funnel-value">1</p>
+            <p class="funnel-meta">Signup complete.</p>
+            <p class="funnel-tip">This is the current proof point.</p>
+          </div>
+          <div class="funnel-card">
+            <p class="funnel-stage">Pending Contact</p>
+            <p class="funnel-value">4</p>
+            <p class="funnel-meta">Still needs first touch.</p>
+            <p class="funnel-tip">This is the immediate outreach queue.</p>
           </div>
         </div>
 
         <div class="table-wrap">
+          <div class="patient-filter-tabs" aria-label="Patient age filters">
+            <button class="patient-filter-btn active" data-patient-filter="younger">Younger Cohort</button>
+            <button class="patient-filter-btn" data-patient-filter="all">All Patients</button>
+          </div>
           <table>
             <thead>
               <tr>
@@ -1256,105 +1141,6 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             </tbody>
           </table>
         </div>
-
-        <div class="section-title">Milestones and Timeline</div>
-        <p class="section-copy">
-          These phases should stay visible until the pilot is mature enough that the admin dashboards can fully own the live reporting.
-        </p>
-
-        <div class="flow">
-          <div class="flow-step">
-            <div class="date-pill">Phase 0</div>
-            <div class="num">1</div>
-            <h4>Setup</h4>
-            <p>Finalize cohort, owners, scripts, patient value proposition, and pilot definitions for registration, activation, and engagement.</p>
-          </div>
-          <div class="flow-step">
-            <div class="date-pill">Phase 1</div>
-            <div class="num">2</div>
-            <h4>Registration Push</h4>
-            <p>Move identified patients into registered users through a simple, measurable outreach process with clear follow-up ownership.</p>
-          </div>
-          <div class="flow-step">
-            <div class="date-pill">Phase 2</div>
-            <div class="num">3</div>
-            <h4>Activation</h4>
-            <p>Get registered patients to complete a first meaningful action such as onboarding completion, a check-in, or first use of chat.</p>
-          </div>
-          <div class="flow-step">
-            <div class="date-pill">Phase 3</div>
-            <div class="num">4</div>
-            <h4>Engagement Proof</h4>
-            <p>Measure which patient utilities drive repeat use, what follow-up is still manual, and where workflow or product changes are needed.</p>
-          </div>
-          <div class="flow-step">
-            <div class="date-pill">Phase 4</div>
-            <div class="num">5</div>
-            <h4>ROI Review</h4>
-            <p>Compare targets against actual conversion, engagement, staff time, and cost per enrolled patient to determine next rollout decisions.</p>
-          </div>
-        </div>
-      </div>
-      <div id="learnings" class="tab-panel">
-        <div class="section-title">Learnings</div>
-        <p class="section-copy">
-          Running notes on what is working, what is blocked, and what needs a decision.
-        </p>
-
-        <div class="bottom">
-          <div class="panel">
-            <h3>Top Risks</h3>
-            <ul>
-              <li>Contact details may be incomplete or outdated.</li>
-              <li>Patients may not understand why they should register now.</li>
-              <li>The registration handoff may still rely too much on staff follow-up.</li>
-            </ul>
-          </div>
-          <div class="panel closing">
-            <h3>Assumptions</h3>
-            <p>This pilot assumes the first-wave list is valid, outreach ownership is consistent, and patient value is clear enough to drive first-use behavior.</p>
-          </div>
-        </div>
-
-        <div class="section-title">What We Learned</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Observation</th>
-                <th>Impact</th>
-                <th>Next Step</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Outreach</td><td>Early contact is happening, but scale is still limited.</td><td>Reach is not yet high enough to judge conversion.</td><td>Finalize channel ownership and execution order.</td></tr>
-              <tr><td>Registration</td><td>No one has converted yet.</td><td>The pilot still lacks first proof that the handoff works.</td><td>Tighten invite message and first signup path.</td></tr>
-              <tr><td>Operations</td><td>Tracking needs weekly discipline.</td><td>Without cadence, leadership loses trust in the readout.</td><td>Update counts, tracker, and decisions at each review.</td></tr>
-              <tr><td>Clinical fit</td><td>The brief needs to stay clear about what VeeVee supports.</td><td>Doctors will want patient value, not only activity metrics.</td><td>Keep patient outcome language visible in the brief.</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="section-title">Decisions Needed</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Decision</th>
-                <th>Why It Matters</th>
-                <th>Owner</th>
-                <th>Next Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>Standard outreach script</td><td>Without one message, conversion testing stays noisy.</td><td>SWCA + VeeVee</td><td>Lock a wave-one script after April 8.</td></tr>
-              <tr><td>Definition of activation</td><td>This sets what counts as first value after signup.</td><td>VeeVee</td><td>Pick one clear first-value action.</td></tr>
-              <tr><td>Weekly review owner</td><td>The brief needs one clear owner to stay current.</td><td>Michael / SWCA</td><td>Confirm who updates counts and risks each week.</td></tr>
-              <tr><td>Expansion threshold</td><td>Leadership needs a clear rule before broader rollout.</td><td>SWCA leadership</td><td>Set the minimum result needed by Day 90.</td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </section>
 
@@ -1382,6 +1168,13 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       const now = new Date();
       const heroSoftLaunch = document.querySelector("[data-countdown-value-hero='soft']");
 
+      if (heroSoftLaunch) {
+        const nextReview = new Date("2026-04-08T09:00:00-04:00");
+        const diff = nextReview.getTime() - now.getTime();
+        const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+        heroSoftLaunch.textContent = diff <= 0 ? "Live" : String(days);
+      }
+
       countdownCards.forEach((card) => {
         const target = new Date(card.getAttribute("data-countdown"));
         const valueNode = card.querySelector("[data-countdown-value]");
@@ -1394,12 +1187,6 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
         valueNode.textContent = diff <= 0 ? "Live" : String(days);
 
-        if (
-          heroSoftLaunch &&
-          card.getAttribute("data-countdown") === "2026-04-15T18:00:00-04:00"
-        ) {
-          heroSoftLaunch.textContent = diff <= 0 ? "Live" : String(days);
-        }
       });
     }
 
@@ -1414,23 +1201,28 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       });
     });
 
+    function applyPatientFilter(filter) {
+      patientFilterButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-patient-filter") === filter);
+      });
+
+      patientRows.forEach((row) => {
+        const ageGroup = row.getAttribute("data-age-group");
+        const isVisible = filter === "all" || ageGroup === filter;
+        row.classList.toggle("patient-row-hidden", !isVisible);
+      });
+
+      sendHeight();
+    }
+
     patientFilterButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const filter = button.getAttribute("data-patient-filter");
-        patientFilterButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-
-        patientRows.forEach((row) => {
-          const ageGroup = row.getAttribute("data-age-group");
-          const isVisible = filter === "all" || ageGroup === filter;
-          row.classList.toggle("patient-row-hidden", !isVisible);
-        });
-
-        sendHeight();
+        applyPatientFilter(button.getAttribute("data-patient-filter"));
       });
     });
 
     updateCountdowns();
+    applyPatientFilter("younger");
     setInterval(updateCountdowns, 60000);
     window.addEventListener("load", sendHeight);
     window.addEventListener("resize", sendHeight);
