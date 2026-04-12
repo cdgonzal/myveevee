@@ -259,6 +259,40 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    .patient-filter-tabs {
+      display: inline-flex;
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 8px;
+      border-radius: 999px;
+      background: #edf4ff;
+      border: 1px solid #d8e5fb;
+    }
+
+    .patient-filter-btn {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--blue-800);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .patient-filter-btn.active {
+      background: linear-gradient(135deg, #163d74 0%, #245aa1 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(6, 37, 76, 0.18);
+    }
+
+    .patient-row-hidden {
+      display: none;
+    }
+
     .section-title {
       margin: 0 0 8px;
       font-size: 15px;
@@ -689,6 +723,10 @@
           </div>
 
           <div class="table-wrap">
+            <div class="patient-filter-tabs" aria-label="Patient age filters">
+              <button class="patient-filter-btn active" data-patient-filter="all">All Patients</button>
+              <button class="patient-filter-btn" data-patient-filter="younger">Younger Age Group</button>
+            </div>
             <table>
               <thead>
                 <tr>
@@ -701,31 +739,31 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td>1</td><td>Wolf, Jorge</td><td>DOB: 11/15/1967</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
-                <tr><td>2</td><td>Freile, Guillermo</td><td>DOB: 10/06/1957</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>3</td><td>Landivar, Vanessa</td><td>DOB: 09/20/1983</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
-                <tr><td>4</td><td>Quiroga, Jacqueline</td><td>DOB: 11/29/1962</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
-                <tr><td>5</td><td>Brown, William</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>6</td><td>Rankin, Rebecca</td><td>DOB: 01/25/1948</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>7</td><td>Natale, Augustine</td><td>DOB: 06/11/1954</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>8</td><td>Hodge, James</td><td>DOB: 12/09/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>9</td><td>Zwade, Karli</td><td>DOB: 03/01/1993</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>10</td><td>Klein, William</td><td>DOB: 02/25/1954</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>11</td><td>Blum, Laurie</td><td>DOB: 07/27/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>12</td><td>Owens, Wendy</td><td>DOB: 12/08/1955</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>13</td><td>Cimino, Michael B</td><td>DOB: 02/05/1987</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>14</td><td>Cohen, Sue</td><td>DOB: 05/06/1948</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>15</td><td>Labaton, Sandy</td><td>DOB: 08/30/1956</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>16</td><td>Dorfman, Steven</td><td>DOB: 08/21/1957</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>17</td><td>Dorfman, Beth</td><td>DOB: 10/06/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>18</td><td>Labaton, Gail</td><td>DOB: 03/14/1951</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>19</td><td>Moore, Bill</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>20</td><td>Moore, Julie</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>21</td><td>Weisman, Jerry</td><td>DOB: 08/05/1962</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>22</td><td>Meier, Richard</td><td>DOB: 10/12/1934</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>23</td><td>Socarras, Guillermo</td><td>DOB: 07/04/1975</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>24</td><td>Chase, Berry</td><td>DOB: 12/12/1945</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
-                <tr><td>25</td><td>Shinners, Helen</td><td>DOB: 08/28/1952</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
+                <tr data-age-group="younger"><td>1</td><td>Wolf, Jorge</td><td>DOB: 11/15/1967</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
+                <tr data-age-group="older"><td>2</td><td>Freile, Guillermo</td><td>DOB: 10/06/1957</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="younger"><td>3</td><td>Landivar, Vanessa</td><td>DOB: 09/20/1983</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
+                <tr data-age-group="younger"><td>4</td><td>Quiroga, Jacqueline</td><td>DOB: 11/29/1962</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
+                <tr data-age-group="unknown"><td>5</td><td>Brown, William</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>6</td><td>Rankin, Rebecca</td><td>DOB: 01/25/1948</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>7</td><td>Natale, Augustine</td><td>DOB: 06/11/1954</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>8</td><td>Hodge, James</td><td>DOB: 12/09/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="younger"><td>9</td><td>Zwade, Karli</td><td>DOB: 03/01/1993</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>10</td><td>Klein, William</td><td>DOB: 02/25/1954</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>11</td><td>Blum, Laurie</td><td>DOB: 07/27/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>12</td><td>Owens, Wendy</td><td>DOB: 12/08/1955</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="younger"><td>13</td><td>Cimino, Michael B</td><td>DOB: 02/05/1987</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>14</td><td>Cohen, Sue</td><td>DOB: 05/06/1948</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>15</td><td>Labaton, Sandy</td><td>DOB: 08/30/1956</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>16</td><td>Dorfman, Steven</td><td>DOB: 08/21/1957</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>17</td><td>Dorfman, Beth</td><td>DOB: 10/06/1959</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>18</td><td>Labaton, Gail</td><td>DOB: 03/14/1951</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="unknown"><td>19</td><td>Moore, Bill</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="unknown"><td>20</td><td>Moore, Julie</td><td>DOB: -</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="younger"><td>21</td><td>Weisman, Jerry</td><td>DOB: 08/05/1962</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>22</td><td>Meier, Richard</td><td>DOB: 10/12/1934</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="younger"><td>23</td><td>Socarras, Guillermo</td><td>DOB: 07/04/1975</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>24</td><td>Chase, Berry</td><td>DOB: 12/12/1945</td><td>SWCA Team</td><td><span class="status">Pending</span></td><td></td></tr>
+                <tr data-age-group="older"><td>25</td><td>Shinners, Helen</td><td>DOB: 08/28/1952</td><td>SWCA Team</td><td><span class="status">Confirmed</span></td><td>Confirmed</td></tr>
               </tbody>
             </table>
           </div>
@@ -816,6 +854,8 @@
 
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabPanels = document.querySelectorAll(".tab-panel");
+    const patientFilterButtons = document.querySelectorAll("[data-patient-filter]");
+    const patientRows = document.querySelectorAll("#patients tbody tr");
 
     tabButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -824,6 +864,20 @@
         tabPanels.forEach((panel) => panel.classList.remove("active"));
         button.classList.add("active");
         document.getElementById(tab).classList.add("active");
+      });
+    });
+
+    patientFilterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.getAttribute("data-patient-filter");
+        patientFilterButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        patientRows.forEach((row) => {
+          const ageGroup = row.getAttribute("data-age-group");
+          const isVisible = filter === "all" || ageGroup === filter;
+          row.classList.toggle("patient-row-hidden", !isVisible);
+        });
       });
     });
   </script>
