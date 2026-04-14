@@ -66,12 +66,7 @@ function escapeHtml(value: string) {
 }
 
 function formatDob(dob: string | null) {
-  if (!dob) {
-    return "DOB: -";
-  }
-
-  const [year, month, day] = dob.split("-");
-  return `DOB: ${month}/${day}/${year}`;
+  return dob ? "DOB: XXX-XX-XXXX" : "DOB: XXX-XX-XXXX";
 }
 
 function formatAppointment(value: string | null) {
@@ -109,16 +104,8 @@ function renderPatientRows(rows: PatientRow[]) {
             <span class="patient-dob${patient.dob ? "" : " missing"}">${escapeHtml(dobLabel)}</span>
           </div>
         </td>
-        <td>${escapeHtml(patient.ageGroup)}</td>
-        <td>${escapeHtml(patient.owner)}</td>
-        <td>${escapeHtml(patient.lastTouch)}</td>
-        <td><span class="status">${escapeHtml(patient.contactStatus)}</span></td>
-        <td><span class="status">${escapeHtml(patient.registrationStatus)}</span></td>
-        <td><span class="status">${escapeHtml(patient.activationStatus)}</span></td>
-        <td>${escapeHtml(patient.nextAction)}</td>
         <td>${escapeHtml(lastAppointmentLabel)}</td>
         <td>${escapeHtml(nextAppointmentLabel)}</td>
-        <td>${escapeHtml(notes)}</td>
       </tr>`;
     })
     .join("\n");
@@ -804,7 +791,7 @@ function buildOnePagerHtml(patientRowsHtml: string) {
 
     table {
       width: 100%;
-      min-width: 1480px;
+      min-width: 720px;
       border-collapse: collapse;
       font-size: 14px;
     }
@@ -1291,17 +1278,9 @@ function buildOnePagerHtml(patientRowsHtml: string) {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Patient / Birthdate</th>
-                <th>Age Group</th>
-                <th>Owner</th>
-                <th>Last Touch</th>
-                <th>Contact Status</th>
-                <th>Registration Status</th>
-                <th>Activation Status</th>
-                <th>Next Action</th>
+                <th>Patient</th>
                 <th>Last Appointment</th>
                 <th>Next Appointment</th>
-                <th>Notes</th>
               </tr>
             </thead>
             <tbody>${patientRowsHtml}</tbody>
