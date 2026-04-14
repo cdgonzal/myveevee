@@ -689,6 +689,38 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       color: var(--blue-800);
     }
 
+    .patient-ident {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      min-width: 220px;
+    }
+
+    .patient-name {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .patient-dob {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #d8e5fb;
+      background: #edf4ff;
+      color: var(--blue-800);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .patient-dob.missing {
+      background: #fff8ea;
+      border-color: #f2ddb1;
+      color: #8a6116;
+    }
+
     .flow {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -1101,7 +1133,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Patient Alias</th>
+                <th>Patient / Birthdate</th>
                 <th>Age Group</th>
                 <th>Owner</th>
                 <th>Last Touch</th>
@@ -1113,31 +1145,31 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
               </tr>
             </thead>
             <tbody>
-              <tr data-age-group="younger"><td>1</td><td>Jorge W.</td><td>46-65</td><td>SWCA Team</td><td>Apr 6</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
-              <tr data-age-group="older"><td>2</td><td>Guillermo F.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>3</td><td>Vanessa L.</td><td>33-45</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr data-age-group="younger"><td>4</td><td>Jacqueline Q.</td><td>46-65</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr data-age-group="unknown"><td>5</td><td>William B.</td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr data-age-group="older"><td>6</td><td>Rebecca R.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>7</td><td>Augustine N.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>8</td><td>James H.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>9</td><td>Karli Z.</td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>10</td><td>William K.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>11</td><td>Laurie B.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>12</td><td>Wendy O.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>13</td><td>Michael C.</td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>14</td><td>Sue C.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>15</td><td>Sandy L.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>16</td><td>Steven D.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>17</td><td>Beth D.</td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>18</td><td>Gail L.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="unknown"><td>19</td><td>Bill M.</td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr data-age-group="unknown"><td>20</td><td>Julie M.</td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr data-age-group="younger"><td>21</td><td>Jerry W.</td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>22</td><td>Richard M.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>23</td><td>Guillermo S.</td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>24</td><td>Berry C.</td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>25</td><td>Helen S.</td><td>Older than 72</td><td>SWCA Team</td><td>Apr 4</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr data-age-group="younger"><td>1</td><td><div class="patient-ident"><span class="patient-name">Jorge W.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>Apr 6</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
+              <tr data-age-group="older"><td>2</td><td><div class="patient-ident"><span class="patient-name">Guillermo F.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="younger"><td>3</td><td><div class="patient-ident"><span class="patient-name">Vanessa L.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>33-45</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr data-age-group="younger"><td>4</td><td><div class="patient-ident"><span class="patient-name">Jacqueline Q.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
+              <tr data-age-group="unknown"><td>5</td><td><div class="patient-ident"><span class="patient-name">William B.</span><span class="patient-dob">DOB: -</span></div></td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr data-age-group="older"><td>6</td><td><div class="patient-ident"><span class="patient-name">Rebecca R.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>7</td><td><div class="patient-ident"><span class="patient-name">Augustine N.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>8</td><td><div class="patient-ident"><span class="patient-name">James H.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="younger"><td>9</td><td><div class="patient-ident"><span class="patient-name">Karli Z.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>10</td><td><div class="patient-ident"><span class="patient-name">William K.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>11</td><td><div class="patient-ident"><span class="patient-name">Laurie B.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>12</td><td><div class="patient-ident"><span class="patient-name">Wendy O.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="younger"><td>13</td><td><div class="patient-ident"><span class="patient-name">Michael C.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>14</td><td><div class="patient-ident"><span class="patient-name">Sue C.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>15</td><td><div class="patient-ident"><span class="patient-name">Sandy L.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>16</td><td><div class="patient-ident"><span class="patient-name">Steven D.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>17</td><td><div class="patient-ident"><span class="patient-name">Beth D.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>18</td><td><div class="patient-ident"><span class="patient-name">Gail L.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="unknown"><td>19</td><td><div class="patient-ident"><span class="patient-name">Bill M.</span><span class="patient-dob">DOB: -</span></div></td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr data-age-group="unknown"><td>20</td><td><div class="patient-ident"><span class="patient-name">Julie M.</span><span class="patient-dob">DOB: -</span></div></td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
+              <tr data-age-group="younger"><td>21</td><td><div class="patient-ident"><span class="patient-name">Jerry W.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>22</td><td><div class="patient-ident"><span class="patient-name">Richard M.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="younger"><td>23</td><td><div class="patient-ident"><span class="patient-name">Guillermo S.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>24</td><td><div class="patient-ident"><span class="patient-name">Berry C.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
+              <tr data-age-group="older"><td>25</td><td><div class="patient-ident"><span class="patient-name">Helen S.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>Apr 4</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
             </tbody>
           </table>
         </div>
