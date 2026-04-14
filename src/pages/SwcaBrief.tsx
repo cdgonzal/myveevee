@@ -9,11 +9,125 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import initialYoungPatients from "../data/initialYoungPatients.json";
 
 const ACCESS_PIN = "5353";
 const ACCESS_KEY = "veevee-soft-gate:swca-4821";
 
-const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
+type PatientRow = {
+  id: number;
+  cohort: "younger" | "older" | "unknown";
+  fullName: string;
+  displayName: string;
+  dob: string | null;
+  ageGroup: string;
+  owner: string;
+  lastTouch: string;
+  contactStatus: string;
+  registrationStatus: string;
+  activationStatus: string;
+  nextAction: string;
+  notes: string;
+  lastAppointment: string | null;
+  nextAppointment: string | null;
+};
+
+const additionalPatients: PatientRow[] = [
+  { id: 2, cohort: "older", fullName: "Guillermo Freile", displayName: "Guillermo Freile", dob: "1957-10-06", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 5, cohort: "unknown", fullName: "William Brown", displayName: "William Brown", dob: null, ageGroup: "Unknown", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Validate contact detail", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 6, cohort: "older", fullName: "Rebecca Rankin", displayName: "Rebecca Rankin", dob: "1948-01-25", ageGroup: "Older than 72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 7, cohort: "older", fullName: "Augustine Natale", displayName: "Augustine Natale", dob: "1954-06-11", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 8, cohort: "older", fullName: "James Hodge", displayName: "James Hodge", dob: "1959-12-09", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 10, cohort: "older", fullName: "William Klein", displayName: "William Klein", dob: "1954-02-25", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 11, cohort: "older", fullName: "Laurie Blum", displayName: "Laurie Blum", dob: "1959-07-27", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 12, cohort: "older", fullName: "Wendy Owens", displayName: "Wendy Owens", dob: "1955-12-08", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 14, cohort: "older", fullName: "Sue Cohen", displayName: "Sue Cohen", dob: "1948-05-06", ageGroup: "Older than 72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 15, cohort: "older", fullName: "Sandy Labaton", displayName: "Sandy Labaton", dob: "1956-08-30", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 16, cohort: "older", fullName: "Steven Dorfman", displayName: "Steven Dorfman", dob: "1957-08-21", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 17, cohort: "older", fullName: "Beth Dorfman", displayName: "Beth Dorfman", dob: "1959-10-06", ageGroup: "65-72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 18, cohort: "older", fullName: "Gail Labaton", displayName: "Gail Labaton", dob: "1951-03-14", ageGroup: "Older than 72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 19, cohort: "unknown", fullName: "Bill Moore", displayName: "Bill Moore", dob: null, ageGroup: "Unknown", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Validate contact detail", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 20, cohort: "unknown", fullName: "Julie Moore", displayName: "Julie Moore", dob: null, ageGroup: "Unknown", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Validate contact detail", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 22, cohort: "older", fullName: "Richard Meier", displayName: "Richard Meier", dob: "1934-10-12", ageGroup: "Older than 72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 24, cohort: "older", fullName: "Berry Chase", displayName: "Berry Chase", dob: "1945-12-12", ageGroup: "Older than 72", owner: "SWCA Team", lastTouch: "-", contactStatus: "Pending", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Initial outreach", notes: "", lastAppointment: null, nextAppointment: null },
+  { id: 25, cohort: "older", fullName: "Helen Shinners", displayName: "Helen Shinners", dob: "1952-08-28", ageGroup: "Older than 72", owner: "SWCA Team", lastTouch: "Apr 4", contactStatus: "Reached", registrationStatus: "Pending", activationStatus: "Pending", nextAction: "Follow-up registration", notes: "Confirmed contact", lastAppointment: null, nextAppointment: null },
+];
+
+const allPatients: PatientRow[] = [...(initialYoungPatients as PatientRow[]), ...additionalPatients].sort(
+  (left, right) => left.id - right.id,
+);
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function formatDob(dob: string | null) {
+  if (!dob) {
+    return "DOB: -";
+  }
+
+  const [year, month, day] = dob.split("-");
+  return `DOB: ${month}/${day}/${year}`;
+}
+
+function formatAppointment(value: string | null) {
+  if (!value) {
+    return "-";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function renderPatientRows(rows: PatientRow[]) {
+  return rows
+    .map((patient) => {
+      const dobLabel = formatDob(patient.dob);
+      const lastAppointmentLabel = formatAppointment(patient.lastAppointment);
+      const nextAppointmentLabel = formatAppointment(patient.nextAppointment);
+      const notes = patient.notes || "";
+
+      return `<tr data-age-group="${escapeHtml(patient.cohort)}" data-row-order="${patient.id}" data-patient-name="${escapeHtml(patient.fullName.toLowerCase())}" data-last-appointment="${patient.lastAppointment ?? ""}" data-next-appointment="${patient.nextAppointment ?? ""}">
+        <td>${patient.id}</td>
+        <td>
+          <div class="patient-ident">
+            <span class="patient-name">${escapeHtml(patient.displayName)}</span>
+            <span class="patient-dob${patient.dob ? "" : " missing"}">${escapeHtml(dobLabel)}</span>
+          </div>
+        </td>
+        <td>${escapeHtml(patient.ageGroup)}</td>
+        <td>${escapeHtml(patient.owner)}</td>
+        <td>${escapeHtml(patient.lastTouch)}</td>
+        <td><span class="status">${escapeHtml(patient.contactStatus)}</span></td>
+        <td><span class="status">${escapeHtml(patient.registrationStatus)}</span></td>
+        <td><span class="status">${escapeHtml(patient.activationStatus)}</span></td>
+        <td>${escapeHtml(patient.nextAction)}</td>
+        <td>${escapeHtml(lastAppointmentLabel)}</td>
+        <td>${escapeHtml(nextAppointmentLabel)}</td>
+        <td>${escapeHtml(notes)}</td>
+      </tr>`;
+    })
+    .join("\n");
+}
+
+const PATIENT_ROWS_HTML = renderPatientRows(allPatients);
+
+function buildOnePagerHtml(patientRowsHtml: string) {
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -556,14 +670,31 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
     .patient-filter-tabs {
       display: inline-flex;
       gap: 10px;
-      margin: 0 0 18px;
       padding: 8px;
       border-radius: 999px;
       background: #edf4ff;
       border: 1px solid #d8e5fb;
+    }
+
+    .patient-sort-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 999px;
+      background: #f6f8fc;
+      border: 1px solid #dfe7f4;
     }
 
     .patient-filter-btn {
@@ -580,10 +711,29 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
     }
 
+    .patient-sort-btn {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+
     .patient-filter-btn.active {
       background: linear-gradient(135deg, #163d74 0%, #245aa1 100%);
       color: #ffffff;
       box-shadow: 0 10px 22px rgba(6, 37, 76, 0.18);
+    }
+
+    .patient-sort-btn.active {
+      background: #ffffff;
+      color: var(--blue-800);
+      box-shadow: 0 6px 18px rgba(6, 37, 76, 0.08);
     }
 
     .patient-row-hidden {
@@ -647,12 +797,14 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       margin: 18px 0 24px;
       border: 1px solid var(--border);
       border-radius: 18px;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
       background: #fff;
     }
 
     table {
       width: 100%;
+      min-width: 1480px;
       border-collapse: collapse;
       font-size: 14px;
     }
@@ -690,10 +842,8 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     }
 
     .patient-ident {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
+      display: grid;
+      gap: 6px;
       min-width: 220px;
     }
 
@@ -1125,9 +1275,17 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         </div>
 
         <div class="table-wrap">
-          <div class="patient-filter-tabs" aria-label="Patient age filters">
-            <button class="patient-filter-btn active" data-patient-filter="younger">Younger Cohort</button>
-            <button class="patient-filter-btn" data-patient-filter="all">All Patients</button>
+          <div class="table-toolbar">
+            <div class="patient-filter-tabs" aria-label="Patient age filters">
+              <button class="patient-filter-btn active" data-patient-filter="younger">Younger Cohort</button>
+              <button class="patient-filter-btn" data-patient-filter="all">All Patients</button>
+            </div>
+            <div class="patient-sort-tabs" aria-label="Patient sort controls">
+              <button class="patient-sort-btn active" data-patient-sort="default">Default Order</button>
+              <button class="patient-sort-btn" data-patient-sort="patient-asc">Patient A-Z</button>
+              <button class="patient-sort-btn" data-patient-sort="last-desc">Last Appt Latest</button>
+              <button class="patient-sort-btn" data-patient-sort="next-asc">Next Appt Soonest</button>
+            </div>
           </div>
           <table>
             <thead>
@@ -1141,36 +1299,12 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
                 <th>Registration Status</th>
                 <th>Activation Status</th>
                 <th>Next Action</th>
+                <th>Last Appointment</th>
+                <th>Next Appointment</th>
                 <th>Notes</th>
               </tr>
             </thead>
-            <tbody>
-              <tr data-age-group="younger"><td>1</td><td><div class="patient-ident"><span class="patient-name">Jorge W.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>Apr 6</td><td><span class="status">Reached</span></td><td><span class="status">Registered</span></td><td><span class="status">Pending</span></td><td>Complete first check-in</td><td>First confirmed contact</td></tr>
-              <tr data-age-group="older"><td>2</td><td><div class="patient-ident"><span class="patient-name">Guillermo F.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>3</td><td><div class="patient-ident"><span class="patient-name">Vanessa L.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>33-45</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr data-age-group="younger"><td>4</td><td><div class="patient-ident"><span class="patient-name">Jacqueline Q.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>Apr 5</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-              <tr data-age-group="unknown"><td>5</td><td><div class="patient-ident"><span class="patient-name">William B.</span><span class="patient-dob">DOB: -</span></div></td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr data-age-group="older"><td>6</td><td><div class="patient-ident"><span class="patient-name">Rebecca R.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>7</td><td><div class="patient-ident"><span class="patient-name">Augustine N.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>8</td><td><div class="patient-ident"><span class="patient-name">James H.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>9</td><td><div class="patient-ident"><span class="patient-name">Karli Z.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>10</td><td><div class="patient-ident"><span class="patient-name">William K.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>11</td><td><div class="patient-ident"><span class="patient-name">Laurie B.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>12</td><td><div class="patient-ident"><span class="patient-name">Wendy O.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>13</td><td><div class="patient-ident"><span class="patient-name">Michael C.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>33-45</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>14</td><td><div class="patient-ident"><span class="patient-name">Sue C.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>15</td><td><div class="patient-ident"><span class="patient-name">Sandy L.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>16</td><td><div class="patient-ident"><span class="patient-name">Steven D.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>17</td><td><div class="patient-ident"><span class="patient-name">Beth D.</span><span class="patient-dob">DOB: -</span></div></td><td>65-72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>18</td><td><div class="patient-ident"><span class="patient-name">Gail L.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="unknown"><td>19</td><td><div class="patient-ident"><span class="patient-name">Bill M.</span><span class="patient-dob">DOB: -</span></div></td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr data-age-group="unknown"><td>20</td><td><div class="patient-ident"><span class="patient-name">Julie M.</span><span class="patient-dob">DOB: -</span></div></td><td>Unknown</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Validate contact detail</td><td></td></tr>
-              <tr data-age-group="younger"><td>21</td><td><div class="patient-ident"><span class="patient-name">Jerry W.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>22</td><td><div class="patient-ident"><span class="patient-name">Richard M.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="younger"><td>23</td><td><div class="patient-ident"><span class="patient-name">Guillermo S.</span><span class="patient-dob missing">DOB: add from EHR</span></div></td><td>46-65</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>24</td><td><div class="patient-ident"><span class="patient-name">Berry C.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>-</td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Initial outreach</td><td></td></tr>
-              <tr data-age-group="older"><td>25</td><td><div class="patient-ident"><span class="patient-name">Helen S.</span><span class="patient-dob">DOB: -</span></div></td><td>Older than 72</td><td>SWCA Team</td><td>Apr 4</td><td><span class="status">Reached</span></td><td><span class="status">Pending</span></td><td><span class="status">Pending</span></td><td>Follow-up registration</td><td>Confirmed contact</td></tr>
-            </tbody>
+            <tbody>${patientRowsHtml}</tbody>
           </table>
         </div>
       </div>
@@ -1185,8 +1319,13 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabPanels = document.querySelectorAll(".tab-panel");
     const patientFilterButtons = document.querySelectorAll("[data-patient-filter]");
-    const patientRows = document.querySelectorAll("#patients tbody tr");
+    const patientSortButtons = document.querySelectorAll("[data-patient-sort]");
+    const patientTableBody = document.querySelector("#patients tbody");
     const countdownCards = document.querySelectorAll("[data-countdown]");
+
+    function getPatientRows() {
+      return Array.from(document.querySelectorAll("#patients tbody tr"));
+    }
 
     function sendHeight() {
       const height = Math.max(
@@ -1238,12 +1377,64 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
         btn.classList.toggle("active", btn.getAttribute("data-patient-filter") === filter);
       });
 
-      patientRows.forEach((row) => {
+      getPatientRows().forEach((row) => {
         const ageGroup = row.getAttribute("data-age-group");
         const isVisible = filter === "all" || ageGroup === filter;
         row.classList.toggle("patient-row-hidden", !isVisible);
       });
 
+      sendHeight();
+    }
+
+    function compareOptionalDates(leftValue, rightValue, direction) {
+      const leftDate = leftValue ? new Date(leftValue).getTime() : Number.NaN;
+      const rightDate = rightValue ? new Date(rightValue).getTime() : Number.NaN;
+      const leftMissing = Number.isNaN(leftDate);
+      const rightMissing = Number.isNaN(rightDate);
+
+      if (leftMissing && rightMissing) {
+        return 0;
+      }
+
+      if (leftMissing) {
+        return 1;
+      }
+
+      if (rightMissing) {
+        return -1;
+      }
+
+      return direction === "asc" ? leftDate - rightDate : rightDate - leftDate;
+    }
+
+    function applyPatientSort(sortKey) {
+      patientSortButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-patient-sort") === sortKey);
+      });
+
+      if (!patientTableBody) {
+        return;
+      }
+
+      const rows = getPatientRows();
+
+      rows.sort((left, right) => {
+        if (sortKey === "patient-asc") {
+          return left.getAttribute("data-patient-name").localeCompare(right.getAttribute("data-patient-name"));
+        }
+
+        if (sortKey === "last-desc") {
+          return compareOptionalDates(left.getAttribute("data-last-appointment"), right.getAttribute("data-last-appointment"), "desc");
+        }
+
+        if (sortKey === "next-asc") {
+          return compareOptionalDates(left.getAttribute("data-next-appointment"), right.getAttribute("data-next-appointment"), "asc");
+        }
+
+        return Number(left.getAttribute("data-row-order")) - Number(right.getAttribute("data-row-order"));
+      });
+
+      rows.forEach((row) => patientTableBody.appendChild(row));
       sendHeight();
     }
 
@@ -1253,7 +1444,14 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
       });
     });
 
+    patientSortButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyPatientSort(button.getAttribute("data-patient-sort"));
+      });
+    });
+
     updateCountdowns();
+    applyPatientSort("default");
     applyPatientFilter("younger");
     setInterval(updateCountdowns, 60000);
     window.addEventListener("load", sendHeight);
@@ -1263,6 +1461,7 @@ const ONE_PAGER_HTML = String.raw`<!DOCTYPE html>
   </script>
 </body>
 </html>`;
+}
 
 export default function SwcaBrief() {
   const [pin, setPin] = useState("");
@@ -1287,7 +1486,7 @@ export default function SwcaBrief() {
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
-  const documentHtml = useMemo(() => ONE_PAGER_HTML, []);
+  const documentHtml = useMemo(() => buildOnePagerHtml(PATIENT_ROWS_HTML), []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
