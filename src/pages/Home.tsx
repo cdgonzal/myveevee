@@ -89,28 +89,38 @@ const scrollLogos = keyframes`
 
 const HERO_IMAGES = [
   {
-    webp: "images/marketing/car1.webp",
-    jpg: "images/marketing/car1.jpg",
+    src: "images/marketing/car1.webp",
+    fallbackSrc: "images/marketing/car1.jpg",
     alt: "VeeVee carousel slide showing everyday wellness support",
     title: "Everyday support that feels simple",
+    durationMs: 4000,
   },
   {
-    webp: "images/marketing/car2.webp",
-    jpg: "images/marketing/car2.jpg",
+    src: "images/marketing/car2.webp",
+    fallbackSrc: "images/marketing/car2.jpg",
     alt: "VeeVee carousel slide showing care that stays connected",
     title: "Clear next steps, without the stress",
+    durationMs: 4000,
   },
   {
-    webp: "images/marketing/car4.webp",
-    jpg: "images/marketing/car4.jpg",
+    src: "images/marketing/car4.webp",
+    fallbackSrc: "images/marketing/car4.jpg",
     alt: "VeeVee carousel slide showing a connected care experience",
     title: "Be your ideal self",
+    durationMs: 4000,
   },
   {
-    webp: "images/marketing/car3.webp",
-    jpg: "images/marketing/car3.jpg",
+    src: "images/marketing/car3.webp",
+    fallbackSrc: "images/marketing/car3.jpg",
     alt: "VeeVee carousel slide showing support after the visit",
     title: "Support that stays with you",
+    durationMs: 4000,
+  },
+  {
+    src: "images/marketing/health-twin-carousel.png",
+    alt: "VeeVee carousel slide showing a health twin alongside the patient",
+    title: "Meet your health twin",
+    durationMs: 8000,
   },
 ];
 
@@ -155,12 +165,12 @@ export default function Home() {
   const currentHero = HERO_IMAGES[activeHeroIndex];
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
+    const timeoutId = window.setTimeout(() => {
       setActiveHeroIndex((current) => (current + 1) % HERO_IMAGES.length);
-    }, 4000);
+    }, currentHero.durationMs);
 
-    return () => window.clearInterval(intervalId);
-  }, []);
+    return () => window.clearTimeout(timeoutId);
+  }, [currentHero.durationMs]);
 
   return (
     <>
@@ -190,7 +200,7 @@ export default function Home() {
               _hover={{ textDecoration: "none" }}
               _focus={{ outline: "none" }}
             >
-              For everyone, for free. 
+              Private. Secure. Yours.
             </Text>
 
             <CLink
@@ -207,15 +217,16 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Connected wellness.<br></br>
+              Meet your
+              <br />
               <Box as="span" color="accent.primary">
-                {" "}Peace of mind.
+                Health Twin
               </Box>
             </Heading>
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VeeVee connects your care across life. From everyday wellness to hospital recovery and everything in between. Built to be simple, safe, private, and ready when you need it.
+              VEEVEE is a digital version of your health that brings your records, habits, and care into one place so you can understand your body and make decisions with confidence.
             </Text>
 
             <Stack spacing={3}>
@@ -228,11 +239,11 @@ export default function Home() {
                 px={10}
                 boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
               >
-                Explore Your Wellness Journey
+                Create Your Health Twin
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
-                Connected | Private | Fast
+                Less than 60 seconds
               </Text>
             </Stack>
           </Stack>
@@ -310,8 +321,8 @@ export default function Home() {
 
                   return (
                     <Image
-                      key={hero.webp}
-                      src={`${import.meta.env.BASE_URL}${hero.webp}`}
+                      key={hero.src}
+                      src={`${import.meta.env.BASE_URL}${hero.src}`}
                       alt={hero.alt}
                       objectFit="contain"
                       h="100%"
@@ -323,8 +334,8 @@ export default function Home() {
                       transition="opacity 0.8s ease"
                       onError={(e) => {
                         const img = e.currentTarget;
-                        if (img.src.endsWith(".webp")) {
-                          img.src = `${import.meta.env.BASE_URL}${hero.jpg}`;
+                        if (hero.fallbackSrc && img.src.endsWith(".webp")) {
+                          img.src = `${import.meta.env.BASE_URL}${hero.fallbackSrc}`;
                         }
                       }}
                     />
@@ -353,7 +364,7 @@ export default function Home() {
                 return (
                   <Box
                     as="button"
-                    key={hero.webp}
+                    key={hero.src}
                     type="button"
                     aria-label={`Show hero image ${index + 1}`}
                     onClick={() => setActiveHeroIndex(index)}
