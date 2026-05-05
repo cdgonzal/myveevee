@@ -232,8 +232,8 @@ export default function Home() {
 
             <Stack spacing={3}>
               <Button
-                as={RouterLink}
-                to={APP_LINKS.internal.whyVeeVee}
+                as="a"
+                href={APP_LINKS.cta.login}
                 size="lg"
                 borderRadius="full"
                 fontWeight="700"
