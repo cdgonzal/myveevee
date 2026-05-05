@@ -117,7 +117,8 @@ const HERO_IMAGES = [
     durationMs: 4000,
   },
   {
-    src: "images/marketing/health-twin-carousel.png",
+    src: "images/marketing/car0.webp",
+    fallbackSrc: "images/marketing/car0.jpg",
     alt: "VeeVee carousel slide showing a health twin alongside the patient",
     title: "Meet your health twin",
     durationMs: 8000,
