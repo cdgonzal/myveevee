@@ -136,10 +136,10 @@ export default function Features() {
                   FEATURES
                 </Text>
                 <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800">
-                  A connected wellness experience.
+                  Digital health twin features for connected care.
                 </Heading>
                 <Text fontSize={{ base: "md", md: "lg" }} maxW="3xl" mx="auto" color="text.primary">
-                  VeeVee works best when people, families, clinicians, and hospitals can stay more connected without making care feel harder.
+                  Explore the VeeVee features that bring health records, family support, care-team visibility, and hospital-to-home continuity into one connected experience.
                 </Text>
               </Stack>
 

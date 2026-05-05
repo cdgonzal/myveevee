@@ -245,10 +245,10 @@ export default function Simulator() {
             VeeVee Simulator® Preview
           </Badge>
           <Heading as="h1" size={{ base: "lg", md: "xl" }}>
-            Try a simple what-if health scenario.
+            Try a health and coverage scenario with VeeVee Simulator.
           </Heading>
           <Text color={muted} maxW="4xl">
-            VeeVee Simulator® gives you a quick preview of what may matter, what questions to ask, and what next steps may help. It is a simple teaser for the fuller app experience.
+            VeeVee Simulator® gives you a quick preview of what may matter, what questions to ask, and what next steps may help based on a simple health and insurance scenario.
           </Text>
         </Stack>
 

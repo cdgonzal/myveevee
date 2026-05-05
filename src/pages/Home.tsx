@@ -218,7 +218,7 @@ export default function Home() {
               lineHeight="1.1"
               color="text.primary"
             >
-              Meet your
+              Meet your digital
               <br />
               <Box as="span" color="accent.primary">
                 Health Twin
@@ -227,7 +227,7 @@ export default function Home() {
             </CLink>
 
             <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VEEVEE is a digital version of your health that brings your records, habits, and care into one place so you can understand your body and make decisions with confidence.
+              VEEVEE is a digital health twin that brings your records, habits, and care into one place so you can understand your body, follow changes over time, and make decisions with confidence.
             </Text>
 
             <Stack spacing={3}>

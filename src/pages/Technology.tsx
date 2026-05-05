@@ -40,12 +40,12 @@ export default function Technology() {
               TECHNOLOGY
             </Text>
             <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800">
-              Safe, fast technology behind connected care.
+              Private, fast technology for connected care.
             </Heading>
             <Text color={muted} maxW="4xl" fontSize={{ base: "md", md: "lg" }}>
-              VeeVee is built so the experience can feel simple even when the technology behind it is not.
-              The goal is straightforward: keep data closer to care, respond quickly, and support both
-              hospital workflows and the app experience without adding friction.
+              VeeVee is built to support a digital health twin experience with privacy-minded infrastructure,
+              faster response times, and technology that can support both hospital workflows and the app
+              experience without adding friction.
             </Text>
           </Stack>
         </Box>

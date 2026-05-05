@@ -198,10 +198,10 @@ export default function Testimonials() {
             WHAT PEOPLE SAY ABOUT VEEVEE
           </Text>
           <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800">
-            Real stories, with a clearer before and after.
+            VeeVee testimonials from patients, caregivers, and clinicians.
           </Heading>
           <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="2xl" mx="auto">
-            Each story is shown the same way: what the person said, what they were dealing with, and what changed with VeeVee.
+            Read how different people describe the VeeVee experience, what they were dealing with before, and what changed after using the platform.
           </Text>
         </Stack>
 

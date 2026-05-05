@@ -23,6 +23,8 @@ import {
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { APP_LINKS } from "./config/links";
+import { applyRouteSeo } from "./seo/applyRouteSeo";
+import { DEFAULT_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 
 const Home = lazy(() => import("./pages/Home"));
 const Features = lazy(() => import("./pages/Features"));
@@ -37,6 +39,35 @@ function ScrollToTop() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+function AnalyticsPageView() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const gtag = (window as any).gtag;
+    if (typeof gtag !== "function") {
+      return;
+    }
+
+    gtag("event", "page_view", {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: pathname,
+    });
+  }, [pathname]);
+
+  return null;
+}
+
+function RouteSeo() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    applyRouteSeo(ROUTE_SEO[pathname] ?? DEFAULT_ROUTE_SEO);
   }, [pathname]);
 
   return null;
@@ -62,6 +93,8 @@ export default function App() {
     <Flex minH="100vh" direction="column" bgGradient={pageGradient}>
       {!isStandalonePage && <Header />}
       <Box as="main" flex="1">
+        <RouteSeo />
+        <AnalyticsPageView />
         {isStandalonePage ? (
           <>
             <ScrollToTop />

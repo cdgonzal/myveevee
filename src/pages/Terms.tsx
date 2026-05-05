@@ -22,6 +22,10 @@ export default function Terms() {
 
         <Stack spacing={4} fontSize={{ base: "sm", md: "md" }} color="text.primary">
           <Text>
+            Review the plain-English terms, disclaimers, privacy notes, and usage limits that apply when using VeeVee.
+          </Text>
+
+          <Text>
             Welcome to VeeVee. Before you dive in, here is what you need to know in plain English:
           </Text>
 
