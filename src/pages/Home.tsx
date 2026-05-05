@@ -89,6 +89,13 @@ const scrollLogos = keyframes`
 
 const HERO_IMAGES = [
   {
+    src: "images/marketing/car0.webp",
+    fallbackSrc: "images/marketing/car0.jpg",
+    alt: "VeeVee carousel slide showing a health twin alongside the patient",
+    title: "Meet your health twin",
+    durationMs: 8000,
+  },
+  {
     src: "images/marketing/car1.webp",
     fallbackSrc: "images/marketing/car1.jpg",
     alt: "VeeVee carousel slide showing everyday wellness support",
@@ -115,13 +122,6 @@ const HERO_IMAGES = [
     alt: "VeeVee carousel slide showing support after the visit",
     title: "Support that stays with you",
     durationMs: 4000,
-  },
-  {
-    src: "images/marketing/car0.webp",
-    fallbackSrc: "images/marketing/car0.jpg",
-    alt: "VeeVee carousel slide showing a health twin alongside the patient",
-    title: "Meet your health twin",
-    durationMs: 8000,
   },
 ];
 
