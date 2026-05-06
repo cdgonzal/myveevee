@@ -20,8 +20,8 @@ function normalizeParams(params: AnalyticsParams): Record<string, string | numbe
   }, {});
 }
 
-// Temporary GA4 DebugView switch. Set to false once live validation is done.
-const GA4_DEBUG_MODE = true;
+// Temporary GA4 DebugView switch. Set to true only during live validation.
+const GA4_DEBUG_MODE = false;
 
 export function trackEvent(eventName: string, params: AnalyticsParams = {}): void {
   if (typeof window === "undefined" || typeof window.gtag !== "function") {
