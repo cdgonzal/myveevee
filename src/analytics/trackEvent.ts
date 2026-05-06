@@ -20,6 +20,8 @@ function normalizeParams(params: AnalyticsParams): Record<string, string | numbe
   }, {});
 }
 
+const PRIMARY_GA_MEASUREMENT_ID = "G-1GWP2YT1CP";
+
 // Temporary GA4 DebugView switch. Set to true only during live validation.
 const GA4_DEBUG_MODE = false;
 
@@ -30,6 +32,7 @@ export function trackEvent(eventName: string, params: AnalyticsParams = {}): voi
 
   window.gtag("event", eventName, {
     ...normalizeParams(params),
+    send_to: PRIMARY_GA_MEASUREMENT_ID,
     ...(GA4_DEBUG_MODE ? { debug_mode: true } : {}),
   });
 }
