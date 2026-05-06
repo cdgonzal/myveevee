@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
 
 const MotionBox = motion(Box);
@@ -262,6 +263,16 @@ export default function Features() {
             <Button
               as={RouterLink}
               to={APP_LINKS.internal.simulator}
+              onClick={() =>
+                trackCtaClick({
+                  ctaName: "features_try_simulator",
+                  ctaText: "Try VeeVee Simulator",
+                  placement: "features_bottom_cta",
+                  destinationType: "internal",
+                  destinationUrl: APP_LINKS.internal.simulator,
+                  pagePath: APP_LINKS.internal.whyVeeVee,
+                })
+              }
               size="md"
               borderRadius="full"
               fontWeight="700"

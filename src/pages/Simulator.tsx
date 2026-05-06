@@ -23,6 +23,8 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
+import { trackEvent as sharedTrackEvent } from "../analytics/trackEvent";
 import { APP_LINKS } from "../config/links";
 import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
 import {
@@ -156,10 +158,7 @@ export default function Simulator() {
   const inputEventLastSentRef = useRef<Record<string, number>>({});
 
   const trackEvent = (eventName: string, params?: Record<string, string | number>) => {
-    const gtag = (window as any).gtag;
-    if (typeof gtag === "function") {
-      gtag("event", eventName, params ?? {});
-    }
+    sharedTrackEvent(eventName, params ?? {});
   };
 
   const trackInputChange = (field: string) => {
@@ -288,9 +287,9 @@ export default function Simulator() {
                       <Button
                         size="sm"
                         variant={selectedId === scenario.id ? "solid" : "outline"}
-                        onClick={() => {
-                          setSelectedId(scenario.id);
-                          trackEvent("wm_start_scenario", { scenarioId: scenario.id });
+                    onClick={() => {
+                      setSelectedId(scenario.id);
+                      trackEvent("wm_start_scenario", { scenarioId: scenario.id });
                         }}
                       >
                         Choose
@@ -303,7 +302,7 @@ export default function Simulator() {
           </CardBody>
         </Card>
 
-        <SimpleGrid columns={{ base: 1, lg: "minmax(0, 0.95fr) minmax(0, 1.05fr)" }} spacing={6} alignItems="stretch">
+        <Grid templateColumns={{ base: "1fr", lg: "minmax(0, 0.95fr) minmax(0, 1.05fr)" }} gap={6} alignItems="stretch">
           <Card bg={stepBg} borderWidth="1px" borderColor={border} borderRadius="2xl" boxShadow="0 16px 34px rgba(6, 37, 76, 0.10)">
             <CardBody>
               <Stack spacing={4}>
@@ -536,7 +535,7 @@ export default function Simulator() {
               </Stack>
             </CardBody>
           </Card>
-        </SimpleGrid>
+        </Grid>
 
         <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
           <Card bg={outputBg} borderWidth="1px" borderColor={outputBorder} borderRadius="2xl">
@@ -577,7 +576,17 @@ export default function Simulator() {
                     borderRadius="full"
                     px={8}
                     fontWeight="700"
-                    onClick={() => trackEvent("wm_cta_click", { cta: "login" })}
+                    onClick={() => {
+                      trackEvent("wm_cta_click", { cta: "login" });
+                      trackCtaClick({
+                        ctaName: "simulator_open_app",
+                        ctaText: "Open the app",
+                        placement: "simulator_teaser",
+                        destinationType: "external",
+                        destinationUrl: APP_LINKS.external.authenticatedConsole,
+                        pagePath: APP_LINKS.internal.simulator,
+                      });
+                    }}
                   >
                     Open the app
                   </Button>
@@ -588,7 +597,17 @@ export default function Simulator() {
                     borderRadius="full"
                     px={8}
                     fontWeight="700"
-                    onClick={() => trackEvent("wm_cta_click", { cta: "explore_features" })}
+                    onClick={() => {
+                      trackEvent("wm_cta_click", { cta: "explore_features" });
+                      trackCtaClick({
+                        ctaName: "simulator_explore_features",
+                        ctaText: "Explore features",
+                        placement: "simulator_teaser",
+                        destinationType: "internal",
+                        destinationUrl: APP_LINKS.internal.whyVeeVee,
+                        pagePath: APP_LINKS.internal.simulator,
+                      });
+                    }}
                   >
                     Explore features
                   </Button>

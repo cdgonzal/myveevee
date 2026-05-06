@@ -27,6 +27,8 @@ import { keyframes } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { Link as CLink } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
+import { trackEvent } from "../analytics/trackEvent";
 import { APP_LINKS } from "../config/links";
 
 const PAYOR_LOGOS = [
@@ -128,18 +130,18 @@ const HERO_IMAGES = [
 export default function Home() {
   const {
     isOpen: isPatientOpen,
-    onOpen: onPatientOpen,
-    onClose: onPatientClose,
+    onOpen: openPatientModal,
+    onClose: closePatientModal,
   } = useDisclosure();
   const {
     isOpen: isValueOpen,
-    onOpen: onValueOpen,
-    onClose: onValueClose,
+    onOpen: openValueModal,
+    onClose: closeValueModal,
   } = useDisclosure();
   const {
     isOpen: isArchitectureOpen,
-    onOpen: onArchitectureOpen,
-    onClose: onArchitectureClose,
+    onOpen: openArchitectureModal,
+    onClose: closeArchitectureModal,
   } = useDisclosure();
   const [activeHeroIndex, setActiveHeroIndex] = useState(0);
   const pageGradient = useColorModeValue(
@@ -164,6 +166,80 @@ export default function Home() {
   const stepCircleColor = "white";
   const freeAccent = useColorModeValue("#001A52", "#9CE7FF");
   const currentHero = HERO_IMAGES[activeHeroIndex];
+
+  const trackHomeCta = (
+    ctaName: string,
+    ctaText: string,
+    destinationUrl: string,
+    destinationType: "internal" | "external",
+    placement: string
+  ) => {
+    trackCtaClick({
+      ctaName,
+      ctaText,
+      placement,
+      destinationType,
+      destinationUrl,
+      pagePath: APP_LINKS.internal.home,
+    });
+  };
+
+  const onPatientOpen = () => {
+    trackEvent("modal_open", {
+      modal_name: "home_patient_journey",
+      trigger_name: "explore_your_wellness_journey",
+      page_path: APP_LINKS.internal.home,
+    });
+    openPatientModal();
+  };
+
+  const onPatientClose = () => {
+    if (isPatientOpen) {
+      trackEvent("modal_close", {
+        modal_name: "home_patient_journey",
+        page_path: APP_LINKS.internal.home,
+      });
+    }
+    closePatientModal();
+  };
+
+  const onValueOpen = () => {
+    trackEvent("modal_open", {
+      modal_name: "home_hospital_value",
+      trigger_name: "see_the_veevee_value_table",
+      page_path: APP_LINKS.internal.home,
+    });
+    openValueModal();
+  };
+
+  const onValueClose = () => {
+    if (isValueOpen) {
+      trackEvent("modal_close", {
+        modal_name: "home_hospital_value",
+        page_path: APP_LINKS.internal.home,
+      });
+    }
+    closeValueModal();
+  };
+
+  const onArchitectureOpen = () => {
+    trackEvent("modal_open", {
+      modal_name: "home_technology_backbone",
+      trigger_name: "see_the_technology",
+      page_path: APP_LINKS.internal.home,
+    });
+    openArchitectureModal();
+  };
+
+  const onArchitectureClose = () => {
+    if (isArchitectureOpen) {
+      trackEvent("modal_close", {
+        modal_name: "home_technology_backbone",
+        page_path: APP_LINKS.internal.home,
+      });
+    }
+    closeArchitectureModal();
+  };
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -234,6 +310,15 @@ export default function Home() {
               <Button
                 as="a"
                 href={APP_LINKS.cta.login}
+                onClick={() =>
+                  trackHomeCta(
+                    "home_hero_create_health_twin",
+                    "Create Your Health Twin",
+                    APP_LINKS.cta.login,
+                    "external",
+                    "home_hero"
+                  )
+                }
                 size="lg"
                 borderRadius="full"
                 fontWeight="700"
@@ -445,6 +530,15 @@ export default function Home() {
             <CLink
               as={RouterLink}
               to={APP_LINKS.internal.whyVeeVee}
+              onClick={() =>
+                trackHomeCta(
+                  "home_core_features",
+                  "Core Features",
+                  APP_LINKS.internal.whyVeeVee,
+                  "internal",
+                  "home_features_section"
+                )
+              }
               _hover={{ textDecoration: "none" }}
               _focus={{ boxShadow: "none" }}
               w="fit-content"
@@ -606,7 +700,16 @@ export default function Home() {
                 <Button
                   as={RouterLink}
                   to={APP_LINKS.internal.simulator}
-                  onClick={onPatientClose}
+                  onClick={() => {
+                    trackHomeCta(
+                      "home_patient_modal_try_it_free",
+                      "Try it free",
+                      APP_LINKS.internal.simulator,
+                      "internal",
+                      "home_patient_modal"
+                    );
+                    onPatientClose();
+                  }}
                   size="md"
                   borderRadius="full"
                   fontWeight="700"
@@ -619,6 +722,15 @@ export default function Home() {
                 <CLink
                   href={APP_LINKS.external.authenticatedConsole}
                   isExternal
+                  onClick={() =>
+                    trackHomeCta(
+                      "home_patient_modal_login",
+                      "Already have an account? Log in",
+                      APP_LINKS.external.authenticatedConsole,
+                      "external",
+                      "home_patient_modal"
+                    )
+                  }
                   color="accent.soft"
                   fontSize="sm"
                   fontWeight="600"

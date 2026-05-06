@@ -22,6 +22,11 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { trackCtaClick } from "./analytics/trackCtaClick";
+import { trackEvent } from "./analytics/trackEvent";
+import { trackPageView } from "./analytics/trackPageView";
+import { usePageEngagement } from "./analytics/usePageEngagement";
+import { useScrollDepth } from "./analytics/useScrollDepth";
 import { APP_LINKS } from "./config/links";
 import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
@@ -44,31 +49,23 @@ function ScrollToTop() {
   return null;
 }
 
-function AnalyticsPageView() {
-  const { pathname } = useLocation();
+function AnalyticsLifecycle() {
+  const { pathname, search } = useLocation();
 
-  useEffect(() => {
-    const gtag = (window as any).gtag;
-    if (typeof gtag !== "function") {
-      return;
-    }
-
-    gtag("event", "page_view", {
-      page_title: document.title,
-      page_location: window.location.href,
-      page_path: pathname,
-    });
-  }, [pathname]);
-
-  return null;
-}
-
-function RouteSeo() {
-  const { pathname } = useLocation();
+  useScrollDepth(pathname);
+  usePageEngagement(pathname);
 
   useEffect(() => {
     applyRouteSeo(ROUTE_SEO[pathname] ?? DEFAULT_ROUTE_SEO);
-  }, [pathname]);
+
+    const frameId = window.requestAnimationFrame(() => {
+      trackPageView(pathname, search);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [pathname, search]);
 
   return null;
 }
@@ -93,8 +90,7 @@ export default function App() {
     <Flex minH="100vh" direction="column" bgGradient={pageGradient}>
       {!isStandalonePage && <Header />}
       <Box as="main" flex="1">
-        <RouteSeo />
-        <AnalyticsPageView />
+        <AnalyticsLifecycle />
         {isStandalonePage ? (
           <>
             <ScrollToTop />
@@ -134,6 +130,27 @@ function Header() {
   const drawerBg = useColorModeValue("white", "surface.900");
   const logoFilter = useColorModeValue("none", "invert(1)");
 
+  const trackNavClick = (
+    ctaName: string,
+    ctaText: string,
+    destinationUrl: string,
+    destinationType: "internal" | "external",
+    placement: string
+  ) => {
+    trackCtaClick({
+      ctaName,
+      ctaText,
+      placement,
+      destinationType,
+      destinationUrl,
+    });
+  };
+
+  const handleDrawerOpen = () => {
+    trackEvent("nav_menu_open", { placement: "header_mobile" });
+    onOpen();
+  };
+
   return (
     <>
       <Box
@@ -153,6 +170,9 @@ function Header() {
               to="/"
               spacing={2}
               align="center"
+              onClick={() =>
+                trackNavClick("header_logo", "VeeVee", APP_LINKS.internal.home, "internal", "header_brand")
+              }
               _hover={{ textDecoration: "none" }}
             >
               <Image
@@ -175,16 +195,48 @@ function Header() {
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
               <HStack spacing={{ base: 3, md: 6 }} display={{ base: "none", md: "flex" }}>
-                <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} color={navColor} fontWeight="600">
+                <CLink
+                  as={Link}
+                  to={APP_LINKS.internal.whyVeeVee}
+                  color={navColor}
+                  fontWeight="600"
+                  onClick={() =>
+                    trackNavClick("header_features", "Features", APP_LINKS.internal.whyVeeVee, "internal", "header_nav")
+                  }
+                >
                   Features
                 </CLink>
-                <CLink as={Link} to={APP_LINKS.internal.simulator} color={navColor} fontWeight="600">
-                  VeeVee Simulator®
+                <CLink
+                  as={Link}
+                  to={APP_LINKS.internal.simulator}
+                  color={navColor}
+                  fontWeight="600"
+                  onClick={() =>
+                    trackNavClick("header_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal", "header_nav")
+                  }
+                >
+                  VeeVee SimulatorÂ®
                 </CLink>
-                <CLink as={Link} to={APP_LINKS.internal.testimonials} color={navColor} fontWeight="600">
+                <CLink
+                  as={Link}
+                  to={APP_LINKS.internal.testimonials}
+                  color={navColor}
+                  fontWeight="600"
+                  onClick={() =>
+                    trackNavClick("header_testimonials", "Testimonials", APP_LINKS.internal.testimonials, "internal", "header_nav")
+                  }
+                >
                   Testimonials
                 </CLink>
-                <CLink as={Link} to={APP_LINKS.internal.technology} color={navColor} fontWeight="600">
+                <CLink
+                  as={Link}
+                  to={APP_LINKS.internal.technology}
+                  color={navColor}
+                  fontWeight="600"
+                  onClick={() =>
+                    trackNavClick("header_technology", "Tech", APP_LINKS.internal.technology, "internal", "header_nav")
+                  }
+                >
                   Tech
                 </CLink>
               </HStack>
@@ -199,6 +251,9 @@ function Header() {
                 fontWeight="700"
                 px={{ base: 4, md: 5 }}
                 boxShadow="0 0 20px rgba(17, 119, 186, 0.45)"
+                onClick={() =>
+                  trackNavClick("header_login", "Log in", APP_LINKS.external.authenticatedConsole, "external", "header_nav")
+                }
               >
                 Log in
               </Button>
@@ -209,7 +264,7 @@ function Header() {
                 variant="ghost"
                 color={navColor}
                 display={{ base: "inline-flex", md: "none" }}
-                onClick={onOpen}
+                onClick={handleDrawerOpen}
               />
             </HStack>
           </Flex>
@@ -226,19 +281,64 @@ function Header() {
           <DrawerBody>
             <Stack spacing={4} mt={4}>
               <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
-              <CLink as={Link} to={APP_LINKS.internal.whyVeeVee} onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink
+                as={Link}
+                to={APP_LINKS.internal.whyVeeVee}
+                onClick={() => {
+                  trackNavClick("drawer_features", "Features", APP_LINKS.internal.whyVeeVee, "internal", "mobile_drawer");
+                  onClose();
+                }}
+                fontWeight="600"
+                color={navColor}
+              >
                 Features
               </CLink>
-              <CLink as={Link} to={APP_LINKS.internal.simulator} onClick={onClose} fontWeight="600" color={navColor}>
-                VeeVee Simulator®
+              <CLink
+                as={Link}
+                to={APP_LINKS.internal.simulator}
+                onClick={() => {
+                  trackNavClick("drawer_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal", "mobile_drawer");
+                  onClose();
+                }}
+                fontWeight="600"
+                color={navColor}
+              >
+                VeeVee SimulatorÂ®
               </CLink>
-              <CLink as={Link} to={APP_LINKS.internal.testimonials} onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink
+                as={Link}
+                to={APP_LINKS.internal.testimonials}
+                onClick={() => {
+                  trackNavClick("drawer_testimonials", "Testimonials", APP_LINKS.internal.testimonials, "internal", "mobile_drawer");
+                  onClose();
+                }}
+                fontWeight="600"
+                color={navColor}
+              >
                 Testimonials
               </CLink>
-              <CLink as={Link} to={APP_LINKS.internal.technology} onClick={onClose} fontWeight="600" color={navColor}>
+              <CLink
+                as={Link}
+                to={APP_LINKS.internal.technology}
+                onClick={() => {
+                  trackNavClick("drawer_technology", "Tech", APP_LINKS.internal.technology, "internal", "mobile_drawer");
+                  onClose();
+                }}
+                fontWeight="600"
+                color={navColor}
+              >
                 Tech
               </CLink>
-              <CLink href={APP_LINKS.external.authenticatedConsole} isExternal onClick={onClose} fontWeight="700" color="accent.soft">
+              <CLink
+                href={APP_LINKS.external.authenticatedConsole}
+                isExternal
+                onClick={() => {
+                  trackNavClick("drawer_login", "Log in", APP_LINKS.external.authenticatedConsole, "external", "mobile_drawer");
+                  onClose();
+                }}
+                fontWeight="700"
+                color="accent.soft"
+              >
                 Log in
               </CLink>
             </Stack>
@@ -254,6 +354,21 @@ function Footer() {
   const footerBg = useColorModeValue("bg.glass", "bg.glass");
   const primaryText = useColorModeValue("text.primary", "text.primary");
   const mutedText = useColorModeValue("text.muted", "text.muted");
+
+  const trackFooterClick = (
+    ctaName: string,
+    ctaText: string,
+    destinationUrl: string,
+    destinationType: "internal" | "external"
+  ) => {
+    trackCtaClick({
+      ctaName,
+      ctaText,
+      placement: "footer",
+      destinationType,
+      destinationUrl,
+    });
+  };
 
   return (
     <Box
@@ -274,19 +389,46 @@ function Footer() {
         >
           <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
           <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }} align={{ base: "center", md: "flex-start" }}>
-            <CLink href={APP_LINKS.external.authenticatedConsole} isExternal color={primaryText}>
+            <CLink
+              href={APP_LINKS.external.authenticatedConsole}
+              isExternal
+              color={primaryText}
+              onClick={() =>
+                trackFooterClick("footer_login", "Log In", APP_LINKS.external.authenticatedConsole, "external")
+              }
+            >
               Log In
             </CLink>
-            <CLink as={Link} to={APP_LINKS.internal.technology} color={primaryText}>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.technology}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_technology", "Technology", APP_LINKS.internal.technology, "internal")}
+            >
               Technology
             </CLink>
-            <CLink as={Link} to={APP_LINKS.internal.simulator} color={primaryText}>
-              VeeVee Simulator®
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.simulator}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal")}
+            >
+              VeeVee SimulatorÂ®
             </CLink>
-            <CLink href={APP_LINKS.external.investors} isExternal color={primaryText}>
+            <CLink
+              href={APP_LINKS.external.investors}
+              isExternal
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_investor_info", "Investor Info", APP_LINKS.external.investors, "external")}
+            >
               Investor Info
             </CLink>
-            <CLink as={Link} to={APP_LINKS.internal.terms} color={primaryText}>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.terms}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_terms", "Terms & Disclaimers", APP_LINKS.internal.terms, "internal")}
+            >
               Terms &amp; Disclaimers
             </CLink>
           </Stack>
@@ -312,10 +454,7 @@ function ColorModeToggle({
 
   const onToggle = () => {
     toggleColorMode();
-    const gtag = (window as any).gtag;
-    if (typeof gtag === "function") {
-      gtag("event", "theme_toggle", { mode: nextMode });
-    }
+    trackEvent("theme_toggle", { mode: nextMode });
   };
 
   return (

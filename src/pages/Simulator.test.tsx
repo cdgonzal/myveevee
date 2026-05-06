@@ -23,7 +23,7 @@ function renderSimulator() {
 describe("Simulator page", () => {
   it("renders the simplified simulator experience", () => {
     renderSimulator();
-    expect(screen.getByText("Try a simple what-if health scenario.")).toBeInTheDocument();
+    expect(screen.getByText("Try a health and coverage scenario with VeeVee Simulator.")).toBeInTheDocument();
     expect(screen.getByText("Pick a scenario")).toBeInTheDocument();
     expect(screen.getByText("Teaser for the app")).toBeInTheDocument();
   });

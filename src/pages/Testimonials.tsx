@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
 
 const MotionBox = motion(Box);
@@ -321,6 +322,16 @@ export default function Testimonials() {
                     href="https://veevee.io"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      trackCtaClick({
+                        ctaName: "testimonials_get_started",
+                        ctaText: "Get started",
+                        placement: "testimonials_bottom_cta",
+                        destinationType: "external",
+                        destinationUrl: APP_LINKS.external.authenticatedConsole,
+                        pagePath: APP_LINKS.internal.testimonials,
+                      })
+                    }
                     size="md"
                     borderRadius="full"
                     fontWeight="700"
