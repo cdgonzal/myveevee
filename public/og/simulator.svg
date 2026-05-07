@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#071C38"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="url(#bg)"/>
+  <rect x="756" y="112" width="294" height="88" rx="22" fill="#FFFFFF" fill-opacity="0.14"/>
+  <rect x="756" y="230" width="294" height="88" rx="22" fill="#9CE7FF" fill-opacity="0.18"/>
+  <rect x="756" y="348" width="294" height="88" rx="22" fill="#53D769" fill-opacity="0.18"/>
+  <text x="96" y="132" fill="#9CE7FF" font-family="Inter, Arial, sans-serif" font-size="28" letter-spacing="8">SIMULATOR</text>
+  <text x="96" y="230" fill="white" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Explore Health</text>
+  <text x="96" y="310" fill="white" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">and Coverage</text>
+  <text x="96" y="392" fill="#D9F5FF" font-family="Inter, Arial, sans-serif" font-size="28">Preview signals, benefits, and next steps from simple scenarios.</text>
+  <text x="96" y="520" fill="#53D769" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Pick a scenario. Adjust inputs. Review outcomes.</text>
+  <defs>
+    <linearGradient id="bg" x1="96" y1="72" x2="1080" y2="558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C274D"/>
+      <stop offset="1" stop-color="#145A90"/>
+    </linearGradient>
+  </defs>
+</svg>

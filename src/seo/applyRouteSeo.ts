@@ -32,8 +32,10 @@ export function applyRouteSeo(meta: RouteSeoMeta) {
   const resolvedRobots = meta.robots || DEFAULT_ROUTE_SEO.robots || "index, follow";
   const canonicalUrl = new URL(meta.canonicalPath || DEFAULT_ROUTE_SEO.canonicalPath, SITE_ORIGIN).toString();
   const ogType = meta.ogType || "website";
+  const ogImage = meta.ogImage || DEFAULT_ROUTE_SEO.ogImage || "https://myveevee.com/og/home.svg";
   const ogTitle = meta.ogTitle || resolvedTitle;
   const ogDescription = meta.ogDescription || resolvedDescription;
+  const twitterImage = meta.twitterImage || ogImage;
   const twitterTitle = meta.twitterTitle || ogTitle;
   const twitterDescription = meta.twitterDescription || ogDescription;
 
@@ -87,6 +89,12 @@ export function applyRouteSeo(meta: RouteSeoMeta) {
     return tag;
   }).content = canonicalUrl;
 
+  ensureMeta('meta[property="og:image"]', () => {
+    const tag = document.createElement("meta");
+    tag.setAttribute("property", "og:image");
+    return tag;
+  }).content = ogImage;
+
   ensureMeta('meta[name="twitter:title"]', () => {
     const tag = document.createElement("meta");
     tag.name = "twitter:title";
@@ -104,4 +112,10 @@ export function applyRouteSeo(meta: RouteSeoMeta) {
     tag.name = "twitter:description";
     return tag;
   }).content = twitterDescription;
+
+  ensureMeta('meta[name="twitter:image"]', () => {
+    const tag = document.createElement("meta");
+    tag.name = "twitter:image";
+    return tag;
+  }).content = twitterImage;
 }

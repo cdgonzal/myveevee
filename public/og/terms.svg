@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#081C35"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="url(#bg)"/>
+  <text x="96" y="132" fill="#9CE7FF" font-family="Inter, Arial, sans-serif" font-size="28" letter-spacing="8">TERMS</text>
+  <text x="96" y="230" fill="white" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Terms and</text>
+  <text x="96" y="310" fill="white" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Disclaimers</text>
+  <text x="96" y="392" fill="#D9F5FF" font-family="Inter, Arial, sans-serif" font-size="28">Plain-English usage limits, wellness guidance notes, and hospital-use conditions.</text>
+  <rect x="760" y="172" width="280" height="86" rx="22" fill="#FFFFFF" fill-opacity="0.12"/>
+  <rect x="760" y="292" width="280" height="86" rx="22" fill="#9CE7FF" fill-opacity="0.18"/>
+  <rect x="760" y="412" width="280" height="86" rx="22" fill="#53D769" fill-opacity="0.18"/>
+  <text x="96" y="520" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="26">Wellness tool, not diagnosis. Hospitals retain responsibility.</text>
+  <defs>
+    <linearGradient id="bg" x1="96" y1="72" x2="1080" y2="558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B2445"/>
+      <stop offset="1" stop-color="#134E7E"/>
+    </linearGradient>
+  </defs>
+</svg>

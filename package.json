@@ -8,6 +8,7 @@
     "build": "vite build && node scripts/prerender-static-routes.mjs",
     "preview": "vite preview --port 5173",
     "normalize:payors": "node _sandbox/tools/normalizePayorLogos.cjs",
+    "verify:seo": "npm run build && node scripts/verify-prerender-static-routes.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

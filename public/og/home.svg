@@ -1,0 +1,17 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#061D3A"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="url(#bg)"/>
+  <circle cx="1030" cy="120" r="120" fill="#9CE7FF" fill-opacity="0.18"/>
+  <circle cx="970" cy="510" r="150" fill="#53D769" fill-opacity="0.14"/>
+  <text x="96" y="132" fill="#9CE7FF" font-family="Inter, Arial, sans-serif" font-size="28" letter-spacing="8">MY VEEVEE</text>
+  <text x="96" y="248" fill="white" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800">Meet Your</text>
+  <text x="96" y="332" fill="white" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800">Health Twin</text>
+  <text x="96" y="414" fill="#D9F5FF" font-family="Inter, Arial, sans-serif" font-size="28">Records, habits, care, and clearer next steps in one place.</text>
+  <text x="96" y="520" fill="#53D769" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Private. Secure. Yours.</text>
+  <defs>
+    <linearGradient id="bg" x1="96" y1="72" x2="1080" y2="558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A2B57"/>
+      <stop offset="1" stop-color="#1177BA"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,17 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#031524"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="url(#bg)"/>
+  <circle cx="930" cy="205" r="150" fill="#76B900" fill-opacity="0.18"/>
+  <circle cx="1030" cy="395" r="110" fill="#9CE7FF" fill-opacity="0.12"/>
+  <text x="96" y="132" fill="#76B900" font-family="Inter, Arial, sans-serif" font-size="28" letter-spacing="8">TECHNOLOGY</text>
+  <text x="96" y="230" fill="white" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Private, Fast</text>
+  <text x="96" y="310" fill="white" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Connected Care</text>
+  <text x="96" y="392" fill="#D9F5FF" font-family="Inter, Arial, sans-serif" font-size="28">Privacy-minded infrastructure, fast alerts, and unit-ready scale.</text>
+  <text x="96" y="520" fill="#76B900" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Bedside edge inference. Fast sensing. Responsive app intelligence.</text>
+  <defs>
+    <linearGradient id="bg" x1="96" y1="72" x2="1080" y2="558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A223C"/>
+      <stop offset="1" stop-color="#103B63"/>
+    </linearGradient>
+  </defs>
+</svg>

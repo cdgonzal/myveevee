@@ -13,6 +13,7 @@ const ROUTES = [
     description:
       "VEEVEE is a digital version of your health that brings your records, habits, and care into one place so you can understand your body and make decisions with confidence.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/home.svg",
     body: `
       <main data-prerendered-route="/" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Private. Secure. Yours.</p>
@@ -47,6 +48,7 @@ const ROUTES = [
     description:
       "Explore VeeVee features for connected care, everyday guidance, family support, care-team visibility, and hospital-to-home continuity.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/features.svg",
     body: `
       <main data-prerendered-route="/features" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Features</p>
@@ -70,6 +72,7 @@ const ROUTES = [
     description:
       "See how VeeVee is built for connected care with privacy-minded architecture, fast alerts, unit-ready scale, and a responsive app experience.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/technology.svg",
     body: `
       <main data-prerendered-route="/technology" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#76B900;margin:0 0 12px;">Technology</p>
@@ -92,6 +95,7 @@ const ROUTES = [
     description:
       "Try the VeeVee Simulator to explore health, routine, and coverage scenarios with clearer next steps and a more personal picture of your care story.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/simulator.svg",
     body: `
       <main data-prerendered-route="/simulator" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Simulator</p>
@@ -113,6 +117,7 @@ const ROUTES = [
     description:
       "Read how patients, caregivers, Medicare users, and clinicians describe VeeVee as a simpler, clearer, and more connected health experience.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/testimonials.svg",
     body: `
       <main data-prerendered-route="/testimonials" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Testimonials</p>
@@ -135,6 +140,7 @@ const ROUTES = [
     description:
       "Contact VeeVee for press inquiries, partnerships, investor information, or support questions.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/contact.svg",
     body: `
       <main data-prerendered-route="/contact" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Contact</p>
@@ -156,6 +162,7 @@ const ROUTES = [
     description:
       "Review VeeVee terms, disclaimers, wellness guidance limits, data notes, and hospital-use conditions in plain English.",
     robots: "index, follow",
+    image: "https://myveevee.com/og/terms.svg",
     body: `
       <main data-prerendered-route="/terms" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
         <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Terms</p>
@@ -224,6 +231,11 @@ function applyRouteHead(baseHtml, route) {
   );
   html = updateTag(
     html,
+    /<meta property="og:image" content="[^"]*" \/>/,
+    `<meta property="og:image" content="${route.image}" />`
+  );
+  html = updateTag(
+    html,
     /<meta name="twitter:title" content="[^"]*" \/>/,
     `<meta name="twitter:title" content="${escapeAttribute(route.title)}" />`
   );
@@ -231,6 +243,11 @@ function applyRouteHead(baseHtml, route) {
     html,
     /<meta name="twitter:description" content="[^"]*" \/>/,
     `<meta name="twitter:description" content="${escapeAttribute(route.description)}" />`
+  );
+  html = updateTag(
+    html,
+    /<meta name="twitter:image" content="[^"]*" \/>/,
+    `<meta name="twitter:image" content="${route.image}" />`
   );
   html = updateTag(
     html,
