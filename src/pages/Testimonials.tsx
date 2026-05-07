@@ -346,6 +346,84 @@ export default function Testimonials() {
             </MotionBox>
           </AnimatePresence>
         </Box>
+
+        <Box
+          borderRadius="2xl"
+          bg={cardBg}
+          borderWidth="1px"
+          borderColor={borderColor}
+          boxShadow="0 0 40px rgba(0,0,0,0.18)"
+          px={{ base: 5, md: 8 }}
+          py={{ base: 6, md: 8 }}
+        >
+          <Stack spacing={5}>
+            <Box>
+              <Text fontSize="xs" letterSpacing="0.18em" textTransform="uppercase" color="accent.soft" mb={2}>
+                More VeeVee Stories
+              </Text>
+              <Heading as="h2" size="md" mb={2}>
+                Snapshot summaries across caregivers, Medicare users, working adults, and clinicians.
+              </Heading>
+              <Text fontSize="sm" color={muted} maxW="3xl">
+                These summaries keep the broader testimonial set visible in the page itself while the interactive
+                story view above lets visitors explore each perspective in more detail.
+              </Text>
+            </Box>
+
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+              {TESTIMONIALS.map((voice) => (
+                <Box
+                  key={`crawlable-${voice.id}`}
+                  borderWidth="1px"
+                  borderColor={borderColor}
+                  borderRadius="xl"
+                  bg={detailBg}
+                  px={4}
+                  py={4}
+                >
+                  <Stack spacing={3}>
+                    <Box>
+                      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                        {voice.pillLabel}
+                      </Text>
+                      <Heading as="h3" size="sm" mb={2}>
+                        {voice.quote}
+                      </Heading>
+                      <Text fontSize="sm" color={muted}>
+                        {voice.summary}
+                      </Text>
+                    </Box>
+
+                    <Box>
+                      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                        Situation
+                      </Text>
+                      <Text fontSize="sm" color="text.primary">
+                        {voice.situation}
+                      </Text>
+                    </Box>
+
+                    <Box>
+                      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={1}>
+                        Outcome
+                      </Text>
+                      <Text fontSize="sm" color="text.primary" mb={2}>
+                        {voice.outcome}
+                      </Text>
+                      <Stack spacing={1}>
+                        {voice.outcomePoints.map((point) => (
+                          <Text key={`${voice.id}-${point}`} fontSize="sm" color={muted}>
+                            - {point}
+                          </Text>
+                        ))}
+                      </Stack>
+                    </Box>
+                  </Stack>
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Stack>
+        </Box>
       </Stack>
     </Box>
   );

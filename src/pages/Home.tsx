@@ -614,6 +614,209 @@ export default function Home() {
           </SimpleGrid>
         </Box>
 
+        <Stack spacing={{ base: 8, md: 10 }} maxW="6xl" mx="auto" mt={{ base: 10, md: 14 }}>
+          <Box
+            bg={audienceCardBg}
+            borderWidth="1px"
+            borderColor={border}
+            borderRadius="2xl"
+            boxShadow="0 12px 32px rgba(6, 37, 76, 0.12)"
+            p={{ base: 5, md: 6 }}
+            backdropFilter="blur(14px)"
+          >
+            <Stack spacing={4}>
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft">
+                Crawlable overview
+              </Text>
+              <Heading as="h2" size={{ base: "md", md: "lg" }}>
+                How VeeVee works across patients, hospitals, and connected care.
+              </Heading>
+              <Text color={muted} maxW="4xl">
+                This section keeps the core VeeVee story visible in normal page content: how people get guidance,
+                how hospitals think about value, and how the technology supports a private, responsive experience.
+              </Text>
+            </Stack>
+          </Box>
+
+          <Box
+            bg={audienceCardBg}
+            borderWidth="1px"
+            borderColor={border}
+            borderRadius="2xl"
+            boxShadow="0 12px 32px rgba(6, 37, 76, 0.12)"
+            p={{ base: 5, md: 6 }}
+            backdropFilter="blur(14px)"
+          >
+            <Stack spacing={5}>
+              <Box>
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
+                  For everyday users
+                </Text>
+                <Heading as="h2" size="md" mb={2}>
+                  Your health questions answered in three simple steps.
+                </Heading>
+                <Text color={muted} maxW="3xl">
+                  VeeVee is designed to help people describe what is happening, get calmer next-step guidance,
+                  and understand how benefits or coverage may shape the decision.
+                </Text>
+              </Box>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                {PATIENT_STEPS.map((step) => (
+                  <Box
+                    key={`crawlable-${step.number}`}
+                    bg="bg.surface"
+                    borderRadius="xl"
+                    borderWidth="1px"
+                    borderColor={border}
+                    boxShadow="0 10px 24px rgba(6, 37, 76, 0.10)"
+                    p={5}
+                  >
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
+                      Step {step.number}
+                    </Text>
+                    <Heading as="h3" size="sm" mb={2}>
+                      {step.title}
+                    </Heading>
+                    <Text fontSize="sm" color={muted}>
+                      {step.detail}
+                    </Text>
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </Stack>
+          </Box>
+
+          <Box
+            bg={audienceCardBg}
+            borderWidth="1px"
+            borderColor={border}
+            borderRadius="2xl"
+            boxShadow="0 12px 32px rgba(6, 37, 76, 0.12)"
+            p={{ base: 5, md: 6 }}
+            backdropFilter="blur(14px)"
+          >
+            <Stack spacing={5}>
+              <Box>
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
+                  For hospitals
+                </Text>
+                <Heading as="h2" size="md" mb={2}>
+                  A simple way to think about hospital value.
+                </Heading>
+                <Text color={muted} maxW="4xl">
+                  VeeVee positions value around new revenue, labor savings, and lower operational risk while helping
+                  teams stay more connected from bedside to home.
+                </Text>
+              </Box>
+
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Revenue support
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    RPM and RTM-aligned workflows can help hospitals think about new value capture alongside connected care.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Labor efficiency
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    Workflow visibility and lower dependence on costly manual coverage can change the math quickly.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Risk mitigation
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    Earlier signals, clearer follow-through, and fewer missed events help protect both patients and budgets.
+                  </Text>
+                </Box>
+              </SimpleGrid>
+
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                {HOSPITAL_VALUE_ROWS.map((row) => (
+                  <Box key={`crawlable-${row.rollout}`} borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                    <Heading as="h3" size="sm" mb={2}>
+                      {row.rollout}
+                    </Heading>
+                    <Text color={muted} fontSize="sm" mb={2}>
+                      Monthly cost {row.monthlyCost}, new revenue {row.revenue}, labor savings {row.laborSavings},
+                      and illustrative net impact {row.netImpact}.
+                    </Text>
+                    <Text color="text.primary" fontSize="sm">
+                      {row.valueNote}
+                    </Text>
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </Stack>
+          </Box>
+
+          <Box
+            bg={audienceCardBg}
+            borderWidth="1px"
+            borderColor={border}
+            borderRadius="2xl"
+            boxShadow="0 12px 32px rgba(6, 37, 76, 0.12)"
+            p={{ base: 5, md: 6 }}
+            backdropFilter="blur(14px)"
+          >
+            <Stack spacing={5}>
+              <Box>
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color={nvidiaAccent} mb={2}>
+                  Technology backbone
+                </Text>
+                <Heading as="h2" size="md" mb={2}>
+                  Private, fast infrastructure behind the VeeVee experience.
+                </Heading>
+                <Text color={muted} maxW="4xl">
+                  The goal is straightforward: keep VeeVee private, responsive, and reliable for both hospital use cases
+                  and the broader app experience.
+                </Text>
+              </Box>
+
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Bedside edge inference
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    Video can be processed locally so sensitive patient information does not need to travel to the cloud by default.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Fast alerts and sensing
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    Low-latency sensing helps VeeVee react quickly when something looks wrong, including fall-risk events.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    Unit-ready scale
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    Optimized pipelines support many rooms and many streams at once without slowing down the experience.
+                  </Text>
+                </Box>
+                <Box borderWidth="1px" borderColor={border} borderRadius="xl" p={4}>
+                  <Heading as="h3" size="sm" mb={2}>
+                    App intelligence
+                  </Heading>
+                  <Text color={muted} fontSize="sm">
+                    The same core technology helps power VeeVee Simulator®, personalized guidance, and a fast app experience.
+                  </Text>
+                </Box>
+              </SimpleGrid>
+            </Stack>
+          </Box>
+        </Stack>
+
       </Box>
 
       <Modal isOpen={isPatientOpen} onClose={onPatientClose} size="5xl" isCentered scrollBehavior="inside">

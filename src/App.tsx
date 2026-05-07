@@ -36,6 +36,7 @@ const Features = lazy(() => import("./pages/Features"));
 const Technology = lazy(() => import("./pages/Technology"));
 const Simulator = lazy(() => import("./pages/Simulator"));
 const Testimonials = lazy(() => import("./pages/Testimonials"));
+const Contact = lazy(() => import("./pages/Contact"));
 const Terms = lazy(() => import("./pages/Terms"));
 const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
 
@@ -110,6 +111,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.technology} element={<Technology />} />
                 <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
                 <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
+                <Route path={APP_LINKS.internal.contact} element={<Contact />} />
                 <Route path={APP_LINKS.internal.terms} element={<Terms />} />
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
               </Routes>
@@ -422,6 +424,14 @@ function Footer() {
               onClick={() => trackFooterClick("footer_investor_info", "Investor Info", APP_LINKS.external.investors, "external")}
             >
               Investor Info
+            </CLink>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.contact}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_contact", "Contact & Press", APP_LINKS.internal.contact, "internal")}
+            >
+              Contact &amp; Press
             </CLink>
             <CLink
               as={Link}

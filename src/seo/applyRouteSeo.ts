@@ -1,6 +1,8 @@
 import { DEFAULT_ROUTE_SEO, type RouteSeoMeta } from "./routeMeta";
 
 const SITE_ORIGIN = "https://myveevee.com";
+const SITE_NAME = "My VeeVee";
+const DEFAULT_TWITTER_CARD = "summary_large_image";
 
 function ensureMeta(selector: string, create: () => HTMLMetaElement): HTMLMetaElement {
   const existing = document.head.querySelector<HTMLMetaElement>(selector);
@@ -29,6 +31,7 @@ export function applyRouteSeo(meta: RouteSeoMeta) {
   const resolvedDescription = meta.description || DEFAULT_ROUTE_SEO.description;
   const resolvedRobots = meta.robots || DEFAULT_ROUTE_SEO.robots || "index, follow";
   const canonicalUrl = new URL(meta.canonicalPath || DEFAULT_ROUTE_SEO.canonicalPath, SITE_ORIGIN).toString();
+  const ogType = meta.ogType || "website";
   const ogTitle = meta.ogTitle || resolvedTitle;
   const ogDescription = meta.ogDescription || resolvedDescription;
   const twitterTitle = meta.twitterTitle || ogTitle;
@@ -60,6 +63,18 @@ export function applyRouteSeo(meta: RouteSeoMeta) {
     return tag;
   }).content = ogTitle;
 
+  ensureMeta('meta[property="og:type"]', () => {
+    const tag = document.createElement("meta");
+    tag.setAttribute("property", "og:type");
+    return tag;
+  }).content = ogType;
+
+  ensureMeta('meta[property="og:site_name"]', () => {
+    const tag = document.createElement("meta");
+    tag.setAttribute("property", "og:site_name");
+    return tag;
+  }).content = SITE_NAME;
+
   ensureMeta('meta[property="og:description"]', () => {
     const tag = document.createElement("meta");
     tag.setAttribute("property", "og:description");
@@ -77,6 +92,12 @@ export function applyRouteSeo(meta: RouteSeoMeta) {
     tag.name = "twitter:title";
     return tag;
   }).content = twitterTitle;
+
+  ensureMeta('meta[name="twitter:card"]', () => {
+    const tag = document.createElement("meta");
+    tag.name = "twitter:card";
+    return tag;
+  }).content = DEFAULT_TWITTER_CARD;
 
   ensureMeta('meta[name="twitter:description"]', () => {
     const tag = document.createElement("meta");
