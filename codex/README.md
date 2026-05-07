@@ -1,142 +1,143 @@
 # Codex Notes for `myveevee`
 
 ## Overview
+
 This repository is the public-facing marketing site for `myveevee.com`.
 
-- Framework: React + TypeScript + Vite
+- Framework: React 18 + TypeScript + Vite
 - UI system: Chakra UI
-- Routing: `react-router-dom` (client-side SPA routing)
-- Animation: Framer Motion + Emotion keyframes
-- Deployment output: `dist/` (AWS Amplify config included)
+- Routing: `react-router-dom`
+- Animation: Framer Motion
+- Deployment target: static `dist/` output via Amplify
+- Current SEO model:
+  - route metadata is still applied client-side during SPA navigation
+  - build-time prerender files are generated for public routes
+  - live hosting still needs route-level serving verification for non-root prerendered pages
 
-## App Structure
+## Current Route Surface
 
-### Entry and App Shell
-- `src/main.tsx`
-  - Bootstraps React, Chakra theme provider, and browser router.
-- `src/App.tsx`
-  - Defines global layout shell (header, footer, main container).
-  - Registers site routes.
-  - Includes mobile drawer navigation and `ScrollToTop` route behavior.
-- `src/theme/index.ts`
-  - Chakra theme config (colors, typography, global styles, button/card defaults).
+### Core marketing routes
 
-### Pages (Routed)
-- `src/pages/Home.tsx` mapped to `/`
-  - Hero, core value proposition, payor logo marquee, CTA to `https://veevee.io`.
-- `src/pages/Features.tsx` mapped to `/features`
-  - Feature cards with desktop hover and mobile tap-to-reveal behavior.
-- `src/pages/HowItWorks.tsx` mapped to `/how-it-works`
-  - AI guide tiers and funnel CTA.
-- `src/pages/Testimonials.tsx` mapped to `/testimonials`
-  - Testimonial voice selector with animated content transitions.
-- `src/pages/Terms.tsx` mapped to `/terms`
-  - Terms and disclaimers content page.
+- `/`
+- `/features`
+- `/technology`
+- `/simulator`
+- `/testimonials`
+- `/contact`
+- `/terms`
 
-### Pages (Currently Unused in Routes)
+### SEO acquisition routes
+
+- `/caregivers`
+- `/medicare-guidance`
+- `/hospital-to-home`
+
+### Internal or restricted route
+
+- `/briefs/swca-4821.html`
+  - internal brief
+  - should remain `noindex`
+
+## Page Inventory
+
+- `src/pages/Home.tsx`
+  - homepage hero, payor logo strip, crawlable patient/hospital/technology sections, modal experiences
+- `src/pages/Features.tsx`
+  - feature overview plus internal links into the SEO acquisition pages
+- `src/pages/Technology.tsx`
+  - technology and infrastructure story
+- `src/pages/Simulator.tsx`
+  - interactive simulator preview experience
+- `src/pages/Testimonials.tsx`
+  - interactive testimonials plus crawlable summaries
 - `src/pages/Contact.tsx`
-  - Contact/press component exists but is not currently linked in `src/App.tsx`.
+  - public contact and press route
+- `src/pages/Terms.tsx`
+  - legal and disclaimer route
+- `src/pages/Caregivers.tsx`
+  - SEO landing page for caregiver-support discovery
+- `src/pages/MedicareGuidance.tsx`
+  - SEO landing page for Medicare-related guidance and coverage discovery
+- `src/pages/HospitalToHome.tsx`
+  - SEO landing page for discharge follow-up and continuity discovery
+- `src/pages/SwcaBrief.tsx`
+  - standalone internal SWCA brief page
+- `src/pages/SeoLandingPage.tsx`
+  - shared layout scaffold for the SEO landing pages
 
-## Static Files and Assets
+## SEO Implementation State
 
-### Public Assets
-- `public/`
-  - Favicons, manifest, robots/sitemap metadata files.
-  - Hero images and logo assets.
-  - Feature imagery under `public/images/features/`.
-  - Payor logo sets under `public/payors/` (`normalized`, `archive`, `duplicate`).
-  - Legal PDF: `public/VeeVee Business Associate Addendum.pdf`.
+### Completed
 
-### HTML/SEO/Tracking
-- `index.html`
-  - SEO metadata (Open Graph, Twitter).
-  - JSON-LD structured data.
-  - Google Analytics `gtag` snippet.
-  - Loads `src/main.tsx`.
+- Route metadata hardening in `src/seo/routeMeta.ts` and `src/seo/applyRouteSeo.ts`
+- `Contact & Press` routed and added to the sitemap
+- Crawlable homepage and testimonial content added
+- Route-specific OG images added under `public/og/`
+- Build-time prerender generation added through `scripts/prerender-static-routes.mjs`
+- SEO verification script added through `scripts/verify-prerender-static-routes.mjs`
+- Initial Phase 5 landing pages shipped:
+  - caregivers
+  - Medicare guidance
+  - hospital to home
 
-## Build, Scripts, and Tooling
-- `package.json`
-  - `npm run dev`: start Vite dev server.
-  - `npm run build`: production build to `dist/`.
-  - `npm run preview`: preview built app.
-  - `npm run typecheck`: TypeScript no-emit check.
-  - `npm run normalize:payors`: logo normalization utility via `_sandbox/tools/normalizePayorLogos.cjs`.
-- `vite.config.ts`
-  - React plugin, dev port `5173`, output directory `dist`.
-- `tsconfig.json`
-  - TypeScript project config.
+### Still open
 
-## Deployment
-- `amplify.yml`
-  - CI/CD steps for AWS Amplify:
-  - `npm ci` in prebuild.
-  - `npm run build` in build.
-  - Publishes artifacts from `dist/`.
+- Production verification that non-root routes are served with their prerendered HTML by the hosting layer
+- Real social-preview validation on X and other link-preview surfaces
+- Sitemap automation
+- Search Console / Bing Webmaster submission and monitoring
+- Additional acquisition clusters beyond the first three landing pages
 
-## Repository Notes
-- Root `README.md` is currently minimal.
-- `node_modules/` and `dist/` are present locally.
-- `_sandbox/` contains utilities, including payor logo processing scripts.
+## Key Files
 
-## Messaging Pivot Checklist
+- `src/App.tsx`
+  - app shell, route registration, analytics lifecycle, footer/header links
+- `src/config/links.ts`
+  - central route and external-link constants
+- `src/seo/routeMeta.ts`
+  - per-route SEO metadata
+- `src/seo/applyRouteSeo.ts`
+  - client-side head mutation for route changes
+- `scripts/prerender-static-routes.mjs`
+  - build-time route HTML generation for public pages
+- `scripts/verify-prerender-static-routes.mjs`
+  - validates prerendered route output
+- `public/robots.txt`
+  - crawl policy
+- `public/sitemap.xml`
+  - public indexable route list
 
-- [x] Confirm final value proposition language and legal-safe claim boundaries for:
-  - instant triage and live-doctor pathways
-  - digital twin simulation
-  - unified health profile (history + genetics + wearables)
-  - benefits and coverage optimization
-- [x] Define canonical homepage narrative order and section hierarchy.
-- [x] Keep and preserve current payor logo marquee pill on landing page.
+## Commands
 
-### Home Page (`src/pages/Home.tsx`)
-- [x] Rewrite hero copy to focus on "why use VeeVee" and immediate outcomes.
-- [x] Add/replace core content with the 4 key pillars.
-- [x] Ensure CTAs are consistent and route to the right destination (`veevee.io`).
-- [x] Keep high trust signals near CTA (privacy, encryption, clinical alignment language).
-- [ ] Validate mobile and desktop layout quality after content rewrite.
+- `npm run dev`
+  - local dev server
+- `npm run build`
+  - production build plus prerender generation
+- `npm run preview`
+  - local preview of the built site
+- `npm run typecheck`
+  - TypeScript validation
+- `npm run test`
+  - Vitest suite
+- `npm run verify:seo`
+  - full build plus prerender verification
+- `npm run normalize:payors`
+  - payor-logo normalization utility
 
-### Features Page (`src/pages/Features.tsx`)
-- [x] Reframe page around the same 4 pillars with deeper explanation.
-- [x] Replace or update card copy, labels, and images to match new positioning.
-- [x] Ensure hover/tap reveal still works and does not hide critical copy on mobile.
-- [x] Align wording with homepage terminology to avoid mixed messaging.
+## Validation Baseline
 
-### How It Works (`src/pages/HowItWorks.tsx`)
-- [x] Redesign into a simple 3-step flow:
-  - input (photo/voice/text)
-  - triage + simulation
-  - action via care + benefits optimization
-- [x] Keep legal disclaimers concise and aligned with approved language.
-- [x] Verify CTA flow is clear and conversion-focused.
+The current SEO work has been validated locally with:
 
-### Navigation and Site-Wide Consistency
-- [x] Update nav labels/order in `src/App.tsx` if needed for new story flow.
-- [x] Ensure footer links and wording reflect updated messaging.
-- [x] Check page metadata in `index.html` (title, description, OG/Twitter) for consistency.
-- [x] Sync codex docs after implementation so architecture and messaging notes stay accurate.
-- [ ] Theme factory + light mode + toggle tasks are tracked in `codex/readme_theme.md`.
+- `npm run typecheck`
+- `npm run test`
+- `npm run build`
+- `npm run verify:seo`
 
-### QA and Review Passes
-- [x] Pass 1: Content QA (clarity, consistency, tone, legal-safe language).
-- [ ] Pass 2: UX QA (desktop/mobile responsiveness, interaction behavior, readability).
-- [ ] Pass 3: Conversion QA (CTA prominence, funnel continuity, page-to-page flow).
-- [ ] Pass 4: Accessibility QA (heading order, contrast, keyboard navigation, link clarity).
+## Related Docs
 
-### Optimization and Performance
-- [x] Run build and type checks (`npm run typecheck`, `npm run build`).
-- [ ] Optimize heavy images (hero/feature assets) and confirm lazy-loading behavior.
-- [ ] Check for layout shift and oversized media in Lighthouse/PageSpeed.
-- [ ] Trim unused assets/copy blocks where practical.
-
-### Security, Logging, and Observability
-- [ ] Review outbound links and target attributes (`rel`, `noopener`, `noreferrer` where applicable).
-- [ ] Verify no sensitive data is exposed in static assets, metadata, or client code.
-- [ ] Audit analytics usage (`gtag`) to avoid accidental PII collection in events.
-- [ ] Define/confirm a minimal event taxonomy for funnel tracking (page view, CTA click, route step).
-- [ ] Add/confirm error visibility strategy (frontend error logging/reporting approach).
-- [ ] Confirm `robots.txt`, `sitemap.xml`, and legal pages are correct for production indexing.
-
-### Finalization
-- [ ] Run a final end-to-end manual walkthrough of all routes.
-- [ ] Capture a change log summary of what was updated and why.
-- [ ] Prepare a second-pass backlog (copy refinements, design polish, new proof assets).
+- `_sandbox/codex/seo/SEO_ROLLOUT_PLAN.md`
+  - phased SEO rollout plan
+- `_sandbox/codex/seo/SEO_BASELINE_AUDIT.md`
+  - historical pre-change audit snapshot
+- `_sandbox/codex/seo/SEO_PHASE5_CONTENT_MAP.md`
+  - current Phase 5 audience and intent map
