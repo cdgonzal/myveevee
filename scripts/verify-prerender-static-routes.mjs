@@ -42,6 +42,27 @@ const ROUTES = [
     image: "https://myveevee.com/og/testimonials.svg",
   },
   {
+    path: "/caregivers",
+    title: "Caregiver Support App | VeeVee for Families and Daily Care Coordination",
+    description:
+      "Explore how VeeVee supports caregivers with clearer updates, benefits context, family visibility, and calmer next steps after appointments or during recovery.",
+    image: "https://myveevee.com/og/features.svg",
+  },
+  {
+    path: "/medicare-guidance",
+    title: "Medicare Guidance App | VeeVee for Coverage Questions and Next Steps",
+    description:
+      "See how VeeVee helps Medicare users and families understand coverage context, follow-up questions, and calmer next steps after appointments.",
+    image: "https://myveevee.com/og/simulator.svg",
+  },
+  {
+    path: "/hospital-to-home",
+    title: "Hospital to Home Care Support | VeeVee for Discharge Follow-Up",
+    description:
+      "Learn how VeeVee supports hospital-to-home continuity with discharge follow-up, family visibility, and connected care after the visit.",
+    image: "https://myveevee.com/og/technology.svg",
+  },
+  {
     path: "/contact",
     title: "Contact VeeVee | Press, Partnerships, and Support",
     description:

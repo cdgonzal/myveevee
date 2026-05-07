@@ -36,6 +36,9 @@ const Features = lazy(() => import("./pages/Features"));
 const Technology = lazy(() => import("./pages/Technology"));
 const Simulator = lazy(() => import("./pages/Simulator"));
 const Testimonials = lazy(() => import("./pages/Testimonials"));
+const Caregivers = lazy(() => import("./pages/Caregivers"));
+const MedicareGuidance = lazy(() => import("./pages/MedicareGuidance"));
+const HospitalToHome = lazy(() => import("./pages/HospitalToHome"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Terms = lazy(() => import("./pages/Terms"));
 const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
@@ -111,6 +114,9 @@ export default function App() {
                 <Route path={APP_LINKS.internal.technology} element={<Technology />} />
                 <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
                 <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
+                <Route path={APP_LINKS.internal.caregivers} element={<Caregivers />} />
+                <Route path={APP_LINKS.internal.medicare} element={<MedicareGuidance />} />
+                <Route path={APP_LINKS.internal.hospitalToHome} element={<HospitalToHome />} />
                 <Route path={APP_LINKS.internal.contact} element={<Contact />} />
                 <Route path={APP_LINKS.internal.terms} element={<Terms />} />
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
@@ -217,7 +223,7 @@ function Header() {
                     trackNavClick("header_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal", "header_nav")
                   }
                 >
-                  VeeVee SimulatorÂ®
+                  VeeVee Simulator®
                 </CLink>
                 <CLink
                   as={Link}
@@ -305,7 +311,7 @@ function Header() {
                 fontWeight="600"
                 color={navColor}
               >
-                VeeVee SimulatorÂ®
+                VeeVee Simulator®
               </CLink>
               <CLink
                 as={Link}
@@ -415,7 +421,7 @@ function Footer() {
               color={primaryText}
               onClick={() => trackFooterClick("footer_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal")}
             >
-              VeeVee SimulatorÂ®
+              VeeVee Simulator®
             </CLink>
             <CLink
               href={APP_LINKS.external.investors}

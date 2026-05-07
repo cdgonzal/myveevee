@@ -72,6 +72,36 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: "https://myveevee.com/og/testimonials.svg",
     twitterImage: "https://myveevee.com/og/testimonials.svg",
   },
+  [APP_LINKS.internal.caregivers]: {
+    title: "Caregiver Support App | VeeVee for Families and Daily Care Coordination",
+    description:
+      "Explore how VeeVee supports caregivers with clearer updates, benefits context, family visibility, and calmer next steps after appointments or during recovery.",
+    canonicalPath: APP_LINKS.internal.caregivers,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: "https://myveevee.com/og/features.svg",
+    twitterImage: "https://myveevee.com/og/features.svg",
+  },
+  [APP_LINKS.internal.medicare]: {
+    title: "Medicare Guidance App | VeeVee for Coverage Questions and Next Steps",
+    description:
+      "See how VeeVee helps Medicare users and families understand coverage context, follow-up questions, and calmer next steps after appointments.",
+    canonicalPath: APP_LINKS.internal.medicare,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: "https://myveevee.com/og/simulator.svg",
+    twitterImage: "https://myveevee.com/og/simulator.svg",
+  },
+  [APP_LINKS.internal.hospitalToHome]: {
+    title: "Hospital to Home Care Support | VeeVee for Discharge Follow-Up",
+    description:
+      "Learn how VeeVee supports hospital-to-home continuity with discharge follow-up, family visibility, and connected care after the visit.",
+    canonicalPath: APP_LINKS.internal.hospitalToHome,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: "https://myveevee.com/og/technology.svg",
+    twitterImage: "https://myveevee.com/og/technology.svg",
+  },
   [APP_LINKS.internal.contact]: {
     title: "Contact VeeVee | Press, Partnerships, and Support",
     description:

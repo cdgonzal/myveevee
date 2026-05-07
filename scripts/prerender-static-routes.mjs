@@ -135,6 +135,72 @@ const ROUTES = [
     `,
   },
   {
+    path: "/caregivers",
+    title: "Caregiver Support App | VeeVee for Families and Daily Care Coordination",
+    description:
+      "Explore how VeeVee supports caregivers with clearer updates, benefits context, family visibility, and calmer next steps after appointments or during recovery.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/features.svg",
+    body: `
+      <main data-prerendered-route="/caregivers" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Caregiver support</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Caregiver support that keeps family, questions, and next steps in one place.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          VeeVee is positioned to help caregivers follow updates, understand benefits and coverage questions more clearly, and stay involved after appointments or during recovery without adding more confusion.
+        </p>
+        <ul style="line-height:1.8;padding-left:20px;">
+          <li>A shared view of updates and next steps.</li>
+          <li>Benefits and coverage context that is easier to understand.</li>
+          <li>More confidence after the visit or during recovery at home.</li>
+        </ul>
+      </main>
+    `,
+  },
+  {
+    path: "/medicare-guidance",
+    title: "Medicare Guidance App | VeeVee for Coverage Questions and Next Steps",
+    description:
+      "See how VeeVee helps Medicare users and families understand coverage context, follow-up questions, and calmer next steps after appointments.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/simulator.svg",
+    body: `
+      <main data-prerendered-route="/medicare-guidance" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Medicare guidance</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">A simpler way to understand Medicare-related next steps, questions, and coverage context.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          VeeVee is positioned for people who want a calmer way to understand what may matter after a visit, what questions to ask, and how benefits or coverage may shape the next step.
+        </p>
+        <ul style="line-height:1.8;padding-left:20px;">
+          <li>Simple setup and easy questions.</li>
+          <li>Coverage context connected to the health story.</li>
+          <li>More confidence after appointments.</li>
+        </ul>
+      </main>
+    `,
+  },
+  {
+    path: "/hospital-to-home",
+    title: "Hospital to Home Care Support | VeeVee for Discharge Follow-Up",
+    description:
+      "Learn how VeeVee supports hospital-to-home continuity with discharge follow-up, family visibility, and connected care after the visit.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/technology.svg",
+    body: `
+      <main data-prerendered-route="/hospital-to-home" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Hospital to home</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Hospital-to-home support for discharge follow-up, family visibility, and connected care.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          VeeVee repeatedly positions its value around continuity after the visit. This page focuses that story for people searching around discharge follow-up, home recovery, and staying connected once someone leaves the hospital.
+        </p>
+        <ul style="line-height:1.8;padding-left:20px;">
+          <li>People stay connected after they go home.</li>
+          <li>Families can stay informed and involved.</li>
+          <li>Care teams get a clearer view of progress.</li>
+        </ul>
+      </main>
+    `,
+  },
+  {
     path: "/contact",
     title: "Contact VeeVee | Press, Partnerships, and Support",
     description:

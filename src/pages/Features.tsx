@@ -106,6 +106,7 @@ export default function Features() {
   const cardBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.66)");
   const heroPanelBg = useColorModeValue("rgba(255, 255, 255, 0.70)", "rgba(6, 37, 76, 0.58)");
   const accentSurface = useColorModeValue("rgba(17, 119, 186, 0.08)", "rgba(17, 119, 186, 0.16)");
+  const linkCardBg = useColorModeValue("rgba(255, 255, 255, 0.88)", "rgba(6, 37, 76, 0.62)");
 
   return (
     <Box
@@ -189,6 +190,82 @@ export default function Features() {
             <Text color={muted}>
               People want support. Families want to stay involved. Clinicians want better visibility. Hospitals want smoother transitions. VeeVee brings those needs together in one simpler experience.
             </Text>
+          </Stack>
+        </Box>
+
+        <Box
+          borderWidth="1px"
+          borderColor={border}
+          borderRadius="2xl"
+          bg={introBg}
+          boxShadow="0 18px 40px rgba(6, 37, 76, 0.10)"
+          p={{ base: 5, md: 7 }}
+        >
+          <Stack spacing={4}>
+            <Box>
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
+                Explore by need
+              </Text>
+              <Heading as="h2" size="md" mb={2}>
+                Use-case pages for discoverability and clearer entry points.
+              </Heading>
+              <Text color={muted}>
+                VeeVee now has focused entry pages for caregiver support, Medicare guidance, and hospital-to-home continuity.
+              </Text>
+            </Box>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+              <Box
+                as={RouterLink}
+                to={APP_LINKS.internal.caregivers}
+                borderWidth="1px"
+                borderColor={border}
+                borderRadius="xl"
+                bg={linkCardBg}
+                p={4}
+                _hover={{ textDecoration: "none", borderColor: "accent.primary" }}
+              >
+                <Heading as="h3" size="sm" mb={2}>
+                  Caregiver support
+                </Heading>
+                <Text fontSize="sm" color={muted}>
+                  For families helping someone recover, stay organized, and understand benefits questions with less confusion.
+                </Text>
+              </Box>
+              <Box
+                as={RouterLink}
+                to={APP_LINKS.internal.medicare}
+                borderWidth="1px"
+                borderColor={border}
+                borderRadius="xl"
+                bg={linkCardBg}
+                p={4}
+                _hover={{ textDecoration: "none", borderColor: "accent.primary" }}
+              >
+                <Heading as="h3" size="sm" mb={2}>
+                  Medicare guidance
+                </Heading>
+                <Text fontSize="sm" color={muted}>
+                  For older adults and families who want clearer coverage context and calmer follow-up after appointments.
+                </Text>
+              </Box>
+              <Box
+                as={RouterLink}
+                to={APP_LINKS.internal.hospitalToHome}
+                borderWidth="1px"
+                borderColor={border}
+                borderRadius="xl"
+                bg={linkCardBg}
+                p={4}
+                _hover={{ textDecoration: "none", borderColor: "accent.primary" }}
+              >
+                <Heading as="h3" size="sm" mb={2}>
+                  Hospital to home
+                </Heading>
+                <Text fontSize="sm" color={muted}>
+                  For discharge follow-up, continuity after the visit, and the transition from bedside to home.
+                </Text>
+              </Box>
+            </SimpleGrid>
           </Stack>
         </Box>
 
