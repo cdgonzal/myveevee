@@ -206,31 +206,6 @@ function Header() {
             </HStack>
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
-              <HStack spacing={{ base: 3, md: 6 }} display={{ base: "none", md: "flex" }}>
-                <CLink
-                  as={Link}
-                  to={APP_LINKS.internal.whyVeeVee}
-                  color={navColor}
-                  fontWeight="600"
-                  onClick={() =>
-                    trackNavClick("header_features", "Features", APP_LINKS.internal.whyVeeVee, "internal", "header_nav")
-                  }
-                >
-                  Features
-                </CLink>
-                <CLink
-                  as={Link}
-                  to={APP_LINKS.internal.simulator}
-                  color={navColor}
-                  fontWeight="600"
-                  onClick={() =>
-                    trackNavClick("header_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal", "header_nav")
-                  }
-                >
-                  VeeVee Simulator
-                </CLink>
-              </HStack>
-
               <ColorModeToggle display={{ base: "none", md: "inline-flex" }} withDivider />
 
               <Button
@@ -252,8 +227,8 @@ function Header() {
                 aria-label="Open navigation menu"
                 icon={<Box as="span" fontSize="12px" lineHeight="1">Menu</Box>}
                 variant="ghost"
-                color={navColor}
-                display={{ base: "inline-flex", md: "none" }}
+                color="white"
+                display="inline-flex"
                 onClick={handleDrawerOpen}
               />
             </HStack>
