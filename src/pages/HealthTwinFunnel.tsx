@@ -4,6 +4,7 @@ import {
   Button,
   Heading,
   HStack,
+  Image,
   SimpleGrid,
   Stack,
   Text,
@@ -27,6 +28,7 @@ type UploadOption = {
   whyMatters: string;
   metrics: string[];
   visualType: "mri" | "record" | "injury" | "lab";
+  imageSrc: string;
   input: SimulatorInput;
 };
 
@@ -77,6 +79,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Shows structure, pressure points, and what needs deeper review fast.",
     metrics: ["Pain", "Scan", "Priority"],
     visualType: "mri",
+    imageSrc: "/images/health-twin/cards/step-1-mri-scan.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -107,6 +110,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Connects visits, medications, and history into one timeline.",
     metrics: ["Visits", "Meds", "History"],
     visualType: "record",
+    imageSrc: "/images/health-twin/cards/step-1-health-record.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -132,6 +136,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Helps the twin spot severity, swelling, and same-day triage needs.",
     metrics: ["Swelling", "Triage", "Fast"],
     visualType: "injury",
+    imageSrc: "/images/health-twin/cards/step-1-injury-image.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       profile: {
@@ -174,6 +179,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Turns common U.S. lab results into risk and trend signals.",
     metrics: ["A1C", "BP", "Trend"],
     visualType: "lab",
+    imageSrc: "/images/health-twin/cards/step-1-lab-panel.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       insurance: {
@@ -312,7 +318,17 @@ function MetricChip({ label }: { label: string }) {
   );
 }
 
-function TileVisual({ visualType, isSelected }: { visualType: UploadOption["visualType"] | EvolutionOption["visualType"]; isSelected: boolean }) {
+function TileVisual({
+  visualType,
+  isSelected,
+  imageSrc,
+  imageAlt,
+}: {
+  visualType: UploadOption["visualType"] | EvolutionOption["visualType"];
+  isSelected: boolean;
+  imageSrc?: string;
+  imageAlt: string;
+}) {
   const shellBg = isSelected
     ? "linear-gradient(135deg, rgba(23,49,140,0.18) 0%, rgba(54,197,255,0.22) 100%)"
     : "linear-gradient(135deg, rgba(17,119,186,0.08) 0%, rgba(54,197,255,0.10) 100%)";
@@ -326,7 +342,27 @@ function TileVisual({ visualType, isSelected }: { visualType: UploadOption["visu
       position="relative"
       overflow="hidden"
     >
-      {visualType === "mri" ? (
+      {imageSrc ? (
+        <Image
+          src={imageSrc}
+          alt={imageAlt}
+          w="100%"
+          h="100%"
+          objectFit="cover"
+          loading="lazy"
+        />
+      ) : null}
+
+      {imageSrc ? (
+        <Box
+          position="absolute"
+          inset={0}
+          bg={isSelected ? "rgba(23,49,140,0.06)" : "rgba(255,255,255,0.02)"}
+          pointerEvents="none"
+        />
+      ) : null}
+
+      {!imageSrc && visualType === "mri" ? (
         <>
           <Box position="absolute" inset="18px 26px 18px 22px" borderRadius="24px" bg="rgba(255,255,255,0.74)" />
           <Box position="absolute" left="26px" top="44px" w="90px" h="58px" borderRadius="22px" bg="#123C9B" />
@@ -336,7 +372,7 @@ function TileVisual({ visualType, isSelected }: { visualType: UploadOption["visu
         </>
       ) : null}
 
-      {visualType === "record" ? (
+      {!imageSrc && visualType === "record" ? (
         <>
           <Box position="absolute" left="36px" top="18px" w="88px" h="112px" borderRadius="20px" bg="white" boxShadow="0 12px 24px rgba(6,37,76,0.08)" />
           <Box position="absolute" left="52px" top="38px" w="44px" h="10px" borderRadius="full" bg="#36C5FF" />
@@ -349,7 +385,7 @@ function TileVisual({ visualType, isSelected }: { visualType: UploadOption["visu
         </>
       ) : null}
 
-      {visualType === "injury" ? (
+      {!imageSrc && visualType === "injury" ? (
         <>
           <Box position="absolute" left="24px" top="16px" w="176px" h="116px" borderRadius="28px" bg="linear-gradient(180deg, #F4D7C2 0%, #EBC2A8 100%)" />
           <Box position="absolute" left="78px" top="46px" w="52px" h="52px" borderRadius="full" bg="radial-gradient(circle at 50% 50%, rgba(108,23,32,0.75) 0%, rgba(158,31,43,0.56) 44%, rgba(214,81,92,0.24) 72%, rgba(255,255,255,0) 100%)" />
@@ -361,7 +397,7 @@ function TileVisual({ visualType, isSelected }: { visualType: UploadOption["visu
         </>
       ) : null}
 
-      {visualType === "lab" ? (
+      {!imageSrc && visualType === "lab" ? (
         <>
           <Box position="absolute" left="26px" top="22px" w="164px" h="104px" borderRadius="24px" bg="white" boxShadow="0 12px 24px rgba(6,37,76,0.08)" />
           <Box position="absolute" left="46px" bottom="34px" w="18px" h="30px" borderRadius="10px 10px 4px 4px" bg="#36C5FF" />
@@ -436,6 +472,7 @@ function IconTile({
   cardBg,
   activeCardBg,
   visualType,
+  imageSrc,
 }: {
   title: string;
   micro: string;
@@ -449,6 +486,7 @@ function IconTile({
   cardBg: string;
   activeCardBg: string;
   visualType: UploadOption["visualType"] | EvolutionOption["visualType"];
+  imageSrc?: string;
 }) {
   return (
     <Box
@@ -492,7 +530,7 @@ function IconTile({
             {isSelected ? <Text fontSize="xs" fontWeight="900" color="white">✓</Text> : null}
           </Box>
         </HStack>
-        <TileVisual visualType={visualType} isSelected={isSelected} />
+        <TileVisual visualType={visualType} isSelected={isSelected} imageSrc={imageSrc} imageAlt={`${title} preview`} />
         <Text fontSize="sm" color="text.muted" lineHeight="1.45">
           {whyMatters}
         </Text>
@@ -875,6 +913,7 @@ export default function HealthTwinFunnel() {
                     cardBg={cardBg}
                     activeCardBg={activeCardBg}
                     visualType={option.visualType}
+                    imageSrc={option.imageSrc}
                   />
                 ))}
               </SimpleGrid>
