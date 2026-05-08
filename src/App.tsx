@@ -14,6 +14,7 @@ import {
   IconButton,
   Image,
   Link as CLink,
+  SimpleGrid,
   Stack,
   Switch,
   Text,
@@ -143,6 +144,7 @@ function Header() {
   const headerBg = useColorModeValue("bg.glass", "bg.glass");
   const borderColor = useColorModeValue("border.default", "border.default");
   const navColor = useColorModeValue("text.primary", "text.primary");
+  const menuButtonColor = useColorModeValue("text.primary", "white");
   const drawerBg = useColorModeValue("white", "surface.900");
   const logoFilter = useColorModeValue("none", "invert(1)");
 
@@ -231,7 +233,7 @@ function Header() {
                 aria-label="Open navigation menu"
                 icon={<Box as="span" fontSize="12px" lineHeight="1">Menu</Box>}
                 variant="ghost"
-                color="white"
+                color={menuButtonColor}
                 display="inline-flex"
                 onClick={handleDrawerOpen}
               />
@@ -299,6 +301,7 @@ function Footer() {
   const footerBg = useColorModeValue("bg.glass", "bg.glass");
   const primaryText = useColorModeValue("text.primary", "text.primary");
   const mutedText = useColorModeValue("text.muted", "text.muted");
+  const linkBorder = useColorModeValue("rgba(17, 119, 186, 0.18)", "rgba(156, 231, 255, 0.18)");
 
   const trackFooterClick = (
     ctaName: string,
@@ -315,6 +318,52 @@ function Footer() {
     });
   };
 
+  const footerGroups = [
+    {
+      title: "Explore",
+      links: [
+        { label: "How It Works", to: APP_LINKS.internal.howItWorks, ctaName: "footer_how_it_works" },
+        { label: "Features", to: APP_LINKS.internal.whyVeeVee, ctaName: "footer_features" },
+        { label: "Technology", to: APP_LINKS.internal.technology, ctaName: "footer_technology" },
+        { label: "Testimonials", to: APP_LINKS.internal.testimonials, ctaName: "footer_testimonials" },
+      ],
+    },
+    {
+      title: "Solutions",
+      links: [
+        { label: "Hospital Value", to: APP_LINKS.internal.hospitalValue, ctaName: "footer_hospital_value" },
+        { label: "Caregiver Support", to: APP_LINKS.internal.caregivers, ctaName: "footer_caregivers" },
+        { label: "Medicare Guidance", to: APP_LINKS.internal.medicare, ctaName: "footer_medicare" },
+        { label: "Hospital to Home", to: APP_LINKS.internal.hospitalToHome, ctaName: "footer_hospital_to_home" },
+      ],
+    },
+    {
+      title: "Action",
+      links: [
+        { label: "VeeVee Simulator", to: APP_LINKS.internal.simulator, ctaName: "footer_simulator" },
+        {
+          label: "Investor Info",
+          href: APP_LINKS.external.investors,
+          ctaName: "footer_investor_info",
+          destinationType: "external" as const,
+        },
+        {
+          label: "Log In",
+          href: APP_LINKS.external.authenticatedConsole,
+          ctaName: "footer_login",
+          destinationType: "external" as const,
+        },
+      ],
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "Contact & Press", to: APP_LINKS.internal.contact, ctaName: "footer_contact" },
+        { label: "Terms & Disclaimers", to: APP_LINKS.internal.terms, ctaName: "footer_terms" },
+      ],
+    },
+  ];
+
   return (
     <Box
       as="footer"
@@ -323,123 +372,48 @@ function Footer() {
       bg={footerBg}
       backdropFilter="saturate(150%) blur(12px)"
     >
-      <Container maxW="6xl" py="3">
-        <Flex
-          align={{ base: "center", md: "center" }}
-          justify="space-between"
-          direction={{ base: "column", md: "row" }}
-          gap={{ base: 3, md: 4 }}
-          fontSize="sm"
-          textAlign={{ base: "center", md: "left" }}
-        >
-          <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
-          <Flex wrap="wrap" justify={{ base: "center", md: "flex-end" }} gap={{ base: 2, md: 4 }}>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.howItWorks}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_how_it_works", "How It Works", APP_LINKS.internal.howItWorks, "internal")}
-            >
-              How It Works
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.whyVeeVee}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_features", "Features", APP_LINKS.internal.whyVeeVee, "internal")}
-            >
-              Features
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.hospitalValue}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_hospital_value", "Hospital Value", APP_LINKS.internal.hospitalValue, "internal")}
-            >
-              Hospital Value
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.technology}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_technology", "Technology", APP_LINKS.internal.technology, "internal")}
-            >
-              Technology
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.testimonials}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_testimonials", "Testimonials", APP_LINKS.internal.testimonials, "internal")}
-            >
-              Testimonials
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.simulator}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal")}
-            >
-              VeeVee Simulator
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.caregivers}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_caregivers", "Caregiver Support", APP_LINKS.internal.caregivers, "internal")}
-            >
-              Caregiver Support
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.medicare}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_medicare", "Medicare Guidance", APP_LINKS.internal.medicare, "internal")}
-            >
-              Medicare Guidance
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.hospitalToHome}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_hospital_to_home", "Hospital to Home", APP_LINKS.internal.hospitalToHome, "internal")}
-            >
-              Hospital to Home
-            </CLink>
-            <CLink
-              href={APP_LINKS.external.investors}
-              isExternal
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_investor_info", "Investor Info", APP_LINKS.external.investors, "external")}
-            >
-              Investor Info
-            </CLink>
-            <CLink
-              href={APP_LINKS.external.authenticatedConsole}
-              isExternal
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_login", "Log In", APP_LINKS.external.authenticatedConsole, "external")}
-            >
-              Log In
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.contact}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_contact", "Contact & Press", APP_LINKS.internal.contact, "internal")}
-            >
-              Contact &amp; Press
-            </CLink>
-            <CLink
-              as={Link}
-              to={APP_LINKS.internal.terms}
-              color={primaryText}
-              onClick={() => trackFooterClick("footer_terms", "Terms & Disclaimers", APP_LINKS.internal.terms, "internal")}
-            >
-              Terms &amp; Disclaimers
-            </CLink>
+      <Container maxW="6xl" py={{ base: 8, md: 10 }}>
+        <Stack spacing={6}>
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={{ base: 6, md: 8 }}>
+            {footerGroups.map((group) => (
+              <Stack key={group.title} spacing={3} align={{ base: "center", sm: "flex-start" }}>
+                <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color={mutedText}>
+                  {group.title}
+                </Text>
+                <Stack spacing={2.5} align={{ base: "center", sm: "flex-start" }}>
+                  {group.links.map((footerLink) => {
+                    const destination = footerLink.to ?? footerLink.href;
+                    const destinationType = footerLink.destinationType ?? "internal";
+
+                    return (
+                      <CLink
+                        key={footerLink.ctaName}
+                        as={footerLink.to ? Link : undefined}
+                        to={footerLink.to}
+                        href={footerLink.href}
+                        isExternal={destinationType === "external"}
+                        color={primaryText}
+                        fontWeight="700"
+                        lineHeight="1.2"
+                        borderBottom="1px solid"
+                        borderColor={linkBorder}
+                        pb="1px"
+                        _hover={{ color: "accent.soft", borderColor: "accent.soft", textDecoration: "none" }}
+                        onClick={() => trackFooterClick(footerLink.ctaName, footerLink.label, destination, destinationType)}
+                      >
+                        {footerLink.label}
+                      </CLink>
+                    );
+                  })}
+                </Stack>
+              </Stack>
+            ))}
+          </SimpleGrid>
+
+          <Flex justify={{ base: "center", md: "space-between" }} align="center" fontSize="sm" color={mutedText}>
+            <Text>Copyright {new Date().getFullYear()} VeeVee Health</Text>
           </Flex>
-        </Flex>
+        </Stack>
       </Container>
     </Box>
   );
