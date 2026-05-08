@@ -9,6 +9,9 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
+import { APP_LINKS } from "../config/links";
 import initialYoungPatients from "../data/initialYoungPatients.json";
 
 const ACCESS_PIN = "5353";
@@ -1541,6 +1544,27 @@ export default function SwcaBrief() {
 
   return (
     <Box minH="100vh">
+      <Box px={{ base: 4, md: 6 }} py={3} bg="white" borderBottom="1px solid" borderColor="border.default">
+        <Button
+          as={RouterLink}
+          to={APP_LINKS.internal.healthTwin}
+          onClick={() =>
+            trackCtaClick({
+              ctaName: "swca_brief_create_health_twin",
+              ctaText: "Create a Health Twin",
+              placement: "swca_brief_top_cta",
+              destinationType: "internal",
+              destinationUrl: APP_LINKS.internal.healthTwin,
+              pagePath: APP_LINKS.internal.swcaBrief,
+            })
+          }
+          size="sm"
+          borderRadius="full"
+          fontWeight="800"
+        >
+          Create a Health Twin
+        </Button>
+      </Box>
       <Box
         as="iframe"
         title="SWCA onboarding brief"

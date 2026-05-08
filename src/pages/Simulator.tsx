@@ -562,33 +562,31 @@ export default function Simulator() {
                   Teaser for the app
                 </Heading>
                 <Text color={muted} fontSize="sm">
-                  The full VeeVee app goes further with your health profile, benefits, ongoing tracking, smarter recommendations, and the deeper simulator experience.
+                  The Health Twin funnel turns this kind of preview into a faster path toward a more personal picture.
                 </Text>
                 <Text color={muted} fontSize="sm">
                   This preview is here to help you get the idea quickly without needing to fill out a big form.
                 </Text>
                 <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
                   <Button
-                    as="a"
-                    href={APP_LINKS.external.authenticatedConsole}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    as={RouterLink}
+                    to={APP_LINKS.internal.healthTwin}
                     borderRadius="full"
                     px={8}
                     fontWeight="700"
                     onClick={() => {
-                      trackEvent("wm_cta_click", { cta: "login" });
+                      trackEvent("wm_cta_click", { cta: "health_twin" });
                       trackCtaClick({
-                        ctaName: "simulator_open_app",
-                        ctaText: "Open the app",
+                        ctaName: "simulator_create_health_twin",
+                        ctaText: "Create a Health Twin",
                         placement: "simulator_teaser",
-                        destinationType: "external",
-                        destinationUrl: APP_LINKS.external.authenticatedConsole,
+                        destinationType: "internal",
+                        destinationUrl: APP_LINKS.internal.healthTwin,
                         pagePath: APP_LINKS.internal.simulator,
                       });
                     }}
                   >
-                    Open the app
+                    Create a Health Twin
                   </Button>
                   <Button
                     as={RouterLink}

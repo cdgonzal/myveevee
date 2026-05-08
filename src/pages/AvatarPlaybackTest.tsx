@@ -11,6 +11,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { APP_LINKS } from "../config/links";
 
 type PlaybackState = "waiting" | "loaded" | "can-play" | "playing" | "error";
 type AssetCheck = {
@@ -264,6 +266,9 @@ export default function AvatarPlaybackTest() {
       </Box>
 
       <HStack spacing={3} flexWrap="wrap">
+        <Button as={RouterLink} to={APP_LINKS.internal.healthTwin} borderRadius="full">
+          Health Twin
+        </Button>
         <Button as={CLink} href={WEBM_SRC} isExternal borderRadius="full">
           Open WEBM
         </Button>
