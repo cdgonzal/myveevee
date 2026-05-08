@@ -43,6 +43,17 @@ type EvolutionOption = {
   apply: (input: SimulatorInput) => SimulatorInput;
 };
 
+type TeaserTone = "danger" | "success" | "action";
+
+type StepThreeTeaser = {
+  headline: string;
+  watch: string;
+  good: string;
+  next: string;
+  metricLabel: string;
+  metricValue: string;
+};
+
 const FUNNEL_STEPS = [
   {
     key: "data",
@@ -375,6 +386,105 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
     }),
   },
 ];
+
+const STEP_THREE_TEASERS: Record<string, StepThreeTeaser> = {
+  "mri-reduce-pain": {
+    headline: "Your scan focus points to pain relief first.",
+    watch: "Pain plus imaging context should not sit without a follow-up plan.",
+    good: "You already gave the twin a concrete signal to organize around.",
+    next: "Build your real twin so it can connect pain, activity, records, and care options.",
+    metricLabel: "Main Goal",
+    metricValue: "Relief",
+  },
+  "mri-move-better": {
+    headline: "Your twin is reading this as a mobility goal.",
+    watch: "Limited movement can slow recovery if it is not tracked clearly.",
+    good: "A movement goal makes progress easier to measure week by week.",
+    next: "Create your twin to connect scan context with mobility, sleep, and routine.",
+    metricLabel: "Main Goal",
+    metricValue: "Mobility",
+  },
+  "mri-avoid-surprises": {
+    headline: "Your twin is prioritizing follow-up risk.",
+    watch: "Imaging findings can be easy to forget once symptoms change.",
+    good: "You are turning the scan into a watchlist, not just a file.",
+    next: "Create your twin to keep follow-up questions and care timing in one place.",
+    metricLabel: "Main Goal",
+    metricValue: "Follow-up",
+  },
+  "record-organize-meds": {
+    headline: "Your record focus points to medication clarity.",
+    watch: "Medication history and adherence can quietly change the whole picture.",
+    good: "Your records give the twin a strong starting point.",
+    next: "Create your twin to connect medications, refills, symptoms, and benefits.",
+    metricLabel: "Main Goal",
+    metricValue: "Meds",
+  },
+  "record-find-gaps": {
+    headline: "Your twin is looking for care gaps.",
+    watch: "Missed follow-ups and old history can hide what matters now.",
+    good: "A full record can reveal patterns that single visits miss.",
+    next: "Create your twin to turn loose ends into a clear care checklist.",
+    metricLabel: "Main Goal",
+    metricValue: "Gaps",
+  },
+  "record-next-visit": {
+    headline: "Your record can help you show up more prepared.",
+    watch: "Appointments are easier to waste when questions are not ready.",
+    good: "You have enough context to make the next visit more useful.",
+    next: "Create your twin to generate a sharper next-visit plan.",
+    metricLabel: "Main Goal",
+    metricValue: "Visit",
+  },
+  "injury-heal-faster": {
+    headline: "Your twin is focused on recovery speed.",
+    watch: "Healing can stall when rest, pain, and progress are not tracked together.",
+    good: "A clear recovery goal gives the twin a simple target.",
+    next: "Create your twin to monitor recovery signals and keep momentum visible.",
+    metricLabel: "Main Goal",
+    metricValue: "Recovery",
+  },
+  "injury-reduce-swelling": {
+    headline: "Your twin is watching visible change.",
+    watch: "Swelling that worsens or lingers deserves attention.",
+    good: "A photo gives the twin a concrete baseline to compare against.",
+    next: "Create your twin to connect visual change, pain, and timing.",
+    metricLabel: "Main Goal",
+    metricValue: "Swelling",
+  },
+  "injury-get-help": {
+    headline: "Your twin is treating this as a triage question.",
+    watch: "High pain, swelling, or fast change should not be ignored.",
+    good: "You are asking the right question early: when to get help.",
+    next: "Create your twin to clarify urgency and next-step questions.",
+    metricLabel: "Main Goal",
+    metricValue: "Triage",
+  },
+  "labs-lower-a1c": {
+    headline: "Your lab focus points to metabolic progress.",
+    watch: "Elevated A1C needs a plan, not just a number on a report.",
+    good: "Lab data gives the twin a measurable baseline.",
+    next: "Create your twin to connect A1C, food, routine, and follow-up.",
+    metricLabel: "Main Goal",
+    metricValue: "A1C",
+  },
+  "labs-blood-pressure": {
+    headline: "Your twin is focused on blood pressure.",
+    watch: "High pressure can be easy to miss until it becomes urgent.",
+    good: "Blood pressure is measurable, trackable, and actionable.",
+    next: "Create your twin to connect BP, sleep, medication, and routines.",
+    metricLabel: "Main Goal",
+    metricValue: "BP",
+  },
+  "labs-more-energy": {
+    headline: "Your twin is focused on daily energy.",
+    watch: "Low energy can connect to labs, sleep, medication, or routine.",
+    good: "You chose a real-life outcome, not just a lab number.",
+    next: "Create your twin to connect the signals behind your energy.",
+    metricLabel: "Main Goal",
+    metricValue: "Energy",
+  },
+};
 
 function cloneInput(input: SimulatorInput): SimulatorInput {
   return {
@@ -713,21 +823,88 @@ function MetricCard({
 }: {
   label: string;
   value: string;
-  tone?: "default" | "accent";
+  tone?: "default" | "accent" | TeaserTone;
 }) {
+  const toneStyles = {
+    default: {
+      border: "border.default",
+      bg: "rgba(255, 255, 255, 0.72)",
+      color: "text.primary",
+    },
+    accent: {
+      border: "rgba(17, 119, 186, 0.36)",
+      bg: "rgba(17, 119, 186, 0.10)",
+      color: "accent.soft",
+    },
+    danger: {
+      border: "rgba(220, 38, 38, 0.34)",
+      bg: "rgba(254, 226, 226, 0.84)",
+      color: "#B91C1C",
+    },
+    success: {
+      border: "rgba(22, 163, 74, 0.34)",
+      bg: "rgba(220, 252, 231, 0.82)",
+      color: "#15803D",
+    },
+    action: {
+      border: "rgba(17, 119, 186, 0.34)",
+      bg: "rgba(219, 234, 254, 0.82)",
+      color: "#1177BA",
+    },
+  }[tone];
+
   return (
     <Box
       borderWidth="1px"
-      borderColor={tone === "accent" ? "rgba(17, 119, 186, 0.36)" : "border.default"}
+      borderColor={toneStyles.border}
       borderRadius="2xl"
-      bg={tone === "accent" ? "rgba(17, 119, 186, 0.10)" : "rgba(255, 255, 255, 0.72)"}
+      bg={toneStyles.bg}
       p={4}
     >
       <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="text.subtle" mb={2}>
         {label}
       </Text>
-      <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" lineHeight="1">
+      <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" lineHeight="1" color={toneStyles.color}>
         {value}
+      </Text>
+    </Box>
+  );
+}
+
+function TeaserRecommendationCard({
+  label,
+  body,
+  tone,
+}: {
+  label: string;
+  body: string;
+  tone: TeaserTone;
+}) {
+  const styles = {
+    danger: {
+      border: "rgba(220, 38, 38, 0.36)",
+      bg: "rgba(254, 226, 226, 0.72)",
+      label: "#B91C1C",
+    },
+    success: {
+      border: "rgba(22, 163, 74, 0.36)",
+      bg: "rgba(220, 252, 231, 0.72)",
+      label: "#15803D",
+    },
+    action: {
+      border: "rgba(17, 119, 186, 0.36)",
+      bg: "rgba(219, 234, 254, 0.74)",
+      label: "#1177BA",
+    },
+  }[tone];
+
+  return (
+    <Box borderWidth="1px" borderColor={styles.border} borderRadius="2xl" bg={styles.bg} p={4}>
+      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" fontWeight="900" color={styles.label} mb={2}>
+        {label}
+      </Text>
+      <Text fontSize="sm" color="text.primary" lineHeight="1.45" fontWeight="650">
+        {body}
       </Text>
     </Box>
   );
@@ -928,6 +1105,17 @@ export default function HealthTwinFunnel() {
     () => (simulatedInput ? runWellnessMirrorSimulation(simulatedInput) : null),
     [simulatedInput]
   );
+  const selectedFocus = selectedEvolution[0] ?? null;
+  const stepThreeTeaser = selectedFocus
+    ? STEP_THREE_TEASERS[selectedFocus.id] ?? {
+        headline: `${selectedUpload?.title ?? "Your input"} is now focused on ${selectedFocus.title.toLowerCase()}.`,
+        watch: "One signal is useful, but your real twin can connect more context.",
+        good: "You picked a clear outcome, which makes the next step easier.",
+        next: "Create your twin to turn this preview into a personalized plan.",
+        metricLabel: "Main Goal",
+        metricValue: selectedFocus.title,
+      }
+    : null;
   const activeFunnelStep = FUNNEL_STEPS[step];
 
   const canAdvance =
@@ -1123,46 +1311,37 @@ export default function HealthTwinFunnel() {
             </Stack>
           ) : null}
 
-          {step === 2 && selectedUpload && result && simulatedInput ? (
+          {step === 2 && selectedUpload && selectedFocus && stepThreeTeaser && result && simulatedInput ? (
             <Stack spacing={5}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
                   Step 3
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Teaser snapshot
+                  Your first recommendation
                 </Heading>
                 <Text fontSize="sm" color={muted}>
-                  A glimpse only. The full story is next.
+                  Based on {selectedUpload.title} and your goal: {selectedFocus.title}.
                 </Text>
               </Box>
 
-              <SimpleGrid columns={{ base: 2, md: 5 }} spacing={3}>
-                <MetricCard label="Twin State" value={result.riskLevel.toUpperCase()} tone="accent" />
-                <MetricCard label="Momentum" value={String(result.riskScore)} />
-                <MetricCard label="Recovery" value={`${simulatedInput.behaviorChange.sleepHours}h`} />
-                <MetricCard label="Consistency" value={`${simulatedInput.medication.adherencePercent}%`} />
-                <MetricCard label="Pressure" value={simulatedInput.labs.systolicBp ? `${simulatedInput.labs.systolicBp}` : "--"} />
+              <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
+                <MetricCard label="Input" value={selectedUpload.title} tone="accent" />
+                <MetricCard label={stepThreeTeaser.metricLabel} value={stepThreeTeaser.metricValue} tone="action" />
+                <MetricCard label="Watch" value={result.riskLevel.toUpperCase()} tone="danger" />
+                <MetricCard label="Good Signal" value="Clear Goal" tone="success" />
               </SimpleGrid>
 
               <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
                 <Stack spacing={4}>
-                  <HStack spacing={2} flexWrap="wrap">
-                    {(result.riskSignals.length > 0 ? result.riskSignals : ["Lower-risk pattern"])
-                      .slice(0, 2)
-                      .map((signal) => (
-                        <MetricChip key={signal} label={signal} />
-                      ))}
-                    {result.recommendations.slice(0, 1).map((recommendation) => (
-                      <MetricChip key={recommendation.id} label={recommendation.title} />
-                    ))}
-                  </HStack>
                   <Heading as="h3" size="md">
-                    Want the deeper readout?
+                    {stepThreeTeaser.headline}
                   </Heading>
-                  <Text fontSize="sm" color={muted}>
-                    See what more data, more context, and your real twin can unlock.
-                  </Text>
+                  <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3}>
+                    <TeaserRecommendationCard label="Watch this" body={stepThreeTeaser.watch} tone="danger" />
+                    <TeaserRecommendationCard label="Good sign" body={stepThreeTeaser.good} tone="success" />
+                    <TeaserRecommendationCard label="Next move" body={stepThreeTeaser.next} tone="action" />
+                  </SimpleGrid>
                   <Button
                     variant="link"
                     color="accent.primary"
