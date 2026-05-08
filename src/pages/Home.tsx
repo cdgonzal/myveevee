@@ -194,7 +194,7 @@ export default function Home() {
               </Button>
 
               <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
-                Less than 60 seconds
+                In less than 60 seconds
               </Text>
             </Stack>
           </Stack>
@@ -376,6 +376,32 @@ export default function Home() {
               </Box>
             </Box>
           </Box>
+
+          <Stack spacing={2} align="center" textAlign="center" mt={{ base: 5, md: 6 }}>
+            <Text fontSize={{ base: "sm", md: "md" }} fontWeight="700" color="accent.primary">
+              Don&apos;t leave without seeing your Health Twin.
+            </Text>
+            <CLink
+              as={RouterLink}
+              to={APP_LINKS.internal.healthTwin}
+              fontSize={{ base: "sm", md: "md" }}
+              fontWeight="900"
+              color="accent.soft"
+              textDecoration="underline"
+              textUnderlineOffset="4px"
+              onClick={() =>
+                trackHomeCta(
+                  "home_post_insurance_health_twin",
+                  "Start the 4-step preview",
+                  APP_LINKS.internal.healthTwin,
+                  "internal",
+                  "home_post_insurance"
+                )
+              }
+            >
+              Start the 4-step preview
+            </CLink>
+          </Stack>
         </Box>
       </Box>
     </>
