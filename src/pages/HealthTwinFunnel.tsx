@@ -572,6 +572,7 @@ export default function HealthTwinFunnel() {
   const [step, setStep] = useState<FunnelStep>(0);
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [selectedEvolutionIds, setSelectedEvolutionIds] = useState<string[]>([]);
+  const [avatarFailed, setAvatarFailed] = useState(false);
 
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
@@ -791,77 +792,53 @@ export default function HealthTwinFunnel() {
               borderRadius="3xl"
               border="1px solid"
               borderColor="rgba(23, 49, 140, 0.10)"
-              bg="rgba(255,255,255,0.20)"
+              bg="rgba(255,255,255,0.14)"
               backdropFilter="blur(14px)"
-              p={3}
+              p={4}
               overflow="hidden"
             >
-              <Stack spacing={3} h="100%" justify="center">
-                <HStack spacing={2} justify="flex-end">
-                  <MetricChip label="LIVE" />
-                  <MetricChip label="SIM" />
-                  <MetricChip label="FREE" />
-                </HStack>
+              <Box
+                position="relative"
+                minH="320px"
+                borderRadius="32px"
+                bg="linear-gradient(135deg, rgba(223,245,255,0.92) 0%, rgba(196,235,255,0.84) 48%, rgba(155,214,255,0.74) 100%)"
+                border="1px solid rgba(54,197,255,0.16)"
+                sx={{
+                  "@keyframes heroAvatarFloat": {
+                    "0%": { transform: "translate(-50%, -50%) translateY(0px)" },
+                    "50%": { transform: "translate(-50%, -50%) translateY(-10px)" },
+                    "100%": { transform: "translate(-50%, -50%) translateY(0px)" },
+                  },
+                }}
+              >
                 <Box
-                  position="relative"
-                  minH="300px"
-                  sx={{
-                    "@keyframes heroAvatarFloat": {
-                      "0%": { transform: "translateY(0px)" },
-                      "50%": { transform: "translateY(-10px)" },
-                      "100%": { transform: "translateY(0px)" },
-                    },
-                  }}
-                >
-                  <Box
-                    position="absolute"
-                    inset="12px 18px"
-                    borderRadius="32px"
-                    bg="linear-gradient(180deg, rgba(255,255,255,0.34) 0%, rgba(207,239,255,0.22) 100%)"
-                    border="1px solid rgba(54,197,255,0.16)"
-                  />
-                  <Box
-                    position="absolute"
-                    left="50%"
-                    bottom="22px"
-                    transform="translateX(-50%)"
-                    w="180px"
-                    h="26px"
-                    borderRadius="full"
-                    bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.32) 0%, rgba(54,197,255,0.10) 52%, rgba(255,255,255,0) 100%)"
-                  />
-                  <Box
-                    position="absolute"
-                    left="50%"
-                    top="18px"
-                    transform="translateX(-50%)"
-                    px={3}
-                    py={1.5}
-                    borderRadius="full"
-                    bg="rgba(255,255,255,0.82)"
-                    border="1px solid rgba(23,49,140,0.10)"
-                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
-                  >
-                    <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft">
-                      Health Avatar
-                    </Text>
-                  </Box>
+                  position="absolute"
+                  inset="0"
+                  bg="radial-gradient(circle at 50% 40%, rgba(255,255,255,0.64) 0%, rgba(255,255,255,0.12) 44%, rgba(255,255,255,0) 72%)"
+                />
+                <Box
+                  position="absolute"
+                  left="50%"
+                  bottom="22px"
+                  transform="translateX(-50%)"
+                  w="190px"
+                  h="28px"
+                  borderRadius="full"
+                  bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.26) 0%, rgba(54,197,255,0.12) 48%, rgba(255,255,255,0) 100%)"
+                />
+
+                {!avatarFailed ? (
                   <Box
                     position="absolute"
                     top="50%"
                     left="50%"
-                    transform="translate(-50%, -50%)"
                     animation="heroAvatarFloat 6s ease-in-out infinite"
                   >
                     <Box
                       position="relative"
-                      w="240px"
-                      h="280px"
-                      borderRadius="28px"
-                      bg="linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%)"
-                      border="1px solid rgba(54,197,255,0.14)"
+                      w="250px"
+                      h="290px"
                       overflow="hidden"
-                      boxShadow="0 24px 48px rgba(6, 37, 76, 0.12)"
                     >
                       <Box
                         as="video"
@@ -870,69 +847,54 @@ export default function HealthTwinFunnel() {
                         muted
                         loop
                         playsInline
+                        preload="auto"
                         w="100%"
                         h="100%"
                         objectFit="contain"
-                        transform="scale(1.06)"
+                        onLoadedData={() => {
+                          setAvatarFailed(false);
+                          console.log("[HealthTwinHero] avatar loaded", {
+                            src: "/images/marketing/hero-avatar-2.mp4",
+                          });
+                        }}
+                        onCanPlay={() => {
+                          console.log("[HealthTwinHero] avatar can play", {
+                            src: "/images/marketing/hero-avatar-2.mp4",
+                          });
+                        }}
+                        onError={(event) => {
+                          setAvatarFailed(true);
+                          console.error("[HealthTwinHero] avatar failed", {
+                            src: "/images/marketing/hero-avatar-2.mp4",
+                            error: event.currentTarget.error,
+                          });
+                        }}
                       />
                     </Box>
                   </Box>
-                  <Box
+                ) : null}
+
+                {avatarFailed ? (
+                  <Stack
                     position="absolute"
-                    top="68px"
-                    right="26px"
-                    px={3}
-                    py={2}
-                    borderRadius="2xl"
-                    bg="rgba(255,255,255,0.76)"
-                    border="1px solid rgba(23,49,140,0.10)"
-                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
+                    inset="0"
+                    align="center"
+                    justify="center"
+                    spacing={3}
                   >
-                    <Text fontSize="10px" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={1}>
-                      Energy
+                    <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
+                      Avatar Fallback
                     </Text>
-                    <Text fontSize="lg" fontWeight="900">
-                      88
-                    </Text>
-                  </Box>
-                  <Box
-                    position="absolute"
-                    bottom="42px"
-                    left="26px"
-                    px={3}
-                    py={2}
-                    borderRadius="2xl"
-                    bg="rgba(255,255,255,0.76)"
-                    border="1px solid rgba(23,49,140,0.10)"
-                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
-                  >
-                    <Text fontSize="10px" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={1}>
-                      Recovery
-                    </Text>
-                    <Text fontSize="lg" fontWeight="900">
-                      7.9h
-                    </Text>
-                  </Box>
-                  <Box
-                    position="absolute"
-                    top="142px"
-                    left="18px"
-                    px={3}
-                    py={2}
-                    borderRadius="2xl"
-                    bg="rgba(255,255,255,0.76)"
-                    border="1px solid rgba(23,49,140,0.10)"
-                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
-                  >
-                    <Text fontSize="10px" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={1}>
-                      BP
-                    </Text>
-                    <Text fontSize="lg" fontWeight="900">
-                      118
-                    </Text>
-                  </Box>
-                </Box>
-              </Stack>
+                    <Box
+                      w="140px"
+                      h="140px"
+                      borderRadius="full"
+                      bg="linear-gradient(135deg, #17318C 0%, #36C5FF 100%)"
+                      boxShadow="0 24px 48px rgba(54,197,255,0.20)"
+                    />
+                  </Stack>
+                ) : null}
+              </Box>
             </Box>
           </Grid>
         </Box>
