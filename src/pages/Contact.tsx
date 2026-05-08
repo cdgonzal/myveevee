@@ -1,4 +1,6 @@
-import { Box, Heading, Text, Link as CLink, Card, CardBody, SimpleGrid, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Link as CLink, Card, CardBody, SimpleGrid, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
 
 export default function Contact() {
@@ -103,6 +105,28 @@ export default function Contact() {
                 family support, hospital workflows, and hospital-to-home continuity. If you are not sure where your
                 request fits, send it to the press inbox and it can be routed internally.
               </Text>
+              <Button
+                as={RouterLink}
+                to={APP_LINKS.internal.healthTwin}
+                onClick={() =>
+                  trackCtaClick({
+                    ctaName: "contact_create_health_twin",
+                    ctaText: "Create a Health Twin",
+                    placement: "contact_bottom_cta",
+                    destinationType: "internal",
+                    destinationUrl: APP_LINKS.internal.healthTwin,
+                    pagePath: APP_LINKS.internal.contact,
+                  })
+                }
+                size="md"
+                borderRadius="full"
+                fontWeight="700"
+                px={8}
+                alignSelf="flex-start"
+                boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
+              >
+                Create a Health Twin
+              </Button>
             </Stack>
           </CardBody>
         </Card>

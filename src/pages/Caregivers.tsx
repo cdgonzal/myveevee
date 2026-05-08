@@ -55,22 +55,22 @@ export default function Caregivers() {
         },
         {
           question: "What should a caregiver do next?",
-          answer: "The most direct next step today is to explore a scenario in VeeVee Simulator or move into the main product flow to create a health twin.",
+          answer: "The most direct next step is to create a Health Twin preview so the caregiver story turns into a clear, personalized next step.",
         },
       ]}
       primaryCta={{
-        label: "Try VeeVee Simulator",
-        to: APP_LINKS.internal.simulator,
+        label: "Create a Health Twin",
+        to: APP_LINKS.internal.healthTwin,
         destinationType: "internal",
         placement: "caregivers_hero",
-        ctaName: "caregivers_try_simulator",
+        ctaName: "caregivers_create_health_twin_preview",
       }}
       secondaryCta={{
-        label: "Create Your Health Twin",
-        to: APP_LINKS.external.authenticatedConsole,
-        destinationType: "external",
+        label: "Hospital to Home Support",
+        to: APP_LINKS.internal.hospitalToHome,
+        destinationType: "internal",
         placement: "caregivers_hero",
-        ctaName: "caregivers_create_health_twin",
+        ctaName: "caregivers_hospital_to_home",
       }}
       relatedLinks={[
         {

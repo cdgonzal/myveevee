@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Heading,
   SimpleGrid,
   Stack,
@@ -13,6 +14,9 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
+import { APP_LINKS } from "../config/links";
 import { HOSPITAL_VALUE_ROWS } from "./marketingContent";
 
 export default function HospitalValue() {
@@ -130,6 +134,29 @@ export default function HospitalValue() {
             <Text fontSize="xs" color={subtle}>
               Illustrative example only. Actual results depend on staffing, patient mix, workflows, reimbursement, and rollout design.
             </Text>
+
+            <Button
+              as={RouterLink}
+              to={APP_LINKS.internal.healthTwin}
+              onClick={() =>
+                trackCtaClick({
+                  ctaName: "hospital_value_create_health_twin",
+                  ctaText: "Create a Health Twin",
+                  placement: "hospital_value_bottom_cta",
+                  destinationType: "internal",
+                  destinationUrl: APP_LINKS.internal.healthTwin,
+                  pagePath: APP_LINKS.internal.hospitalValue,
+                })
+              }
+              size="md"
+              borderRadius="full"
+              fontWeight="700"
+              px={8}
+              alignSelf="center"
+              boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
+            >
+              Create a Health Twin
+            </Button>
           </Stack>
         </Box>
       </Stack>

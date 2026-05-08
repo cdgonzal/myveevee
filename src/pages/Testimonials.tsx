@@ -318,17 +318,15 @@ export default function Testimonials() {
                     </Text>
                   </Box>
                   <Button
-                    as="a"
-                    href="https://veevee.io"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    as={RouterLink}
+                    to={APP_LINKS.internal.healthTwin}
                     onClick={() =>
                       trackCtaClick({
                         ctaName: "testimonials_get_started",
-                        ctaText: "Get started",
+                        ctaText: "Create a Health Twin",
                         placement: "testimonials_bottom_cta",
-                        destinationType: "external",
-                        destinationUrl: APP_LINKS.external.authenticatedConsole,
+                        destinationType: "internal",
+                        destinationUrl: APP_LINKS.internal.healthTwin,
                         pagePath: APP_LINKS.internal.testimonials,
                       })
                     }
@@ -339,7 +337,7 @@ export default function Testimonials() {
                     alignSelf={isMobile ? "stretch" : "center"}
                     boxShadow="0 0 26px rgba(17, 119, 186, 0.4)"
                   >
-                    Get started
+                    Create a Health Twin
                   </Button>
                 </Stack>
               </Stack>

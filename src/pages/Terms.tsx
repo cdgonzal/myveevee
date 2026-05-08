@@ -1,4 +1,7 @@
-import { Box, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
+import { APP_LINKS } from "../config/links";
 
 export default function Terms() {
   const pageGradient = useColorModeValue(
@@ -24,6 +27,29 @@ export default function Terms() {
           <Text>
             Review the plain-English terms, disclaimers, privacy notes, and usage limits that apply when using VeeVee.
           </Text>
+
+          <Button
+            as={RouterLink}
+            to={APP_LINKS.internal.healthTwin}
+            onClick={() =>
+              trackCtaClick({
+                ctaName: "terms_create_health_twin",
+                ctaText: "Create a Health Twin",
+                placement: "terms_top_cta",
+                destinationType: "internal",
+                destinationUrl: APP_LINKS.internal.healthTwin,
+                pagePath: APP_LINKS.internal.terms,
+              })
+            }
+            size="md"
+            borderRadius="full"
+            fontWeight="700"
+            px={8}
+            alignSelf="flex-start"
+            boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
+          >
+            Create a Health Twin
+          </Button>
 
           <Text>
             Welcome to VeeVee. Before you dive in, here is what you need to know in plain English:

@@ -89,18 +89,18 @@ export default function HowItWorks() {
               Curious what happens next?
             </Heading>
             <Text fontSize="sm" color={muted} maxW="2xl" mx="auto">
-              Try a free health scenario and see how VeeVee responds before you create an account.
+              Create a free Health Twin preview and see how your inputs turn into clearer next steps.
             </Text>
             <Button
               as={RouterLink}
-              to={APP_LINKS.internal.simulator}
+              to={APP_LINKS.internal.healthTwin}
               onClick={() =>
                 trackCtaClick({
-                  ctaName: "how_it_works_try_it_free",
-                  ctaText: "Try it free",
+                  ctaName: "how_it_works_create_health_twin",
+                  ctaText: "Create a Health Twin",
                   placement: "how_it_works_bottom_cta",
                   destinationType: "internal",
-                  destinationUrl: APP_LINKS.internal.simulator,
+                  destinationUrl: APP_LINKS.internal.healthTwin,
                   pagePath: APP_LINKS.internal.howItWorks,
                 })
               }
@@ -111,7 +111,7 @@ export default function HowItWorks() {
               alignSelf="center"
               boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
             >
-              Try it free
+              Create a Health Twin
             </Button>
             <CLink
               href={APP_LINKS.external.authenticatedConsole}

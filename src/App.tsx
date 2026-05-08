@@ -60,6 +60,7 @@ const FOOTER_NAV_GROUPS: Array<{ title: string; links: FooterNavLink[] }> = [
   {
     title: "Explore",
     links: [
+      { label: "Health Twin", to: APP_LINKS.internal.healthTwin, ctaName: "footer_health_twin" },
       { label: "How It Works", to: APP_LINKS.internal.howItWorks, ctaName: "footer_how_it_works" },
       { label: "Features", to: APP_LINKS.internal.whyVeeVee, ctaName: "footer_features" },
       { label: "Technology", to: APP_LINKS.internal.technology, ctaName: "footer_technology" },
@@ -78,7 +79,6 @@ const FOOTER_NAV_GROUPS: Array<{ title: string; links: FooterNavLink[] }> = [
   {
     title: "Action",
     links: [
-      { label: "VeeVee Simulator", to: APP_LINKS.internal.simulator, ctaName: "footer_simulator" },
       {
         label: "Investor Info",
         href: APP_LINKS.external.investors,

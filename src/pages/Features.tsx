@@ -50,12 +50,12 @@ const FEATURE_BLOCKS: FeatureBlock[] = [
     ],
   },
   {
-    eyebrow: "Simulation",
-    title: "See what could happen before you decide",
+    eyebrow: "Health Twin",
+    title: "See a more personal picture before you decide",
     body:
-      "VeeVee Simulator® helps people explore simple what-if scenarios before taking the next step.",
+      "The Health Twin funnel helps people turn a simple input into a more personal preview before taking the next step.",
     points: [
-      "Try different health and routine scenarios.",
+      "Start with one health signal.",
       "See possible next steps and questions to ask.",
       "Powered by a more personal picture of your health story over time.",
     ],
@@ -339,14 +339,14 @@ export default function Features() {
             </Text>
             <Button
               as={RouterLink}
-              to={APP_LINKS.internal.simulator}
+              to={APP_LINKS.internal.healthTwin}
               onClick={() =>
                 trackCtaClick({
-                  ctaName: "features_try_simulator",
-                  ctaText: "Try VeeVee Simulator",
+                  ctaName: "features_create_health_twin",
+                  ctaText: "Create a Health Twin",
                   placement: "features_bottom_cta",
                   destinationType: "internal",
-                  destinationUrl: APP_LINKS.internal.simulator,
+                  destinationUrl: APP_LINKS.internal.healthTwin,
                   pagePath: APP_LINKS.internal.whyVeeVee,
                 })
               }
@@ -357,7 +357,7 @@ export default function Features() {
               alignSelf="center"
               boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
             >
-              Try VeeVee Simulator®
+              Create a Health Twin
             </Button>
           </Stack>
         </Box>

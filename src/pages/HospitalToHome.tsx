@@ -55,15 +55,15 @@ export default function HospitalToHome() {
         },
         {
           question: "Where should someone go from here?",
-          answer: "The best next step depends on intent: families may want the caregiver page, operators may want the technology or features page, and users can try the simulator directly.",
+          answer: "The best next step is to create a Health Twin preview so discharge, recovery, and follow-up context can turn into a more personal next step.",
         },
       ]}
       primaryCta={{
-        label: "Explore Core Features",
-        to: APP_LINKS.internal.whyVeeVee,
+        label: "Create a Health Twin",
+        to: APP_LINKS.internal.healthTwin,
         destinationType: "internal",
         placement: "hospital_to_home_hero",
-        ctaName: "hospital_to_home_explore_features",
+        ctaName: "hospital_to_home_create_health_twin_preview",
       }}
       secondaryCta={{
         label: "Contact VeeVee",

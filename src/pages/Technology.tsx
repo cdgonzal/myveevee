@@ -1,4 +1,7 @@
-import { Box, Heading, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Heading, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../analytics/trackCtaClick";
+import { APP_LINKS } from "../config/links";
 
 export default function Technology() {
   const pageGradient = useColorModeValue(
@@ -98,8 +101,7 @@ export default function Technology() {
               The same foundation supports the app, too.
             </Heading>
             <Text color={muted}>
-              The technology stack also supports VeeVee Simulator®, personalized guidance, and the broader app
-              experience so the user side can feel responsive, modern, and easy to use.
+              The technology stack also supports the Health Twin funnel, personalized guidance, and the broader app experience so the user side can feel responsive, modern, and easy to use.
             </Text>
           </Box>
         </SimpleGrid>
@@ -162,10 +164,33 @@ export default function Technology() {
                   Simulation and personalized guidance
                 </Heading>
                 <Text color={muted} fontSize="sm">
-                  The same core technology helps power VeeVee Simulator®, personalized guidance, and a faster app experience.
+                  The same core technology helps power the Health Twin funnel, personalized guidance, and a faster app experience.
                 </Text>
               </Box>
             </SimpleGrid>
+
+            <Button
+              as={RouterLink}
+              to={APP_LINKS.internal.healthTwin}
+              onClick={() =>
+                trackCtaClick({
+                  ctaName: "technology_create_health_twin",
+                  ctaText: "Create a Health Twin",
+                  placement: "technology_bottom_cta",
+                  destinationType: "internal",
+                  destinationUrl: APP_LINKS.internal.healthTwin,
+                  pagePath: APP_LINKS.internal.technology,
+                })
+              }
+              size="md"
+              borderRadius="full"
+              fontWeight="700"
+              px={8}
+              alignSelf="center"
+              boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
+            >
+              Create a Health Twin
+            </Button>
           </Stack>
         </Box>
       </Stack>

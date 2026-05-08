@@ -28,25 +28,25 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_name: "how_it_works",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "drive_simulator_or_login",
+    primary_goal: "drive_health_twin_funnel",
   },
   [APP_LINKS.internal.hospitalValue]: {
     page_name: "hospital_value",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "build_trust",
+    primary_goal: "drive_health_twin_funnel",
   },
   [APP_LINKS.internal.whyVeeVee]: {
     page_name: "features",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "drive_simulator_or_login",
+    primary_goal: "drive_health_twin_funnel",
   },
   [APP_LINKS.internal.technology]: {
     page_name: "technology",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "build_trust",
+    primary_goal: "drive_health_twin_funnel",
   },
   [APP_LINKS.internal.simulator]: {
     page_name: "simulator",
@@ -58,7 +58,7 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_name: "testimonials",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "build_trust",
+    primary_goal: "drive_health_twin_funnel",
   },
   [APP_LINKS.internal.terms]: {
     page_name: "terms",

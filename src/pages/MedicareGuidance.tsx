@@ -22,7 +22,7 @@ export default function MedicareGuidance() {
         },
         {
           title: "Keep coverage in the conversation",
-          body: "The homepage and simulator messaging both point to benefits and plan context as part of the user experience. That makes coverage-aware guidance a real search-intent lane for VeeVee.",
+          body: "The homepage and Health Twin funnel both point to benefits and plan context as part of the user experience. That makes coverage-aware guidance a real search-intent lane for VeeVee.",
           points: [
             "Benefits can be considered alongside symptoms or routines",
             "Users can see what questions to ask next",
@@ -55,15 +55,15 @@ export default function MedicareGuidance() {
         },
         {
           question: "What is the best next action from this page?",
-          answer: "A good next step is to try a scenario in VeeVee Simulator or read how Medicare users describe the experience on the testimonials page.",
+          answer: "A good next step is to create a Health Twin preview so Medicare questions connect to a more personal care picture.",
         },
       ]}
       primaryCta={{
-        label: "Explore a Scenario",
-        to: APP_LINKS.internal.simulator,
+        label: "Create a Health Twin",
+        to: APP_LINKS.internal.healthTwin,
         destinationType: "internal",
         placement: "medicare_hero",
-        ctaName: "medicare_explore_scenario",
+        ctaName: "medicare_create_health_twin_preview",
       }}
       secondaryCta={{
         label: "Read Testimonials",
@@ -84,9 +84,9 @@ export default function MedicareGuidance() {
           to: APP_LINKS.internal.hospitalToHome,
         },
         {
-          title: "VeeVee Simulator",
-          description: "Try a health and coverage scenario directly inside the current marketing experience.",
-          to: APP_LINKS.internal.simulator,
+          title: "Health Twin",
+          description: "Start the guided Health Twin funnel and connect coverage context to a more personal care story.",
+          to: APP_LINKS.internal.healthTwin,
         },
       ]}
     />
