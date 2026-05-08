@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -47,6 +47,60 @@ const HospitalToHome = lazy(() => import("./pages/HospitalToHome"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Terms = lazy(() => import("./pages/Terms"));
 const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
+
+type FooterNavLink = {
+  label: string;
+  ctaName: string;
+  to?: string;
+  href?: string;
+  destinationType?: "internal" | "external";
+};
+
+const FOOTER_NAV_GROUPS: Array<{ title: string; links: FooterNavLink[] }> = [
+  {
+    title: "Explore",
+    links: [
+      { label: "How It Works", to: APP_LINKS.internal.howItWorks, ctaName: "footer_how_it_works" },
+      { label: "Features", to: APP_LINKS.internal.whyVeeVee, ctaName: "footer_features" },
+      { label: "Technology", to: APP_LINKS.internal.technology, ctaName: "footer_technology" },
+      { label: "Testimonials", to: APP_LINKS.internal.testimonials, ctaName: "footer_testimonials" },
+    ],
+  },
+  {
+    title: "Solutions",
+    links: [
+      { label: "Hospital Value", to: APP_LINKS.internal.hospitalValue, ctaName: "footer_hospital_value" },
+      { label: "Caregiver Support", to: APP_LINKS.internal.caregivers, ctaName: "footer_caregivers" },
+      { label: "Medicare Guidance", to: APP_LINKS.internal.medicare, ctaName: "footer_medicare" },
+      { label: "Hospital to Home", to: APP_LINKS.internal.hospitalToHome, ctaName: "footer_hospital_to_home" },
+    ],
+  },
+  {
+    title: "Action",
+    links: [
+      { label: "VeeVee Simulator", to: APP_LINKS.internal.simulator, ctaName: "footer_simulator" },
+      {
+        label: "Investor Info",
+        href: APP_LINKS.external.investors,
+        ctaName: "footer_investor_info",
+        destinationType: "external",
+      },
+      {
+        label: "Log In",
+        href: APP_LINKS.external.authenticatedConsole,
+        ctaName: "footer_login",
+        destinationType: "external",
+      },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "Contact & Press", to: APP_LINKS.internal.contact, ctaName: "footer_contact" },
+      { label: "Terms & Disclaimers", to: APP_LINKS.internal.terms, ctaName: "footer_terms" },
+    ],
+  },
+];
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -141,11 +195,14 @@ export default function App() {
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const headerBg = useColorModeValue("bg.glass", "bg.glass");
   const borderColor = useColorModeValue("border.default", "border.default");
   const navColor = useColorModeValue("text.primary", "text.primary");
   const menuButtonColor = useColorModeValue("text.primary", "white");
   const drawerBg = useColorModeValue("white", "surface.900");
+  const drawerPanelBg = useColorModeValue("rgba(17, 119, 186, 0.06)", "rgba(156, 231, 255, 0.08)");
+  const drawerLinkColor = useColorModeValue("gray.600", "gray.400");
   const logoFilter = useColorModeValue("none", "invert(1)");
 
   const trackNavClick = (
@@ -166,7 +223,13 @@ function Header() {
 
   const handleDrawerOpen = () => {
     trackEvent("nav_menu_open", { placement: "header_mobile" });
+    setIsMoreOpen(false);
     onOpen();
+  };
+
+  const handleDrawerClose = () => {
+    setIsMoreOpen(false);
+    onClose();
   };
 
   return (
@@ -242,7 +305,7 @@ function Header() {
         </Container>
       </Box>
 
-      <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
+      <Drawer placement="right" onClose={handleDrawerClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent bg={drawerBg} color={navColor}>
           <DrawerCloseButton mt={2} />
@@ -254,40 +317,79 @@ function Header() {
               <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
               <CLink
                 as={Link}
-                to={APP_LINKS.internal.whyVeeVee}
+                to={APP_LINKS.internal.healthTwin}
                 onClick={() => {
-                  trackNavClick("drawer_features", "Features", APP_LINKS.internal.whyVeeVee, "internal", "mobile_drawer");
-                  onClose();
+                  trackNavClick("drawer_health_twin", "Health Twin", APP_LINKS.internal.healthTwin, "internal", "mobile_drawer");
+                  handleDrawerClose();
                 }}
-                fontWeight="600"
+                fontWeight="800"
+                fontSize="lg"
                 color={navColor}
               >
-                Features
+                Health Twin
               </CLink>
-              <CLink
-                as={Link}
-                to={APP_LINKS.internal.simulator}
-                onClick={() => {
-                  trackNavClick("drawer_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal", "mobile_drawer");
-                  onClose();
-                }}
-                fontWeight="600"
+
+              <Button
+                variant="ghost"
+                justifyContent="space-between"
+                px={0}
+                fontWeight="800"
                 color={navColor}
-              >
-                VeeVee Simulator
-              </CLink>
-              <CLink
-                href={APP_LINKS.external.authenticatedConsole}
-                isExternal
                 onClick={() => {
-                  trackNavClick("drawer_login", "Log in", APP_LINKS.external.authenticatedConsole, "external", "mobile_drawer");
-                  onClose();
+                  const nextOpen = !isMoreOpen;
+                  setIsMoreOpen(nextOpen);
+                  trackEvent("nav_menu_more_toggle", { placement: "header_mobile", expanded: nextOpen });
                 }}
-                fontWeight="700"
-                color="accent.soft"
               >
-                Log in
-              </CLink>
+                <Text as="span">More</Text>
+                <Text as="span" fontSize="sm" transform={isMoreOpen ? "rotate(180deg)" : "none"} transition="transform 160ms ease">
+                  v
+                </Text>
+              </Button>
+
+              {isMoreOpen ? (
+                <Stack spacing={5} bg={drawerPanelBg} borderRadius="2xl" p={4}>
+                  {FOOTER_NAV_GROUPS.map((group) => (
+                    <Stack key={group.title} spacing={2.5}>
+                      <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="text.muted">
+                        {group.title}
+                      </Text>
+                      <Stack spacing={2}>
+                        {group.links.map((drawerLink) => {
+                          const destination = drawerLink.to ?? drawerLink.href ?? APP_LINKS.internal.home;
+                          const destinationType = drawerLink.destinationType ?? "internal";
+
+                          return (
+                            <CLink
+                              key={drawerLink.ctaName}
+                              as={drawerLink.to ? Link : undefined}
+                              to={drawerLink.to}
+                              href={drawerLink.href}
+                              isExternal={destinationType === "external"}
+                              onClick={() => {
+                                trackNavClick(
+                                  drawerLink.ctaName.replace("footer_", "drawer_"),
+                                  drawerLink.label,
+                                  destination,
+                                  destinationType,
+                                  "mobile_drawer_more"
+                                );
+                                handleDrawerClose();
+                              }}
+                              fontSize="sm"
+                              fontWeight="600"
+                              color={drawerLinkColor}
+                              _hover={{ color: "accent.soft", textDecoration: "none" }}
+                            >
+                              {drawerLink.label}
+                            </CLink>
+                          );
+                        })}
+                      </Stack>
+                    </Stack>
+                  ))}
+                </Stack>
+              ) : null}
             </Stack>
           </DrawerBody>
         </DrawerContent>
@@ -299,8 +401,8 @@ function Header() {
 function Footer() {
   const footerBorder = useColorModeValue("border.default", "border.default");
   const footerBg = useColorModeValue("bg.glass", "bg.glass");
-  const primaryText = useColorModeValue("text.primary", "text.primary");
   const mutedText = useColorModeValue("text.muted", "text.muted");
+  const footerLinkColor = useColorModeValue("gray.600", "gray.400");
   const linkBorder = useColorModeValue("rgba(17, 119, 186, 0.18)", "rgba(156, 231, 255, 0.18)");
 
   const trackFooterClick = (
@@ -318,52 +420,6 @@ function Footer() {
     });
   };
 
-  const footerGroups = [
-    {
-      title: "Explore",
-      links: [
-        { label: "How It Works", to: APP_LINKS.internal.howItWorks, ctaName: "footer_how_it_works" },
-        { label: "Features", to: APP_LINKS.internal.whyVeeVee, ctaName: "footer_features" },
-        { label: "Technology", to: APP_LINKS.internal.technology, ctaName: "footer_technology" },
-        { label: "Testimonials", to: APP_LINKS.internal.testimonials, ctaName: "footer_testimonials" },
-      ],
-    },
-    {
-      title: "Solutions",
-      links: [
-        { label: "Hospital Value", to: APP_LINKS.internal.hospitalValue, ctaName: "footer_hospital_value" },
-        { label: "Caregiver Support", to: APP_LINKS.internal.caregivers, ctaName: "footer_caregivers" },
-        { label: "Medicare Guidance", to: APP_LINKS.internal.medicare, ctaName: "footer_medicare" },
-        { label: "Hospital to Home", to: APP_LINKS.internal.hospitalToHome, ctaName: "footer_hospital_to_home" },
-      ],
-    },
-    {
-      title: "Action",
-      links: [
-        { label: "VeeVee Simulator", to: APP_LINKS.internal.simulator, ctaName: "footer_simulator" },
-        {
-          label: "Investor Info",
-          href: APP_LINKS.external.investors,
-          ctaName: "footer_investor_info",
-          destinationType: "external" as const,
-        },
-        {
-          label: "Log In",
-          href: APP_LINKS.external.authenticatedConsole,
-          ctaName: "footer_login",
-          destinationType: "external" as const,
-        },
-      ],
-    },
-    {
-      title: "Company",
-      links: [
-        { label: "Contact & Press", to: APP_LINKS.internal.contact, ctaName: "footer_contact" },
-        { label: "Terms & Disclaimers", to: APP_LINKS.internal.terms, ctaName: "footer_terms" },
-      ],
-    },
-  ];
-
   return (
     <Box
       as="footer"
@@ -375,14 +431,14 @@ function Footer() {
       <Container maxW="6xl" py={{ base: 8, md: 10 }}>
         <Stack spacing={6}>
           <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={{ base: 6, md: 8 }}>
-            {footerGroups.map((group) => (
+            {FOOTER_NAV_GROUPS.map((group) => (
               <Stack key={group.title} spacing={3} align={{ base: "center", sm: "flex-start" }}>
                 <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color={mutedText}>
                   {group.title}
                 </Text>
                 <Stack spacing={2.5} align={{ base: "center", sm: "flex-start" }}>
                   {group.links.map((footerLink) => {
-                    const destination = footerLink.to ?? footerLink.href;
+                    const destination = footerLink.to ?? footerLink.href ?? APP_LINKS.internal.home;
                     const destinationType = footerLink.destinationType ?? "internal";
 
                     return (
@@ -392,8 +448,9 @@ function Footer() {
                         to={footerLink.to}
                         href={footerLink.href}
                         isExternal={destinationType === "external"}
-                        color={primaryText}
-                        fontWeight="700"
+                        color={footerLinkColor}
+                        fontSize="sm"
+                        fontWeight="600"
                         lineHeight="1.2"
                         borderBottom="1px solid"
                         borderColor={linkBorder}
