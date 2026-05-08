@@ -18,6 +18,18 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "marketing_landing",
     primary_goal: "drive_account_creation",
   },
+  [APP_LINKS.internal.howItWorks]: {
+    page_name: "how_it_works",
+    page_section: "marketing",
+    page_type: "marketing_detail",
+    primary_goal: "drive_simulator_or_login",
+  },
+  [APP_LINKS.internal.hospitalValue]: {
+    page_name: "hospital_value",
+    page_section: "marketing",
+    page_type: "marketing_detail",
+    primary_goal: "build_trust",
+  },
   [APP_LINKS.internal.whyVeeVee]: {
     page_name: "features",
     page_section: "marketing",
@@ -66,4 +78,3 @@ export function getRouteAnalytics(pathname: string): RouteAnalyticsMetadata {
     }
   );
 }
-

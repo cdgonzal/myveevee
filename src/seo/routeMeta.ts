@@ -32,6 +32,26 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ...DEFAULT_ROUTE_SEO,
     ogType: "website",
   },
+  [APP_LINKS.internal.howItWorks]: {
+    title: "How VeeVee Works | 3 Simple Steps for Health Questions",
+    description:
+      "See how VeeVee helps people describe what is happening, get calmer next-step guidance, and decide what to do next in three simple steps.",
+    canonicalPath: APP_LINKS.internal.howItWorks,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
+  [APP_LINKS.internal.hospitalValue]: {
+    title: "VeeVee Hospital Value | Revenue, Labor Savings, and Risk Reduction",
+    description:
+      "Review the VeeVee hospital value story, including revenue support, labor efficiency, risk mitigation, and illustrative rollout math.",
+    canonicalPath: APP_LINKS.internal.hospitalValue,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: "https://myveevee.com/og/technology.svg",
+    twitterImage: "https://myveevee.com/og/technology.svg",
+  },
   [APP_LINKS.internal.whyVeeVee]: {
     title: "VeeVee Features | Connected Care, Guidance, and Family Support",
     description:

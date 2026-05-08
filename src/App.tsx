@@ -32,6 +32,8 @@ import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 
 const Home = lazy(() => import("./pages/Home"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks"));
+const HospitalValue = lazy(() => import("./pages/HospitalValue"));
 const Features = lazy(() => import("./pages/Features"));
 const Technology = lazy(() => import("./pages/Technology"));
 const Simulator = lazy(() => import("./pages/Simulator"));
@@ -110,6 +112,8 @@ export default function App() {
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.home} element={<Home />} />
+                <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
+                <Route path={APP_LINKS.internal.hospitalValue} element={<HospitalValue />} />
                 <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
                 <Route path={APP_LINKS.internal.technology} element={<Technology />} />
                 <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
@@ -223,29 +227,7 @@ function Header() {
                     trackNavClick("header_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal", "header_nav")
                   }
                 >
-                  VeeVee Simulator®
-                </CLink>
-                <CLink
-                  as={Link}
-                  to={APP_LINKS.internal.testimonials}
-                  color={navColor}
-                  fontWeight="600"
-                  onClick={() =>
-                    trackNavClick("header_testimonials", "Testimonials", APP_LINKS.internal.testimonials, "internal", "header_nav")
-                  }
-                >
-                  Testimonials
-                </CLink>
-                <CLink
-                  as={Link}
-                  to={APP_LINKS.internal.technology}
-                  color={navColor}
-                  fontWeight="600"
-                  onClick={() =>
-                    trackNavClick("header_technology", "Tech", APP_LINKS.internal.technology, "internal", "header_nav")
-                  }
-                >
-                  Tech
+                  VeeVee Simulator
                 </CLink>
               </HStack>
 
@@ -311,31 +293,7 @@ function Header() {
                 fontWeight="600"
                 color={navColor}
               >
-                VeeVee Simulator®
-              </CLink>
-              <CLink
-                as={Link}
-                to={APP_LINKS.internal.testimonials}
-                onClick={() => {
-                  trackNavClick("drawer_testimonials", "Testimonials", APP_LINKS.internal.testimonials, "internal", "mobile_drawer");
-                  onClose();
-                }}
-                fontWeight="600"
-                color={navColor}
-              >
-                Testimonials
-              </CLink>
-              <CLink
-                as={Link}
-                to={APP_LINKS.internal.technology}
-                onClick={() => {
-                  trackNavClick("drawer_technology", "Tech", APP_LINKS.internal.technology, "internal", "mobile_drawer");
-                  onClose();
-                }}
-                fontWeight="600"
-                color={navColor}
-              >
-                Tech
+                VeeVee Simulator
               </CLink>
               <CLink
                 href={APP_LINKS.external.authenticatedConsole}
@@ -391,21 +349,35 @@ function Footer() {
           align={{ base: "center", md: "center" }}
           justify="space-between"
           direction={{ base: "column", md: "row" }}
-          gap={{ base: 3, md: 0 }}
+          gap={{ base: 3, md: 4 }}
           fontSize="sm"
           textAlign={{ base: "center", md: "left" }}
         >
           <Text color={mutedText}>Copyright {new Date().getFullYear()} VeeVee Health</Text>
-          <Stack direction={{ base: "column", md: "row" }} spacing={{ base: 2, md: 4 }} align={{ base: "center", md: "flex-start" }}>
+          <Flex wrap="wrap" justify={{ base: "center", md: "flex-end" }} gap={{ base: 2, md: 4 }}>
             <CLink
-              href={APP_LINKS.external.authenticatedConsole}
-              isExternal
+              as={Link}
+              to={APP_LINKS.internal.howItWorks}
               color={primaryText}
-              onClick={() =>
-                trackFooterClick("footer_login", "Log In", APP_LINKS.external.authenticatedConsole, "external")
-              }
+              onClick={() => trackFooterClick("footer_how_it_works", "How It Works", APP_LINKS.internal.howItWorks, "internal")}
             >
-              Log In
+              How It Works
+            </CLink>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.whyVeeVee}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_features", "Features", APP_LINKS.internal.whyVeeVee, "internal")}
+            >
+              Features
+            </CLink>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.hospitalValue}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_hospital_value", "Hospital Value", APP_LINKS.internal.hospitalValue, "internal")}
+            >
+              Hospital Value
             </CLink>
             <CLink
               as={Link}
@@ -417,11 +389,43 @@ function Footer() {
             </CLink>
             <CLink
               as={Link}
+              to={APP_LINKS.internal.testimonials}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_testimonials", "Testimonials", APP_LINKS.internal.testimonials, "internal")}
+            >
+              Testimonials
+            </CLink>
+            <CLink
+              as={Link}
               to={APP_LINKS.internal.simulator}
               color={primaryText}
               onClick={() => trackFooterClick("footer_simulator", "VeeVee Simulator", APP_LINKS.internal.simulator, "internal")}
             >
-              VeeVee Simulator®
+              VeeVee Simulator
+            </CLink>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.caregivers}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_caregivers", "Caregiver Support", APP_LINKS.internal.caregivers, "internal")}
+            >
+              Caregiver Support
+            </CLink>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.medicare}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_medicare", "Medicare Guidance", APP_LINKS.internal.medicare, "internal")}
+            >
+              Medicare Guidance
+            </CLink>
+            <CLink
+              as={Link}
+              to={APP_LINKS.internal.hospitalToHome}
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_hospital_to_home", "Hospital to Home", APP_LINKS.internal.hospitalToHome, "internal")}
+            >
+              Hospital to Home
             </CLink>
             <CLink
               href={APP_LINKS.external.investors}
@@ -430,6 +434,14 @@ function Footer() {
               onClick={() => trackFooterClick("footer_investor_info", "Investor Info", APP_LINKS.external.investors, "external")}
             >
               Investor Info
+            </CLink>
+            <CLink
+              href={APP_LINKS.external.authenticatedConsole}
+              isExternal
+              color={primaryText}
+              onClick={() => trackFooterClick("footer_login", "Log In", APP_LINKS.external.authenticatedConsole, "external")}
+            >
+              Log In
             </CLink>
             <CLink
               as={Link}
@@ -447,7 +459,7 @@ function Footer() {
             >
               Terms &amp; Disclaimers
             </CLink>
-          </Stack>
+          </Flex>
         </Flex>
       </Container>
     </Box>
