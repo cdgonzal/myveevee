@@ -568,11 +568,73 @@ function JourneyNode({
   );
 }
 
+function MobileJourneyStep({
+  stepNumber,
+  icon,
+  label,
+  isActive,
+  isComplete,
+}: {
+  stepNumber: number;
+  icon: string;
+  label: string;
+  isActive: boolean;
+  isComplete: boolean;
+}) {
+  const isOn = isActive || isComplete;
+
+  return (
+    <HStack align="stretch" spacing={3}>
+      <Stack align="center" spacing={1} flexShrink={0}>
+        <Box
+          w="34px"
+          h="34px"
+          borderRadius="full"
+          bgGradient={isOn ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
+          bg={isOn ? undefined : "rgba(255,255,255,0.76)"}
+          border="1px solid rgba(23, 49, 140, 0.10)"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          boxShadow={isActive ? "0 10px 22px rgba(54, 197, 255, 0.22)" : "none"}
+        >
+          <Text fontSize="xs" fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0.04em">
+            {isComplete ? "✓" : stepNumber}
+          </Text>
+        </Box>
+        {stepNumber < 4 ? <Box w="1px" flex="1" minH="18px" bg={isComplete ? "rgba(23,49,140,0.28)" : "rgba(23,49,140,0.10)"} /> : null}
+      </Stack>
+
+      <Box
+        flex="1"
+        borderRadius="22px"
+        border="1px solid rgba(23, 49, 140, 0.10)"
+        bg={isActive ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.58)"}
+        px={3.5}
+        py={isActive ? 3 : 2.5}
+      >
+        <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft" mb={1}>
+          {icon}
+        </Text>
+        <Text fontSize="sm" fontWeight="800" lineHeight="1.1">
+          {label}
+        </Text>
+        {isActive ? (
+          <Text fontSize="xs" color="text.muted" mt={1.5}>
+            Active now
+          </Text>
+        ) : null}
+      </Box>
+    </HStack>
+  );
+}
+
 export default function HealthTwinFunnel() {
   const [step, setStep] = useState<FunnelStep>(0);
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [selectedEvolutionIds, setSelectedEvolutionIds] = useState<string[]>([]);
-  const [avatarFailed, setAvatarFailed] = useState(false);
+  const [avatarVideoFailed, setAvatarVideoFailed] = useState(false);
+  const [avatarStillFailed, setAvatarStillFailed] = useState(false);
 
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
@@ -755,13 +817,26 @@ export default function HealthTwinFunnel() {
                 bg={heroSurface}
                 border="1px solid"
                 borderColor={heroBorder}
-                borderRadius="full"
+                borderRadius={{ base: "28px", md: "full" }}
                 px={{ base: 3, md: 4 }}
                 py={{ base: 2, md: 3 }}
                 backdropFilter="blur(14px)"
               >
                 <Stack spacing={2}>
+                  <Stack spacing={2.5} display={{ base: "flex", md: "none" }}>
+                    {FUNNEL_STEPS.map((funnelStep, index) => (
+                      <MobileJourneyStep
+                        key={funnelStep.key}
+                        stepNumber={index + 1}
+                        icon={funnelStep.icon}
+                        label={funnelStep.label}
+                        isActive={index === step}
+                        isComplete={index < step}
+                      />
+                    ))}
+                  </Stack>
                   <HStack
+                    display={{ base: "none", md: "flex" }}
                     spacing={{ base: 2, md: 3 }}
                     justify={{ base: "flex-start", md: "space-between" }}
                     align="center"
@@ -841,7 +916,52 @@ export default function HealthTwinFunnel() {
                   bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.26) 0%, rgba(54,197,255,0.12) 48%, rgba(255,255,255,0) 100%)"
                 />
 
-                {!avatarFailed ? (
+                {!avatarVideoFailed ? (
+                  <Box
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    animation="heroAvatarFloat 6s ease-in-out infinite"
+                  >
+                    <Box
+                      position="relative"
+                      w="250px"
+                      h="290px"
+                      overflow="hidden"
+                    >
+                      <Box
+                        as="video"
+                        src="/avatar/hero-avatar-2.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        w="100%"
+                        h="100%"
+                        objectFit="contain"
+                        onLoadedData={() => {
+                          setAvatarVideoFailed(false);
+                          console.log("[HealthTwinHero] avatar video loaded", {
+                            src: "/avatar/hero-avatar-2.mp4",
+                          });
+                        }}
+                        onCanPlay={() => {
+                          console.log("[HealthTwinHero] avatar video can play", {
+                            src: "/avatar/hero-avatar-2.mp4",
+                          });
+                        }}
+                        onError={(event) => {
+                          setAvatarVideoFailed(true);
+                          console.error("[HealthTwinHero] avatar video failed", {
+                            src: "/avatar/hero-avatar-2.mp4",
+                            error: event.currentTarget.error,
+                          });
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                ) : !avatarStillFailed ? (
                   <Box
                     position="absolute"
                     top="50%"
@@ -865,13 +985,14 @@ export default function HealthTwinFunnel() {
                         objectFit="contain"
                         animation="heroAvatarSwapA 4.8s ease-in-out infinite"
                         onLoad={() => {
-                          console.log("[HealthTwinHero] avatar frame loaded", {
+                          setAvatarStillFailed(false);
+                          console.log("[HealthTwinHero] avatar still loaded", {
                             src: "/images/marketing/hero-avatar-a.png",
                           });
                         }}
                         onError={() => {
-                          setAvatarFailed(true);
-                          console.error("[HealthTwinHero] avatar frame failed", {
+                          setAvatarStillFailed(true);
+                          console.error("[HealthTwinHero] avatar still failed", {
                             src: "/images/marketing/hero-avatar-a.png",
                           });
                         }}
@@ -887,14 +1008,14 @@ export default function HealthTwinFunnel() {
                         objectFit="contain"
                         animation="heroAvatarSwapB 4.8s ease-in-out infinite"
                         onLoad={() => {
-                          setAvatarFailed(false);
-                          console.log("[HealthTwinHero] avatar frame loaded", {
+                          setAvatarStillFailed(false);
+                          console.log("[HealthTwinHero] avatar still loaded", {
                             src: "/images/marketing/hero-avatar-b.png",
                           });
                         }}
                         onError={() => {
-                          setAvatarFailed(true);
-                          console.error("[HealthTwinHero] avatar frame failed", {
+                          setAvatarStillFailed(true);
+                          console.error("[HealthTwinHero] avatar still failed", {
                             src: "/images/marketing/hero-avatar-b.png",
                           });
                         }}
@@ -903,7 +1024,7 @@ export default function HealthTwinFunnel() {
                   </Box>
                 ) : null}
 
-                {avatarFailed ? (
+                {avatarVideoFailed && avatarStillFailed ? (
                   <Stack
                     position="absolute"
                     inset="0"
