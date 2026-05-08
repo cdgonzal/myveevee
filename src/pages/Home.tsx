@@ -173,14 +173,14 @@ export default function Home() {
 
             <Stack spacing={3}>
               <Button
-                as="a"
-                href={APP_LINKS.cta.login}
+                as={RouterLink}
+                to={APP_LINKS.internal.healthTwin}
                 onClick={() =>
                   trackHomeCta(
                     "home_hero_create_health_twin",
                     "Create Your Health Twin",
-                    APP_LINKS.cta.login,
-                    "external",
+                    APP_LINKS.internal.healthTwin,
+                    "internal",
                     "home_hero"
                   )
                 }

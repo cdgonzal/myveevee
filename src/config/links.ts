@@ -1,6 +1,7 @@
 export const APP_LINKS = {
   internal: {
     home: "/",
+    healthTwin: "/health-twin",
     howItWorks: "/how-it-works",
     hospitalValue: "/hospital-value",
     whyVeeVee: "/features",

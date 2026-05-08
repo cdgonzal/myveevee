@@ -32,6 +32,16 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ...DEFAULT_ROUTE_SEO,
     ogType: "website",
   },
+  [APP_LINKS.internal.healthTwin]: {
+    title: "Create Your Health Twin | Guided VeeVee Funnel Preview",
+    description:
+      "Walk through a four-step VeeVee funnel: simulate health data input, evolve the twin with more context, review insights, and then create your own.",
+    canonicalPath: APP_LINKS.internal.healthTwin,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
   [APP_LINKS.internal.howItWorks]: {
     title: "How VeeVee Works | 3 Simple Steps for Health Questions",
     description:

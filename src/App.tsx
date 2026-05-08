@@ -32,6 +32,7 @@ import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 
 const Home = lazy(() => import("./pages/Home"));
+const HealthTwinFunnel = lazy(() => import("./pages/HealthTwinFunnel"));
 const HowItWorks = lazy(() => import("./pages/HowItWorks"));
 const HospitalValue = lazy(() => import("./pages/HospitalValue"));
 const Features = lazy(() => import("./pages/Features"));
@@ -112,6 +113,7 @@ export default function App() {
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.home} element={<Home />} />
+                <Route path={APP_LINKS.internal.healthTwin} element={<HealthTwinFunnel />} />
                 <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
                 <Route path={APP_LINKS.internal.hospitalValue} element={<HospitalValue />} />
                 <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />

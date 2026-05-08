@@ -21,24 +21,83 @@ const ROUTES = [
         <p style="font-size:18px;line-height:1.6;max-width:760px;margin:0 0 24px;">
           VeeVee brings your records, habits, and care into one place so you can understand your body, follow changes over time, and make decisions with confidence.
         </p>
-        <h2 style="font-size:28px;margin:40px 0 12px;">How VeeVee works across connected care</h2>
+        <h2 style="font-size:28px;margin:40px 0 12px;">Start with a guided Health Twin funnel</h2>
         <p style="font-size:16px;line-height:1.6;max-width:820px;">
-          VeeVee helps people describe what is happening, get calmer next-step guidance, and understand how benefits, family support, care-team visibility, and hospital-to-home continuity fit together in one connected experience.
+          The homepage now points visitors into a four-step walkthrough: simulate bringing in sample health data, evolve the twin with more context, see insights and simulations, and then decide whether to create a real VeeVee account.
         </p>
-        <h3 style="font-size:22px;margin:28px 0 12px;">For everyday users</h3>
-        <ul style="line-height:1.7;padding-left:20px;">
+        <ol style="line-height:1.8;padding-left:20px;">
+          <li>Data In: choose a sample asset like an MRI, health record, injury image, or lab panel.</li>
+          <li>Your Twin Evolves: add context such as symptom history, sleep routine, medication history, or care goals.</li>
+          <li>Insights and Simulations: review the simulated signals, recommendations, and next questions.</li>
+          <li>Better Decisions: continue to the real VeeVee experience.</li>
+        </ol>
+      </main>
+    `,
+  },
+  {
+    path: "/health-twin",
+    title: "Create Your Health Twin | Guided VeeVee Funnel Preview",
+    description:
+      "Walk through a four-step VeeVee funnel: simulate health data input, evolve the twin with more context, review insights, and then create your own.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/home.svg",
+    body: `
+      <main data-prerendered-route="/health-twin" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Health Twin Funnel</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Create a Health Twin in four guided steps.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          This public funnel simulates what VeeVee does: bring in sample health data, evolve the twin with more context, review insights, and then continue to the real experience.
+        </p>
+        <ol style="line-height:1.8;padding-left:20px;">
+          <li>Choose a sample upload such as an MRI, health record, injury image, or lab panel.</li>
+          <li>Add context such as symptom history, medication history, sleep patterns, or care goals.</li>
+          <li>Review simulated insights, signals, recommendations, and follow-up questions.</li>
+          <li>Continue to veevee.io if you want to create your own Health Twin.</li>
+        </ol>
+      </main>
+    `,
+  },
+  {
+    path: "/how-it-works",
+    title: "How VeeVee Works | 3 Simple Steps for Health Questions",
+    description:
+      "See how VeeVee helps people describe what is happening, get calmer next-step guidance, and decide what to do next in three simple steps.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/home.svg",
+    body: `
+      <main data-prerendered-route="/how-it-works" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">How it works</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Your health questions answered in 3 simple steps.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          This page explains the simple VeeVee journey: tell VeeVee what is happening, get clear guidance, and take the next step with more confidence.
+        </p>
+        <ol style="line-height:1.8;padding-left:20px;">
           <li>Tell VeeVee what is happening.</li>
-          <li>Get clear guidance and questions to ask next.</li>
-          <li>Understand how your plan or benefits may shape the next step.</li>
+          <li>Get clearer next-step guidance.</li>
+          <li>Decide what to do next with better context.</li>
+        </ol>
+      </main>
+    `,
+  },
+  {
+    path: "/hospital-value",
+    title: "VeeVee Hospital Value | Revenue, Labor Savings, and Risk Reduction",
+    description:
+      "Review the VeeVee hospital value story, including revenue support, labor efficiency, risk mitigation, and illustrative rollout math.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/technology.svg",
+    body: `
+      <main data-prerendered-route="/hospital-value" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Hospital value</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">A simple way to think about VeeVee value for hospitals.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          VeeVee frames hospital value around new revenue support, labor efficiency, risk mitigation, and clearer visibility from bedside to home.
+        </p>
+        <ul style="line-height:1.8;padding-left:20px;">
+          <li>Revenue support through RPM and RTM-aligned workflows.</li>
+          <li>Labor savings from reduced manual coverage dependence.</li>
+          <li>Risk reduction from earlier signals and better follow-through.</li>
         </ul>
-        <h3 style="font-size:22px;margin:28px 0 12px;">For hospitals</h3>
-        <p style="line-height:1.7;">
-          VeeVee frames hospital value around new revenue support, labor efficiency, lower operational risk, and better visibility from bedside to home.
-        </p>
-        <h3 style="font-size:22px;margin:28px 0 12px;">Technology backbone</h3>
-        <p style="line-height:1.7;">
-          VeeVee is built to keep data private, respond quickly, and support both hospital workflows and the broader app experience with a responsive, connected care model.
-        </p>
       </main>
     `,
   },
