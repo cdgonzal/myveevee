@@ -931,34 +931,36 @@ export default function HealthTwinFunnel() {
                     >
                       <Box
                         as="video"
-                        src="/avatar/hero-avatar-2.mp4"
                         autoPlay
                         muted
                         loop
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         w="100%"
                         h="100%"
                         objectFit="contain"
                         onLoadedData={() => {
                           setAvatarVideoFailed(false);
                           console.log("[HealthTwinHero] avatar video loaded", {
-                            src: "/avatar/hero-avatar-2.mp4",
+                            sources: ["/avatar/hero-avatar-2.webm", "/avatar/hero-avatar-2.mp4"],
                           });
                         }}
                         onCanPlay={() => {
                           console.log("[HealthTwinHero] avatar video can play", {
-                            src: "/avatar/hero-avatar-2.mp4",
+                            sources: ["/avatar/hero-avatar-2.webm", "/avatar/hero-avatar-2.mp4"],
                           });
                         }}
                         onError={(event) => {
                           setAvatarVideoFailed(true);
                           console.error("[HealthTwinHero] avatar video failed", {
-                            src: "/avatar/hero-avatar-2.mp4",
+                            sources: ["/avatar/hero-avatar-2.webm", "/avatar/hero-avatar-2.mp4"],
                             error: event.currentTarget.error,
                           });
                         }}
-                      />
+                      >
+                        <source src="/avatar/hero-avatar-2.webm" type="video/webm" />
+                        <source src="/avatar/hero-avatar-2.mp4" type="video/mp4" />
+                      </Box>
                     </Box>
                   </Box>
                 ) : !avatarStillFailed ? (
