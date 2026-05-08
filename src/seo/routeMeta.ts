@@ -42,6 +42,15 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.avatarPlaybackTest]: {
+    title: "Avatar Playback Test | VeeVee",
+    description: "Hidden VeeVee avatar video playback diagnostic page.",
+    canonicalPath: APP_LINKS.internal.avatarPlaybackTest,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
   [APP_LINKS.internal.howItWorks]: {
     title: "How VeeVee Works | 3 Simple Steps for Health Questions",
     description:
