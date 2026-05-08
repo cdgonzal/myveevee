@@ -2,7 +2,9 @@ import {
   Badge,
   Box,
   Button,
+  Grid,
   Heading,
+  HStack,
   SimpleGrid,
   Stack,
   Text,
@@ -258,13 +260,13 @@ function cloneInput(input: SimulatorInput): SimulatorInput {
 function MetricChip({ label }: { label: string }) {
   return (
     <Box
-      px={3}
+      px={2.5}
       py={1.5}
       borderRadius="full"
       bg="rgba(17, 119, 186, 0.10)"
       border="1px solid rgba(17, 119, 186, 0.16)"
     >
-      <Text fontSize="xs" fontWeight="700" letterSpacing="0.04em">
+      <Text fontSize="10px" fontWeight="800" letterSpacing="0.08em" textTransform="uppercase">
         {label}
       </Text>
     </Box>
@@ -282,6 +284,7 @@ function IconTile({
   activeBorder,
   cardBg,
   activeCardBg,
+  selectionLabel,
 }: {
   icon: string;
   title: string;
@@ -293,47 +296,74 @@ function IconTile({
   activeBorder: string;
   cardBg: string;
   activeCardBg: string;
+  selectionLabel?: string;
 }) {
   return (
     <Box
       borderWidth="1px"
       borderColor={isSelected ? activeBorder : border}
-      borderRadius="3xl"
+      borderRadius="32px"
       bg={isSelected ? activeCardBg : cardBg}
-      p={5}
+      p={{ base: 4, md: 5 }}
       cursor="pointer"
       onClick={onClick}
-      boxShadow={isSelected ? "0 18px 36px rgba(17, 119, 186, 0.16)" : "0 10px 24px rgba(6, 37, 76, 0.06)"}
+      boxShadow={isSelected ? "0 22px 44px rgba(17, 119, 186, 0.18)" : "0 12px 26px rgba(6, 37, 76, 0.06)"}
+      position="relative"
+      overflow="hidden"
     >
-      <Stack spacing={4}>
-        <Box
-          w="64px"
-          h="64px"
-          borderRadius="2xl"
-          bg={isSelected ? "accent.primary" : "rgba(17, 119, 186, 0.10)"}
-          color={isSelected ? "white" : "accent.primary"}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          fontSize="lg"
-          fontWeight="900"
-          letterSpacing="0.08em"
-        >
-          {icon}
-        </Box>
+      <Box
+        position="absolute"
+        top="-24px"
+        right="-24px"
+        w="96px"
+        h="96px"
+        borderRadius="full"
+        bg={isSelected ? "rgba(54, 197, 255, 0.22)" : "rgba(17, 119, 186, 0.08)"}
+      />
+      <Stack spacing={4} position="relative">
+        <HStack justify="space-between" align="flex-start">
+          <Box
+            w={{ base: "56px", md: "60px" }}
+            h={{ base: "56px", md: "60px" }}
+            borderRadius="20px"
+            bgGradient={isSelected ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
+            bg={isSelected ? undefined : "rgba(17, 119, 186, 0.10)"}
+            color={isSelected ? "white" : "accent.primary"}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            fontSize="md"
+            fontWeight="900"
+            letterSpacing="0.08em"
+            boxShadow={isSelected ? "0 18px 28px rgba(54, 197, 255, 0.20)" : "none"}
+          >
+            {icon}
+          </Box>
+          <Box
+            px={2.5}
+            py={1.5}
+            borderRadius="full"
+            bg={isSelected ? "rgba(23, 49, 140, 0.10)" : "rgba(255,255,255,0.72)"}
+            border="1px solid rgba(23, 49, 140, 0.10)"
+          >
+            <Text fontSize="10px" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color="accent.soft">
+              {selectionLabel ?? (isSelected ? "Selected" : "Select")}
+            </Text>
+          </Box>
+        </HStack>
         <Box>
-          <Heading as="h3" size="sm" mb={1}>
-            {title}
-          </Heading>
-          <Text fontSize="sm" color="text.muted">
+          <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft" mb={2}>
             {micro}
           </Text>
+          <Heading as="h3" size="sm" mb={0}>
+            {title}
+          </Heading>
         </Box>
-        <Stack direction="row" flexWrap="wrap" spacing={2}>
+        <HStack spacing={2} flexWrap="wrap">
           {metrics.map((metric) => (
             <MetricChip key={`${title}-${metric}`} label={metric} />
           ))}
-        </Stack>
+        </HStack>
       </Stack>
     </Box>
   );
@@ -366,6 +396,60 @@ function MetricCard({
   );
 }
 
+function JourneyNode({
+  stepNumber,
+  icon,
+  label,
+  isActive,
+  isComplete,
+}: {
+  stepNumber: number;
+  icon: string;
+  label: string;
+  isActive: boolean;
+  isComplete: boolean;
+}) {
+  const isOn = isActive || isComplete;
+
+  return (
+    <HStack
+      spacing={2}
+      minW="fit-content"
+      px={{ base: 2.5, md: 3 }}
+      py={{ base: 2, md: 2.5 }}
+      borderRadius="full"
+      bg={isOn ? "rgba(255,255,255,0.94)" : "rgba(255,255,255,0.56)"}
+      border="1px solid rgba(23, 49, 140, 0.10)"
+      boxShadow={isActive ? "0 14px 28px rgba(54, 197, 255, 0.22)" : "0 8px 18px rgba(6, 37, 76, 0.06)"}
+      flexShrink={0}
+    >
+      <Box
+        w={{ base: "34px", md: "38px" }}
+        h={{ base: "34px", md: "38px" }}
+        borderRadius="full"
+        bgGradient={isOn ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
+        bg={isOn ? undefined : "rgba(255,255,255,0.78)"}
+        border="1px solid rgba(23, 49, 140, 0.08)"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0.04em">
+          {icon}
+        </Text>
+      </Box>
+      <Box>
+        <Text fontSize="10px" lineHeight="1" fontWeight="800" color="#17318C" opacity={0.7} mb={1}>
+          {stepNumber}
+        </Text>
+        <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="800" lineHeight="1">
+          {label}
+        </Text>
+      </Box>
+    </HStack>
+  );
+}
+
 export default function HealthTwinFunnel() {
   const [step, setStep] = useState<FunnelStep>(0);
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
@@ -384,12 +468,28 @@ export default function HealthTwinFunnel() {
   const stepCircleColor = useColorModeValue("#FFFFFF", "#001A52");
   const activeBorder = useColorModeValue("#1177BA", "#9CE7FF");
   const detailsBg = useColorModeValue("rgba(255,255,255,0.68)", "rgba(6, 37, 76, 0.56)");
+  const heroBg = useColorModeValue(
+    "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(230,247,255,0.96) 52%, rgba(205,240,255,0.92) 100%)",
+    "linear-gradient(135deg, rgba(8,23,54,0.98) 0%, rgba(13,34,73,0.96) 52%, rgba(16,58,106,0.92) 100%)"
+  );
+  const heroOrbBg = useColorModeValue(
+    "radial-gradient(circle at 50% 50%, rgba(54,197,255,0.95) 0%, rgba(23,49,140,0.90) 48%, rgba(23,49,140,0.18) 72%, rgba(255,255,255,0) 100%)",
+    "radial-gradient(circle at 50% 50%, rgba(54,197,255,0.88) 0%, rgba(14,45,103,0.94) 42%, rgba(16,69,140,0.24) 72%, rgba(255,255,255,0) 100%)"
+  );
+  const heroSurface = useColorModeValue("rgba(255,255,255,0.74)", "rgba(255,255,255,0.06)");
+  const heroBorder = useColorModeValue("rgba(23, 49, 140, 0.14)", "rgba(156, 231, 255, 0.16)");
   const insightPanelBg = useColorModeValue(
     "linear-gradient(180deg, rgba(17,119,186,0.16) 0%, rgba(156,231,255,0.52) 100%)",
     "linear-gradient(180deg, rgba(17,119,186,0.24) 0%, rgba(6,37,76,0.80) 100%)"
   );
   const insightCardBg = useColorModeValue("rgba(255,255,255,0.88)", "rgba(10, 44, 88, 0.82)");
   const insightAccentBorder = useColorModeValue("rgba(17, 119, 186, 0.34)", "rgba(156, 231, 255, 0.42)");
+  const conversionPanelBg = useColorModeValue(
+    "linear-gradient(135deg, rgba(9,30,102,0.98) 0%, rgba(23,49,140,0.96) 36%, rgba(54,197,255,0.92) 100%)",
+    "linear-gradient(135deg, rgba(9,30,102,0.98) 0%, rgba(23,49,140,0.96) 36%, rgba(54,197,255,0.88) 100%)"
+  );
+  const conversionCardBg = useColorModeValue("rgba(255,255,255,0.14)", "rgba(255,255,255,0.08)");
+  const conversionBorder = useColorModeValue("rgba(255,255,255,0.24)", "rgba(156, 231, 255, 0.22)");
 
   const selectedUpload = useMemo(
     () => UPLOAD_OPTIONS.find((option) => option.id === selectedUploadId) ?? null,
@@ -476,103 +576,236 @@ export default function HealthTwinFunnel() {
 
   return (
     <Box as="main" minH="100vh" bgGradient={pageGradient} color="text.primary" py={{ base: 10, md: 20 }}>
-      <Stack spacing={{ base: 8, md: 10 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
+      <Stack spacing={{ base: 5, md: 6 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
         <Box
           borderWidth="1px"
-          borderColor={border}
+          borderColor={heroBorder}
           borderRadius="3xl"
-          bg={panelBg}
-          boxShadow="0 24px 50px rgba(6, 37, 76, 0.12)"
-          p={{ base: 6, md: 8 }}
+          bgGradient={heroBg}
+          boxShadow="0 30px 70px rgba(6, 37, 76, 0.12)"
+          p={{ base: 5, md: 6 }}
+          overflow="hidden"
+          position="relative"
         >
-          <Stack spacing={6}>
-            <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
-              Health Twin
-            </Badge>
-            <Stack spacing={2}>
-              <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="900">
-                1. Data In
-                <br />
-                2. Twin
-                <br />
-                3. Insights
-                <br />
-                4. Better Decisions
-              </Heading>
-              <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="2xl">
-                Build the twin. Watch it evolve. See the signal.
-              </Text>
+          <Box
+            position="absolute"
+            top="-80px"
+            right="-40px"
+            w={{ base: "240px", md: "360px" }}
+            h={{ base: "240px", md: "360px" }}
+            borderRadius="full"
+            bg={heroOrbBg}
+            opacity={0.96}
+            pointerEvents="none"
+          />
+          <Box
+            position="absolute"
+            bottom="-120px"
+            left="-80px"
+            w={{ base: "220px", md: "320px" }}
+            h={{ base: "220px", md: "320px" }}
+            borderRadius="full"
+            bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.18) 0%, rgba(255,255,255,0) 68%)"
+            pointerEvents="none"
+          />
+
+          <Grid templateColumns={{ base: "1fr", lg: "minmax(0,1.05fr) minmax(320px,0.95fr)" }} gap={{ base: 4, lg: 6 }} position="relative">
+            <Stack spacing={4}>
+              <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
+                HEALTH TWIN
+              </Badge>
+              <Stack spacing={1.5}>
+                <Heading as="h1" size={{ base: "lg", md: "2xl" }} fontWeight="900" maxW="3xl" lineHeight="0.94">
+                  Build your Health Twin.
+                  <br />
+                  See your next move.
+                </Heading>
+                <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="2xl">
+                  4 fast steps. More signal. Less guessing.
+                </Text>
+              </Stack>
+
+              <Box
+                bg={heroSurface}
+                border="1px solid"
+                borderColor={heroBorder}
+                borderRadius="full"
+                px={{ base: 3, md: 4 }}
+                py={{ base: 2, md: 3 }}
+                backdropFilter="blur(14px)"
+              >
+                <Stack spacing={2}>
+                  <HStack
+                    spacing={{ base: 2, md: 3 }}
+                    justify={{ base: "flex-start", md: "space-between" }}
+                    align="center"
+                    overflowX={{ base: "auto", md: "visible" }}
+                    pb={{ base: 1, md: 0 }}
+                  >
+                    {FUNNEL_STEPS.map((funnelStep, index) => (
+                      <JourneyNode
+                        key={funnelStep.key}
+                        stepNumber={index + 1}
+                        icon={funnelStep.icon}
+                        label={funnelStep.label}
+                        isActive={index === step}
+                        isComplete={index < step}
+                      />
+                    ))}
+                  </HStack>
+                </Stack>
+              </Box>
+
+              <Box
+                as="details"
+                bg={detailsBg}
+                borderWidth="1px"
+                borderColor={heroBorder}
+                borderRadius="full"
+                px={4}
+                py={2.5}
+                w="fit-content"
+                minW={{ base: "100%", md: "280px" }}
+              >
+                <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
+                  Read more
+                </Box>
+                <Text mt={3} color={muted} fontSize="sm">
+                  A fast guided preview with sample inputs, simulated signals, and a final push to create your real twin.
+                </Text>
+              </Box>
             </Stack>
 
-            <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
-              {FUNNEL_STEPS.map((funnelStep, index) => {
-                const isActive = index === step;
-                const isComplete = index < step;
-
-                return (
-                  <Box
-                    key={funnelStep.key}
-                    borderWidth="1px"
-                    borderColor={isActive || isComplete ? activeBorder : border}
-                    borderRadius="3xl"
-                    bg={isActive ? activeCardBg : cardBg}
-                    p={4}
-                    textAlign="center"
-                  >
-                    <Stack spacing={3} align="center">
-                      <Box
-                        w={{ base: "52px", md: "60px" }}
-                        h={{ base: "52px", md: "60px" }}
-                        borderRadius="2xl"
-                        bg={isActive || isComplete ? stepCircleBg : "rgba(17, 119, 186, 0.10)"}
-                        color={isActive || isComplete ? stepCircleColor : "accent.primary"}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        fontWeight="900"
-                        fontSize="sm"
-                        letterSpacing="0.08em"
-                      >
-                        {funnelStep.icon}
-                      </Box>
-                      <Box>
-                        <Text fontSize="xs" color={muted} fontWeight="700">
-                          {index + 1}
-                        </Text>
-                        <Text fontWeight="800" fontSize="sm">
-                          {funnelStep.label}
-                        </Text>
-                      </Box>
-                    </Stack>
-                  </Box>
-                );
-              })}
-            </SimpleGrid>
-
             <Box
-              as="details"
-              bg={detailsBg}
-              borderWidth="1px"
-              borderColor={border}
-              borderRadius="2xl"
-              px={4}
-              py={3}
+              display={{ base: "none", lg: "block" }}
+              minH="100%"
+              borderRadius="3xl"
+              border="1px solid"
+              borderColor="rgba(23, 49, 140, 0.10)"
+              bg="rgba(255,255,255,0.24)"
+              backdropFilter="blur(14px)"
+              p={4}
             >
-              <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
-                Read more
-              </Box>
-              <Text mt={3} color={muted} fontSize="sm">
-                This is a guided preview using sample health inputs. Choose a data type, add a little more context, and the twin will generate simulated health signals, recommendations, and decision support.
-              </Text>
+              <Stack spacing={4} h="100%" justify="center">
+                <HStack spacing={2} justify="flex-end">
+                  <MetricChip label="LIVE" />
+                  <MetricChip label="SIM" />
+                  <MetricChip label="FREE" />
+                </HStack>
+                <Box position="relative" minH="280px">
+                  <Box
+                    position="absolute"
+                    inset="18px"
+                    borderRadius="full"
+                    border="1px solid rgba(54,197,255,0.30)"
+                  />
+                  <Box
+                    position="absolute"
+                    inset="52px"
+                    borderRadius="full"
+                    border="1px solid rgba(23,49,140,0.18)"
+                  />
+                  <Box
+                    position="absolute"
+                    inset="86px"
+                    borderRadius="full"
+                    border="1px dashed rgba(54,197,255,0.22)"
+                  />
+                  <Box
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                    w="118px"
+                    h="118px"
+                    borderRadius="full"
+                    bgGradient="linear(135deg, #17318C 0%, #36C5FF 100%)"
+                    boxShadow="0 34px 56px rgba(54, 197, 255, 0.30)"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Text color="white" fontWeight="900" fontSize="lg" letterSpacing="0.10em">
+                      TWIN
+                    </Text>
+                  </Box>
+                  <Box position="absolute" top="8px" left="50%" transform="translateX(-50%)">
+                    <MetricChip label="INPUT +" />
+                  </Box>
+                  <Box position="absolute" top="50%" right="0" transform="translateY(-50%)">
+                    <MetricChip label="INSIGHT" />
+                  </Box>
+                  <Box position="absolute" bottom="8px" left="50%" transform="translateX(-50%)">
+                    <MetricChip label="DECIDE" />
+                  </Box>
+                  <Box position="absolute" top="50%" left="0" transform="translateY(-50%)">
+                    <MetricChip label="EVOLVE" />
+                  </Box>
+                  <Box
+                    position="absolute"
+                    top="56px"
+                    right="44px"
+                    px={3}
+                    py={2}
+                    borderRadius="2xl"
+                    bg="rgba(255,255,255,0.76)"
+                    border="1px solid rgba(23,49,140,0.10)"
+                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
+                  >
+                    <Text fontSize="10px" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={1}>
+                      Energy
+                    </Text>
+                    <Text fontSize="lg" fontWeight="900">
+                      88
+                    </Text>
+                  </Box>
+                  <Box
+                    position="absolute"
+                    bottom="48px"
+                    left="40px"
+                    px={3}
+                    py={2}
+                    borderRadius="2xl"
+                    bg="rgba(255,255,255,0.76)"
+                    border="1px solid rgba(23,49,140,0.10)"
+                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
+                  >
+                    <Text fontSize="10px" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={1}>
+                      Recovery
+                    </Text>
+                    <Text fontSize="lg" fontWeight="900">
+                      7.9h
+                    </Text>
+                  </Box>
+                  <Box
+                    position="absolute"
+                    top="130px"
+                    left="56px"
+                    px={3}
+                    py={2}
+                    borderRadius="2xl"
+                    bg="rgba(255,255,255,0.76)"
+                    border="1px solid rgba(23,49,140,0.10)"
+                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
+                  >
+                    <Text fontSize="10px" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={1}>
+                      BP
+                    </Text>
+                    <Text fontSize="lg" fontWeight="900">
+                      118
+                    </Text>
+                  </Box>
+                </Box>
+              </Stack>
             </Box>
-          </Stack>
+          </Grid>
         </Box>
 
         <Box
           borderWidth="1px"
-          borderColor={step === 2 ? insightAccentBorder : border}
+          borderColor={step === 2 ? insightAccentBorder : step === 3 ? conversionBorder : border}
           borderRadius="3xl"
-          bg={step === 2 ? insightPanelBg : panelBg}
+          bg={step === 2 ? insightPanelBg : step === 3 ? conversionPanelBg : panelBg}
           boxShadow="0 20px 42px rgba(6, 37, 76, 0.10)"
           p={{ base: 6, md: 8 }}
         >
@@ -583,8 +816,11 @@ export default function HealthTwinFunnel() {
                   Step 1
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Choose your input
+                  Pick your first signal
                 </Heading>
+                <Text fontSize="sm" color={muted}>
+                  Tap one
+                </Text>
               </Box>
 
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
@@ -601,6 +837,7 @@ export default function HealthTwinFunnel() {
                     activeBorder={activeBorder}
                     cardBg={cardBg}
                     activeCardBg={activeCardBg}
+                    selectionLabel={option.id === selectedUploadId ? "Loaded" : "Tap in"}
                   />
                 ))}
               </SimpleGrid>
@@ -614,7 +851,7 @@ export default function HealthTwinFunnel() {
                   Step 2
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Evolve the twin
+                  Add what sharpens it
                 </Heading>
                 <Text fontSize="sm" color={muted}>
                   Pick up to 2
@@ -635,6 +872,7 @@ export default function HealthTwinFunnel() {
                     activeBorder={activeBorder}
                     cardBg={cardBg}
                     activeCardBg={activeCardBg}
+                    selectionLabel={selectedEvolutionIds.includes(option.id) ? "Added" : "Add on"}
                   />
                 ))}
               </SimpleGrid>
@@ -648,10 +886,10 @@ export default function HealthTwinFunnel() {
                   Step 3
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Your best-version twin snapshot
+                  Your strongest simulated self
                 </Heading>
                 <Text fontSize="sm" color={muted}>
-                  Stronger patterns. Smarter momentum. Clearer next moves.
+                  Better recovery. Sharper signals. Clearer momentum.
                 </Text>
               </Box>
 
@@ -662,6 +900,37 @@ export default function HealthTwinFunnel() {
                 <MetricCard label="Consistency" value={`${simulatedInput.medication.adherencePercent}%`} />
                 <MetricCard label="Pressure" value={simulatedInput.labs.systolicBp ? `${simulatedInput.labs.systolicBp}` : "--"} />
               </SimpleGrid>
+
+              <Grid templateColumns={{ base: "1fr", lg: "1.15fr 0.85fr" }} gap={4}>
+                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
+                    Best-version readout
+                  </Text>
+                  <Heading as="h3" size="md" mb={2}>
+                    {selectedUpload.title} upgraded with {selectedEvolution.map((option) => option.title).join(" + ")}
+                  </Heading>
+                  <Text fontSize="sm" color={muted} mb={4}>
+                    This twin is showing a stronger path with the right inputs connected.
+                  </Text>
+                  <HStack spacing={2} flexWrap="wrap">
+                    <MetricChip label={`RECOVERY ${simulatedInput.behaviorChange.sleepHours}H`} />
+                    <MetricChip label={`ADHERENCE ${simulatedInput.medication.adherencePercent}%`} />
+                    <MetricChip label={`BP ${simulatedInput.labs.systolicBp ?? "--"}`} />
+                    <MetricChip label={`SCORE ${result.riskScore}`} />
+                  </HStack>
+                </Box>
+
+                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
+                    Momentum
+                  </Text>
+                  <Stack spacing={2}>
+                    <MetricChip label={result.riskLevel === "high" ? "PRIORITY NOW" : "TREND IMPROVING"} />
+                    <MetricChip label={simulatedInput.profile.hasChronicCondition ? "LONG VIEW ON" : "FAST REVIEW"} />
+                    <MetricChip label={simulatedInput.insurance.hasPcpAssigned ? "CARE PATH READY" : "NEXT PATH NEEDED"} />
+                  </Stack>
+                </Box>
+              </Grid>
 
               <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
                 <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
@@ -705,9 +974,11 @@ export default function HealthTwinFunnel() {
                 bg={insightCardBg}
                 borderWidth="1px"
                 borderColor={insightAccentBorder}
-                borderRadius="2xl"
+                borderRadius="full"
                 px={4}
-                py={3}
+                py={2.5}
+                w="fit-content"
+                minW={{ base: "100%", md: "380px" }}
               >
                 <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
                   Read more
@@ -722,14 +993,14 @@ export default function HealthTwinFunnel() {
           {step === 3 ? (
             <Stack spacing={6}>
               <Box>
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="whiteAlpha.800" mb={2}>
                   Step 4
                 </Text>
-                <Heading as="h2" size="lg" mb={1}>
+                <Heading as="h2" size={{ base: "lg", md: "xl" }} mb={2} color="white" lineHeight="0.98">
                   Create your own Health Twin
                 </Heading>
-                <Text fontSize="sm" color={muted} maxW="2xl">
-                  It takes seconds. It is free. Start now.
+                <Text fontSize={{ base: "sm", md: "md" }} color="whiteAlpha.900" maxW="2xl">
+                  FREE. Takes seconds. Yours for real.
                 </Text>
               </Box>
 
@@ -737,63 +1008,89 @@ export default function HealthTwinFunnel() {
                 <IconTile
                   icon="YOU"
                   title="Make it yours"
-                  micro="Your real health story"
+                  micro="REAL TWIN"
                   metrics={["Personal", "Private", "Yours"]}
                   isSelected={false}
                   onClick={() => undefined}
-                  border={border}
-                  activeBorder={activeBorder}
-                  cardBg={cardBg}
-                  activeCardBg={activeCardBg}
+                  border={conversionBorder}
+                  activeBorder={conversionBorder}
+                  cardBg={conversionCardBg}
+                  activeCardBg={conversionCardBg}
+                  selectionLabel="Own it"
                 />
                 <IconTile
                   icon="TWN"
                   title="Start free"
-                  micro="No wait. No friction."
+                  micro="ZERO FRICTION"
                   metrics={["FREE", "Fast", "Simple"]}
                   isSelected={false}
                   onClick={() => undefined}
-                  border={border}
-                  activeBorder={activeBorder}
-                  cardBg={cardBg}
-                  activeCardBg={activeCardBg}
+                  border={conversionBorder}
+                  activeBorder={conversionBorder}
+                  cardBg={conversionCardBg}
+                  activeCardBg={conversionCardBg}
+                  selectionLabel="Free"
                 />
                 <IconTile
                   icon="GO"
                   title="Do it now"
-                  micro="Build your twin today"
+                  micro="START NOW"
                   metrics={["Seconds", "Now", "Go"]}
                   isSelected={false}
                   onClick={() => undefined}
-                  border={border}
-                  activeBorder={activeBorder}
-                  cardBg={cardBg}
-                  activeCardBg={activeCardBg}
+                  border={conversionBorder}
+                  activeBorder={conversionBorder}
+                  cardBg={conversionCardBg}
+                  activeCardBg={conversionCardBg}
+                  selectionLabel="Go"
                 />
               </SimpleGrid>
 
-              <Button
-                as="a"
-                href={APP_LINKS.external.authenticatedConsole}
-                size="lg"
-                borderRadius="full"
-                px={10}
-                fontWeight="800"
-                alignSelf="flex-start"
-                boxShadow="0 0 36px rgba(17, 119, 186, 0.35)"
+              <Box
+                borderWidth="1px"
+                borderColor={conversionBorder}
+                borderRadius="3xl"
+                bg="rgba(255,255,255,0.12)"
+                p={{ base: 5, md: 6 }}
+                backdropFilter="blur(12px)"
               >
-                Create my own Health Twin
-              </Button>
-
-              <Text fontSize="sm" fontWeight="800" color="accent.soft">
-                FREE. Takes seconds. Start yours now.
-              </Text>
+                <Stack spacing={4} align={{ base: "stretch", md: "flex-start" }}>
+                  <Heading as="h3" size="md" color="white" lineHeight="1">
+                    This one was simulated.
+                    <br />
+                    Yours can be real.
+                  </Heading>
+                  <Text fontSize="sm" color="whiteAlpha.900" maxW="xl">
+                    Build your own Health Twin now and see what your real data can unlock.
+                  </Text>
+                  <Button
+                    as="a"
+                    href={APP_LINKS.external.authenticatedConsole}
+                    size="lg"
+                    borderRadius="full"
+                    px={10}
+                    fontWeight="900"
+                    alignSelf="flex-start"
+                    bg="white"
+                    color="#17318C"
+                    _hover={{ bg: "whiteAlpha.900" }}
+                    boxShadow="0 20px 40px rgba(6, 37, 76, 0.24)"
+                  >
+                    Create my own Health Twin
+                  </Button>
+                  <Text fontSize="sm" fontWeight="900" color="white">
+                    FREE. FAST. START NOW.
+                  </Text>
+                </Stack>
+              </Box>
 
               <Button
                 as={RouterLink}
                 to={APP_LINKS.internal.healthTwin}
                 variant="ghost"
                 alignSelf="flex-start"
+                color="white"
+                _hover={{ bg: "rgba(255,255,255,0.10)" }}
                 onClick={() => {
                   setStep(0);
                   setSelectedUploadId(null);
