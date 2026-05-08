@@ -615,13 +615,16 @@ export default function HealthTwinFunnel() {
                 HEALTH TWIN
               </Badge>
               <Stack spacing={1.5}>
-                <Heading as="h1" size={{ base: "lg", md: "2xl" }} fontWeight="900" maxW="3xl" lineHeight="0.94">
+                <Heading as="h1" size={{ base: "md", md: "xl" }} fontWeight="900" maxW="3xl" lineHeight="0.96">
                   Build your Health Twin.
-                  <br />
-                  See your next move.
                 </Heading>
                 <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="2xl">
-                  4 fast steps. More signal. Less guessing.
+                  <Text as="span" color="accent.primary" fontWeight="900">
+                    4 fast steps.
+                  </Text>{" "}
+                  <Text as="span" color="accent.soft" fontWeight="800">
+                    More signal. Less guessing.
+                  </Text>
                 </Text>
               </Stack>
 
@@ -653,26 +656,10 @@ export default function HealthTwinFunnel() {
                       />
                     ))}
                   </HStack>
+                  <Text fontSize="xs" color={muted} pl={{ base: 1, md: 2 }}>
+                    Guided preview with sample inputs and simulated signals.
+                  </Text>
                 </Stack>
-              </Box>
-
-              <Box
-                as="details"
-                bg={detailsBg}
-                borderWidth="1px"
-                borderColor={heroBorder}
-                borderRadius="full"
-                px={4}
-                py={2.5}
-                w="fit-content"
-                minW={{ base: "100%", md: "280px" }}
-              >
-                <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
-                  Read more
-                </Box>
-                <Text mt={3} color={muted} fontSize="sm">
-                  A fast guided preview with sample inputs, simulated signals, and a final push to create your real twin.
-                </Text>
               </Box>
             </Stack>
 
@@ -682,69 +669,96 @@ export default function HealthTwinFunnel() {
               borderRadius="3xl"
               border="1px solid"
               borderColor="rgba(23, 49, 140, 0.10)"
-              bg="rgba(255,255,255,0.24)"
+              bg="rgba(255,255,255,0.20)"
               backdropFilter="blur(14px)"
-              p={4}
+              p={3}
+              overflow="hidden"
             >
-              <Stack spacing={4} h="100%" justify="center">
+              <Stack spacing={3} h="100%" justify="center">
                 <HStack spacing={2} justify="flex-end">
                   <MetricChip label="LIVE" />
                   <MetricChip label="SIM" />
                   <MetricChip label="FREE" />
                 </HStack>
-                <Box position="relative" minH="280px">
+                <Box
+                  position="relative"
+                  minH="300px"
+                  sx={{
+                    "@keyframes heroAvatarFloat": {
+                      "0%": { transform: "translateY(0px)" },
+                      "50%": { transform: "translateY(-10px)" },
+                      "100%": { transform: "translateY(0px)" },
+                    },
+                  }}
+                >
                   <Box
                     position="absolute"
-                    inset="18px"
-                    borderRadius="full"
-                    border="1px solid rgba(54,197,255,0.30)"
+                    inset="12px 18px"
+                    borderRadius="32px"
+                    bg="linear-gradient(180deg, rgba(255,255,255,0.34) 0%, rgba(207,239,255,0.22) 100%)"
+                    border="1px solid rgba(54,197,255,0.16)"
                   />
                   <Box
                     position="absolute"
-                    inset="52px"
+                    left="50%"
+                    bottom="22px"
+                    transform="translateX(-50%)"
+                    w="180px"
+                    h="26px"
                     borderRadius="full"
-                    border="1px solid rgba(23,49,140,0.18)"
+                    bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.32) 0%, rgba(54,197,255,0.10) 52%, rgba(255,255,255,0) 100%)"
                   />
                   <Box
                     position="absolute"
-                    inset="86px"
+                    left="50%"
+                    top="18px"
+                    transform="translateX(-50%)"
+                    px={3}
+                    py={1.5}
                     borderRadius="full"
-                    border="1px dashed rgba(54,197,255,0.22)"
-                  />
+                    bg="rgba(255,255,255,0.82)"
+                    border="1px solid rgba(23,49,140,0.10)"
+                    boxShadow="0 12px 24px rgba(6, 37, 76, 0.08)"
+                  >
+                    <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft">
+                      Health Avatar
+                    </Text>
+                  </Box>
                   <Box
                     position="absolute"
                     top="50%"
                     left="50%"
                     transform="translate(-50%, -50%)"
-                    w="118px"
-                    h="118px"
-                    borderRadius="full"
-                    bgGradient="linear(135deg, #17318C 0%, #36C5FF 100%)"
-                    boxShadow="0 34px 56px rgba(54, 197, 255, 0.30)"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
+                    animation="heroAvatarFloat 6s ease-in-out infinite"
                   >
-                    <Text color="white" fontWeight="900" fontSize="lg" letterSpacing="0.10em">
-                      TWIN
-                    </Text>
-                  </Box>
-                  <Box position="absolute" top="8px" left="50%" transform="translateX(-50%)">
-                    <MetricChip label="INPUT +" />
-                  </Box>
-                  <Box position="absolute" top="50%" right="0" transform="translateY(-50%)">
-                    <MetricChip label="INSIGHT" />
-                  </Box>
-                  <Box position="absolute" bottom="8px" left="50%" transform="translateX(-50%)">
-                    <MetricChip label="DECIDE" />
-                  </Box>
-                  <Box position="absolute" top="50%" left="0" transform="translateY(-50%)">
-                    <MetricChip label="EVOLVE" />
+                    <Box
+                      position="relative"
+                      w="240px"
+                      h="280px"
+                      borderRadius="28px"
+                      bg="linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 100%)"
+                      border="1px solid rgba(54,197,255,0.14)"
+                      overflow="hidden"
+                      boxShadow="0 24px 48px rgba(6, 37, 76, 0.12)"
+                    >
+                      <Box
+                        as="video"
+                        src="/images/marketing/hero-avatar-2.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        w="100%"
+                        h="100%"
+                        objectFit="contain"
+                        transform="scale(1.06)"
+                      />
+                    </Box>
                   </Box>
                   <Box
                     position="absolute"
-                    top="56px"
-                    right="44px"
+                    top="68px"
+                    right="26px"
                     px={3}
                     py={2}
                     borderRadius="2xl"
@@ -761,8 +775,8 @@ export default function HealthTwinFunnel() {
                   </Box>
                   <Box
                     position="absolute"
-                    bottom="48px"
-                    left="40px"
+                    bottom="42px"
+                    left="26px"
                     px={3}
                     py={2}
                     borderRadius="2xl"
@@ -779,8 +793,8 @@ export default function HealthTwinFunnel() {
                   </Box>
                   <Box
                     position="absolute"
-                    top="130px"
-                    left="56px"
+                    top="142px"
+                    left="18px"
                     px={3}
                     py={2}
                     borderRadius="2xl"
