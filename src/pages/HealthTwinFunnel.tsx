@@ -25,7 +25,9 @@ type UploadOption = {
   title: string;
   icon: string;
   micro: string;
+  whyMatters: string;
   metrics: string[];
+  visualType: "mri" | "record" | "injury" | "lab";
   input: SimulatorInput;
 };
 
@@ -34,7 +36,9 @@ type EvolutionOption = {
   title: string;
   icon: string;
   micro: string;
+  whyMatters: string;
   metrics: string[];
+  visualType: "timeline" | "sleep" | "meds" | "goals";
   apply: (input: SimulatorInput) => SimulatorInput;
 };
 
@@ -51,7 +55,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     title: "MRI Scan",
     icon: "MRI",
     micro: "Imaging upload",
+    whyMatters: "Shows structure, pressure points, and what needs deeper review fast.",
     metrics: ["Pain", "Scan", "Priority"],
+    visualType: "mri",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -79,7 +85,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     title: "Health Record",
     icon: "REC",
     micro: "Full record import",
+    whyMatters: "Connects visits, medications, and history into one timeline.",
     metrics: ["Visits", "Meds", "History"],
+    visualType: "record",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -102,7 +110,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     title: "Injury Image",
     icon: "IMG",
     micro: "Visual injury input",
+    whyMatters: "Helps the twin spot severity, swelling, and same-day triage needs.",
     metrics: ["Swelling", "Triage", "Fast"],
+    visualType: "injury",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       profile: {
@@ -142,7 +152,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     title: "Lab Panel",
     icon: "LAB",
     micro: "Fresh biomarker data",
+    whyMatters: "Turns common U.S. lab results into risk and trend signals.",
     metrics: ["A1C", "BP", "Trend"],
+    visualType: "lab",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       insurance: {
@@ -174,7 +186,9 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
     title: "Timeline",
     icon: "24H",
     micro: "Symptoms over time",
+    whyMatters: "Shows whether a symptom is fading, worsening, or repeating.",
     metrics: ["+7 days", "Pattern", "Watch"],
+    visualType: "timeline",
     apply: (input) => ({
       ...input,
       symptom: {
@@ -192,7 +206,9 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
     title: "Sleep",
     icon: "ZZ",
     micro: "Routine signal",
+    whyMatters: "Adds recovery and stress context the twin can actually use.",
     metrics: ["Recovery", "Stress", "Rhythm"],
+    visualType: "sleep",
     apply: (input) => ({
       ...input,
       behaviorChange: {
@@ -210,7 +226,9 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
     title: "Meds",
     icon: "RX",
     micro: "Adherence history",
+    whyMatters: "Shows whether missed doses may be changing the picture.",
     metrics: ["Refill", "Dose", "Adherence"],
+    visualType: "meds",
     apply: (input) => ({
       ...input,
       medication: {
@@ -227,7 +245,9 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
     title: "Goals",
     icon: "AI",
     micro: "Long-view context",
+    whyMatters: "Anchors the twin to where care should go next, not just today.",
     metrics: ["Chronic", "PCP", "Care path"],
+    visualType: "goals",
     apply: (input) => ({
       ...input,
       profile: {
@@ -273,30 +293,143 @@ function MetricChip({ label }: { label: string }) {
   );
 }
 
+function TileVisual({ visualType, isSelected }: { visualType: UploadOption["visualType"] | EvolutionOption["visualType"]; isSelected: boolean }) {
+  const shellBg = isSelected
+    ? "linear-gradient(135deg, rgba(23,49,140,0.18) 0%, rgba(54,197,255,0.22) 100%)"
+    : "linear-gradient(135deg, rgba(17,119,186,0.08) 0%, rgba(54,197,255,0.10) 100%)";
+
+  return (
+    <Box
+      h="148px"
+      borderRadius="24px"
+      bg={shellBg}
+      border="1px solid rgba(17, 119, 186, 0.10)"
+      position="relative"
+      overflow="hidden"
+    >
+      {visualType === "mri" ? (
+        <>
+          <Box position="absolute" inset="18px 26px 18px 22px" borderRadius="24px" bg="rgba(255,255,255,0.74)" />
+          <Box position="absolute" left="26px" top="44px" w="90px" h="58px" borderRadius="22px" bg="#123C9B" />
+          <Box position="absolute" left="68px" top="54px" w="36px" h="36px" borderRadius="full" bg="white" />
+          <Box position="absolute" left="122px" top="58px" w="70px" h="10px" borderRadius="full" bg="rgba(23,49,140,0.24)" />
+          <Box position="absolute" left="130px" top="74px" w="58px" h="8px" borderRadius="full" bg="rgba(54,197,255,0.32)" />
+        </>
+      ) : null}
+
+      {visualType === "record" ? (
+        <>
+          <Box position="absolute" left="36px" top="18px" w="88px" h="112px" borderRadius="20px" bg="white" boxShadow="0 12px 24px rgba(6,37,76,0.08)" />
+          <Box position="absolute" left="52px" top="38px" w="44px" h="10px" borderRadius="full" bg="#36C5FF" />
+          <Box position="absolute" left="52px" top="58px" w="56px" h="8px" borderRadius="full" bg="rgba(23,49,140,0.22)" />
+          <Box position="absolute" left="52px" top="74px" w="46px" h="8px" borderRadius="full" bg="rgba(23,49,140,0.22)" />
+          <Box position="absolute" left="52px" top="90px" w="52px" h="8px" borderRadius="full" bg="rgba(23,49,140,0.22)" />
+          <Box position="absolute" right="28px" top="34px" w="54px" h="54px" borderRadius="18px" bg="#17318C" />
+          <Box position="absolute" right="42px" top="46px" w="26px" h="8px" borderRadius="full" bg="white" />
+          <Box position="absolute" right="51px" top="37px" w="8px" h="26px" borderRadius="full" bg="white" />
+        </>
+      ) : null}
+
+      {visualType === "injury" ? (
+        <>
+          <Box position="absolute" left="24px" top="16px" w="176px" h="116px" borderRadius="28px" bg="linear-gradient(180deg, #F4D7C2 0%, #EBC2A8 100%)" />
+          <Box position="absolute" left="78px" top="46px" w="52px" h="52px" borderRadius="full" bg="radial-gradient(circle at 50% 50%, rgba(108,23,32,0.75) 0%, rgba(158,31,43,0.56) 44%, rgba(214,81,92,0.24) 72%, rgba(255,255,255,0) 100%)" />
+          <Box position="absolute" right="18px" bottom="18px" px={2.5} py={1.5} borderRadius="full" bg="rgba(255,255,255,0.82)" border="1px solid rgba(23,49,140,0.10)">
+            <Text fontSize="10px" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color="accent.soft">
+              Triage View
+            </Text>
+          </Box>
+        </>
+      ) : null}
+
+      {visualType === "lab" ? (
+        <>
+          <Box position="absolute" left="26px" top="22px" w="164px" h="104px" borderRadius="24px" bg="white" boxShadow="0 12px 24px rgba(6,37,76,0.08)" />
+          <Box position="absolute" left="46px" bottom="34px" w="18px" h="30px" borderRadius="10px 10px 4px 4px" bg="#36C5FF" />
+          <Box position="absolute" left="74px" bottom="34px" w="18px" h="52px" borderRadius="10px 10px 4px 4px" bg="#17318C" />
+          <Box position="absolute" left="102px" bottom="34px" w="18px" h="40px" borderRadius="10px 10px 4px 4px" bg="#61D6FF" />
+          <Box position="absolute" left="132px" bottom="34px" w="18px" h="60px" borderRadius="10px 10px 4px 4px" bg="#0C1E63" />
+          <Box position="absolute" right="24px" top="18px" px={2.5} py={1.5} borderRadius="18px" bg="rgba(54,197,255,0.16)">
+            <Text fontSize="10px" fontWeight="900" color="accent.soft">
+              A1C 8.6
+            </Text>
+          </Box>
+        </>
+      ) : null}
+
+      {visualType === "timeline" ? (
+        <>
+          <Box position="absolute" inset="18px" borderRadius="24px" bg="rgba(255,255,255,0.76)" />
+          <Box position="absolute" left="34px" bottom="36px" w="150px" h="2px" bg="rgba(23,49,140,0.18)" />
+          <Box position="absolute" left="46px" bottom="46px" w="18px" h="18px" borderRadius="full" bg="#36C5FF" />
+          <Box position="absolute" left="92px" bottom="58px" w="18px" h="18px" borderRadius="full" bg="#17318C" />
+          <Box position="absolute" left="138px" bottom="70px" w="18px" h="18px" borderRadius="full" bg="#61D6FF" />
+          <Box position="absolute" left="58px" bottom="54px" w="46px" h="3px" bg="#17318C" transform="rotate(14deg)" transformOrigin="left center" />
+          <Box position="absolute" left="104px" bottom="66px" w="46px" h="3px" bg="#36C5FF" transform="rotate(14deg)" transformOrigin="left center" />
+        </>
+      ) : null}
+
+      {visualType === "sleep" ? (
+        <>
+          <Box position="absolute" inset="18px" borderRadius="24px" bg="linear-gradient(180deg, rgba(12,30,99,0.96) 0%, rgba(37,80,170,0.90) 100%)" />
+          <Box position="absolute" left="42px" top="38px" w="38px" h="38px" borderRadius="full" bg="#F6E6A9" />
+          <Box position="absolute" left="56px" top="38px" w="38px" h="38px" borderRadius="full" bg="#2450AA" />
+          <Box position="absolute" right="52px" top="34px" w="6px" h="6px" borderRadius="full" bg="white" />
+          <Box position="absolute" right="68px" top="52px" w="5px" h="5px" borderRadius="full" bg="white" />
+          <Box position="absolute" right="44px" top="64px" w="4px" h="4px" borderRadius="full" bg="white" />
+          <Box position="absolute" left="36px" bottom="30px" w="130px" h="24px" borderRadius="16px 16px 10px 10px" bg="rgba(255,255,255,0.18)" />
+        </>
+      ) : null}
+
+      {visualType === "meds" ? (
+        <>
+          <Box position="absolute" left="34px" top="28px" w="52px" h="76px" borderRadius="16px" bg="white" boxShadow="0 10px 20px rgba(6,37,76,0.08)" />
+          <Box position="absolute" left="42px" top="20px" w="36px" h="16px" borderRadius="10px 10px 6px 6px" bg="#17318C" />
+          <Box position="absolute" left="108px" top="42px" w="34px" h="18px" borderRadius="full" bg="#36C5FF" />
+          <Box position="absolute" left="130px" top="42px" w="34px" h="18px" borderRadius="full" bg="#17318C" />
+          <Box position="absolute" left="108px" top="74px" w="58px" h="10px" borderRadius="full" bg="rgba(23,49,140,0.20)" />
+          <Box position="absolute" left="108px" top="92px" w="44px" h="10px" borderRadius="full" bg="rgba(54,197,255,0.22)" />
+        </>
+      ) : null}
+
+      {visualType === "goals" ? (
+        <>
+          <Box position="absolute" left="48px" top="24px" w="92px" h="92px" borderRadius="full" border="10px solid rgba(23,49,140,0.16)" />
+          <Box position="absolute" left="70px" top="46px" w="48px" h="48px" borderRadius="full" border="8px solid #36C5FF" />
+          <Box position="absolute" right="36px" top="54px" w="42px" h="42px" borderRadius="16px" bg="#17318C" />
+          <Box position="absolute" right="50px" top="72px" w="14px" h="8px" borderBottom="4px solid white" borderLeft="4px solid white" transform="rotate(-45deg)" />
+        </>
+      ) : null}
+    </Box>
+  );
+}
+
 function IconTile({
-  icon,
   title,
   micro,
+  whyMatters,
   metrics,
   isSelected,
+  isDimmed,
   onClick,
   border,
   activeBorder,
   cardBg,
   activeCardBg,
-  selectionLabel,
+  visualType,
 }: {
-  icon: string;
   title: string;
   micro: string;
+  whyMatters: string;
   metrics: string[];
   isSelected: boolean;
+  isDimmed?: boolean;
   onClick: () => void;
   border: string;
   activeBorder: string;
   cardBg: string;
   activeCardBg: string;
-  selectionLabel?: string;
+  visualType: UploadOption["visualType"] | EvolutionOption["visualType"];
 }) {
   return (
     <Box
@@ -310,55 +443,40 @@ function IconTile({
       boxShadow={isSelected ? "0 22px 44px rgba(17, 119, 186, 0.18)" : "0 12px 26px rgba(6, 37, 76, 0.06)"}
       position="relative"
       overflow="hidden"
+      opacity={isDimmed ? 0.42 : 1}
+      transform={isSelected ? "translateY(-2px)" : "none"}
+      transition="opacity 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease"
     >
-      <Box
-        position="absolute"
-        top="-24px"
-        right="-24px"
-        w="96px"
-        h="96px"
-        borderRadius="full"
-        bg={isSelected ? "rgba(54, 197, 255, 0.22)" : "rgba(17, 119, 186, 0.08)"}
-      />
       <Stack spacing={4} position="relative">
         <HStack justify="space-between" align="flex-start">
+          <Box>
+            <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft" mb={2}>
+              {micro}
+            </Text>
+            <Heading as="h3" size="sm" mb={0}>
+              {title}
+            </Heading>
+          </Box>
           <Box
-            w={{ base: "56px", md: "60px" }}
-            h={{ base: "56px", md: "60px" }}
-            borderRadius="20px"
-            bgGradient={isSelected ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
-            bg={isSelected ? undefined : "rgba(17, 119, 186, 0.10)"}
-            color={isSelected ? "white" : "accent.primary"}
+            w="24px"
+            h="24px"
+            borderRadius="md"
+            border="2px solid"
+            borderColor={isSelected ? "accent.primary" : "rgba(23, 49, 140, 0.18)"}
+            bg={isSelected ? "accent.primary" : "white"}
             display="flex"
             alignItems="center"
             justifyContent="center"
-            fontSize="md"
-            fontWeight="900"
-            letterSpacing="0.08em"
-            boxShadow={isSelected ? "0 18px 28px rgba(54, 197, 255, 0.20)" : "none"}
+            flexShrink={0}
+            boxShadow={isSelected ? "0 10px 18px rgba(54, 197, 255, 0.22)" : "none"}
           >
-            {icon}
-          </Box>
-          <Box
-            px={2.5}
-            py={1.5}
-            borderRadius="full"
-            bg={isSelected ? "rgba(23, 49, 140, 0.10)" : "rgba(255,255,255,0.72)"}
-            border="1px solid rgba(23, 49, 140, 0.10)"
-          >
-            <Text fontSize="10px" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color="accent.soft">
-              {selectionLabel ?? (isSelected ? "Selected" : "Select")}
-            </Text>
+            {isSelected ? <Text fontSize="xs" fontWeight="900" color="white">✓</Text> : null}
           </Box>
         </HStack>
-        <Box>
-          <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft" mb={2}>
-            {micro}
-          </Text>
-          <Heading as="h3" size="sm" mb={0}>
-            {title}
-          </Heading>
-        </Box>
+        <TileVisual visualType={visualType} isSelected={isSelected} />
+        <Text fontSize="sm" color="text.muted" lineHeight="1.45">
+          {whyMatters}
+        </Text>
         <HStack spacing={2} flexWrap="wrap">
           {metrics.map((metric) => (
             <MetricChip key={`${title}-${metric}`} label={metric} />
@@ -532,18 +650,22 @@ export default function HealthTwinFunnel() {
   const handleUploadSelect = (option: UploadOption) => {
     setSelectedUploadId(option.id);
     trackEvent("health_twin_funnel_select_data_in", { upload_type: option.id });
+    window.setTimeout(() => {
+      setStep(1);
+      trackEvent("health_twin_funnel_step_advance", { from_step: 1, to_step: 2, auto_advanced: true });
+    }, 160);
   };
 
   const handleEvolutionToggle = (option: EvolutionOption) => {
-    setSelectedEvolutionIds((current) => {
-      const exists = current.includes(option.id);
-      const next = exists ? current.filter((id) => id !== option.id) : [...current, option.id].slice(-2);
-      trackEvent("health_twin_funnel_select_evolution", {
-        evolution_option: option.id,
-        selected_count: next.length,
-      });
-      return next;
+    setSelectedEvolutionIds([option.id]);
+    trackEvent("health_twin_funnel_select_evolution", {
+      evolution_option: option.id,
+      selected_count: 1,
     });
+    window.setTimeout(() => {
+      setStep(2);
+      trackEvent("health_twin_funnel_step_advance", { from_step: 2, to_step: 3, auto_advanced: true });
+    }, 160);
   };
 
   const handleNext = () => {
@@ -830,10 +952,10 @@ export default function HealthTwinFunnel() {
                   Step 1
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Pick your first signal
+                  Pick the first thing to upload
                 </Heading>
                 <Text fontSize="sm" color={muted}>
-                  Tap one
+                  One tap and you move on
                 </Text>
               </Box>
 
@@ -841,17 +963,18 @@ export default function HealthTwinFunnel() {
                 {UPLOAD_OPTIONS.map((option) => (
                   <IconTile
                     key={option.id}
-                    icon={option.icon}
                     title={option.title}
                     micro={option.micro}
+                    whyMatters={option.whyMatters}
                     metrics={option.metrics}
                     isSelected={option.id === selectedUploadId}
+                    isDimmed={!!selectedUploadId && option.id !== selectedUploadId}
                     onClick={() => handleUploadSelect(option)}
                     border={border}
                     activeBorder={activeBorder}
                     cardBg={cardBg}
                     activeCardBg={activeCardBg}
-                    selectionLabel={option.id === selectedUploadId ? "Loaded" : "Tap in"}
+                    visualType={option.visualType}
                   />
                 ))}
               </SimpleGrid>
@@ -865,10 +988,10 @@ export default function HealthTwinFunnel() {
                   Step 2
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Add what sharpens it
+                  Add one thing that sharpens it
                 </Heading>
                 <Text fontSize="sm" color={muted}>
-                  Pick up to 2
+                  One tap and keep moving
                 </Text>
               </Box>
 
@@ -876,17 +999,18 @@ export default function HealthTwinFunnel() {
                 {EVOLUTION_OPTIONS.map((option) => (
                   <IconTile
                     key={option.id}
-                    icon={option.icon}
                     title={option.title}
                     micro={option.micro}
+                    whyMatters={option.whyMatters}
                     metrics={option.metrics}
                     isSelected={selectedEvolutionIds.includes(option.id)}
+                    isDimmed={selectedEvolutionIds.length > 0 && !selectedEvolutionIds.includes(option.id)}
                     onClick={() => handleEvolutionToggle(option)}
                     border={border}
                     activeBorder={activeBorder}
                     cardBg={cardBg}
                     activeCardBg={activeCardBg}
-                    selectionLabel={selectedEvolutionIds.includes(option.id) ? "Added" : "Add on"}
+                    visualType={option.visualType}
                   />
                 ))}
               </SimpleGrid>
@@ -1122,7 +1246,7 @@ export default function HealthTwinFunnel() {
           <Button variant="ghost" onClick={handleBack} isDisabled={step === 0}>
             Back
           </Button>
-          {step < 3 ? (
+          {step === 2 ? (
             <Button
               onClick={handleNext}
               isDisabled={!canAdvance}
