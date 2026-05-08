@@ -14,10 +14,6 @@ import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { trackEvent } from "../analytics/trackEvent";
-import step1HealthRecordImage from "../assets/healthTwinCards/step-1-health-record.webp";
-import step1InjuryImage from "../assets/healthTwinCards/step-1-injury-image.webp";
-import step1LabPanelImage from "../assets/healthTwinCards/step-1-lab-panel.webp";
-import step1MriScanImage from "../assets/healthTwinCards/step-1-mri-scan.webp";
 import { APP_LINKS } from "../config/links";
 import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
 import { DEFAULT_SIMULATOR_INPUT, type SimulatorInput } from "../simulator/schema";
@@ -38,12 +34,12 @@ type UploadOption = {
 
 type EvolutionOption = {
   id: string;
+  uploadIds: string[];
   title: string;
   icon: string;
   micro: string;
   whyMatters: string;
   metrics: string[];
-  visualType: "timeline" | "sleep" | "meds" | "goals";
   apply: (input: SimulatorInput) => SimulatorInput;
 };
 
@@ -58,7 +54,7 @@ const FUNNEL_STEPS = [
     key: "twin",
     label: "Health Twin",
     stepLabel: "Step Two",
-    subtitle: "Add context so the simulated twin can evolve around you.",
+    subtitle: "Choose the outcome you want most right now.",
   },
   {
     key: "insights",
@@ -83,7 +79,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Shows structure, pressure points, and what needs deeper review fast.",
     metrics: ["Pain", "Scan", "Priority"],
     visualType: "mri",
-    imageSrc: step1MriScanImage,
+    imageSrc: "/images/health-twin/cards/step-1-mri-scan.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -114,7 +110,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Connects visits, medications, and history into one timeline.",
     metrics: ["Visits", "Meds", "History"],
     visualType: "record",
-    imageSrc: step1HealthRecordImage,
+    imageSrc: "/images/health-twin/cards/step-1-health-record.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -140,7 +136,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Helps the twin spot severity, swelling, and same-day triage needs.",
     metrics: ["Swelling", "Triage", "Fast"],
     visualType: "injury",
-    imageSrc: step1InjuryImage,
+    imageSrc: "/images/health-twin/cards/step-1-injury-image.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       profile: {
@@ -183,7 +179,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Turns common U.S. lab results into risk and trend signals.",
     metrics: ["A1C", "BP", "Trend"],
     visualType: "lab",
-    imageSrc: step1LabPanelImage,
+    imageSrc: "/images/health-twin/cards/step-1-lab-panel.webp",
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       insurance: {
@@ -211,82 +207,171 @@ const UPLOAD_OPTIONS: UploadOption[] = [
 
 const EVOLUTION_OPTIONS: EvolutionOption[] = [
   {
-    id: "symptom-timeline",
-    title: "Timeline",
-    icon: "24H",
-    micro: "Symptoms over time",
-    whyMatters: "Shows whether a symptom is fading, worsening, or repeating.",
-    metrics: ["+7 days", "Pattern", "Watch"],
-    visualType: "timeline",
+    id: "mri-reduce-pain",
+    uploadIds: ["mri"],
+    title: "Reduce pain",
+    icon: "01",
+    micro: "Priority focus",
+    whyMatters: "Turn scan context into a clearer pain-reduction plan.",
+    metrics: ["Pain", "Relief", "Next step"],
     apply: (input) => ({
       ...input,
-      symptom: {
-        ...input.symptom,
-        durationDays: input.symptom.durationDays + 7,
-      },
-      lifestyleEvent: {
-        event: "Symptom timeline added to show progression over time",
-        timing: "recent",
-      },
+      symptom: { ...input.symptom, severity: "high", durationDays: input.symptom.durationDays + 3 },
+      lifestyleEvent: { event: "User focused the twin on reducing pain after imaging", timing: "current" },
     }),
   },
   {
-    id: "sleep-routine",
-    title: "Sleep",
-    icon: "ZZ",
-    micro: "Routine signal",
-    whyMatters: "Adds recovery and stress context the twin can actually use.",
-    metrics: ["Recovery", "Stress", "Rhythm"],
-    visualType: "sleep",
+    id: "mri-move-better",
+    uploadIds: ["mri"],
+    title: "Move better",
+    icon: "02",
+    micro: "Mobility focus",
+    whyMatters: "Connect scan findings to recovery, range of motion, and activity.",
+    metrics: ["Mobility", "Recovery", "Activity"],
     apply: (input) => ({
       ...input,
-      behaviorChange: {
-        ...input.behaviorChange,
-        sleepHours: Math.max(4, input.behaviorChange.sleepHours - 1),
-      },
-      lifestyleEvent: {
-        event: "Sleep and routine changes connected to the twin",
-        timing: "recent",
-      },
+      behaviorChange: { ...input.behaviorChange, exerciseDaysPerWeek: Math.max(1, input.behaviorChange.exerciseDaysPerWeek) },
+      lifestyleEvent: { event: "User focused the twin on mobility after imaging", timing: "current" },
     }),
   },
   {
-    id: "medication-history",
-    title: "Meds",
-    icon: "RX",
-    micro: "Adherence history",
-    whyMatters: "Shows whether missed doses may be changing the picture.",
-    metrics: ["Refill", "Dose", "Adherence"],
-    visualType: "meds",
+    id: "mri-avoid-surprises",
+    uploadIds: ["mri"],
+    title: "Avoid surprises",
+    icon: "03",
+    micro: "Risk focus",
+    whyMatters: "Spot what might need follow-up before it becomes urgent.",
+    metrics: ["Risk", "Watch", "Follow-up"],
     apply: (input) => ({
       ...input,
-      medication: {
-        currentlyTaking:
-          input.medication.currentlyTaking.length > 0
-            ? input.medication.currentlyTaking
-            : ["Ibuprofen"],
-        adherencePercent: Math.min(input.medication.adherencePercent, 58),
-      },
+      insurance: { ...input.insurance, hasPcpAssigned: true },
+      lifestyleEvent: { event: "User focused the twin on imaging follow-up risk", timing: "current" },
     }),
   },
   {
-    id: "care-goals",
-    title: "Goals",
-    icon: "AI",
-    micro: "Long-view context",
-    whyMatters: "Anchors the twin to where care should go next, not just today.",
-    metrics: ["Chronic", "PCP", "Care path"],
-    visualType: "goals",
+    id: "record-organize-meds",
+    uploadIds: ["health-record"],
+    title: "Organize meds",
+    icon: "01",
+    micro: "Medication focus",
+    whyMatters: "Make medications, refills, and adherence easier to understand.",
+    metrics: ["Meds", "Refill", "Adherence"],
     apply: (input) => ({
       ...input,
-      profile: {
-        ...input.profile,
-        hasChronicCondition: true,
-      },
-      insurance: {
-        ...input.insurance,
-        hasPcpAssigned: true,
-      },
+      medication: { ...input.medication, adherencePercent: Math.min(input.medication.adherencePercent, 68) },
+      lifestyleEvent: { event: "User focused the twin on medication organization", timing: "current" },
+    }),
+  },
+  {
+    id: "record-find-gaps",
+    uploadIds: ["health-record"],
+    title: "Find care gaps",
+    icon: "02",
+    micro: "Care focus",
+    whyMatters: "Surface missing follow-ups, stale history, and loose ends.",
+    metrics: ["Gaps", "Visits", "History"],
+    apply: (input) => ({
+      ...input,
+      profile: { ...input.profile, hasChronicCondition: true },
+      lifestyleEvent: { event: "User focused the twin on finding care gaps", timing: "current" },
+    }),
+  },
+  {
+    id: "record-next-visit",
+    uploadIds: ["health-record"],
+    title: "Plan next visit",
+    icon: "03",
+    micro: "Question focus",
+    whyMatters: "Turn the record into better questions for the next appointment.",
+    metrics: ["Questions", "PCP", "Plan"],
+    apply: (input) => ({
+      ...input,
+      insurance: { ...input.insurance, hasPcpAssigned: true },
+      lifestyleEvent: { event: "User focused the twin on the next visit", timing: "current" },
+    }),
+  },
+  {
+    id: "injury-heal-faster",
+    uploadIds: ["injury-image"],
+    title: "Heal faster",
+    icon: "01",
+    micro: "Recovery focus",
+    whyMatters: "Focus the twin on recovery pace and what helps healing.",
+    metrics: ["Recovery", "Rest", "Progress"],
+    apply: (input) => ({
+      ...input,
+      behaviorChange: { ...input.behaviorChange, sleepHours: Math.max(7, input.behaviorChange.sleepHours) },
+      lifestyleEvent: { event: "User focused the twin on faster injury recovery", timing: "current" },
+    }),
+  },
+  {
+    id: "injury-reduce-swelling",
+    uploadIds: ["injury-image"],
+    title: "Reduce swelling",
+    icon: "02",
+    micro: "Symptom focus",
+    whyMatters: "Track visible change and what may need attention.",
+    metrics: ["Swelling", "Pain", "Trend"],
+    apply: (input) => ({
+      ...input,
+      symptom: { ...input.symptom, severity: "moderate", durationDays: input.symptom.durationDays + 2 },
+      lifestyleEvent: { event: "User focused the twin on swelling and symptom change", timing: "current" },
+    }),
+  },
+  {
+    id: "injury-get-help",
+    uploadIds: ["injury-image"],
+    title: "Know when to get help",
+    icon: "03",
+    micro: "Triage focus",
+    whyMatters: "Clarify when watchful waiting is not enough.",
+    metrics: ["Triage", "Urgency", "Care"],
+    apply: (input) => ({
+      ...input,
+      symptom: { ...input.symptom, severity: "high" },
+      lifestyleEvent: { event: "User focused the twin on injury triage", timing: "current" },
+    }),
+  },
+  {
+    id: "labs-lower-a1c",
+    uploadIds: ["lab-panel"],
+    title: "Lower A1C",
+    icon: "01",
+    micro: "Metabolic focus",
+    whyMatters: "Turn lab numbers into a clearer blood sugar goal.",
+    metrics: ["A1C", "Trend", "Food"],
+    apply: (input) => ({
+      ...input,
+      labs: { ...input.labs, a1c: input.labs.a1c ?? 8.1 },
+      lifestyleEvent: { event: "User focused the twin on lowering A1C", timing: "current" },
+    }),
+  },
+  {
+    id: "labs-blood-pressure",
+    uploadIds: ["lab-panel"],
+    title: "Improve blood pressure",
+    icon: "02",
+    micro: "Heart focus",
+    whyMatters: "Connect pressure, routine, and follow-up into one target.",
+    metrics: ["BP", "Heart", "Routine"],
+    apply: (input) => ({
+      ...input,
+      labs: { ...input.labs, systolicBp: input.labs.systolicBp ?? 142 },
+      lifestyleEvent: { event: "User focused the twin on blood pressure", timing: "current" },
+    }),
+  },
+  {
+    id: "labs-more-energy",
+    uploadIds: ["lab-panel"],
+    title: "Feel more energy",
+    icon: "03",
+    micro: "Daily focus",
+    whyMatters: "Connect labs to sleep, routine, and day-to-day momentum.",
+    metrics: ["Energy", "Sleep", "Weight"],
+    apply: (input) => ({
+      ...input,
+      behaviorChange: { ...input.behaviorChange, sleepHours: Math.max(7, input.behaviorChange.sleepHours) },
+      lifestyleEvent: { event: "User focused the twin on energy and routine", timing: "current" },
     }),
   },
 ];
@@ -328,7 +413,7 @@ function TileVisual({
   imageSrc,
   imageAlt,
 }: {
-  visualType: UploadOption["visualType"] | EvolutionOption["visualType"];
+  visualType: UploadOption["visualType"];
   isSelected: boolean;
   imageSrc?: string;
   imageAlt: string;
@@ -489,7 +574,7 @@ function IconTile({
   activeBorder: string;
   cardBg: string;
   activeCardBg: string;
-  visualType: UploadOption["visualType"] | EvolutionOption["visualType"];
+  visualType: UploadOption["visualType"];
   imageSrc?: string;
 }) {
   return (
@@ -544,6 +629,79 @@ function IconTile({
           ))}
         </HStack>
       </Stack>
+    </Box>
+  );
+}
+
+function FocusTile({
+  option,
+  isSelected,
+  isDimmed,
+  onClick,
+  border,
+  activeBorder,
+  cardBg,
+  activeCardBg,
+}: {
+  option: EvolutionOption;
+  isSelected: boolean;
+  isDimmed: boolean;
+  onClick: () => void;
+  border: string;
+  activeBorder: string;
+  cardBg: string;
+  activeCardBg: string;
+}) {
+  return (
+    <Box
+      borderWidth="1px"
+      borderColor={isSelected ? activeBorder : border}
+      borderRadius="24px"
+      bg={isSelected ? activeCardBg : cardBg}
+      p={{ base: 4, md: 5 }}
+      cursor="pointer"
+      onClick={onClick}
+      boxShadow={isSelected ? "0 18px 34px rgba(17, 119, 186, 0.16)" : "0 10px 22px rgba(6, 37, 76, 0.05)"}
+      opacity={isDimmed ? 0.42 : 1}
+      transform={isSelected ? "translateY(-2px)" : "none"}
+      transition="opacity 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease"
+    >
+      <HStack align="flex-start" spacing={4}>
+        <Box
+          w="42px"
+          h="42px"
+          borderRadius="full"
+          bgGradient={isSelected ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
+          bg={isSelected ? undefined : "rgba(17,119,186,0.08)"}
+          color={isSelected ? "white" : "accent.soft"}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          fontSize="sm"
+          fontWeight="900"
+          flexShrink={0}
+        >
+          {option.icon}
+        </Box>
+        <Stack spacing={2} flex="1">
+          <Box>
+            <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft" mb={1}>
+              {option.micro}
+            </Text>
+            <Heading as="h3" size="sm">
+              {option.title}
+            </Heading>
+          </Box>
+          <Text fontSize="sm" color="text.muted" lineHeight="1.4">
+            {option.whyMatters}
+          </Text>
+          <HStack spacing={2} flexWrap="wrap">
+            {option.metrics.map((metric) => (
+              <MetricChip key={`${option.id}-${metric}`} label={metric} />
+            ))}
+          </HStack>
+        </Stack>
+      </HStack>
     </Box>
   );
 }
@@ -745,9 +903,17 @@ export default function HealthTwinFunnel() {
     [selectedUploadId]
   );
 
+  const availableEvolutionOptions = useMemo(
+    () =>
+      selectedUpload
+        ? EVOLUTION_OPTIONS.filter((option) => option.uploadIds.includes(selectedUpload.id))
+        : [],
+    [selectedUpload]
+  );
+
   const selectedEvolution = useMemo(
-    () => EVOLUTION_OPTIONS.filter((option) => selectedEvolutionIds.includes(option.id)),
-    [selectedEvolutionIds]
+    () => availableEvolutionOptions.filter((option) => selectedEvolutionIds.includes(option.id)),
+    [availableEvolutionOptions, selectedEvolutionIds]
   );
 
   const simulatedInput = useMemo(() => {
@@ -781,6 +947,7 @@ export default function HealthTwinFunnel() {
 
   const handleUploadSelect = (option: UploadOption) => {
     setSelectedUploadId(option.id);
+    setSelectedEvolutionIds([]);
     trackEvent("health_twin_funnel_select_data_in", { upload_type: option.id });
     window.setTimeout(() => {
       setStep(1);
@@ -931,21 +1098,18 @@ export default function HealthTwinFunnel() {
                   Step 2
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Add one thing that sharpens it
+                  What outcome matters most?
                 </Heading>
                 <Text fontSize="sm" color={muted}>
-                  One tap and keep moving
+                  Pick one focus. Your Health Twin does the rest.
                 </Text>
               </Box>
 
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                {EVOLUTION_OPTIONS.map((option) => (
-                  <IconTile
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                {availableEvolutionOptions.map((option) => (
+                  <FocusTile
                     key={option.id}
-                    title={option.title}
-                    micro={option.micro}
-                    whyMatters={option.whyMatters}
-                    metrics={option.metrics}
+                    option={option}
                     isSelected={selectedEvolutionIds.includes(option.id)}
                     isDimmed={selectedEvolutionIds.length > 0 && !selectedEvolutionIds.includes(option.id)}
                     onClick={() => handleEvolutionToggle(option)}
@@ -953,7 +1117,6 @@ export default function HealthTwinFunnel() {
                     activeBorder={activeBorder}
                     cardBg={cardBg}
                     activeCardBg={activeCardBg}
-                    visualType={option.visualType}
                   />
                 ))}
               </SimpleGrid>
