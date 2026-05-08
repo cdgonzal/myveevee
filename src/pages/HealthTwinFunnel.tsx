@@ -14,6 +14,10 @@ import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { trackEvent } from "../analytics/trackEvent";
+import step1HealthRecordImage from "../assets/healthTwinCards/step-1-health-record.webp";
+import step1InjuryImage from "../assets/healthTwinCards/step-1-injury-image.webp";
+import step1LabPanelImage from "../assets/healthTwinCards/step-1-lab-panel.webp";
+import step1MriScanImage from "../assets/healthTwinCards/step-1-mri-scan.webp";
 import { APP_LINKS } from "../config/links";
 import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator/engine";
 import { DEFAULT_SIMULATOR_INPUT, type SimulatorInput } from "../simulator/schema";
@@ -79,7 +83,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Shows structure, pressure points, and what needs deeper review fast.",
     metrics: ["Pain", "Scan", "Priority"],
     visualType: "mri",
-    imageSrc: "/images/health-twin/cards/step-1-mri-scan.webp",
+    imageSrc: step1MriScanImage,
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -110,7 +114,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Connects visits, medications, and history into one timeline.",
     metrics: ["Visits", "Meds", "History"],
     visualType: "record",
-    imageSrc: "/images/health-twin/cards/step-1-health-record.webp",
+    imageSrc: step1HealthRecordImage,
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -136,7 +140,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Helps the twin spot severity, swelling, and same-day triage needs.",
     metrics: ["Swelling", "Triage", "Fast"],
     visualType: "injury",
-    imageSrc: "/images/health-twin/cards/step-1-injury-image.webp",
+    imageSrc: step1InjuryImage,
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       profile: {
@@ -179,7 +183,7 @@ const UPLOAD_OPTIONS: UploadOption[] = [
     whyMatters: "Turns common U.S. lab results into risk and trend signals.",
     metrics: ["A1C", "BP", "Trend"],
     visualType: "lab",
-    imageSrc: "/images/health-twin/cards/step-1-lab-panel.webp",
+    imageSrc: step1LabPanelImage,
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       insurance: {

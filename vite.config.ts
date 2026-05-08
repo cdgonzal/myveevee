@@ -11,6 +11,7 @@ export default defineConfig({
   },
   build: {
     outDir: "dist",
+    assetsInlineLimit: 40_000,
     chunkSizeWarningLimit: 550,
     rollupOptions: {
       output: {
