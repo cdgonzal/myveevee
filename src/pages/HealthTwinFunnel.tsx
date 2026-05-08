@@ -43,10 +43,10 @@ type EvolutionOption = {
 };
 
 const FUNNEL_STEPS = [
-  { key: "data", label: "Data In", icon: "IN" },
-  { key: "twin", label: "Twin", icon: "TW" },
-  { key: "insights", label: "Insights", icon: "IQ" },
-  { key: "decisions", label: "Decide", icon: "GO" },
+  { key: "data", label: "Data In", stepLabel: "Step One" },
+  { key: "twin", label: "Health Twin", stepLabel: "Step Two" },
+  { key: "insights", label: "Recommendations", stepLabel: "Step Three" },
+  { key: "decisions", label: "Personalize", stepLabel: "Step Four" },
 ] as const;
 
 const UPLOAD_OPTIONS: UploadOption[] = [
@@ -516,13 +516,13 @@ function MetricCard({
 
 function JourneyNode({
   stepNumber,
-  icon,
+  stepLabel,
   label,
   isActive,
   isComplete,
 }: {
   stepNumber: number;
-  icon: string;
+  stepLabel: string;
   label: string;
   isActive: boolean;
   isComplete: boolean;
@@ -552,13 +552,13 @@ function JourneyNode({
         alignItems="center"
         justifyContent="center"
       >
-        <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0.04em">
-          {icon}
+        <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0">
+          {stepNumber}
         </Text>
       </Box>
       <Box>
         <Text fontSize="10px" lineHeight="1" fontWeight="800" color="#17318C" opacity={0.7} mb={1}>
-          {stepNumber}
+          {stepLabel}
         </Text>
         <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="800" lineHeight="1">
           {label}
@@ -570,13 +570,13 @@ function JourneyNode({
 
 function MobileJourneyStep({
   stepNumber,
-  icon,
+  stepLabel,
   label,
   isActive,
   isComplete,
 }: {
   stepNumber: number;
-  icon: string;
+  stepLabel: string;
   label: string;
   isActive: boolean;
   isComplete: boolean;
@@ -613,8 +613,8 @@ function MobileJourneyStep({
         px={3.5}
         py={isActive ? 3 : 2.5}
       >
-        <Text fontSize="10px" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase" color="accent.soft" mb={1}>
-          {icon}
+        <Text fontSize="10px" fontWeight="900" letterSpacing="0" color="accent.soft" mb={1}>
+          {stepLabel}
         </Text>
         <Text fontSize="sm" fontWeight="800" lineHeight="1.1">
           {label}
@@ -633,8 +633,6 @@ export default function HealthTwinFunnel() {
   const [step, setStep] = useState<FunnelStep>(0);
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [selectedEvolutionIds, setSelectedEvolutionIds] = useState<string[]>([]);
-  const [avatarVideoFailed, setAvatarVideoFailed] = useState(false);
-  const [avatarStillFailed, setAvatarStillFailed] = useState(false);
 
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
@@ -828,7 +826,7 @@ export default function HealthTwinFunnel() {
                       <MobileJourneyStep
                         key={funnelStep.key}
                         stepNumber={index + 1}
-                        icon={funnelStep.icon}
+                        stepLabel={funnelStep.stepLabel}
                         label={funnelStep.label}
                         isActive={index === step}
                         isComplete={index < step}
@@ -847,7 +845,7 @@ export default function HealthTwinFunnel() {
                       <JourneyNode
                         key={funnelStep.key}
                         stepNumber={index + 1}
-                        icon={funnelStep.icon}
+                        stepLabel={funnelStep.stepLabel}
                         label={funnelStep.label}
                         isActive={index === step}
                         isComplete={index < step}
@@ -875,177 +873,78 @@ export default function HealthTwinFunnel() {
               <Box
                 position="relative"
                 minH="320px"
-                borderRadius="32px"
-                bg="linear-gradient(135deg, rgba(223,245,255,0.92) 0%, rgba(196,235,255,0.84) 48%, rgba(155,214,255,0.74) 100%)"
-                border="1px solid rgba(54,197,255,0.16)"
-                sx={{
-                  "@keyframes heroAvatarFloat": {
-                    "0%": { transform: "translate(-50%, -50%) translateY(0px)" },
-                    "50%": { transform: "translate(-50%, -50%) translateY(-10px)" },
-                    "100%": { transform: "translate(-50%, -50%) translateY(0px)" },
-                  },
-                  "@keyframes heroAvatarSwapA": {
-                    "0%": { opacity: 1 },
-                    "42%": { opacity: 1 },
-                    "50%": { opacity: 0 },
-                    "92%": { opacity: 0 },
-                    "100%": { opacity: 1 },
-                  },
-                  "@keyframes heroAvatarSwapB": {
-                    "0%": { opacity: 0 },
-                    "42%": { opacity: 0 },
-                    "50%": { opacity: 1 },
-                    "92%": { opacity: 1 },
-                    "100%": { opacity: 0 },
-                  },
-                }}
+                borderRadius="28px"
+                bg="linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(240,248,250,0.92) 48%, rgba(225,240,244,0.86) 100%)"
+                border="1px solid rgba(23,49,140,0.08)"
+                overflow="hidden"
               >
                 <Box
                   position="absolute"
-                  inset="0"
-                  bg="radial-gradient(circle at 50% 40%, rgba(255,255,255,0.64) 0%, rgba(255,255,255,0.12) 44%, rgba(255,255,255,0) 72%)"
+                  inset="24px"
+                  borderRadius="24px"
+                  border="1px solid rgba(23,49,140,0.06)"
                 />
                 <Box
                   position="absolute"
+                  top="50%"
                   left="50%"
-                  bottom="22px"
-                  transform="translateX(-50%)"
-                  w="190px"
-                  h="28px"
-                  borderRadius="full"
-                  bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.26) 0%, rgba(54,197,255,0.12) 48%, rgba(255,255,255,0) 100%)"
+                  transform="translate(-50%, -50%)"
+                  w="132px"
+                  h="132px"
+                  borderRadius="30px"
+                  bg="rgba(255,255,255,0.72)"
+                  border="1px solid rgba(23,49,140,0.08)"
+                  boxShadow="0 18px 36px rgba(6,37,76,0.06)"
+                >
+                  <Box
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                    w="76px"
+                    h="22px"
+                    borderRadius="full"
+                    bg="rgba(17,119,186,0.18)"
+                  />
+                  <Box
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                    w="22px"
+                    h="76px"
+                    borderRadius="full"
+                    bg="rgba(17,119,186,0.18)"
+                  />
+                </Box>
+                <Box
+                  position="absolute"
+                  top="44px"
+                  right="42px"
+                  w="52px"
+                  h="52px"
+                  borderRadius="18px"
+                  border="1px solid rgba(23,49,140,0.08)"
+                  bg="rgba(255,255,255,0.52)"
                 />
-
-                {!avatarVideoFailed ? (
-                  <Box
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    animation="heroAvatarFloat 6s ease-in-out infinite"
-                  >
-                    <Box
-                      position="relative"
-                      w="250px"
-                      h="290px"
-                      overflow="hidden"
-                    >
-                      <Box
-                        as="video"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
-                        w="100%"
-                        h="100%"
-                        objectFit="contain"
-                        onLoadedData={() => {
-                          setAvatarVideoFailed(false);
-                          console.log("[HealthTwinHero] avatar video loaded", {
-                            sources: ["/avatar/hero-avatar-2.webm", "/avatar/hero-avatar-2.mp4"],
-                          });
-                        }}
-                        onCanPlay={() => {
-                          console.log("[HealthTwinHero] avatar video can play", {
-                            sources: ["/avatar/hero-avatar-2.webm", "/avatar/hero-avatar-2.mp4"],
-                          });
-                        }}
-                        onError={(event) => {
-                          setAvatarVideoFailed(true);
-                          console.error("[HealthTwinHero] avatar video failed", {
-                            sources: ["/avatar/hero-avatar-2.webm", "/avatar/hero-avatar-2.mp4"],
-                            error: event.currentTarget.error,
-                          });
-                        }}
-                      >
-                        <source src="/avatar/hero-avatar-2.webm" type="video/webm" />
-                        <source src="/avatar/hero-avatar-2.mp4" type="video/mp4" />
-                      </Box>
-                    </Box>
-                  </Box>
-                ) : !avatarStillFailed ? (
-                  <Box
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    animation="heroAvatarFloat 6s ease-in-out infinite"
-                  >
-                    <Box
-                      position="relative"
-                      w="250px"
-                      h="290px"
-                      overflow="hidden"
-                    >
-                      <Box
-                        as="img"
-                        src="/images/marketing/hero-avatar-a.png"
-                        alt="Health twin avatar"
-                        position="absolute"
-                        inset="0"
-                        w="100%"
-                        h="100%"
-                        objectFit="contain"
-                        animation="heroAvatarSwapA 4.8s ease-in-out infinite"
-                        onLoad={() => {
-                          setAvatarStillFailed(false);
-                          console.log("[HealthTwinHero] avatar still loaded", {
-                            src: "/images/marketing/hero-avatar-a.png",
-                          });
-                        }}
-                        onError={() => {
-                          setAvatarStillFailed(true);
-                          console.error("[HealthTwinHero] avatar still failed", {
-                            src: "/images/marketing/hero-avatar-a.png",
-                          });
-                        }}
-                      />
-                      <Box
-                        as="img"
-                        src="/images/marketing/hero-avatar-b.png"
-                        alt="Health twin avatar alternate"
-                        position="absolute"
-                        inset="0"
-                        w="100%"
-                        h="100%"
-                        objectFit="contain"
-                        animation="heroAvatarSwapB 4.8s ease-in-out infinite"
-                        onLoad={() => {
-                          setAvatarStillFailed(false);
-                          console.log("[HealthTwinHero] avatar still loaded", {
-                            src: "/images/marketing/hero-avatar-b.png",
-                          });
-                        }}
-                        onError={() => {
-                          setAvatarStillFailed(true);
-                          console.error("[HealthTwinHero] avatar still failed", {
-                            src: "/images/marketing/hero-avatar-b.png",
-                          });
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                ) : null}
-
-                {avatarVideoFailed && avatarStillFailed ? (
-                  <Stack
-                    position="absolute"
-                    inset="0"
-                    align="center"
-                    justify="center"
-                    spacing={3}
-                  >
-                    <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
-                      Avatar Fallback
-                    </Text>
-                    <Box
-                      w="140px"
-                      h="140px"
-                      borderRadius="full"
-                      bg="linear-gradient(135deg, #17318C 0%, #36C5FF 100%)"
-                      boxShadow="0 24px 48px rgba(54,197,255,0.20)"
-                    />
-                  </Stack>
-                ) : null}
+                <Box
+                  position="absolute"
+                  bottom="44px"
+                  left="42px"
+                  w="70px"
+                  h="10px"
+                  borderRadius="full"
+                  bg="rgba(23,49,140,0.10)"
+                />
+                <Box
+                  position="absolute"
+                  bottom="64px"
+                  left="42px"
+                  w="104px"
+                  h="10px"
+                  borderRadius="full"
+                  bg="rgba(17,119,186,0.12)"
+                />
               </Box>
             </Box>
           </Grid>

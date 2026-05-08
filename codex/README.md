@@ -37,6 +37,10 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `/briefs/swca-4821.html`
   - internal brief
   - should remain `noindex`
+- `/avatar-playback-test`
+  - hidden avatar video diagnostic page
+  - should remain `noindex`
+  - not linked from nav, footer, or sitemap
 
 ## Page Inventory
 
@@ -62,6 +66,8 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - SEO landing page for discharge follow-up and continuity discovery
 - `src/pages/SwcaBrief.tsx`
   - standalone internal SWCA brief page
+- `src/pages/AvatarPlaybackTest.tsx`
+  - hidden video playback diagnostic page for `/avatar/*` assets
 - `src/pages/SeoLandingPage.tsx`
   - shared layout scaffold for the SEO landing pages
 
@@ -141,3 +147,5 @@ The current SEO work has been validated locally with:
   - historical pre-change audit snapshot
 - `_sandbox/codex/seo/SEO_PHASE5_CONTENT_MAP.md`
   - current Phase 5 audience and intent map
+- `codex/readme_avatar_playback_test.md`
+  - hidden playback-test page notes and Amplify hosting-rule diagnosis
