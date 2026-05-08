@@ -1018,16 +1018,16 @@ export default function HealthTwinFunnel() {
           ) : null}
 
           {step === 2 && selectedUpload && result && simulatedInput ? (
-            <Stack spacing={6}>
+            <Stack spacing={5}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
                   Step 3
                 </Text>
                 <Heading as="h2" size="lg" mb={1}>
-                  Your strongest simulated self
+                  Teaser snapshot
                 </Heading>
                 <Text fontSize="sm" color={muted}>
-                  Better recovery. Sharper signals. Clearer momentum.
+                  A glimpse only. The full story is next.
                 </Text>
               </Box>
 
@@ -1039,97 +1039,43 @@ export default function HealthTwinFunnel() {
                 <MetricCard label="Pressure" value={simulatedInput.labs.systolicBp ? `${simulatedInput.labs.systolicBp}` : "--"} />
               </SimpleGrid>
 
-              <Grid templateColumns={{ base: "1fr", lg: "1.15fr 0.85fr" }} gap={4}>
-                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
-                    Best-version readout
-                  </Text>
-                  <Heading as="h3" size="md" mb={2}>
-                    {selectedUpload.title} upgraded with {selectedEvolution.map((option) => option.title).join(" + ")}
-                  </Heading>
-                  <Text fontSize="sm" color={muted} mb={4}>
-                    This twin is showing a stronger path with the right inputs connected.
-                  </Text>
+              <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
+                <Stack spacing={4}>
                   <HStack spacing={2} flexWrap="wrap">
-                    <MetricChip label={`RECOVERY ${simulatedInput.behaviorChange.sleepHours}H`} />
-                    <MetricChip label={`ADHERENCE ${simulatedInput.medication.adherencePercent}%`} />
-                    <MetricChip label={`BP ${simulatedInput.labs.systolicBp ?? "--"}`} />
-                    <MetricChip label={`SCORE ${result.riskScore}`} />
-                  </HStack>
-                </Box>
-
-                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
-                    Momentum
-                  </Text>
-                  <Stack spacing={2}>
-                    <MetricChip label={result.riskLevel === "high" ? "PRIORITY NOW" : "TREND IMPROVING"} />
-                    <MetricChip label={simulatedInput.profile.hasChronicCondition ? "LONG VIEW ON" : "FAST REVIEW"} />
-                    <MetricChip label={simulatedInput.insurance.hasPcpAssigned ? "CARE PATH READY" : "NEXT PATH NEEDED"} />
-                  </Stack>
-                </Box>
-              </Grid>
-
-              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
-                    Best signals
-                  </Text>
-                  <Stack spacing={2}>
                     {(result.riskSignals.length > 0 ? result.riskSignals : ["Lower-risk pattern"])
-                      .slice(0, 3)
+                      .slice(0, 2)
                       .map((signal) => (
                         <MetricChip key={signal} label={signal} />
                       ))}
-                  </Stack>
-                </Box>
-
-                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
-                    Best next moves
-                  </Text>
-                  <Stack spacing={2}>
-                    {result.recommendations.slice(0, 3).map((recommendation) => (
+                    {result.recommendations.slice(0, 1).map((recommendation) => (
                       <MetricChip key={recommendation.id} label={recommendation.title} />
                     ))}
-                  </Stack>
-                </Box>
-
-                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
-                    Keep getting better
+                  </HStack>
+                  <Heading as="h3" size="md">
+                    Want the deeper readout?
+                  </Heading>
+                  <Text fontSize="sm" color={muted}>
+                    See what more data, more context, and your real twin can unlock.
                   </Text>
-                  <Stack spacing={2}>
-                    {result.followUpQuestions.slice(0, 3).map((question) => (
-                      <MetricChip key={question} label={question} />
-                    ))}
-                  </Stack>
-                </Box>
-              </SimpleGrid>
-
-              <Box
-                as="details"
-                bg={insightCardBg}
-                borderWidth="1px"
-                borderColor={insightAccentBorder}
-                borderRadius="full"
-                px={4}
-                py={2.5}
-                w="fit-content"
-                minW={{ base: "100%", md: "380px" }}
-              >
-                <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
-                  Read more
-                </Box>
-                <Text mt={3} color={muted} fontSize="sm">
-                  {selectedUpload.title} plus {selectedEvolution.map((option) => option.title).join(" + ")} created this simulation result.
-                </Text>
+                  <Button
+                    variant="link"
+                    color="accent.primary"
+                    fontWeight="900"
+                    w="fit-content"
+                    onClick={() => {
+                      setStep(3);
+                      trackEvent("health_twin_funnel_step_advance", { from_step: 3, to_step: 4, teaser_click: true });
+                    }}
+                  >
+                    Get more info
+                  </Button>
+                </Stack>
               </Box>
             </Stack>
           ) : null}
 
           {step === 3 ? (
-            <Stack spacing={6}>
+            <Stack spacing={5} align={{ base: "stretch", md: "flex-start" }}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="whiteAlpha.800" mb={2}>
                   Step 4
@@ -1138,106 +1084,25 @@ export default function HealthTwinFunnel() {
                   Create your own Health Twin
                 </Heading>
                 <Text fontSize={{ base: "sm", md: "md" }} color="whiteAlpha.900" maxW="2xl">
-                  FREE. Takes seconds. Yours for real.
+                  FREE, FREE, FREE. Secure and Personalized to You.
                 </Text>
               </Box>
-
-              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                <IconTile
-                  icon="YOU"
-                  title="Make it yours"
-                  micro="REAL TWIN"
-                  metrics={["Personal", "Private", "Yours"]}
-                  isSelected={false}
-                  onClick={() => undefined}
-                  border={conversionBorder}
-                  activeBorder={conversionBorder}
-                  cardBg={conversionCardBg}
-                  activeCardBg={conversionCardBg}
-                  selectionLabel="Own it"
-                />
-                <IconTile
-                  icon="TWN"
-                  title="Start free"
-                  micro="ZERO FRICTION"
-                  metrics={["FREE", "Fast", "Simple"]}
-                  isSelected={false}
-                  onClick={() => undefined}
-                  border={conversionBorder}
-                  activeBorder={conversionBorder}
-                  cardBg={conversionCardBg}
-                  activeCardBg={conversionCardBg}
-                  selectionLabel="Free"
-                />
-                <IconTile
-                  icon="GO"
-                  title="Do it now"
-                  micro="START NOW"
-                  metrics={["Seconds", "Now", "Go"]}
-                  isSelected={false}
-                  onClick={() => undefined}
-                  border={conversionBorder}
-                  activeBorder={conversionBorder}
-                  cardBg={conversionCardBg}
-                  activeCardBg={conversionCardBg}
-                  selectionLabel="Go"
-                />
-              </SimpleGrid>
-
-              <Box
-                borderWidth="1px"
-                borderColor={conversionBorder}
-                borderRadius="3xl"
-                bg="rgba(255,255,255,0.12)"
-                p={{ base: 5, md: 6 }}
-                backdropFilter="blur(12px)"
-              >
-                <Stack spacing={4} align={{ base: "stretch", md: "flex-start" }}>
-                  <Heading as="h3" size="md" color="white" lineHeight="1">
-                    This one was simulated.
-                    <br />
-                    Yours can be real.
-                  </Heading>
-                  <Text fontSize="sm" color="whiteAlpha.900" maxW="xl">
-                    Build your own Health Twin now and see what your real data can unlock.
-                  </Text>
-                  <Button
-                    as="a"
-                    href={APP_LINKS.external.authenticatedConsole}
-                    size="lg"
-                    borderRadius="full"
-                    px={10}
-                    fontWeight="900"
-                    alignSelf="flex-start"
-                    bg="white"
-                    color="#17318C"
-                    _hover={{ bg: "whiteAlpha.900" }}
-                    boxShadow="0 20px 40px rgba(6, 37, 76, 0.24)"
-                  >
-                    Create my own Health Twin
-                  </Button>
-                  <Text fontSize="sm" fontWeight="900" color="white">
-                    FREE. FAST. START NOW.
-                  </Text>
-                </Stack>
-              </Box>
-
               <Button
-                as={RouterLink}
-                to={APP_LINKS.internal.healthTwin}
-                variant="ghost"
+                as="a"
+                href={APP_LINKS.external.authenticatedConsole}
+                size="lg"
+                borderRadius="full"
+                px={10}
+                fontWeight="900"
                 alignSelf="flex-start"
-                color="white"
-                _hover={{ bg: "rgba(255,255,255,0.10)" }}
-                onClick={() => {
-                  setStep(0);
-                  setSelectedUploadId(null);
-                  setSelectedEvolutionIds([]);
-                  trackEvent("health_twin_funnel_restart");
-                }}
+                bg="white"
+                color="#17318C"
+                _hover={{ bg: "whiteAlpha.900" }}
+                boxShadow="0 20px 40px rgba(6, 37, 76, 0.24)"
               >
-                Start over
+                Create my own Health Twin
               </Button>
+
             </Stack>
           ) : null}
         </Box>
