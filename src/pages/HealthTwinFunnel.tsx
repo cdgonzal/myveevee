@@ -809,6 +809,20 @@ export default function HealthTwinFunnel() {
                     "50%": { transform: "translate(-50%, -50%) translateY(-10px)" },
                     "100%": { transform: "translate(-50%, -50%) translateY(0px)" },
                   },
+                  "@keyframes heroAvatarSwapA": {
+                    "0%": { opacity: 1 },
+                    "42%": { opacity: 1 },
+                    "50%": { opacity: 0 },
+                    "92%": { opacity: 0 },
+                    "100%": { opacity: 1 },
+                  },
+                  "@keyframes heroAvatarSwapB": {
+                    "0%": { opacity: 0 },
+                    "42%": { opacity: 0 },
+                    "50%": { opacity: 1 },
+                    "92%": { opacity: 1 },
+                    "100%": { opacity: 0 },
+                  },
                 }}
               >
                 <Box
@@ -841,32 +855,47 @@ export default function HealthTwinFunnel() {
                       overflow="hidden"
                     >
                       <Box
-                        as="video"
-                        src="/images/marketing/hero-avatar-2.mp4"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="auto"
+                        as="img"
+                        src="/images/marketing/hero-avatar-a.png"
+                        alt="Health twin avatar"
+                        position="absolute"
+                        inset="0"
                         w="100%"
                         h="100%"
                         objectFit="contain"
-                        onLoadedData={() => {
-                          setAvatarFailed(false);
-                          console.log("[HealthTwinHero] avatar loaded", {
-                            src: "/images/marketing/hero-avatar-2.mp4",
+                        animation="heroAvatarSwapA 4.8s ease-in-out infinite"
+                        onLoad={() => {
+                          console.log("[HealthTwinHero] avatar frame loaded", {
+                            src: "/images/marketing/hero-avatar-a.png",
                           });
                         }}
-                        onCanPlay={() => {
-                          console.log("[HealthTwinHero] avatar can play", {
-                            src: "/images/marketing/hero-avatar-2.mp4",
-                          });
-                        }}
-                        onError={(event) => {
+                        onError={() => {
                           setAvatarFailed(true);
-                          console.error("[HealthTwinHero] avatar failed", {
-                            src: "/images/marketing/hero-avatar-2.mp4",
-                            error: event.currentTarget.error,
+                          console.error("[HealthTwinHero] avatar frame failed", {
+                            src: "/images/marketing/hero-avatar-a.png",
+                          });
+                        }}
+                      />
+                      <Box
+                        as="img"
+                        src="/images/marketing/hero-avatar-b.png"
+                        alt="Health twin avatar alternate"
+                        position="absolute"
+                        inset="0"
+                        w="100%"
+                        h="100%"
+                        objectFit="contain"
+                        animation="heroAvatarSwapB 4.8s ease-in-out infinite"
+                        onLoad={() => {
+                          setAvatarFailed(false);
+                          console.log("[HealthTwinHero] avatar frame loaded", {
+                            src: "/images/marketing/hero-avatar-b.png",
+                          });
+                        }}
+                        onError={() => {
+                          setAvatarFailed(true);
+                          console.error("[HealthTwinHero] avatar frame failed", {
+                            src: "/images/marketing/hero-avatar-b.png",
                           });
                         }}
                       />
