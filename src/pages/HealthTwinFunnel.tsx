@@ -2,7 +2,6 @@ import {
   Badge,
   Box,
   Button,
-  Grid,
   Heading,
   HStack,
   SimpleGrid,
@@ -43,10 +42,30 @@ type EvolutionOption = {
 };
 
 const FUNNEL_STEPS = [
-  { key: "data", label: "Data In", stepLabel: "Step One" },
-  { key: "twin", label: "Health Twin", stepLabel: "Step Two" },
-  { key: "insights", label: "Recommendations", stepLabel: "Step Three" },
-  { key: "decisions", label: "Personalize", stepLabel: "Step Four" },
+  {
+    key: "data",
+    label: "Data In",
+    stepLabel: "Step One",
+    subtitle: "Choose one health signal and watch the twin start fast.",
+  },
+  {
+    key: "twin",
+    label: "Health Twin",
+    stepLabel: "Step Two",
+    subtitle: "Add context so the simulated twin can evolve around you.",
+  },
+  {
+    key: "insights",
+    label: "Recommendations",
+    stepLabel: "Step Three",
+    subtitle: "Preview the strongest signals and move toward your best next step.",
+  },
+  {
+    key: "decisions",
+    label: "Personalize",
+    stepLabel: "Step Four",
+    subtitle: "Create your own Health Twin in seconds. Free and personalized.",
+  },
 ] as const;
 
 const UPLOAD_OPTIONS: UploadOption[] = [
@@ -514,57 +533,71 @@ function MetricCard({
   );
 }
 
-function JourneyNode({
-  stepNumber,
-  stepLabel,
-  label,
-  isActive,
-  isComplete,
-}: {
-  stepNumber: number;
-  stepLabel: string;
-  label: string;
-  isActive: boolean;
-  isComplete: boolean;
-}) {
-  const isOn = isActive || isComplete;
+function DesktopProgressBar({ currentStep }: { currentStep: FunnelStep }) {
+  const progressPercent = (currentStep / (FUNNEL_STEPS.length - 1)) * 100;
+  const progressRailPercent = progressPercent * 0.88;
 
   return (
-    <HStack
-      spacing={2}
-      minW="fit-content"
-      px={{ base: 2.5, md: 3 }}
-      py={{ base: 2, md: 2.5 }}
-      borderRadius="full"
-      bg={isOn ? "rgba(255,255,255,0.94)" : "rgba(255,255,255,0.56)"}
-      border="1px solid rgba(23, 49, 140, 0.10)"
-      boxShadow={isActive ? "0 14px 28px rgba(54, 197, 255, 0.22)" : "0 8px 18px rgba(6, 37, 76, 0.06)"}
-      flexShrink={0}
-    >
-      <Box
-        w={{ base: "34px", md: "38px" }}
-        h={{ base: "34px", md: "38px" }}
-        borderRadius="full"
-        bgGradient={isOn ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
-        bg={isOn ? undefined : "rgba(255,255,255,0.78)"}
-        border="1px solid rgba(23, 49, 140, 0.08)"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0">
-          {stepNumber}
-        </Text>
+    <Box px={{ md: 2, lg: 4 }} pt={2} pb={1}>
+      <Box position="relative">
+        <Box
+          position="absolute"
+          top="19px"
+          left="6%"
+          right="6%"
+          h="3px"
+          borderRadius="full"
+          bg="rgba(23, 49, 140, 0.12)"
+        />
+        <Box
+          position="absolute"
+          top="19px"
+          left="6%"
+          w={`${progressRailPercent}%`}
+          h="3px"
+          borderRadius="full"
+          bgGradient="linear-gradient(90deg, #17318C 0%, #36C5FF 100%)"
+          transition="width 180ms ease"
+        />
+        <HStack position="relative" zIndex={1} justify="space-between" align="flex-start" spacing={0}>
+          {FUNNEL_STEPS.map((funnelStep, index) => {
+            const isActive = index === currentStep;
+            const isComplete = index < currentStep;
+            const isOn = isActive || isComplete;
+
+            return (
+              <Stack key={funnelStep.key} align="center" spacing={2} flex="1" minW={0}>
+                <Box
+                  w="42px"
+                  h="42px"
+                  borderRadius="full"
+                  bgGradient={isOn ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
+                  bg={isOn ? undefined : "rgba(255,255,255,0.96)"}
+                  border="2px solid"
+                  borderColor={isOn ? "transparent" : "rgba(23, 49, 140, 0.18)"}
+                  boxShadow={isActive ? "0 12px 26px rgba(54, 197, 255, 0.26)" : "0 8px 18px rgba(6, 37, 76, 0.05)"}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text fontSize="sm" fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0">
+                    {index + 1}
+                  </Text>
+                </Box>
+                <Box textAlign="center" maxW="150px">
+                  <Text fontSize="10px" fontWeight="900" color="#17318C" opacity={isOn ? 0.78 : 0.46}>
+                    {funnelStep.stepLabel}
+                  </Text>
+                  <Text fontSize="sm" fontWeight="850" lineHeight="1.1" color={isOn ? "text.primary" : "text.muted"}>
+                    {funnelStep.label}
+                  </Text>
+                </Box>
+              </Stack>
+            );
+          })}
+        </HStack>
       </Box>
-      <Box>
-        <Text fontSize="10px" lineHeight="1" fontWeight="800" color="#17318C" opacity={0.7} mb={1}>
-          {stepLabel}
-        </Text>
-        <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="800" lineHeight="1">
-          {label}
-        </Text>
-      </Box>
-    </HStack>
+    </Box>
   );
 }
 
@@ -599,7 +632,7 @@ function MobileJourneyStep({
           boxShadow={isActive ? "0 10px 22px rgba(54, 197, 255, 0.22)" : "none"}
         >
           <Text fontSize="xs" fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0.04em">
-            {isComplete ? "✓" : stepNumber}
+            {stepNumber}
           </Text>
         </Box>
         {stepNumber < 4 ? <Box w="1px" flex="1" minH="18px" bg={isComplete ? "rgba(23,49,140,0.28)" : "rgba(23,49,140,0.10)"} /> : null}
@@ -643,17 +676,10 @@ export default function HealthTwinFunnel() {
   const panelBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.70)");
   const cardBg = useColorModeValue("rgba(255, 255, 255, 0.92)", "rgba(6, 37, 76, 0.62)");
   const activeCardBg = useColorModeValue("rgba(17, 119, 186, 0.10)", "rgba(17, 119, 186, 0.20)");
-  const stepCircleBg = useColorModeValue("#001A52", "#9CE7FF");
-  const stepCircleColor = useColorModeValue("#FFFFFF", "#001A52");
   const activeBorder = useColorModeValue("#1177BA", "#9CE7FF");
-  const detailsBg = useColorModeValue("rgba(255,255,255,0.68)", "rgba(6, 37, 76, 0.56)");
   const heroBg = useColorModeValue(
     "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(230,247,255,0.96) 52%, rgba(205,240,255,0.92) 100%)",
     "linear-gradient(135deg, rgba(8,23,54,0.98) 0%, rgba(13,34,73,0.96) 52%, rgba(16,58,106,0.92) 100%)"
-  );
-  const heroOrbBg = useColorModeValue(
-    "radial-gradient(circle at 50% 50%, rgba(54,197,255,0.95) 0%, rgba(23,49,140,0.90) 48%, rgba(23,49,140,0.18) 72%, rgba(255,255,255,0) 100%)",
-    "radial-gradient(circle at 50% 50%, rgba(54,197,255,0.88) 0%, rgba(14,45,103,0.94) 42%, rgba(16,69,140,0.24) 72%, rgba(255,255,255,0) 100%)"
   );
   const heroSurface = useColorModeValue("rgba(255,255,255,0.74)", "rgba(255,255,255,0.06)");
   const heroBorder = useColorModeValue("rgba(23, 49, 140, 0.14)", "rgba(156, 231, 255, 0.16)");
@@ -692,6 +718,7 @@ export default function HealthTwinFunnel() {
     () => (simulatedInput ? runWellnessMirrorSimulation(simulatedInput) : null),
     [simulatedInput]
   );
+  const activeFunnelStep = FUNNEL_STEPS[step];
 
   const canAdvance =
     (step === 0 && !!selectedUpload) ||
@@ -765,189 +792,45 @@ export default function HealthTwinFunnel() {
           borderColor={heroBorder}
           borderRadius="3xl"
           bgGradient={heroBg}
-          boxShadow="0 30px 70px rgba(6, 37, 76, 0.12)"
-          p={{ base: 5, md: 6 }}
+          boxShadow="0 22px 50px rgba(6, 37, 76, 0.10)"
+          p={{ base: 5, md: 8 }}
           overflow="hidden"
           position="relative"
         >
-          <Box
-            position="absolute"
-            top="-80px"
-            right="-40px"
-            w={{ base: "240px", md: "360px" }}
-            h={{ base: "240px", md: "360px" }}
-            borderRadius="full"
-            bg={heroOrbBg}
-            opacity={0.96}
-            pointerEvents="none"
-          />
-          <Box
-            position="absolute"
-            bottom="-120px"
-            left="-80px"
-            w={{ base: "220px", md: "320px" }}
-            h={{ base: "220px", md: "320px" }}
-            borderRadius="full"
-            bg="radial-gradient(circle at 50% 50%, rgba(54,197,255,0.18) 0%, rgba(255,255,255,0) 68%)"
-            pointerEvents="none"
-          />
+          <Stack spacing={{ base: 5, md: 7 }} position="relative">
+            <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
+              HEALTH TWIN
+            </Badge>
 
-          <Grid templateColumns={{ base: "1fr", lg: "minmax(0,1.05fr) minmax(320px,0.95fr)" }} gap={{ base: 4, lg: 6 }} position="relative">
-            <Stack spacing={4}>
-              <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
-                HEALTH TWIN
-              </Badge>
-              <Stack spacing={1.5}>
-                <Heading as="h1" size={{ base: "md", md: "xl" }} fontWeight="900" maxW="3xl" lineHeight="0.96">
-                  Build your Health Twin.
-                </Heading>
-                <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="2xl">
-                  <Text as="span" color="accent.primary" fontWeight="900">
-                    4 fast steps.
-                  </Text>{" "}
-                  <Text as="span" color="accent.soft" fontWeight="800">
-                    More signal. Less guessing.
-                  </Text>
-                </Text>
-              </Stack>
-
-              <Box
-                bg={heroSurface}
-                border="1px solid"
-                borderColor={heroBorder}
-                borderRadius={{ base: "28px", md: "full" }}
-                px={{ base: 3, md: 4 }}
-                py={{ base: 2, md: 3 }}
-                backdropFilter="blur(14px)"
-              >
-                <Stack spacing={2}>
-                  <Stack spacing={2.5} display={{ base: "flex", md: "none" }}>
-                    {FUNNEL_STEPS.map((funnelStep, index) => (
-                      <MobileJourneyStep
-                        key={funnelStep.key}
-                        stepNumber={index + 1}
-                        stepLabel={funnelStep.stepLabel}
-                        label={funnelStep.label}
-                        isActive={index === step}
-                        isComplete={index < step}
-                      />
-                    ))}
-                  </Stack>
-                  <HStack
-                    display={{ base: "none", md: "flex" }}
-                    spacing={{ base: 2, md: 3 }}
-                    justify={{ base: "flex-start", md: "space-between" }}
-                    align="center"
-                    overflowX={{ base: "auto", md: "visible" }}
-                    pb={{ base: 1, md: 0 }}
-                  >
-                    {FUNNEL_STEPS.map((funnelStep, index) => (
-                      <JourneyNode
-                        key={funnelStep.key}
-                        stepNumber={index + 1}
-                        stepLabel={funnelStep.stepLabel}
-                        label={funnelStep.label}
-                        isActive={index === step}
-                        isComplete={index < step}
-                      />
-                    ))}
-                  </HStack>
-                  <Text fontSize="xs" color={muted} pl={{ base: 1, md: 2 }}>
-                    Guided preview with sample inputs and simulated signals.
-                  </Text>
-                </Stack>
-              </Box>
+            <Stack spacing={2} maxW="760px">
+              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" fontWeight="900">
+                {activeFunnelStep.stepLabel}
+              </Text>
+              <Heading as="h1" size={{ base: "lg", md: "2xl" }} fontWeight="900" lineHeight="0.96">
+                {activeFunnelStep.label}
+              </Heading>
+              <Text fontSize={{ base: "sm", md: "lg" }} color={muted} maxW="680px">
+                {activeFunnelStep.subtitle}
+              </Text>
             </Stack>
 
-            <Box
-              display={{ base: "none", lg: "block" }}
-              minH="100%"
-              borderRadius="3xl"
-              border="1px solid"
-              borderColor="rgba(23, 49, 140, 0.10)"
-              bg="rgba(255,255,255,0.14)"
-              backdropFilter="blur(14px)"
-              p={4}
-              overflow="hidden"
-            >
-              <Box
-                position="relative"
-                minH="320px"
-                borderRadius="28px"
-                bg="linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(240,248,250,0.92) 48%, rgba(225,240,244,0.86) 100%)"
-                border="1px solid rgba(23,49,140,0.08)"
-                overflow="hidden"
-              >
-                <Box
-                  position="absolute"
-                  inset="24px"
-                  borderRadius="24px"
-                  border="1px solid rgba(23,49,140,0.06)"
-                />
-                <Box
-                  position="absolute"
-                  top="50%"
-                  left="50%"
-                  transform="translate(-50%, -50%)"
-                  w="132px"
-                  h="132px"
-                  borderRadius="30px"
-                  bg="rgba(255,255,255,0.72)"
-                  border="1px solid rgba(23,49,140,0.08)"
-                  boxShadow="0 18px 36px rgba(6,37,76,0.06)"
-                >
-                  <Box
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                    w="76px"
-                    h="22px"
-                    borderRadius="full"
-                    bg="rgba(17,119,186,0.18)"
-                  />
-                  <Box
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                    w="22px"
-                    h="76px"
-                    borderRadius="full"
-                    bg="rgba(17,119,186,0.18)"
-                  />
-                </Box>
-                <Box
-                  position="absolute"
-                  top="44px"
-                  right="42px"
-                  w="52px"
-                  h="52px"
-                  borderRadius="18px"
-                  border="1px solid rgba(23,49,140,0.08)"
-                  bg="rgba(255,255,255,0.52)"
-                />
-                <Box
-                  position="absolute"
-                  bottom="44px"
-                  left="42px"
-                  w="70px"
-                  h="10px"
-                  borderRadius="full"
-                  bg="rgba(23,49,140,0.10)"
-                />
-                <Box
-                  position="absolute"
-                  bottom="64px"
-                  left="42px"
-                  w="104px"
-                  h="10px"
-                  borderRadius="full"
-                  bg="rgba(17,119,186,0.12)"
-                />
-              </Box>
+            <Box display={{ base: "none", md: "block" }} bg={heroSurface} border="1px solid" borderColor={heroBorder} borderRadius="2xl" px={5} py={5}>
+              <DesktopProgressBar currentStep={step} />
             </Box>
-          </Grid>
+
+            <Stack spacing={2.5} display={{ base: "flex", md: "none" }}>
+              {FUNNEL_STEPS.map((funnelStep, index) => (
+                <MobileJourneyStep
+                  key={funnelStep.key}
+                  stepNumber={index + 1}
+                  stepLabel={funnelStep.stepLabel}
+                  label={funnelStep.label}
+                  isActive={index === step}
+                  isComplete={index < step}
+                />
+              ))}
+            </Stack>
+          </Stack>
         </Box>
 
         <Box
