@@ -22,8 +22,8 @@ type UploadOption = {
   id: string;
   title: string;
   icon: string;
-  summary: string;
-  detail: string;
+  micro: string;
+  metrics: string[];
   input: SimulatorInput;
 };
 
@@ -31,24 +31,25 @@ type EvolutionOption = {
   id: string;
   title: string;
   icon: string;
-  summary: string;
+  micro: string;
+  metrics: string[];
   apply: (input: SimulatorInput) => SimulatorInput;
 };
 
 const FUNNEL_STEPS = [
-  { key: "data", label: "Data In" },
-  { key: "twin", label: "Your Twin Evolves" },
-  { key: "insights", label: "Insights & Simulations" },
-  { key: "decisions", label: "Better Decisions" },
+  { key: "data", label: "Data In", icon: "IN" },
+  { key: "twin", label: "Twin", icon: "TW" },
+  { key: "insights", label: "Insights", icon: "IQ" },
+  { key: "decisions", label: "Decide", icon: "GO" },
 ] as const;
 
 const UPLOAD_OPTIONS: UploadOption[] = [
   {
     id: "mri",
     title: "MRI Scan",
-    icon: "🧠",
-    summary: "Simulate bringing in imaging that adds more clinical context to the twin.",
-    detail: "Imaging suggests a more serious pattern that should be reviewed soon.",
+    icon: "MRI",
+    micro: "Imaging upload",
+    metrics: ["Pain", "Scan", "Priority"],
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -74,9 +75,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
   {
     id: "health-record",
     title: "Health Record",
-    icon: "📄",
-    summary: "Simulate importing a broader medical record history into one place.",
-    detail: "A fuller record gives the twin more longitudinal context to work from.",
+    icon: "REC",
+    micro: "Full record import",
+    metrics: ["Visits", "Meds", "History"],
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       symptom: {
@@ -97,9 +98,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
   {
     id: "injury-image",
     title: "Injury Image",
-    icon: "🩹",
-    summary: "Simulate uploading a photo of an injury or physical change that needs a quick read.",
-    detail: "An injury image can push the twin toward faster triage-style guidance.",
+    icon: "IMG",
+    micro: "Visual injury input",
+    metrics: ["Swelling", "Triage", "Fast"],
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       profile: {
@@ -137,9 +138,9 @@ const UPLOAD_OPTIONS: UploadOption[] = [
   {
     id: "lab-panel",
     title: "Lab Panel",
-    icon: "🧪",
-    summary: "Simulate feeding in fresh lab results that change the picture over time.",
-    detail: "Lab trend data helps the twin spot issues that are easy to miss day to day.",
+    icon: "LAB",
+    micro: "Fresh biomarker data",
+    metrics: ["A1C", "BP", "Trend"],
     input: {
       ...DEFAULT_SIMULATOR_INPUT,
       insurance: {
@@ -168,9 +169,10 @@ const UPLOAD_OPTIONS: UploadOption[] = [
 const EVOLUTION_OPTIONS: EvolutionOption[] = [
   {
     id: "symptom-timeline",
-    title: "Symptoms over time",
-    icon: "📈",
-    summary: "Show how the issue has been changing instead of treating it like a one-time event.",
+    title: "Timeline",
+    icon: "24H",
+    micro: "Symptoms over time",
+    metrics: ["+7 days", "Pattern", "Watch"],
     apply: (input) => ({
       ...input,
       symptom: {
@@ -185,9 +187,10 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
   },
   {
     id: "sleep-routine",
-    title: "Sleep and routine",
-    icon: "😴",
-    summary: "Add daily behavior patterns that can shape recovery, stress, and symptom load.",
+    title: "Sleep",
+    icon: "ZZ",
+    micro: "Routine signal",
+    metrics: ["Recovery", "Stress", "Rhythm"],
     apply: (input) => ({
       ...input,
       behaviorChange: {
@@ -202,9 +205,10 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
   },
   {
     id: "medication-history",
-    title: "Medication history",
-    icon: "💊",
-    summary: "Add adherence and treatment history so the twin can model likely care friction.",
+    title: "Meds",
+    icon: "RX",
+    micro: "Adherence history",
+    metrics: ["Refill", "Dose", "Adherence"],
     apply: (input) => ({
       ...input,
       medication: {
@@ -218,9 +222,10 @@ const EVOLUTION_OPTIONS: EvolutionOption[] = [
   },
   {
     id: "care-goals",
-    title: "Care goals and history",
-    icon: "🎯",
-    summary: "Add background context about long-term goals and existing conditions.",
+    title: "Goals",
+    icon: "AI",
+    micro: "Long-view context",
+    metrics: ["Chronic", "PCP", "Care path"],
     apply: (input) => ({
       ...input,
       profile: {
@@ -250,19 +255,115 @@ function cloneInput(input: SimulatorInput): SimulatorInput {
   };
 }
 
-function resultNarrative(upload: UploadOption, evolutionTitles: string[], result: SimulationResult): string {
-  const evolutionText =
-    evolutionTitles.length === 0 ? "basic personal context" : evolutionTitles.join(", ").toLowerCase();
+function MetricChip({ label }: { label: string }) {
+  return (
+    <Box
+      px={3}
+      py={1.5}
+      borderRadius="full"
+      bg="rgba(17, 119, 186, 0.10)"
+      border="1px solid rgba(17, 119, 186, 0.16)"
+    >
+      <Text fontSize="xs" fontWeight="700" letterSpacing="0.04em">
+        {label}
+      </Text>
+    </Box>
+  );
+}
 
-  if (result.riskLevel === "urgent" || result.riskLevel === "high") {
-    return `${upload.title} plus ${evolutionText} pushed this twin toward faster follow-up, stronger triage signals, and clearer next actions.`;
-  }
+function IconTile({
+  icon,
+  title,
+  micro,
+  metrics,
+  isSelected,
+  onClick,
+  border,
+  activeBorder,
+  cardBg,
+  activeCardBg,
+}: {
+  icon: string;
+  title: string;
+  micro: string;
+  metrics: string[];
+  isSelected: boolean;
+  onClick: () => void;
+  border: string;
+  activeBorder: string;
+  cardBg: string;
+  activeCardBg: string;
+}) {
+  return (
+    <Box
+      borderWidth="1px"
+      borderColor={isSelected ? activeBorder : border}
+      borderRadius="3xl"
+      bg={isSelected ? activeCardBg : cardBg}
+      p={5}
+      cursor="pointer"
+      onClick={onClick}
+      boxShadow={isSelected ? "0 18px 36px rgba(17, 119, 186, 0.16)" : "0 10px 24px rgba(6, 37, 76, 0.06)"}
+    >
+      <Stack spacing={4}>
+        <Box
+          w="64px"
+          h="64px"
+          borderRadius="2xl"
+          bg={isSelected ? "accent.primary" : "rgba(17, 119, 186, 0.10)"}
+          color={isSelected ? "white" : "accent.primary"}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          fontSize="lg"
+          fontWeight="900"
+          letterSpacing="0.08em"
+        >
+          {icon}
+        </Box>
+        <Box>
+          <Heading as="h3" size="sm" mb={1}>
+            {title}
+          </Heading>
+          <Text fontSize="sm" color="text.muted">
+            {micro}
+          </Text>
+        </Box>
+        <Stack direction="row" flexWrap="wrap" spacing={2}>
+          {metrics.map((metric) => (
+            <MetricChip key={`${title}-${metric}`} label={metric} />
+          ))}
+        </Stack>
+      </Stack>
+    </Box>
+  );
+}
 
-  if (result.riskLevel === "moderate") {
-    return `${upload.title} plus ${evolutionText} gave the twin enough depth to surface practical next steps and a steadier follow-up plan.`;
-  }
-
-  return `${upload.title} plus ${evolutionText} created a lower-risk picture with coaching-oriented insights and clearer decision support.`;
+function MetricCard({
+  label,
+  value,
+  tone = "default",
+}: {
+  label: string;
+  value: string;
+  tone?: "default" | "accent";
+}) {
+  return (
+    <Box
+      borderWidth="1px"
+      borderColor={tone === "accent" ? "rgba(17, 119, 186, 0.36)" : "border.default"}
+      borderRadius="2xl"
+      bg={tone === "accent" ? "rgba(17, 119, 186, 0.10)" : "rgba(255, 255, 255, 0.72)"}
+      p={4}
+    >
+      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="text.subtle" mb={2}>
+        {label}
+      </Text>
+      <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" lineHeight="1">
+        {value}
+      </Text>
+    </Box>
+  );
 }
 
 export default function HealthTwinFunnel() {
@@ -282,6 +383,13 @@ export default function HealthTwinFunnel() {
   const stepCircleBg = useColorModeValue("#001A52", "#9CE7FF");
   const stepCircleColor = useColorModeValue("#FFFFFF", "#001A52");
   const activeBorder = useColorModeValue("#1177BA", "#9CE7FF");
+  const detailsBg = useColorModeValue("rgba(255,255,255,0.68)", "rgba(6, 37, 76, 0.56)");
+  const insightPanelBg = useColorModeValue(
+    "linear-gradient(180deg, rgba(17,119,186,0.16) 0%, rgba(156,231,255,0.52) 100%)",
+    "linear-gradient(180deg, rgba(17,119,186,0.24) 0%, rgba(6,37,76,0.80) 100%)"
+  );
+  const insightCardBg = useColorModeValue("rgba(255,255,255,0.88)", "rgba(10, 44, 88, 0.82)");
+  const insightAccentBorder = useColorModeValue("rgba(17, 119, 186, 0.34)", "rgba(156, 231, 255, 0.42)");
 
   const selectedUpload = useMemo(
     () => UPLOAD_OPTIONS.find((option) => option.id === selectedUploadId) ?? null,
@@ -314,11 +422,11 @@ export default function HealthTwinFunnel() {
 
   const nextButtonLabel =
     step === 0
-      ? "Continue to Twin Evolution"
+      ? "Step 2"
       : step === 1
-        ? "See Insights & Simulations"
+        ? "Step 3"
         : step === 2
-          ? "Continue to Better Decisions"
+          ? "Step 4"
           : "Go to VeeVee";
 
   const handleUploadSelect = (option: UploadOption) => {
@@ -369,105 +477,132 @@ export default function HealthTwinFunnel() {
   return (
     <Box as="main" minH="100vh" bgGradient={pageGradient} color="text.primary" py={{ base: 10, md: 20 }}>
       <Stack spacing={{ base: 8, md: 10 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
-        <Box borderWidth="1px" borderColor={border} borderRadius="3xl" bg={panelBg} boxShadow="0 24px 50px rgba(6, 37, 76, 0.12)" p={{ base: 6, md: 8 }}>
-          <Stack spacing={4}>
+        <Box
+          borderWidth="1px"
+          borderColor={border}
+          borderRadius="3xl"
+          bg={panelBg}
+          boxShadow="0 24px 50px rgba(6, 37, 76, 0.12)"
+          p={{ base: 6, md: 8 }}
+        >
+          <Stack spacing={6}>
             <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
-              Health Twin Funnel
+              Health Twin
             </Badge>
-            <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800">
-              Create a Health Twin in four guided steps.
-            </Heading>
-            <Text color={muted} maxW="4xl" fontSize={{ base: "md", md: "lg" }}>
-              This is a simulated marketing walkthrough: bring in sample health data, evolve the twin with a little more context, see the resulting insights, and then decide if you want the real VeeVee experience.
-            </Text>
+            <Stack spacing={2}>
+              <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="900">
+                1. Data In
+                <br />
+                2. Twin
+                <br />
+                3. Insights
+                <br />
+                4. Better Decisions
+              </Heading>
+              <Text fontSize={{ base: "sm", md: "md" }} color={muted} maxW="2xl">
+                Build the twin. Watch it evolve. See the signal.
+              </Text>
+            </Stack>
+
+            <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
+              {FUNNEL_STEPS.map((funnelStep, index) => {
+                const isActive = index === step;
+                const isComplete = index < step;
+
+                return (
+                  <Box
+                    key={funnelStep.key}
+                    borderWidth="1px"
+                    borderColor={isActive || isComplete ? activeBorder : border}
+                    borderRadius="3xl"
+                    bg={isActive ? activeCardBg : cardBg}
+                    p={4}
+                    textAlign="center"
+                  >
+                    <Stack spacing={3} align="center">
+                      <Box
+                        w={{ base: "52px", md: "60px" }}
+                        h={{ base: "52px", md: "60px" }}
+                        borderRadius="2xl"
+                        bg={isActive || isComplete ? stepCircleBg : "rgba(17, 119, 186, 0.10)"}
+                        color={isActive || isComplete ? stepCircleColor : "accent.primary"}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        fontWeight="900"
+                        fontSize="sm"
+                        letterSpacing="0.08em"
+                      >
+                        {funnelStep.icon}
+                      </Box>
+                      <Box>
+                        <Text fontSize="xs" color={muted} fontWeight="700">
+                          {index + 1}
+                        </Text>
+                        <Text fontWeight="800" fontSize="sm">
+                          {funnelStep.label}
+                        </Text>
+                      </Box>
+                    </Stack>
+                  </Box>
+                );
+              })}
+            </SimpleGrid>
+
+            <Box
+              as="details"
+              bg={detailsBg}
+              borderWidth="1px"
+              borderColor={border}
+              borderRadius="2xl"
+              px={4}
+              py={3}
+            >
+              <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
+                Read more
+              </Box>
+              <Text mt={3} color={muted} fontSize="sm">
+                This is a guided preview using sample health inputs. Choose a data type, add a little more context, and the twin will generate simulated health signals, recommendations, and decision support.
+              </Text>
+            </Box>
           </Stack>
         </Box>
 
-        <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
-          {FUNNEL_STEPS.map((funnelStep, index) => {
-            const isActive = index === step;
-            const isComplete = index < step;
-
-            return (
-              <Box
-                key={funnelStep.key}
-                borderWidth="1px"
-                borderColor={isActive || isComplete ? activeBorder : border}
-                borderRadius="2xl"
-                bg={isActive ? activeCardBg : cardBg}
-                p={4}
-              >
-                <Stack direction="row" spacing={3} align="center">
-                  <Box
-                    w="36px"
-                    h="36px"
-                    borderRadius="full"
-                    bg={isActive || isComplete ? stepCircleBg : "transparent"}
-                    color={isActive || isComplete ? stepCircleColor : muted}
-                    border="1px solid"
-                    borderColor={isActive || isComplete ? stepCircleBg : border}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    fontWeight="800"
-                    fontSize="sm"
-                  >
-                    {index + 1}
-                  </Box>
-                  <Text fontWeight="700" fontSize="sm">
-                    {funnelStep.label}
-                  </Text>
-                </Stack>
-              </Box>
-            );
-          })}
-        </SimpleGrid>
-
-        <Box borderWidth="1px" borderColor={border} borderRadius="3xl" bg={panelBg} boxShadow="0 20px 42px rgba(6, 37, 76, 0.10)" p={{ base: 6, md: 8 }}>
+        <Box
+          borderWidth="1px"
+          borderColor={step === 2 ? insightAccentBorder : border}
+          borderRadius="3xl"
+          bg={step === 2 ? insightPanelBg : panelBg}
+          boxShadow="0 20px 42px rgba(6, 37, 76, 0.10)"
+          p={{ base: 6, md: 8 }}
+        >
           {step === 0 ? (
             <Stack spacing={6}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
-                  Step 1 of 4
+                  Step 1
                 </Text>
-                <Heading as="h2" size="lg" mb={2}>
-                  What kind of health data do you want to bring in?
+                <Heading as="h2" size="lg" mb={1}>
+                  Choose your input
                 </Heading>
-                <Text color={muted}>
-                  Pick one sample asset to simulate an upload into the twin.
-                </Text>
               </Box>
 
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                {UPLOAD_OPTIONS.map((option) => {
-                  const isSelected = option.id === selectedUploadId;
-
-                  return (
-                    <Box
-                      key={option.id}
-                      borderWidth="1px"
-                      borderColor={isSelected ? activeBorder : border}
-                      borderRadius="2xl"
-                      bg={isSelected ? activeCardBg : cardBg}
-                      p={5}
-                      cursor="pointer"
-                      onClick={() => handleUploadSelect(option)}
-                    >
-                      <Stack spacing={3}>
-                        <Text fontSize="3xl">{option.icon}</Text>
-                        <Heading as="h3" size="sm">
-                          {option.title}
-                        </Heading>
-                        <Text fontSize="sm" color={muted}>
-                          {option.summary}
-                        </Text>
-                        <Text fontSize="sm" color="text.primary">
-                          {option.detail}
-                        </Text>
-                      </Stack>
-                    </Box>
-                  );
-                })}
+                {UPLOAD_OPTIONS.map((option) => (
+                  <IconTile
+                    key={option.id}
+                    icon={option.icon}
+                    title={option.title}
+                    micro={option.micro}
+                    metrics={option.metrics}
+                    isSelected={option.id === selectedUploadId}
+                    onClick={() => handleUploadSelect(option)}
+                    border={border}
+                    activeBorder={activeBorder}
+                    cardBg={cardBg}
+                    activeCardBg={activeCardBg}
+                  />
+                ))}
               </SimpleGrid>
             </Stack>
           ) : null}
@@ -476,142 +611,111 @@ export default function HealthTwinFunnel() {
             <Stack spacing={6}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
-                  Step 2 of 4
+                  Step 2
                 </Text>
-                <Heading as="h2" size="lg" mb={2}>
-                  What else helps your twin understand you better?
+                <Heading as="h2" size="lg" mb={1}>
+                  Evolve the twin
                 </Heading>
-                <Text color={muted}>
-                  Select up to two context layers that make the twin evolve beyond the first upload.
+                <Text fontSize="sm" color={muted}>
+                  Pick up to 2
                 </Text>
               </Box>
 
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                {EVOLUTION_OPTIONS.map((option) => {
-                  const isSelected = selectedEvolutionIds.includes(option.id);
-
-                  return (
-                    <Box
-                      key={option.id}
-                      borderWidth="1px"
-                      borderColor={isSelected ? activeBorder : border}
-                      borderRadius="2xl"
-                      bg={isSelected ? activeCardBg : cardBg}
-                      p={5}
-                      cursor="pointer"
-                      onClick={() => handleEvolutionToggle(option)}
-                    >
-                      <Stack spacing={3}>
-                        <Text fontSize="3xl">{option.icon}</Text>
-                        <Heading as="h3" size="sm">
-                          {option.title}
-                        </Heading>
-                        <Text fontSize="sm" color={muted}>
-                          {option.summary}
-                        </Text>
-                        <Text fontSize="xs" color="accent.soft" fontWeight="700">
-                          {isSelected ? "Selected" : "Tap to add"}
-                        </Text>
-                      </Stack>
-                    </Box>
-                  );
-                })}
+                {EVOLUTION_OPTIONS.map((option) => (
+                  <IconTile
+                    key={option.id}
+                    icon={option.icon}
+                    title={option.title}
+                    micro={option.micro}
+                    metrics={option.metrics}
+                    isSelected={selectedEvolutionIds.includes(option.id)}
+                    onClick={() => handleEvolutionToggle(option)}
+                    border={border}
+                    activeBorder={activeBorder}
+                    cardBg={cardBg}
+                    activeCardBg={activeCardBg}
+                  />
+                ))}
               </SimpleGrid>
             </Stack>
           ) : null}
 
-          {step === 2 && selectedUpload && result ? (
+          {step === 2 && selectedUpload && result && simulatedInput ? (
             <Stack spacing={6}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
-                  Step 3 of 4
+                  Step 3
                 </Text>
-                <Heading as="h2" size="lg" mb={2}>
-                  Your simulated twin results are in.
+                <Heading as="h2" size="lg" mb={1}>
+                  Your best-version twin snapshot
                 </Heading>
-                <Text color={muted}>
-                  {resultNarrative(
-                    selectedUpload,
-                    selectedEvolution.map((option) => option.title),
-                    result
-                  )}
+                <Text fontSize="sm" color={muted}>
+                  Stronger patterns. Smarter momentum. Clearer next moves.
                 </Text>
               </Box>
 
-              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                <Box borderWidth="1px" borderColor={activeBorder} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
-                    Twin status
-                  </Text>
-                  <Heading as="h3" size="sm" mb={3}>
-                    Risk level: {result.riskLevel}
-                  </Heading>
-                  <Text fontSize="sm" color={muted}>
-                    Risk score {result.riskScore}. The twin is prioritizing what needs attention first.
-                  </Text>
-                </Box>
+              <SimpleGrid columns={{ base: 2, md: 5 }} spacing={3}>
+                <MetricCard label="Twin State" value={result.riskLevel.toUpperCase()} tone="accent" />
+                <MetricCard label="Momentum" value={String(result.riskScore)} />
+                <MetricCard label="Recovery" value={`${simulatedInput.behaviorChange.sleepHours}h`} />
+                <MetricCard label="Consistency" value={`${simulatedInput.medication.adherencePercent}%`} />
+                <MetricCard label="Pressure" value={simulatedInput.labs.systolicBp ? `${simulatedInput.labs.systolicBp}` : "--"} />
+              </SimpleGrid>
 
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
-                    Insights
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
+                    Best signals
                   </Text>
                   <Stack spacing={2}>
-                    {(result.riskSignals.length > 0 ? result.riskSignals : ["The twin is watching a lower-risk pattern right now."])
+                    {(result.riskSignals.length > 0 ? result.riskSignals : ["Lower-risk pattern"])
                       .slice(0, 3)
                       .map((signal) => (
-                        <Text key={signal} fontSize="sm" color={muted}>
-                          {signal}
-                        </Text>
+                        <MetricChip key={signal} label={signal} />
                       ))}
                   </Stack>
                 </Box>
 
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={2}>
-                    Simulation direction
+                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
+                    Best next moves
                   </Text>
                   <Stack spacing={2}>
-                    {result.twinStateUpdates.slice(0, 3).map((update) => (
-                      <Text key={update.field} fontSize="sm" color={muted}>
-                        {update.summary}
-                      </Text>
-                    ))}
-                  </Stack>
-                </Box>
-              </SimpleGrid>
-
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={3}>
-                    Recommended next moves
-                  </Text>
-                  <Stack spacing={3}>
                     {result.recommendations.slice(0, 3).map((recommendation) => (
-                      <Box key={recommendation.id}>
-                        <Text fontWeight="700" fontSize="sm">
-                          {recommendation.title}
-                        </Text>
-                        <Text fontSize="sm" color={muted}>
-                          {recommendation.rationale}
-                        </Text>
-                      </Box>
+                      <MetricChip key={recommendation.id} label={recommendation.title} />
                     ))}
                   </Stack>
                 </Box>
 
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" mb={3}>
-                    Better questions to ask
+                <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
+                  <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="accent.soft" mb={3}>
+                    Keep getting better
                   </Text>
-                  <Stack spacing={3}>
+                  <Stack spacing={2}>
                     {result.followUpQuestions.slice(0, 3).map((question) => (
-                      <Text key={question} fontSize="sm" color={muted}>
-                        {question}
-                      </Text>
+                      <MetricChip key={question} label={question} />
                     ))}
                   </Stack>
                 </Box>
               </SimpleGrid>
+
+              <Box
+                as="details"
+                bg={insightCardBg}
+                borderWidth="1px"
+                borderColor={insightAccentBorder}
+                borderRadius="2xl"
+                px={4}
+                py={3}
+              >
+                <Box as="summary" cursor="pointer" fontWeight="700" color="accent.soft">
+                  Read more
+                </Box>
+                <Text mt={3} color={muted} fontSize="sm">
+                  {selectedUpload.title} plus {selectedEvolution.map((option) => option.title).join(" + ")} created this simulation result.
+                </Text>
+              </Box>
             </Stack>
           ) : null}
 
@@ -619,41 +723,53 @@ export default function HealthTwinFunnel() {
             <Stack spacing={6}>
               <Box>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" mb={2}>
-                  Step 4 of 4
+                  Step 4
                 </Text>
-                <Heading as="h2" size="lg" mb={2}>
-                  Want better decisions? Go make your own.
+                <Heading as="h2" size="lg" mb={1}>
+                  Create your own Health Twin
                 </Heading>
-                <Text color={muted} maxW="3xl">
-                  You just previewed what happens when VeeVee turns sample data into a living twin. The next step is to create one built around your real records, history, and care decisions.
+                <Text fontSize="sm" color={muted} maxW="2xl">
+                  It takes seconds. It is free. Start now.
                 </Text>
               </Box>
 
               <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Heading as="h3" size="sm" mb={2}>
-                    Bring in what is real
-                  </Heading>
-                  <Text fontSize="sm" color={muted}>
-                    Use your actual health records, habits, and care details instead of sample assets.
-                  </Text>
-                </Box>
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Heading as="h3" size="sm" mb={2}>
-                    See a richer twin
-                  </Heading>
-                  <Text fontSize="sm" color={muted}>
-                    Build a more complete picture that evolves with more context over time.
-                  </Text>
-                </Box>
-                <Box borderWidth="1px" borderColor={border} borderRadius="2xl" bg={cardBg} p={5}>
-                  <Heading as="h3" size="sm" mb={2}>
-                    Make clearer next moves
-                  </Heading>
-                  <Text fontSize="sm" color={muted}>
-                    Turn that richer twin into better guidance, better questions, and better decisions.
-                  </Text>
-                </Box>
+                <IconTile
+                  icon="YOU"
+                  title="Make it yours"
+                  micro="Your real health story"
+                  metrics={["Personal", "Private", "Yours"]}
+                  isSelected={false}
+                  onClick={() => undefined}
+                  border={border}
+                  activeBorder={activeBorder}
+                  cardBg={cardBg}
+                  activeCardBg={activeCardBg}
+                />
+                <IconTile
+                  icon="TWN"
+                  title="Start free"
+                  micro="No wait. No friction."
+                  metrics={["FREE", "Fast", "Simple"]}
+                  isSelected={false}
+                  onClick={() => undefined}
+                  border={border}
+                  activeBorder={activeBorder}
+                  cardBg={cardBg}
+                  activeCardBg={activeCardBg}
+                />
+                <IconTile
+                  icon="GO"
+                  title="Do it now"
+                  micro="Build your twin today"
+                  metrics={["Seconds", "Now", "Go"]}
+                  isSelected={false}
+                  onClick={() => undefined}
+                  border={border}
+                  activeBorder={activeBorder}
+                  cardBg={cardBg}
+                  activeCardBg={activeCardBg}
+                />
               </SimpleGrid>
 
               <Button
@@ -666,8 +782,12 @@ export default function HealthTwinFunnel() {
                 alignSelf="flex-start"
                 boxShadow="0 0 36px rgba(17, 119, 186, 0.35)"
               >
-                Go make your own
+                Create my own Health Twin
               </Button>
+
+              <Text fontSize="sm" fontWeight="800" color="accent.soft">
+                FREE. Takes seconds. Start yours now.
+              </Text>
 
               <Button
                 as={RouterLink}
@@ -697,7 +817,7 @@ export default function HealthTwinFunnel() {
               isDisabled={!canAdvance}
               borderRadius="full"
               px={8}
-              fontWeight="700"
+              fontWeight="800"
               boxShadow="0 0 28px rgba(17, 119, 186, 0.28)"
             >
               {nextButtonLabel}
