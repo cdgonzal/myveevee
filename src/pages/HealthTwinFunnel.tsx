@@ -617,46 +617,48 @@ function MobileJourneyStep({
   const isOn = isActive || isComplete;
 
   return (
-    <HStack align="stretch" spacing={3}>
-      <Stack align="center" spacing={1} flexShrink={0}>
+    <HStack align="stretch" spacing={3.5}>
+      <Stack align="center" spacing={0} flexShrink={0}>
         <Box
-          w="34px"
-          h="34px"
+          w="40px"
+          h="40px"
           borderRadius="full"
           bgGradient={isOn ? "linear-gradient(135deg, #17318C 0%, #36C5FF 100%)" : undefined}
-          bg={isOn ? undefined : "rgba(255,255,255,0.76)"}
-          border="1px solid rgba(23, 49, 140, 0.10)"
+          bg={isOn ? undefined : "rgba(255,255,255,0.96)"}
+          border="2px solid"
+          borderColor={isOn ? "transparent" : "rgba(23, 49, 140, 0.18)"}
           display="flex"
           alignItems="center"
           justifyContent="center"
-          boxShadow={isActive ? "0 10px 22px rgba(54, 197, 255, 0.22)" : "none"}
+          boxShadow={isActive ? "0 12px 26px rgba(54, 197, 255, 0.26)" : "0 8px 18px rgba(6, 37, 76, 0.05)"}
         >
-          <Text fontSize="xs" fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0.04em">
+          <Text fontSize="sm" fontWeight="900" color={isOn ? "white" : "#17318C"} letterSpacing="0">
             {stepNumber}
           </Text>
         </Box>
-        {stepNumber < 4 ? <Box w="1px" flex="1" minH="18px" bg={isComplete ? "rgba(23,49,140,0.28)" : "rgba(23,49,140,0.10)"} /> : null}
+        {stepNumber < 4 ? (
+          <Box
+            w="3px"
+            flex="1"
+            minH="18px"
+            borderRadius="full"
+            bg={isComplete ? "linear-gradient(180deg, #17318C 0%, #36C5FF 100%)" : "rgba(23,49,140,0.12)"}
+          />
+        ) : null}
       </Stack>
 
       <Box
         flex="1"
-        borderRadius="22px"
-        border="1px solid rgba(23, 49, 140, 0.10)"
-        bg={isActive ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.58)"}
-        px={3.5}
-        py={isActive ? 3 : 2.5}
+        borderBottom={stepNumber < 4 ? "1px solid rgba(23, 49, 140, 0.08)" : "0"}
+        pb={stepNumber < 4 ? 4 : 0}
+        pt={0.5}
       >
-        <Text fontSize="10px" fontWeight="900" letterSpacing="0" color="accent.soft" mb={1}>
+        <Text fontSize="10px" fontWeight="900" color="#17318C" opacity={isOn ? 0.78 : 0.46} mb={1}>
           {stepLabel}
         </Text>
-        <Text fontSize="sm" fontWeight="800" lineHeight="1.1">
+        <Text fontSize="sm" fontWeight="850" lineHeight="1.1" color={isOn ? "text.primary" : "text.muted"}>
           {label}
         </Text>
-        {isActive ? (
-          <Text fontSize="xs" color="text.muted" mt={1.5}>
-            Active now
-          </Text>
-        ) : null}
       </Box>
     </HStack>
   );
@@ -818,18 +820,20 @@ export default function HealthTwinFunnel() {
               <DesktopProgressBar currentStep={step} />
             </Box>
 
-            <Stack spacing={2.5} display={{ base: "flex", md: "none" }}>
-              {FUNNEL_STEPS.map((funnelStep, index) => (
-                <MobileJourneyStep
-                  key={funnelStep.key}
-                  stepNumber={index + 1}
-                  stepLabel={funnelStep.stepLabel}
-                  label={funnelStep.label}
-                  isActive={index === step}
-                  isComplete={index < step}
-                />
-              ))}
-            </Stack>
+            <Box display={{ base: "block", md: "none" }} bg={heroSurface} border="1px solid" borderColor={heroBorder} borderRadius="2xl" px={4} py={4}>
+              <Stack spacing={0}>
+                {FUNNEL_STEPS.map((funnelStep, index) => (
+                  <MobileJourneyStep
+                    key={funnelStep.key}
+                    stepNumber={index + 1}
+                    stepLabel={funnelStep.stepLabel}
+                    label={funnelStep.label}
+                    isActive={index === step}
+                    isComplete={index < step}
+                  />
+                ))}
+              </Stack>
+            </Box>
           </Stack>
         </Box>
 
