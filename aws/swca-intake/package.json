@@ -1,0 +1,14 @@
+{
+  "name": "swca-intake-lambda",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AWS Lambda handler for the SWCA wellness priority intake form.",
+  "scripts": {
+    "check": "node --check handler.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.808.0",
+    "@aws-sdk/client-ses": "^3.808.0"
+  }
+}

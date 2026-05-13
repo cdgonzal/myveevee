@@ -170,4 +170,13 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.swcaIntake]: {
+    title: "Spine and Wellness Intake Form",
+    description: "Spine and Wellness Centers of America wellness priority intake form.",
+    canonicalPath: APP_LINKS.internal.swcaIntake,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
 };
