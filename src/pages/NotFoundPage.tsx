@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
@@ -8,6 +8,7 @@ import { APP_LINKS } from "../config/links";
 export default function NotFoundPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [secondsRemaining, setSecondsRemaining] = useState(18);
 
   useEffect(() => {
     trackEvent("not_found_view", {
@@ -18,6 +19,12 @@ export default function NotFoundPage() {
   }, [location.pathname, location.search]);
 
   useEffect(() => {
+    setSecondsRemaining(18);
+
+    const countdownId = window.setInterval(() => {
+      setSecondsRemaining((current) => Math.max(0, current - 1));
+    }, 1000);
+
     const redirectId = window.setTimeout(() => {
       trackEvent("not_found_auto_redirect", {
         missing_path: location.pathname,
@@ -27,6 +34,7 @@ export default function NotFoundPage() {
     }, 18000);
 
     return () => {
+      window.clearInterval(countdownId);
       window.clearTimeout(redirectId);
     };
   }, [location.pathname, navigate]);
@@ -46,7 +54,9 @@ export default function NotFoundPage() {
             where to go from there.
           </Text>
           <Text color="text.muted" fontWeight="700">
-            Redirecting you in 18 seconds.
+            {secondsRemaining <= 10
+              ? `Redirecting you in ${secondsRemaining}...`
+              : "Redirecting you in 18 seconds."}
           </Text>
         </Stack>
 
