@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState, type ComponentType } from "react";
 import {
   Box,
   Button,
@@ -33,28 +33,54 @@ import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, NOT_FOUND_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 import { trackSwcaCampaignEvent } from "./swca/campaignEvents";
 
-const Home = lazy(() => import("./pages/Home"));
-const HealthTwinFunnel = lazy(() => import("./pages/HealthTwinFunnel"));
-const AvatarPlaybackTest = lazy(() => import("./pages/AvatarPlaybackTest"));
-const HowItWorks = lazy(() => import("./pages/HowItWorks"));
-const HospitalValue = lazy(() => import("./pages/HospitalValue"));
-const Features = lazy(() => import("./pages/Features"));
-const Technology = lazy(() => import("./pages/Technology"));
-const Simulator = lazy(() => import("./pages/Simulator"));
-const Testimonials = lazy(() => import("./pages/Testimonials"));
-const Caregivers = lazy(() => import("./pages/Caregivers"));
-const MedicareGuidance = lazy(() => import("./pages/MedicareGuidance"));
-const HospitalToHome = lazy(() => import("./pages/HospitalToHome"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Terms = lazy(() => import("./pages/Terms"));
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
-const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
-const SwcaRewardsTeaser = lazy(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
-const SpineWellnessIntakeForm = lazy(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
-const SwcaRewardWheel = lazy(() => import("./swca/rewardWheel/SwcaRewardWheel"));
-const SwcaRewardCertificate = lazy(() => import("./swca/certificate/SwcaRewardCertificate"));
-const SwcaProfileFunnel = lazy(() => import("./swca/profileFunnel/SwcaProfileFunnel"));
-const SwcaAdminDashboard = lazy(() => import("./swca/admin/SwcaAdminDashboard"));
+const LAZY_RELOAD_STORAGE_KEY = "myveevee:lazy-import-reload";
+
+function lazyWithRetry<T extends ComponentType<any>>(importer: () => Promise<{ default: T }>) {
+  return lazy(async () => {
+    try {
+      const module = await importer();
+      window.sessionStorage.removeItem(LAZY_RELOAD_STORAGE_KEY);
+      return module;
+    } catch (error) {
+      if (shouldReloadForLazyImport(error) && !window.sessionStorage.getItem(LAZY_RELOAD_STORAGE_KEY)) {
+        window.sessionStorage.setItem(LAZY_RELOAD_STORAGE_KEY, "true");
+        window.location.reload();
+        return new Promise<never>(() => undefined);
+      }
+
+      throw error;
+    }
+  });
+}
+
+function shouldReloadForLazyImport(error: unknown) {
+  if (typeof window === "undefined") return false;
+  const message = error instanceof Error ? error.message : String(error);
+  return /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(message);
+}
+
+const Home = lazyWithRetry(() => import("./pages/Home"));
+const HealthTwinFunnel = lazyWithRetry(() => import("./pages/HealthTwinFunnel"));
+const AvatarPlaybackTest = lazyWithRetry(() => import("./pages/AvatarPlaybackTest"));
+const HowItWorks = lazyWithRetry(() => import("./pages/HowItWorks"));
+const HospitalValue = lazyWithRetry(() => import("./pages/HospitalValue"));
+const Features = lazyWithRetry(() => import("./pages/Features"));
+const Technology = lazyWithRetry(() => import("./pages/Technology"));
+const Simulator = lazyWithRetry(() => import("./pages/Simulator"));
+const Testimonials = lazyWithRetry(() => import("./pages/Testimonials"));
+const Caregivers = lazyWithRetry(() => import("./pages/Caregivers"));
+const MedicareGuidance = lazyWithRetry(() => import("./pages/MedicareGuidance"));
+const HospitalToHome = lazyWithRetry(() => import("./pages/HospitalToHome"));
+const Contact = lazyWithRetry(() => import("./pages/Contact"));
+const Terms = lazyWithRetry(() => import("./pages/Terms"));
+const NotFoundPage = lazyWithRetry(() => import("./pages/NotFoundPage"));
+const SwcaBrief = lazyWithRetry(() => import("./pages/SwcaBrief"));
+const SwcaRewardsTeaser = lazyWithRetry(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
+const SpineWellnessIntakeForm = lazyWithRetry(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
+const SwcaRewardWheel = lazyWithRetry(() => import("./swca/rewardWheel/SwcaRewardWheel"));
+const SwcaRewardCertificate = lazyWithRetry(() => import("./swca/certificate/SwcaRewardCertificate"));
+const SwcaProfileFunnel = lazyWithRetry(() => import("./swca/profileFunnel/SwcaProfileFunnel"));
+const SwcaAdminDashboard = lazyWithRetry(() => import("./swca/admin/SwcaAdminDashboard"));
 
 type FooterNavLink = {
   label: string;
