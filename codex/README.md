@@ -183,6 +183,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and alarms are live.
 - Customer reward email, secure certificate page, certificate API, and admin message status fields are implemented.
 - Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.
+- Reward email and certificate status were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
 - App 404 recovery, `/swca/teaser`, and timed `/how-it-works` redirect are deployed.
 
 ### Next

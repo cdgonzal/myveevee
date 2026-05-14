@@ -133,6 +133,7 @@ After a future stack change deploys:
 - Intake, reward wheel, reward contact, reward certificate, admin/event, and alarm resources are live.
 - Amplify `main` has the required SWCA environment variables.
 - Live smoke tests confirmed S3 storage, internal SES notification, reward claim, contact save, redacted admin report, and alarm subscription.
+- Reward email, certificate fields, and `swca_reward_email_sent` event were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
 
 ## What Is Next
 

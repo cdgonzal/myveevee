@@ -133,6 +133,15 @@ Goal: add text messaging only after email launch is stable.
 
 Status: backlog.
 
+## Current Verification
+
+- CDK deploy added the reward certificate API route and reward Lambda SES permissions.
+- Amplify deploy published `/swca/certificate`.
+- Live smoke test submission `731a0f54-9537-4715-a658-7c49ded7029d` completed intake, spin, email contact save, and reward message send.
+- DynamoDB reward claim shows `messageStatus=sent`, `messageChannel=email`, `messageSentAt`, `certificateId`, `certificateCreatedAt`, and `certificateExpiresAt`.
+- Campaign event table contains `swca_reward_email_sent` for the smoke-test submission.
+- `/swca/certificate` serves from the live Amplify site.
+
 Tasks:
 
 - Configure AWS End User Messaging SMS resources.

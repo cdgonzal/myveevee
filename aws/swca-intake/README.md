@@ -457,6 +457,8 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - Intake API is live and writes S3 plus internal SES notification.
 - Reward wheel API is live and enforces one reward per valid submission.
 - Reward contact API is live and saves winner contact fields.
+- Reward email and certificate fields were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
+- Campaign event `swca_reward_email_sent` was captured for the smoke-test submission.
 - Admin/event API is live and feeds the redacted dashboard.
 - CloudWatch alarms are deployed and SNS email is confirmed.
 
