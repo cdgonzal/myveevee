@@ -128,28 +128,12 @@ After a future stack change deploys:
 
 ## Current Verification
 
-- CDK deploy completed successfully for `MyVeeVeeInfraStack`.
-- Amplify release job `203` succeeded after setting `VITE_SWCA_INTAKE_API_URL`.
-- Live API smoke test returned submission id `4951deed-8fc7-4c9e-86db-b0f7cd40ee02`.
-- S3 object exists at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
-- Lambda logs confirmed the submission was stored and emailed.
-- Invalid payload smoke test returned `400` and did not create a second S3 object.
-- Reward-wheel CDK deploy completed successfully.
-- Amplify release job `207` succeeded after adding `VITE_SWCA_REWARD_SPIN_API_URL`.
-- Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
-- S3 object exists at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/fdf214c6-2251-4267-8982-a99c635215a2.json`.
-- DynamoDB reward claim exists with `status=claimed`, reward `wellness-gift`, and winner contact fields.
-- Admin/event backend CDK deploy completed successfully.
-- Amplify release job `210` succeeded after adding admin/event API env vars.
-- Live admin/event smoke test confirmed the passcode session route, event write route, and redacted report route.
-- App 404 recovery and `/swca/teaser` alias deployed through Amplify release jobs `211`, `212`, and `213`.
-- Operational alarm CDK deploy completed successfully.
-- AWS CLI verification found five CloudWatch alarms under the `myveevee-swca-intake` prefix.
-- SNS subscription for `info@veevee.io` is confirmed.
+- CDK stack is deployed.
+- Intake, reward wheel, reward contact, admin/event, and alarm resources are live.
+- Amplify `main` has the required SWCA environment variables.
+- Live smoke tests confirmed S3 storage, internal SES notification, reward claim, contact save, redacted admin report, and alarm subscription.
 
 ## What Is Next
 
-- Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
-- Rotate the SWCA admin passcode before broad team sharing.
-- Add a short admin runbook covering passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
-- Add a second `PartnerIntakeForm` config when the next clinic/form is ready.
+- Build the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
+- Keep non-blocking work in that plan's backlog until reward communication is complete.

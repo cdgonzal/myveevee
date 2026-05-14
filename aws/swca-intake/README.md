@@ -32,7 +32,7 @@ myveevee-swca-intake-767828748348-us-east-1
 
 The browser should call API Gateway only. It should never call SES directly and should never carry AWS credentials.
 
-Planned reward-wheel extension:
+Reward-wheel path:
 
 `Amplify-hosted React form -> intake API -> S3 + SES + DynamoDB reward eligibility -> spin API -> DynamoDB reward claim`
 
@@ -111,7 +111,7 @@ Request:
 }
 ```
 
-Success response after the next backend deploy:
+Success response:
 
 ```json
 {
@@ -323,9 +323,9 @@ Marketing can edit:
 
 `totalSlots` must match the number of objects in `slots`. `weight` controls odds and is used by the backend, not the browser.
 
-## SES Notification
+## Internal SES Notification
 
-The email contains:
+The internal intake notification email contains:
 
 - submission id
 - submitted timestamp
@@ -340,6 +340,22 @@ Current SES values:
 - sender: `info@veevee.io`
 - recipient: `info@veevee.io`
 - SES account status: production access enabled in `us-east-1`
+
+## Customer Reward Communication
+
+The active next backend track is the customer-facing reward communication path after a user saves reward contact details.
+
+Source-of-truth plan:
+
+```text
+codex/swca/REWARD_COMMUNICATION_PLAN.md
+```
+
+Recommended launch order:
+
+- SES reward email first.
+- Secure certificate page next.
+- SMS through AWS End User Messaging SMS after registration, opt-out handling, and spend controls are ready.
 
 ## CloudWatch Alarms
 
@@ -379,26 +395,13 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 
 ## Current Verification
 
-- Live API test returned submission id `4951deed-8fc7-4c9e-86db-b0f7cd40ee02`.
-- S3 object was created at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
-- Lambda log group `/aws/lambda/myveevee-swca-intake-handler` confirmed `SWCA intake submission stored and emailed`.
-- Invalid payload testing returned `400` and did not create another S3 object.
-- Reward backend CDK deployment completed successfully.
-- Amplify release job `207` succeeded after setting `VITE_SWCA_REWARD_SPIN_API_URL`.
-- Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
-- Reward spin returned reward `wellness-gift`.
-- Duplicate spin returned the same reward with `alreadySpun: true`.
-- Reward contact endpoint saved winner contact fields to DynamoDB.
-- Admin/event backend source validates with `node --check aws/swca-intake/admin-handler.mjs`.
-- CDK synth bundles the admin Lambda and emits the campaign event, admin session, and admin report outputs.
-- Admin/event backend is deployed and the Amplify `main` branch has the live event, admin session, and admin report endpoint env vars.
-- Live admin/event smoke test confirmed the passcode session route, event write route, and redacted report route.
-- Operational alarm CDK deploy completed successfully; AWS CLI verification found five CloudWatch alarms under the `myveevee-swca-intake` prefix.
-- SNS subscription for `info@veevee.io` is confirmed.
+- Intake API is live and writes S3 plus internal SES notification.
+- Reward wheel API is live and enforces one reward per valid submission.
+- Reward contact API is live and saves winner contact fields.
+- Admin/event API is live and feeds the redacted dashboard.
+- CloudWatch alarms are deployed and SNS email is confirmed.
 
 ## What Is Next
 
-- Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
-- Rotate the SWCA admin passcode before broad team sharing.
-- Add a short admin runbook for passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
-- Decide whether the email should include full ranked priorities long term or only a summary plus S3 submission id.
+- Build the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
+- Keep remaining non-blocking items in that plan's backlog until reward communication is complete.

@@ -18,7 +18,8 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - `/swca/rewards` is the QR-facing reward-wheel teaser route
   - `/swca/teaser` redirects to `/swca/rewards` as a compatibility alias
   - `/swca/intake` is a direct-link campaign route, not a menu route
-  - form submission is live through API Gateway, Lambda, S3, and SES
+  - form submission, reward wheel, admin reporting, first-party events, and alarms are live
+  - active next track is customer reward communication after reward contact save
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
@@ -170,25 +171,14 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Verified
 
-- Amplify release job `203` succeeded after the env var was added.
-- Live API test returned submission id `4951deed-8fc7-4c9e-86db-b0f7cd40ee02`.
-- S3 object was created at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
-- Lambda logs confirmed `SWCA intake submission stored and emailed`.
-- Invalid payload testing returned `400` and did not create a second S3 object.
-- Amplify release job `207` succeeded after setting `VITE_SWCA_REWARD_SPIN_API_URL`.
-- Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
-- The reward spin assigned `wellness-gift`, duplicate spin returned the same reward, and the contact endpoint saved winner contact fields.
-- Admin/event backend was deployed, Amplify release job `210` succeeded, and live smoke tests confirmed admin session creation, event capture, and redacted report retrieval.
-- The app 404 recovery page, `/swca/teaser` compatibility alias, and timed `/how-it-works` redirect were deployed through Amplify release jobs `211`, `212`, and `213`.
-- Operational alarms were deployed through CDK; AWS CLI verification found five CloudWatch alarms and the SNS email subscription is confirmed.
+- SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and alarms are live.
+- Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.
+- App 404 recovery, `/swca/teaser`, and timed `/how-it-works` redirect are deployed.
 
 ### Next
 
-- Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before production traffic.
-- Rotate the SWCA admin passcode once before broad team sharing.
-- Add an admin runbook covering passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
-- Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
-- If more clinics are added, create new `PartnerIntakeForm` instances from config instead of copying console resources.
+- Build the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
+- Keep remaining non-blocking SWCA items in that plan's backlog until reward communication is complete.
 
 ## SEO Implementation State
 
@@ -288,9 +278,11 @@ Known baseline issue:
   - current Phase 5 audience and intent map
 - `codex/readme_avatar_playback_test.md`
   - hidden playback-test page notes and Amplify hosting-rule diagnosis
+- `codex/swca/REWARD_COMMUNICATION_PLAN.md`
+  - active SWCA customer reward email, certificate, SMS, and dashboard-status plan
 - `aws/swca-intake/README.md`
   - SWCA intake Lambda contract, S3 object shape, and SES notification details
 - `infra/README.md`
   - CDK setup, deploy commands, live resource names, and follow-on operations
 - `_sandbox/codex/spine-wellness-intake-form/PLAN.md`
-  - active SWCA intake, teaser, and reward-wheel implementation plan with phases, tasks, and acceptance criteria
+  - historical SWCA intake, teaser, reward-wheel, admin, and alarm implementation plan
