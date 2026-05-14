@@ -11,6 +11,11 @@ import {
   Input,
   SimpleGrid,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Table,
   TableContainer,
   Tbody,
@@ -175,63 +180,185 @@ export default function SwcaAdminDashboard() {
               Report generated {formatDateTime(report.generatedAt)}. Contact names are abbreviated and contact details are withheld.
             </Alert>
 
-            <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={4}>
-              <Metric label="Intakes" value={report.metrics.totalIntakes} helper={`${conversionRates.claimRate}% spun`} />
-              <Metric label="Rewards claimed" value={report.metrics.rewardsClaimed} helper={`${conversionRates.contactRate}% saved contact`} />
-              <Metric label="Reward contacts" value={report.metrics.rewardContactsSaved} helper="email or phone only" />
-              <Metric label="Profile CTA clicks" value={report.metrics.funnelProfileClicks} helper={`${conversionRates.profileRate}% of intakes`} />
-            </SimpleGrid>
+            <Tabs variant="enclosed" colorScheme="orange" isLazy>
+              <TabList borderColor={LINE} overflowX="auto" overflowY="hidden">
+                <Tab fontWeight="800" whiteSpace="nowrap">
+                  Executive summary
+                </Tab>
+                <Tab fontWeight="800" whiteSpace="nowrap">
+                  Live report
+                </Tab>
+              </TabList>
 
-            <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
-              <Distribution title="Reward distribution" items={report.rewardDistribution} />
-              <Distribution title="Contact methods" items={report.contactMethodDistribution} />
-              <Distribution title="First-party events" items={report.eventCounts} />
-            </SimpleGrid>
+              <TabPanels>
+                <TabPanel px={0} pt={5} pb={0}>
+                  <ExecutiveSummary report={report} conversionRates={conversionRates} />
+                </TabPanel>
 
-            <Box bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" overflow="hidden">
-              <Flex align="center" justify="space-between" p={5} borderBottom="1px solid" borderColor={LINE}>
-                <Box>
-                  <Heading as="h2" size="md">
-                    Recent submissions
-                  </Heading>
-                  <Text color="#526071" fontSize="sm">
-                    Operational view for management reporting and reward follow-up status.
-                  </Text>
-                </Box>
-                <Badge colorScheme="orange">{report.recentClaims.length} rows</Badge>
-              </Flex>
-              <TableContainer>
-                <Table size="sm">
-                  <Thead bg="#F8FAFC">
-                    <Tr>
-                      <Th>Submitted</Th>
-                      <Th>Status</Th>
-                      <Th>Reward</Th>
-                      <Th>Contact</Th>
-                      <Th>Name</Th>
-                      <Th>Submission</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {report.recentClaims.map((claim) => (
-                      <Tr key={claim.submissionId}>
-                        <Td>{formatDateTime(claim.createdAt)}</Td>
-                        <Td>{claim.status || "eligible"}</Td>
-                        <Td>{claim.rewardLabel || "-"}</Td>
-                        <Td>{claim.contactMethod || "-"}</Td>
-                        <Td>{claim.contactName || "-"}</Td>
-                        <Td fontFamily="mono" fontSize="xs">
-                          {claim.submissionId}
-                        </Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Box>
+                <TabPanel px={0} pt={5} pb={0}>
+                  <Stack spacing={6}>
+                    <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={4}>
+                      <Metric label="Intakes" value={report.metrics.totalIntakes} helper={`${conversionRates.claimRate}% spun`} />
+                      <Metric label="Rewards claimed" value={report.metrics.rewardsClaimed} helper={`${conversionRates.contactRate}% saved contact`} />
+                      <Metric label="Reward contacts" value={report.metrics.rewardContactsSaved} helper="email or phone only" />
+                      <Metric label="Profile CTA clicks" value={report.metrics.funnelProfileClicks} helper={`${conversionRates.profileRate}% of intakes`} />
+                    </SimpleGrid>
+
+                    <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
+                      <Distribution title="Reward distribution" items={report.rewardDistribution} />
+                      <Distribution title="Contact methods" items={report.contactMethodDistribution} />
+                      <Distribution title="First-party events" items={report.eventCounts} />
+                    </SimpleGrid>
+
+                    <Box bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" overflow="hidden">
+                      <Flex align="center" justify="space-between" p={5} borderBottom="1px solid" borderColor={LINE}>
+                        <Box>
+                          <Heading as="h2" size="md">
+                            Recent submissions
+                          </Heading>
+                          <Text color="#526071" fontSize="sm">
+                            Operational view for management reporting and reward follow-up status.
+                          </Text>
+                        </Box>
+                        <Badge colorScheme="orange">{report.recentClaims.length} rows</Badge>
+                      </Flex>
+                      <TableContainer>
+                        <Table size="sm">
+                          <Thead bg="#F8FAFC">
+                            <Tr>
+                              <Th>Submitted</Th>
+                              <Th>Status</Th>
+                              <Th>Reward</Th>
+                              <Th>Contact</Th>
+                              <Th>Name</Th>
+                              <Th>Submission</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {report.recentClaims.map((claim) => (
+                              <Tr key={claim.submissionId}>
+                                <Td>{formatDateTime(claim.createdAt)}</Td>
+                                <Td>{claim.status || "eligible"}</Td>
+                                <Td>{claim.rewardLabel || "-"}</Td>
+                                <Td>{claim.contactMethod || "-"}</Td>
+                                <Td>{claim.contactName || "-"}</Td>
+                                <Td fontFamily="mono" fontSize="xs">
+                                  {claim.submissionId}
+                                </Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  </Stack>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </Stack>
         ) : null}
       </Box>
+    </Box>
+  );
+}
+
+function ExecutiveSummary({
+  report,
+  conversionRates,
+}: {
+  report: SwcaAdminReport;
+  conversionRates: { claimRate: number; contactRate: number; profileRate: number };
+}) {
+  return (
+    <Stack spacing={5}>
+      <Box bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 5, md: 6 }}>
+        <Stack spacing={4}>
+          <Box>
+            <Text fontSize="sm" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color={ORANGE}>
+              Campaign objective
+            </Text>
+            <Heading as="h2" size={{ base: "md", md: "lg" }} mt={2}>
+              Turn campaign traffic into usable follow-up opportunities.
+            </Heading>
+          </Box>
+          <Text color="#526071" maxW="840px">
+            SWCA invites people from QR codes and shared links into a short wellness intake, gives them a reward-wheel reason to finish, and then points them toward the VeeVee profile funnel.
+          </Text>
+        </Stack>
+      </Box>
+
+      <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={4}>
+        <Metric label="Completed intakes" value={report.metrics.totalIntakes} helper="people who finished the form" />
+        <Metric label="Reward spins" value={report.metrics.rewardsClaimed} helper={`${conversionRates.claimRate}% of intakes`} />
+        <Metric label="Follow-up contacts" value={report.metrics.rewardContactsSaved} helper={`${conversionRates.contactRate}% of reward spins`} />
+        <Metric label="Profile clicks" value={report.metrics.funnelProfileClicks} helper={`${conversionRates.profileRate}% of intakes`} />
+      </SimpleGrid>
+
+      <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
+        <SummaryCard
+          title="What the user experiences"
+          items={[
+            "They start from a campaign link or QR code.",
+            "They complete a short wellness-priority form.",
+            "They spin once, receive a reward, and leave a preferred contact method.",
+            "They are guided to create a free VeeVee profile.",
+          ]}
+        />
+        <SummaryCard
+          title="What the dashboard shows"
+          items={[
+            "How many people completed the form.",
+            "How many claimed a reward and saved contact preference.",
+            "Which rewards and contact methods are most common.",
+            "Recent rows with abbreviated names only.",
+          ]}
+        />
+        <SummaryCard
+          title="What S3 keeps"
+          items={[
+            "The durable original form record.",
+            "The selected wellness priorities and ranked order.",
+            "Submission timing and source details.",
+            "The backup record for deeper reporting or audit needs.",
+          ]}
+        />
+      </SimpleGrid>
+
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+        <Box bg="#FFF7EC" border="1px solid" borderColor="#F0D2A4" borderRadius="8px" p={5}>
+          <Heading as="h3" size="sm">
+            Privacy posture
+          </Heading>
+          <Text mt={3} color="#526071">
+            The dashboard is designed for management reporting. It avoids raw phone numbers and email addresses, showing abbreviated names and contact method instead.
+          </Text>
+        </Box>
+        <Box bg="#EAF4FF" border="1px solid" borderColor="#C8DDF4" borderRadius="8px" p={5}>
+          <Heading as="h3" size="sm">
+            Business outcome
+          </Heading>
+          <Text mt={3} color="#526071">
+            Management can quickly see whether the campaign is moving people from interest to intake, reward claim, follow-up contact, and profile funnel click.
+          </Text>
+        </Box>
+      </SimpleGrid>
+    </Stack>
+  );
+}
+
+function SummaryCard({ title, items }: { title: string; items: string[] }) {
+  return (
+    <Box bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" p={5}>
+      <Heading as="h3" size="sm">
+        {title}
+      </Heading>
+      <Stack as="ul" spacing={3} mt={4} pl={5} color="#526071">
+        {items.map((item) => (
+          <Text as="li" key={item}>
+            {item}
+          </Text>
+        ))}
+      </Stack>
     </Box>
   );
 }

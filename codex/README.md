@@ -133,7 +133,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `src/swca/profileFunnel/provider-comments.json`
   - editable provider recommendation copy for the post-reward funnel page
 - `src/swca/admin/SwcaAdminDashboard.tsx`
-  - private SWCA campaign dashboard with passcode entry, metrics, distributions, redacted recent submissions, and CSV export
+  - private SWCA campaign dashboard with passcode entry, executive summary tab, metrics, distributions, redacted recent submissions, and CSV export
 - `src/swca/admin/api.ts`
   - calls `VITE_SWCA_ADMIN_SESSION_API_URL` and `VITE_SWCA_ADMIN_REPORT_API_URL`; falls back to mock report mode when env vars are absent
 - `src/swca/campaignEvents.ts`
