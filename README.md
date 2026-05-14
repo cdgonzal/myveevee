@@ -58,7 +58,7 @@ Campaign/direct-link route:
 - The SWCA intake form is live and submits through API Gateway, Lambda, S3, and SES.
 - The SWCA reward teaser is a campaign page that motivates users to start the intake form before the reward-wheel step.
 - The reward teaser uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`.
-- The SWCA reward wheel is implemented in the repo as a post-intake route backed by planned DynamoDB one-spin enforcement; AWS and Amplify deployment are the next steps. See `_sandbox/codex/spine-wellness-intake-form/PLAN.md`.
+- The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture. See `_sandbox/codex/spine-wellness-intake-form/PLAN.md`.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

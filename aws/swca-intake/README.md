@@ -2,22 +2,22 @@
 
 This folder contains the AWS-native backend source for the campaign-only SWCA intake form at `/swca/intake` and the post-intake reward wheel at `/swca/wheel`.
 
-Current deployed endpoint:
+Current deployed intake endpoint:
 
 ```text
 https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake
 ```
 
-Pending reward spin endpoint after the next CDK deploy:
+Current deployed reward spin endpoint:
 
 ```text
-<CDK output>/forms/swca-reward-spin
+https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin
 ```
 
-Pending reward contact endpoint after the next CDK deploy:
+Current deployed reward contact endpoint:
 
 ```text
-<CDK output>/forms/swca-reward-contact
+https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact
 ```
 
 Current deployed storage bucket:
@@ -66,10 +66,10 @@ This value is configured in the Amplify `main` branch environment:
 VITE_SWCA_INTAKE_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake
 ```
 
-After the reward backend deploys, add the CDK reward spin endpoint output to the Amplify `main` branch environment:
+The reward spin endpoint is configured in the Amplify `main` branch environment:
 
 ```text
-VITE_SWCA_REWARD_SPIN_API_URL=<CDK reward spin endpoint output>
+VITE_SWCA_REWARD_SPIN_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin
 ```
 
 Without these values in a local or future branch environment, the React form and wheel stay in local mock mode and do not send network requests.
@@ -273,12 +273,16 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - S3 object was created at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
 - Lambda log group `/aws/lambda/myveevee-swca-intake-handler` confirmed `SWCA intake submission stored and emailed`.
 - Invalid payload testing returned `400` and did not create another S3 object.
+- Reward backend CDK deployment completed successfully.
+- Amplify release job `207` succeeded after setting `VITE_SWCA_REWARD_SPIN_API_URL`.
+- Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
+- Reward spin returned reward `wellness-gift`.
+- Duplicate spin returned the same reward with `alreadySpun: true`.
+- Reward contact endpoint saved winner contact fields to DynamoDB.
 
 ## What Is Next
 
-- Deploy the CDK stack so reward eligibility storage and the spin endpoint become live.
-- Add the reward spin endpoint output to `VITE_SWCA_REWARD_SPIN_API_URL` in Amplify `main`.
-- Smoke-test one intake, one spin, one winner contact submission, one duplicate spin, and one invalid token.
+- Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
 - Add CloudWatch alarms for Lambda errors and API abuse signals.
 - Decide whether the email should include full ranked priorities long term or only a summary plus S3 submission id.
 - Build an export path if marketing needs CSV or reporting beyond email notifications.

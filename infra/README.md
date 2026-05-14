@@ -4,7 +4,7 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 
 ## Current Stack
 
-`MyVeeVeeInfraStack` currently creates and manages the live SWCA intake backend and now defines the next reward-wheel backend resources for deployment:
+`MyVeeVeeInfraStack` currently creates and manages the live SWCA intake and reward-wheel backend:
 
 - private encrypted S3 submissions bucket
 - bundled Lambda handler from `../aws/swca-intake/handler.mjs`
@@ -28,16 +28,14 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - Frontend route: `https://myveevee.com/swca/intake`
 - Amplify `main` environment variable: `VITE_SWCA_INTAKE_API_URL`
 
-## Pending SWCA Reward Wheel Resources
-
-These are defined in CDK and should become live after the next stack deploy:
+## Live SWCA Reward Wheel Resources
 
 - DynamoDB table: `myveevee-swca-intake-reward-claims`
 - Lambda function: `myveevee-swca-intake-reward-spin-handler`
-- API route: `/forms/swca-reward-spin`
-- API route: `/forms/swca-reward-contact`
+- Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
+- Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
 - Frontend route: `https://myveevee.com/swca/wheel`
-- Amplify `main` environment variable to add after deploy: `VITE_SWCA_REWARD_SPIN_API_URL`
+- Amplify `main` environment variable: `VITE_SWCA_REWARD_SPIN_API_URL`
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 
@@ -87,7 +85,7 @@ After a future stack change deploys:
 
 1. Confirm whether the `SwcaIntakeFormApiEndpoint...` output changed.
 2. If it changed, update `VITE_SWCA_INTAKE_API_URL` in the Amplify `main` branch environment.
-3. Copy the `SwcaIntakeFormRewardSpinApiEndpoint...` output into `VITE_SWCA_REWARD_SPIN_API_URL` in the Amplify `main` branch environment.
+3. Confirm `VITE_SWCA_REWARD_SPIN_API_URL` still points to the `SwcaIntakeFormRewardSpinApiEndpoint...` output in the Amplify `main` branch environment.
 4. Redeploy Amplify `main` if any frontend env var changed.
 5. Submit one live test from `https://myveevee.com/swca/intake`.
 6. Confirm one S3 object, one SES email, one DynamoDB eligibility record, one reward claim after spinning, and contact fields after the winner form is submitted.
@@ -100,11 +98,15 @@ After a future stack change deploys:
 - S3 object exists at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
 - Lambda logs confirmed the submission was stored and emailed.
 - Invalid payload smoke test returned `400` and did not create a second S3 object.
+- Reward-wheel CDK deploy completed successfully.
+- Amplify release job `207` succeeded after adding `VITE_SWCA_REWARD_SPIN_API_URL`.
+- Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
+- S3 object exists at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/fdf214c6-2251-4267-8982-a99c635215a2.json`.
+- DynamoDB reward claim exists with `status=claimed`, reward `wellness-gift`, and winner contact fields.
 
 ## What Is Next
 
-- Review and deploy the SWCA reward-wheel backend from `_sandbox/codex/spine-wellness-intake-form/PLAN.md` Phase 7 through Phase 10.
-- Add `VITE_SWCA_REWARD_SPIN_API_URL` to Amplify `main` after CDK deployment.
+- Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
 - Add CloudWatch alarms for Lambda errors and unusual API volume.
 - Decide whether marketing needs a CSV export script or dashboard.
 - Add a second `PartnerIntakeForm` config when the next clinic/form is ready.

@@ -120,12 +120,17 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 - Frontend route: `https://myveevee.com/swca/intake`
 - Teaser route: `https://myveevee.com/swca/rewards`
+- Wheel route: `https://myveevee.com/swca/wheel`
 - API endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
+- Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
+- Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
 - CDK stack: `MyVeeVeeInfraStack`
 - S3 bucket: `myveevee-swca-intake-767828748348-us-east-1`
+- DynamoDB reward table: `myveevee-swca-intake-reward-claims`
 - Lambda function: `myveevee-swca-intake-handler`
+- Reward Lambda function: `myveevee-swca-intake-reward-spin-handler`
 - SES sender and recipient: `info@veevee.io`
-- Amplify `main` env var: `VITE_SWCA_INTAKE_API_URL`
+- Amplify `main` env vars: `VITE_SWCA_INTAKE_API_URL`, `VITE_SWCA_REWARD_SPIN_API_URL`
 
 ### Verified
 
@@ -134,13 +139,12 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - S3 object was created at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
 - Lambda logs confirmed `SWCA intake submission stored and emailed`.
 - Invalid payload testing returned `400` and did not create a second S3 object.
+- Amplify release job `207` succeeded after setting `VITE_SWCA_REWARD_SPIN_API_URL`.
+- Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
+- The reward spin assigned `wellness-gift`, duplicate spin returned the same reward, and the contact endpoint saved winner contact fields.
 
 ### Next
 
-- Review the implemented reward catalog and odds before AWS deployment.
-- Deploy the CDK stack so the DynamoDB reward table and spin endpoint become live.
-- Add the CDK output value for `VITE_SWCA_REWARD_SPIN_API_URL` to Amplify `main`.
-- Deploy Amplify `main` and smoke-test the full `/swca/rewards` -> `/swca/intake` -> `/swca/wheel` flow.
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before production traffic.
 - Decide whether marketing needs CSV export, a dashboard, or email-only operations.
 - Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
