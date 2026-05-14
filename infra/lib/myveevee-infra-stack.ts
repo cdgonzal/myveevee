@@ -40,6 +40,12 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       description: "Email address to subscribe to SWCA operational CloudWatch alarm notifications.",
     });
 
+    const publicBaseUrl = new cdk.CfnParameter(this, "SwcaPublicBaseUrl", {
+      type: "String",
+      default: "https://myveevee.com",
+      description: "Public site base URL used in customer-facing SWCA reward links.",
+    });
+
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
       partnerKey: "swca",
       formId: "swca-wellness-priority-intake",
@@ -47,6 +53,7 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       lambdaEntry: repoPath("aws", "swca-intake", "handler.mjs"),
       rewardSpinApiPath: "/forms/swca-reward-spin",
       rewardContactApiPath: "/forms/swca-reward-contact",
+      rewardCertificateApiPath: "/forms/swca-reward-certificate",
       rewardSpinLambdaEntry: repoPath("aws", "swca-intake", "spin-handler.mjs"),
       eventApiPath: "/forms/swca-event",
       adminSessionApiPath: "/forms/swca-admin-session",
@@ -59,6 +66,7 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       sesFromEmail: sesFromEmail.valueAsString,
       sesToEmails: sesToEmails.valueAsList,
       alertEmail: alertEmail.valueAsString,
+      publicBaseUrl: publicBaseUrl.valueAsString,
     });
   }
 }

@@ -42,6 +42,10 @@ Campaign/direct-link route:
   - private SWCA campaign dashboard for redacted traffic, reward, and contact-method reporting
   - intended for direct admin access only, not site navigation
   - `noindex`
+- `/swca/certificate`
+  - secure reward certificate page linked from customer reward email
+  - intended for direct customer access only, not site navigation
+  - `noindex`
 
 ## Scripts
 
@@ -61,6 +65,7 @@ Campaign/direct-link route:
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 - The internal SWCA brief should remain non-indexable.
 - The SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and CloudWatch alarms are live.
+- The SWCA reward communication track is in implementation: email reward messages, secure certificate links, and dashboard message status.
 - `/swca/teaser` is a compatibility alias that redirects to `/swca/rewards`.
 - The reward teaser uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`.
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture.

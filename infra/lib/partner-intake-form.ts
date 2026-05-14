@@ -21,6 +21,7 @@ export type PartnerIntakeFormProps = {
   lambdaEntry: string;
   rewardSpinApiPath: string;
   rewardContactApiPath: string;
+  rewardCertificateApiPath: string;
   rewardSpinLambdaEntry: string;
   eventApiPath: string;
   adminSessionApiPath: string;
@@ -33,6 +34,7 @@ export type PartnerIntakeFormProps = {
   sesFromEmail: string;
   sesToEmails: string[];
   alertEmail: string;
+  publicBaseUrl: string;
 };
 
 export class PartnerIntakeForm extends Construct {
@@ -156,11 +158,21 @@ export class PartnerIntakeForm extends Construct {
       },
       environment: {
         REWARD_CLAIMS_TABLE: this.rewardClaimsTable.tableName,
+        CAMPAIGN_EVENTS_TABLE: this.campaignEventsTable.tableName,
+        SES_FROM_EMAIL: props.sesFromEmail,
+        PUBLIC_BASE_URL: props.publicBaseUrl,
         ALLOWED_ORIGINS: cdk.Fn.join(",", props.allowedOrigins),
       },
     });
 
     this.rewardClaimsTable.grantReadWriteData(this.rewardSpinFunction);
+    this.campaignEventsTable.grantWriteData(this.rewardSpinFunction);
+    this.rewardSpinFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["ses:SendEmail", "ses:SendRawEmail"],
+        resources: ["*"],
+      })
+    );
 
     const adminLogGroup = new logs.LogGroup(this, "AdminHandlerLogGroup", {
       logGroupName: `/aws/lambda/${adminFunctionName}`,
@@ -243,6 +255,12 @@ export class PartnerIntakeForm extends Construct {
       path: props.rewardContactApiPath,
       methods: [apigatewayv2.HttpMethod.POST],
       integration: new integrations.HttpLambdaIntegration("RewardContactLambdaIntegration", this.rewardSpinFunction),
+    });
+
+    this.api.addRoutes({
+      path: props.rewardCertificateApiPath,
+      methods: [apigatewayv2.HttpMethod.GET],
+      integration: new integrations.HttpLambdaIntegration("RewardCertificateLambdaIntegration", this.rewardSpinFunction),
     });
 
     this.api.addRoutes({
@@ -349,6 +367,11 @@ export class PartnerIntakeForm extends Construct {
     new cdk.CfnOutput(this, "RewardContactApiEndpoint", {
       value: `${this.api.apiEndpoint}${props.rewardContactApiPath}`,
       description: `${props.partnerKey} reward contact API endpoint derived from VITE_SWCA_REWARD_SPIN_API_URL`,
+    });
+
+    new cdk.CfnOutput(this, "RewardCertificateApiEndpoint", {
+      value: `${this.api.apiEndpoint}${props.rewardCertificateApiPath}`,
+      description: `${props.partnerKey} reward certificate API endpoint for VITE_SWCA_REWARD_CERTIFICATE_API_URL`,
     });
 
     new cdk.CfnOutput(this, "RewardClaimsTableName", {

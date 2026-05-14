@@ -228,10 +228,11 @@ export default function SwcaAdminDashboard() {
                             <Tr>
                               <Th>Submitted</Th>
                               <Th>Status</Th>
-                              <Th>Reward</Th>
-                              <Th>Contact</Th>
-                              <Th>Name</Th>
-                              <Th>Submission</Th>
+                      <Th>Reward</Th>
+                      <Th>Contact</Th>
+                      <Th>Message</Th>
+                      <Th>Name</Th>
+                      <Th>Submission</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
@@ -239,9 +240,10 @@ export default function SwcaAdminDashboard() {
                               <Tr key={claim.submissionId}>
                                 <Td>{formatDateTime(claim.createdAt)}</Td>
                                 <Td>{claim.status || "eligible"}</Td>
-                                <Td>{claim.rewardLabel || "-"}</Td>
-                                <Td>{claim.contactMethod || "-"}</Td>
-                                <Td>{claim.contactName || "-"}</Td>
+                        <Td>{claim.rewardLabel || "-"}</Td>
+                        <Td>{claim.contactMethod || "-"}</Td>
+                        <Td>{formatMessageStatus(claim.messageStatus)}</Td>
+                        <Td>{claim.contactName || "-"}</Td>
                                 <Td fontFamily="mono" fontSize="xs">
                                   {claim.submissionId}
                                 </Td>
@@ -431,12 +433,15 @@ function formatDateTime(value: string) {
 }
 
 function exportClaims(claims: SwcaAdminClaim[]) {
-  const header = ["submitted_at", "status", "reward", "contact_method", "contact_name", "submission_id"];
+  const header = ["submitted_at", "status", "reward", "contact_method", "message_channel", "message_status", "message_sent_at", "contact_name", "submission_id"];
   const rows = claims.map((claim) => [
     claim.createdAt,
     claim.status,
     claim.rewardLabel,
     claim.contactMethod,
+    claim.messageChannel,
+    claim.messageStatus,
+    claim.messageSentAt,
     claim.contactName,
     claim.submissionId,
   ]);
@@ -451,4 +456,10 @@ function exportClaims(claims: SwcaAdminClaim[]) {
 
 function csvCell(value: string) {
   return `"${String(value ?? "").replace(/"/g, '""')}"`;
+}
+
+function formatMessageStatus(value: string) {
+  if (!value) return "-";
+  if (value === "not_supported") return "not sent";
+  return value;
 }

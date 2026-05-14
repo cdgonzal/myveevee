@@ -24,7 +24,7 @@ export function trackSwcaCampaignEvent(payload: SwcaCampaignEventPayload): void 
   const body: SwcaCampaignEventPayload = {
     ...payload,
     pagePath: payload.pagePath ?? window.location.pathname,
-    pageUrl: payload.pageUrl ?? window.location.href,
+    pageUrl: payload.pageUrl ?? `${window.location.origin}${window.location.pathname}`,
     sessionId: payload.sessionId ?? getCampaignSessionId(),
     params: normalizeParams(payload.params ?? {}),
   };

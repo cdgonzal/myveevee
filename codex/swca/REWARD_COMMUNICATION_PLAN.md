@@ -16,6 +16,8 @@ The first production path should use SES email because the repo already uses SES
 
 ## Phase 1: Reward Message Decision and Copy
 
+Status: implemented for the email-first launch copy; SMS copy remains backlog-ready.
+
 Goal: lock the exact customer communication before building.
 
 Tasks:
@@ -35,6 +37,8 @@ Acceptance criteria:
 - Copy does not include raw wellness concerns, phone number, email address, token, or S3 path.
 
 ## Phase 2: Reward Certificate Data Model
+
+Status: implemented on the reward claim record.
 
 Goal: create a durable reward certificate record without exposing S3 directly to the user.
 
@@ -62,6 +66,8 @@ Acceptance criteria:
 
 ## Phase 3: SES Email Reward Certificate
 
+Status: implemented for `contactMethod=email`.
+
 Goal: send the first customer reward message by email after contact details are saved.
 
 Tasks:
@@ -83,6 +89,8 @@ Acceptance criteria:
 
 ## Phase 4: Secure Certificate Page
 
+Status: implemented as `/swca/certificate` plus the reward certificate API.
+
 Goal: let users view a branded reward certificate from a secure, trackable web route.
 
 Tasks:
@@ -102,6 +110,8 @@ Acceptance criteria:
 
 ## Phase 5: Admin Dashboard Message Status
 
+Status: partially implemented. Admin report and CSV include message status; the dashboard row shows basic message status.
+
 Goal: make reward communication status visible to management and operators.
 
 Tasks:
@@ -120,6 +130,8 @@ Acceptance criteria:
 ## Phase 6: SMS Follow-Up
 
 Goal: add text messaging only after email launch is stable.
+
+Status: backlog.
 
 Tasks:
 

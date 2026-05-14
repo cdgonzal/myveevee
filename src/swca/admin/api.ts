@@ -23,6 +23,13 @@ export type SwcaAdminClaim = {
   rewardLabel: string;
   contactMethod: string;
   contactName: string;
+  certificateId: string;
+  certificateCreatedAt: string;
+  certificateExpiresAt: string;
+  messageChannel: string;
+  messageStatus: string;
+  messageSentAt: string;
+  messageError: string;
 };
 
 export type SwcaAdminEvent = {
@@ -158,6 +165,13 @@ function createMockReport(): SwcaAdminReport {
         rewardLabel: "Wellness Gift",
         contactMethod: "email",
         contactName: "J. S.",
+        certificateId: "local-certificate",
+        certificateCreatedAt: new Date().toISOString(),
+        certificateExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        messageChannel: "email",
+        messageStatus: "sent",
+        messageSentAt: new Date().toISOString(),
+        messageError: "",
       },
     ],
     recentEvents: [],

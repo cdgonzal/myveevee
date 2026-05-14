@@ -72,7 +72,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - live post-intake reward-wheel route
   - stays direct-link only and `noindex`
   - should be reached from a successful intake response using `submissionId` plus a one-time token
-  - `/swca/funnel`
+- `/swca/certificate`
+  - secure post-reward certificate route linked from customer reward email
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+- `/swca/funnel`
   - post-reward SWCA-branded VeeVee profile CTA route
   - reached after winner contact details are saved from `/swca/wheel`
   - not linked from the header, footer, sitemap, or primary marketing pages
@@ -129,6 +133,10 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - submits to `VITE_SWCA_REWARD_SPIN_API_URL`; falls back to local mock mode only when the env var is absent
 - `src/swca/rewardWheel/reward-wheel-config.json`
   - marketing-editable reward slot config for labels, descriptions, estimated values, colors, weights, and total slot count
+- `src/swca/certificate/SwcaRewardCertificate.tsx`
+  - secure customer reward certificate page with VeeVee profile CTA tracking
+- `src/swca/certificate/api.ts`
+  - calls `VITE_SWCA_REWARD_CERTIFICATE_API_URL`; derives from the reward spin endpoint if the explicit env var is absent
 - `src/swca/profileFunnel/SwcaProfileFunnel.tsx`
   - standalone SWCA-branded page recommending a free VeeVee profile after reward completion
 - `src/swca/profileFunnel/provider-comments.json`
@@ -154,6 +162,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - API endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
 - Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
 - Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
+- Reward certificate endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-certificate`
 - Campaign event endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-event`
 - Admin session endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-admin-session`
 - Admin report endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-admin-report`
@@ -172,12 +181,13 @@ This repository is the public-facing marketing site for `myveevee.com`.
 ### Verified
 
 - SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and alarms are live.
+- Customer reward email, secure certificate page, certificate API, and admin message status fields are implemented.
 - Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.
 - App 404 recovery, `/swca/teaser`, and timed `/how-it-works` redirect are deployed.
 
 ### Next
 
-- Build the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
+- Complete live verification for the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
 - Keep remaining non-blocking SWCA items in that plan's backlog until reward communication is complete.
 
 ## SEO Implementation State

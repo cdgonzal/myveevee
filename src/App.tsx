@@ -52,6 +52,7 @@ const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
 const SwcaRewardsTeaser = lazy(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
 const SpineWellnessIntakeForm = lazy(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
 const SwcaRewardWheel = lazy(() => import("./swca/rewardWheel/SwcaRewardWheel"));
+const SwcaRewardCertificate = lazy(() => import("./swca/certificate/SwcaRewardCertificate"));
 const SwcaProfileFunnel = lazy(() => import("./swca/profileFunnel/SwcaProfileFunnel"));
 const SwcaAdminDashboard = lazy(() => import("./swca/admin/SwcaAdminDashboard"));
 
@@ -166,6 +167,7 @@ export default function App() {
     pathname === APP_LINKS.internal.swcaTeaserAlias ||
     pathname === APP_LINKS.internal.swcaIntake ||
     pathname === APP_LINKS.internal.swcaWheel ||
+    pathname === APP_LINKS.internal.swcaCertificate ||
     pathname === APP_LINKS.internal.swcaFunnel ||
     pathname === APP_LINKS.internal.swcaAdmin;
   const pageGradient = useColorModeValue(
@@ -188,6 +190,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
+                <Route path={APP_LINKS.internal.swcaCertificate} element={<SwcaRewardCertificate />} />
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
               </Routes>
@@ -217,6 +220,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
+                <Route path={APP_LINKS.internal.swcaCertificate} element={<SwcaRewardCertificate />} />
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
                 <Route path="*" element={<NotFoundPage />} />

@@ -20,6 +20,12 @@ Current deployed reward contact endpoint:
 https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact
 ```
 
+Current deployed reward certificate endpoint:
+
+```text
+https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-certificate
+```
+
 Current deployed storage bucket:
 
 ```text
@@ -58,6 +64,7 @@ Required:
 - `CAMPAIGN_EVENTS_TABLE`: DynamoDB table for first-party campaign events.
 - `ADMIN_PASSCODE_SECRET_NAME`: Secrets Manager secret name for the shared SWCA admin passcode.
 - `ADMIN_TOKEN_SECRET_NAME`: Secrets Manager secret name for the admin session signing key.
+- `PUBLIC_BASE_URL`: public site base URL used in customer reward links.
 
 Optional:
 
@@ -81,6 +88,12 @@ The reward spin endpoint is configured in the Amplify `main` branch environment:
 
 ```text
 VITE_SWCA_REWARD_SPIN_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin
+```
+
+The certificate endpoint can be configured explicitly or derived from the reward spin endpoint:
+
+```text
+VITE_SWCA_REWARD_CERTIFICATE_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-certificate
 ```
 
 Without these values in a local or future branch environment, the React form and wheel stay in local mock mode and do not send network requests.
@@ -185,6 +198,37 @@ For phone contact:
 
 The contact endpoint only saves details for a valid token after a reward has already been claimed.
 
+For email contacts, the endpoint also creates a certificate token, sends the customer reward email through SES, and records message status on the reward claim. Phone contacts are saved for follow-up; SMS remains a later phase.
+
+## Reward Certificate API Contract
+
+Request:
+
+```text
+GET /forms/swca-reward-certificate?certificateId=<certificate-id>&token=<certificate-token>
+```
+
+Success response:
+
+```json
+{
+  "ok": true,
+  "certificate": {
+    "certificateId": "<certificate-id>",
+    "submissionId": "<submission-id>",
+    "rewardId": "wellness-gift",
+    "rewardLabel": "Wellness Gift",
+    "rewardDescription": "...",
+    "estimatedValue": "$25 value",
+    "issuedTo": "J. E.",
+    "issuedAt": "2026-05-14T00:00:00.000Z",
+    "expiresAt": "2026-06-13T00:00:00.000Z"
+  }
+}
+```
+
+Invalid or expired tokens do not return reward details.
+
 ## Campaign Event API Contract
 
 Request:
@@ -278,6 +322,14 @@ Reward eligibility and claim records are keyed by `submissionId` and contain:
 - `contactEmail` after winner contact submission when email is selected
 - `contactPhone` after winner contact submission when phone is selected
 - `contactSavedAt` after winner contact submission
+- `certificateId` after reward communication setup
+- `certificateTokenHash` after reward communication setup
+- `certificateCreatedAt` after reward communication setup
+- `certificateExpiresAt` after reward communication setup
+- `messageChannel`
+- `messageStatus`
+- `messageSentAt`
+- `messageError` when customer messaging fails
 - hashed request context for basic abuse review
 
 The raw token is never stored.
@@ -356,6 +408,13 @@ Recommended launch order:
 - SES reward email first.
 - Secure certificate page next.
 - SMS through AWS End User Messaging SMS after registration, opt-out handling, and spend controls are ready.
+
+Implementation status:
+
+- SES reward email for email contacts is implemented.
+- Secure `/swca/certificate` page and certificate API are implemented.
+- Admin report includes message status fields.
+- SMS remains in backlog.
 
 ## CloudWatch Alarms
 

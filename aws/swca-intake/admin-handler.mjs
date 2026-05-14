@@ -229,6 +229,13 @@ function normalizeClaim(item) {
     rewardLabel: readString(item.rewardLabel),
     contactMethod: readString(item.contactMethod),
     contactName: abbreviateName(readString(item.contactFirstName), readString(item.contactLastName)),
+    certificateId: readString(item.certificateId),
+    certificateCreatedAt: readString(item.certificateCreatedAt),
+    certificateExpiresAt: readString(item.certificateExpiresAt),
+    messageChannel: readString(item.messageChannel),
+    messageStatus: readString(item.messageStatus),
+    messageSentAt: readString(item.messageSentAt),
+    messageError: readString(item.messageError),
   };
 }
 

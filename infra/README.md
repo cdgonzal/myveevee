@@ -39,6 +39,7 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - Lambda function: `myveevee-swca-intake-reward-spin-handler`
 - Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
 - Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
+- Reward certificate endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-certificate`
 - Frontend route: `https://myveevee.com/swca/wheel`
 - Amplify `main` environment variable: `VITE_SWCA_REWARD_SPIN_API_URL`
 
@@ -90,7 +91,7 @@ $env:AWS_SHARED_CREDENTIALS_FILE="$env:USERPROFILE\.aws\credentials"
 
 ```powershell
 npm run build
-npx cdk synth --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=sender@example.com --parameters SwcaSesToEmails=recipient@example.com --parameters SwcaAlertEmail=alerts@example.com
+npx cdk synth --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=sender@example.com --parameters SwcaSesToEmails=recipient@example.com --parameters SwcaAlertEmail=alerts@example.com --parameters SwcaPublicBaseUrl=https://myveevee.com
 ```
 
 ## Deploy
@@ -98,7 +99,7 @@ npx cdk synth --profile glue-admin --region us-east-1 --parameters SwcaSesFromEm
 Use real, verified SES identities. The current deployed values are `info@veevee.io` for both sender and recipient:
 
 ```powershell
-npx cdk deploy MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io --parameters SwcaAlertEmail=info@veevee.io
+npx cdk deploy MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io --parameters SwcaAlertEmail=info@veevee.io --parameters SwcaPublicBaseUrl=https://myveevee.com
 ```
 
 Optional admin secret-name overrides:
@@ -129,11 +130,11 @@ After a future stack change deploys:
 ## Current Verification
 
 - CDK stack is deployed.
-- Intake, reward wheel, reward contact, admin/event, and alarm resources are live.
+- Intake, reward wheel, reward contact, reward certificate, admin/event, and alarm resources are live.
 - Amplify `main` has the required SWCA environment variables.
 - Live smoke tests confirmed S3 storage, internal SES notification, reward claim, contact save, redacted admin report, and alarm subscription.
 
 ## What Is Next
 
-- Build the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
+- Complete live verification for the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
 - Keep non-blocking work in that plan's backlog until reward communication is complete.
