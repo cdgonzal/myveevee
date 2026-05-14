@@ -153,17 +153,20 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - API endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
 - Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
 - Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
-- Pending admin/event endpoints after next stack deploy: `/forms/swca-event`, `/forms/swca-admin-session`, `/forms/swca-admin-report`
+- Campaign event endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-event`
+- Admin session endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-admin-session`
+- Admin report endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-admin-report`
 - CDK stack: `MyVeeVeeInfraStack`
 - S3 bucket: `myveevee-swca-intake-767828748348-us-east-1`
 - DynamoDB reward table: `myveevee-swca-intake-reward-claims`
-- Pending DynamoDB campaign event table: `myveevee-swca-intake-campaign-events`
+- DynamoDB campaign event table: `myveevee-swca-intake-campaign-events`
 - Lambda function: `myveevee-swca-intake-handler`
 - Reward Lambda function: `myveevee-swca-intake-reward-spin-handler`
-- Pending admin/event Lambda function: `myveevee-swca-intake-admin-handler`
+- Admin/event Lambda function: `myveevee-swca-intake-admin-handler`
 - SES sender and recipient: `info@veevee.io`
-- Amplify `main` env vars: `VITE_SWCA_INTAKE_API_URL`, `VITE_SWCA_REWARD_SPIN_API_URL`
-- Pending Amplify `main` env vars after admin/event deploy: `VITE_SWCA_EVENT_API_URL`, `VITE_SWCA_ADMIN_SESSION_API_URL`, `VITE_SWCA_ADMIN_REPORT_API_URL`
+- Amplify `main` env vars: `VITE_SWCA_INTAKE_API_URL`, `VITE_SWCA_REWARD_SPIN_API_URL`, `VITE_SWCA_EVENT_API_URL`, `VITE_SWCA_ADMIN_SESSION_API_URL`, `VITE_SWCA_ADMIN_REPORT_API_URL`
+- Operational alerts SNS topic: `myveevee-swca-intake-operational-alerts`
+- Operational alarms: Lambda errors, API Gateway 5xx responses, and API Gateway high request volume
 
 ### Verified
 
@@ -175,15 +178,17 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - Amplify release job `207` succeeded after setting `VITE_SWCA_REWARD_SPIN_API_URL`.
 - Live reward smoke test returned submission id `fdf214c6-2251-4267-8982-a99c635215a2`.
 - The reward spin assigned `wellness-gift`, duplicate spin returned the same reward, and the contact endpoint saved winner contact fields.
+- Admin/event backend was deployed, Amplify release job `210` succeeded, and live smoke tests confirmed admin session creation, event capture, and redacted report retrieval.
+- The app 404 recovery page, `/swca/teaser` compatibility alias, and timed `/how-it-works` redirect were deployed through Amplify release jobs `211`, `212`, and `213`.
+- Operational alarms were deployed through CDK; AWS CLI verification found five CloudWatch alarms and the SNS email subscription is pending confirmation.
 
 ### Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before production traffic.
-- Create Secrets Manager values for the SWCA admin passcode and admin token signing key.
-- Deploy the admin/event backend and set the three new Amplify env vars.
-- Smoke test `/swca/admin` against the live report endpoint and confirm a first-party event row is captured.
+- Confirm the SNS subscription email for operational alarm delivery.
+- Rotate the SWCA admin passcode once before broad team sharing.
+- Add an admin runbook covering passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
 - Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
-- Add monitoring or alarms for Lambda errors and unusual API volume.
 - If more clinics are added, create new `PartnerIntakeForm` instances from config instead of copying console resources.
 
 ## SEO Implementation State

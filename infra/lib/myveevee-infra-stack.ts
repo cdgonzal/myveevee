@@ -34,6 +34,12 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       description: "Secrets Manager secret name containing the SWCA admin token signing key.",
     });
 
+    const alertEmail = new cdk.CfnParameter(this, "SwcaAlertEmail", {
+      type: "String",
+      default: "info@veevee.io",
+      description: "Email address to subscribe to SWCA operational CloudWatch alarm notifications.",
+    });
+
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
       partnerKey: "swca",
       formId: "swca-wellness-priority-intake",
@@ -52,6 +58,7 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       allowedOrigins: allowedOrigins.valueAsList,
       sesFromEmail: sesFromEmail.valueAsString,
       sesToEmails: sesToEmails.valueAsList,
+      alertEmail: alertEmail.valueAsString,
     });
   }
 }

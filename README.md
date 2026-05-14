@@ -67,7 +67,8 @@ Campaign/direct-link route:
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture. See `_sandbox/codex/spine-wellness-intake-form/PLAN.md`.
 - The SWCA post-reward funnel route is `/swca/funnel`; it uses SWCA branding and provider recommendation copy to send users to create a free profile at `veevee.io`.
 - The SWCA admin dashboard route is `/swca/admin`; it uses a backend passcode session and returns abbreviated names plus contact method only.
-- First-party SWCA campaign events use `VITE_SWCA_EVENT_API_URL` after the admin/event backend is deployed.
+- First-party SWCA campaign events use `VITE_SWCA_EVENT_API_URL` and are captured by the deployed admin/event backend.
+- SWCA operational alerts are managed in CDK with CloudWatch alarms and the `myveevee-swca-intake-operational-alerts` SNS topic.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

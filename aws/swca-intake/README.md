@@ -85,7 +85,7 @@ VITE_SWCA_REWARD_SPIN_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws
 
 Without these values in a local or future branch environment, the React form and wheel stay in local mock mode and do not send network requests.
 
-After the admin/event backend is deployed, configure these additional Amplify `main` branch values:
+These additional values are configured in the Amplify `main` branch environment:
 
 ```text
 VITE_SWCA_EVENT_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-event
@@ -341,6 +341,18 @@ Current SES values:
 - recipient: `info@veevee.io`
 - SES account status: production access enabled in `us-east-1`
 
+## CloudWatch Alarms
+
+CDK manages operational alarms for the live SWCA backend:
+
+- SNS topic: `myveevee-swca-intake-operational-alerts`
+- Default alert recipient: `info@veevee.io`
+- Lambda error alarms for intake, reward spin/contact, and admin/event handlers
+- API Gateway 5xx alarm
+- API Gateway high-volume alarm at 250 requests in five minutes
+
+The SNS email subscription must be confirmed from the recipient inbox before alarm emails are delivered.
+
 ## Minimum IAM
 
 Lambda execution role:
@@ -379,12 +391,15 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - Reward contact endpoint saved winner contact fields to DynamoDB.
 - Admin/event backend source validates with `node --check aws/swca-intake/admin-handler.mjs`.
 - CDK synth bundles the admin Lambda and emits the campaign event, admin session, and admin report outputs.
+- Admin/event backend is deployed and the Amplify `main` branch has the live event, admin session, and admin report endpoint env vars.
+- Live admin/event smoke test confirmed the passcode session route, event write route, and redacted report route.
+- Operational alarm CDK deploy completed successfully; AWS CLI verification found five CloudWatch alarms under the `myveevee-swca-intake` prefix.
+- SNS subscription for `info@veevee.io` is pending recipient confirmation.
 
 ## What Is Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
-- Create Secrets Manager values for `/myveevee/swca/admin-passcode` and `/myveevee/swca/admin-token-signing-key`.
-- Deploy the admin/event stack change and add the three new Amplify env vars.
-- Smoke test `/swca/admin` against the live report endpoint.
-- Add CloudWatch alarms for Lambda errors and API abuse signals.
+- Confirm the SNS subscription email for CloudWatch alarm delivery.
+- Rotate the SWCA admin passcode before broad team sharing.
+- Add a short admin runbook for passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
 - Decide whether the email should include full ranked priorities long term or only a summary plus S3 submission id.

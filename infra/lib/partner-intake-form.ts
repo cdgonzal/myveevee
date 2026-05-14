@@ -1,6 +1,8 @@
 import * as path from "node:path";
 import * as cdk from "aws-cdk-lib";
 import * as apigatewayv2 from "aws-cdk-lib/aws-apigatewayv2";
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
+import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions";
 import * as integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -8,6 +10,8 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as nodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as logs from "aws-cdk-lib/aws-logs";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as sns from "aws-cdk-lib/aws-sns";
+import * as subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
 import { Construct } from "constructs";
 
 export type PartnerIntakeFormProps = {
@@ -28,6 +32,7 @@ export type PartnerIntakeFormProps = {
   allowedOrigins: string[];
   sesFromEmail: string;
   sesToEmails: string[];
+  alertEmail: string;
 };
 
 export class PartnerIntakeForm extends Construct {
@@ -258,6 +263,74 @@ export class PartnerIntakeForm extends Construct {
       integration: new integrations.HttpLambdaIntegration("AdminReportLambdaIntegration", this.adminFunction),
     });
 
+    const alertTopic = new sns.Topic(this, "OperationalAlertsTopic", {
+      topicName: `${resourcePrefix}-operational-alerts`,
+      displayName: `${props.partnerKey.toUpperCase()} intake operational alerts`,
+    });
+    alertTopic.addSubscription(new subscriptions.EmailSubscription(props.alertEmail));
+
+    const alarmAction = new cloudwatchActions.SnsAction(alertTopic);
+
+    for (const [alarmId, handlerFunction] of [
+      ["IntakeHandlerErrorsAlarm", this.function],
+      ["RewardSpinHandlerErrorsAlarm", this.rewardSpinFunction],
+      ["AdminHandlerErrorsAlarm", this.adminFunction],
+    ] as const) {
+      const alarm = new cloudwatch.Alarm(this, alarmId, {
+        alarmName: `${resourcePrefix}-${alarmId}`,
+        alarmDescription: `${props.partnerKey} Lambda errors detected for ${handlerFunction.functionName}.`,
+        metric: handlerFunction.metricErrors({
+          period: cdk.Duration.minutes(5),
+          statistic: "sum",
+        }),
+        threshold: 1,
+        evaluationPeriods: 1,
+        comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+      });
+      alarm.addAlarmAction(alarmAction);
+    }
+
+    const api5xxAlarm = new cloudwatch.Alarm(this, "Api5xxAlarm", {
+      alarmName: `${resourcePrefix}-api-5xx`,
+      alarmDescription: `${props.partnerKey} intake API Gateway 5xx responses detected.`,
+      metric: new cloudwatch.Metric({
+        namespace: "AWS/ApiGateway",
+        metricName: "5xx",
+        dimensionsMap: {
+          ApiId: this.api.apiId,
+          Stage: "$default",
+        },
+        statistic: "sum",
+        period: cdk.Duration.minutes(5),
+      }),
+      threshold: 1,
+      evaluationPeriods: 1,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+    api5xxAlarm.addAlarmAction(alarmAction);
+
+    const apiHighVolumeAlarm = new cloudwatch.Alarm(this, "ApiHighVolumeAlarm", {
+      alarmName: `${resourcePrefix}-api-high-volume`,
+      alarmDescription: `${props.partnerKey} intake API request volume is above the expected campaign baseline.`,
+      metric: new cloudwatch.Metric({
+        namespace: "AWS/ApiGateway",
+        metricName: "Count",
+        dimensionsMap: {
+          ApiId: this.api.apiId,
+          Stage: "$default",
+        },
+        statistic: "sum",
+        period: cdk.Duration.minutes(5),
+      }),
+      threshold: 250,
+      evaluationPeriods: 1,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+    apiHighVolumeAlarm.addAlarmAction(alarmAction);
+
     new cdk.CfnOutput(this, "ApiEndpoint", {
       value: `${this.api.apiEndpoint}${props.apiPath}`,
       description: `${props.partnerKey} intake API endpoint for VITE_SWCA_INTAKE_API_URL`,
@@ -301,6 +374,11 @@ export class PartnerIntakeForm extends Construct {
     new cdk.CfnOutput(this, "AdminReportApiEndpoint", {
       value: `${this.api.apiEndpoint}${props.adminReportApiPath}`,
       description: `${props.partnerKey} admin report API endpoint for VITE_SWCA_ADMIN_REPORT_API_URL`,
+    });
+
+    new cdk.CfnOutput(this, "OperationalAlertsTopicArn", {
+      value: alertTopic.topicArn,
+      description: `${props.partnerKey} operational alerts SNS topic ARN`,
     });
   }
 }
