@@ -57,5 +57,6 @@ Campaign/direct-link route:
 - The internal SWCA brief should remain non-indexable.
 - The SWCA intake form is live and submits through API Gateway, Lambda, S3, and SES.
 - The SWCA reward teaser is a campaign page that motivates users to start the intake form before the reward-wheel step.
+- The reward teaser uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`.
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

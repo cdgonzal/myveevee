@@ -175,7 +175,7 @@ export default function SwcaRewardsTeaser() {
               transform={{ base: "none", lg: "rotate(1.2deg)" }}
             >
               <Image
-                src="/swca/spin-wheel-rewards.jpg"
+                src="/swca/spin-wheel-rewards.webp"
                 alt="Spin to win reward wheel with sample prizes"
                 w="100%"
                 maxH={{ base: "520px", lg: "720px" }}

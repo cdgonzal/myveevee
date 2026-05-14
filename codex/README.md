@@ -89,7 +89,8 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - standalone internal SWCA brief page
 - `src/swca/rewardsTeaser/SwcaRewardsTeaser.tsx`
   - standalone reward-wheel teaser for Spine and Wellness Centers of America
-  - uses the campaign flyer wheel asset and routes the primary CTA to `/swca/intake`
+  - uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`
+  - routes the primary CTA to `/swca/intake`
 - `src/swca/intakeForm/SpineWellnessIntakeForm.tsx`
   - standalone campaign intake form for Spine and Wellness Centers of America
   - supports multi-select, ranking, honeypot, loading, error, and success states
