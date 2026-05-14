@@ -38,6 +38,14 @@ Planned reward-wheel extension:
 
 The frontend may animate the wheel, but Lambda owns the reward assignment and DynamoDB enforces one spin per valid intake submission.
 
+Admin/reporting extension:
+
+`SWCA campaign pages -> event API -> DynamoDB campaign events`
+
+`/swca/admin -> admin session API -> Secrets Manager passcode check -> admin report API -> redacted DynamoDB report`
+
+The admin report returns abbreviated names and contact method only. It does not return raw email addresses or phone numbers.
+
 ## Lambda Environment
 
 Required:
@@ -47,6 +55,9 @@ Required:
 - `SES_TO_EMAILS`: comma-separated recipient list.
 - `ALLOWED_ORIGINS`: comma-separated allowed browser origins.
 - `REWARD_CLAIMS_TABLE`: DynamoDB table for reward eligibility and one-time claim state.
+- `CAMPAIGN_EVENTS_TABLE`: DynamoDB table for first-party campaign events.
+- `ADMIN_PASSCODE_SECRET_NAME`: Secrets Manager secret name for the shared SWCA admin passcode.
+- `ADMIN_TOKEN_SECRET_NAME`: Secrets Manager secret name for the admin session signing key.
 
 Optional:
 
@@ -73,6 +84,14 @@ VITE_SWCA_REWARD_SPIN_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws
 ```
 
 Without these values in a local or future branch environment, the React form and wheel stay in local mock mode and do not send network requests.
+
+After the admin/event backend is deployed, configure these additional Amplify `main` branch values:
+
+```text
+VITE_SWCA_EVENT_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-event
+VITE_SWCA_ADMIN_SESSION_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-admin-session
+VITE_SWCA_ADMIN_REPORT_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-admin-report
+```
 
 ## API Contract
 
@@ -166,6 +185,57 @@ For phone contact:
 
 The contact endpoint only saves details for a valid token after a reward has already been claimed.
 
+## Campaign Event API Contract
+
+Request:
+
+```json
+{
+  "eventName": "swca_intake_submit_success",
+  "pagePath": "/swca/intake",
+  "pageUrl": "https://myveevee.com/swca/intake",
+  "sessionId": "<browser-session-id>",
+  "submissionId": "<uuid>",
+  "rewardId": "wellness-gift",
+  "contactMethod": "email",
+  "mode": "live",
+  "params": {
+    "selected_count": 3
+  }
+}
+```
+
+The endpoint rejects event names that do not start with `swca_`. It stores hashed request context and does not accept raw contact details.
+
+## Admin API Contract
+
+Create session:
+
+```json
+{
+  "passcode": "<shared-admin-passcode>"
+}
+```
+
+Success response:
+
+```json
+{
+  "ok": true,
+  "token": "<signed-session-token>",
+  "expiresAt": 1770000000
+}
+```
+
+Fetch report:
+
+```text
+GET /forms/swca-admin-report
+Authorization: Bearer <signed-session-token>
+```
+
+The report includes aggregate counts, event counts, reward distribution, contact-method distribution, and recent redacted rows.
+
 ## S3 Object Shape
 
 Objects are written as JSON under:
@@ -211,6 +281,26 @@ Reward eligibility and claim records are keyed by `submissionId` and contain:
 - hashed request context for basic abuse review
 
 The raw token is never stored.
+
+## DynamoDB Campaign Event Shape
+
+Campaign events are keyed by `eventId` and contain:
+
+- `eventId`
+- `campaignId`
+- `formId`
+- `eventName`
+- `occurredAt`
+- `pagePath`
+- `pageUrl`
+- `sessionId`
+- `submissionId`
+- `rewardId`
+- `contactMethod`
+- `mode`
+- sanitized primitive `params`
+- hashed request context
+- `expiresAtEpoch` TTL value
 
 ## Marketing Reward Config
 
@@ -265,6 +355,14 @@ Reward spin Lambda execution role:
 - `dynamodb:GetItem` and `dynamodb:UpdateItem` on the reward claims table.
 - CloudWatch Logs permissions.
 
+Admin/event Lambda execution role:
+
+- `dynamodb:Scan` on the reward claims table for redacted reporting.
+- `dynamodb:PutItem` and `dynamodb:Scan` on the campaign events table.
+- `secretsmanager:GetSecretValue` on the configured passcode and signing-key secrets.
+- read access to the S3 submission prefix for future report enrichment.
+- CloudWatch Logs permissions.
+
 Keep the S3 bucket private with public access blocked and server-side encryption enabled.
 
 ## Current Verification
@@ -279,10 +377,14 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - Reward spin returned reward `wellness-gift`.
 - Duplicate spin returned the same reward with `alreadySpun: true`.
 - Reward contact endpoint saved winner contact fields to DynamoDB.
+- Admin/event backend source validates with `node --check aws/swca-intake/admin-handler.mjs`.
+- CDK synth bundles the admin Lambda and emits the campaign event, admin session, and admin report outputs.
 
 ## What Is Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
+- Create Secrets Manager values for `/myveevee/swca/admin-passcode` and `/myveevee/swca/admin-token-signing-key`.
+- Deploy the admin/event stack change and add the three new Amplify env vars.
+- Smoke test `/swca/admin` against the live report endpoint.
 - Add CloudWatch alarms for Lambda errors and API abuse signals.
 - Decide whether the email should include full ranked priorities long term or only a summary plus S3 submission id.
-- Build an export path if marketing needs CSV or reporting beyond email notifications.

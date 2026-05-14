@@ -13,8 +13,11 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { trackCtaClick } from "../../analytics/trackCtaClick";
+import { trackEvent } from "../../analytics/trackEvent";
 import { APP_LINKS } from "../../config/links";
+import { trackSwcaCampaignEvent } from "../campaignEvents";
 import { spinSwcaReward, submitSwcaRewardContact } from "./api";
 import { getRewardIndex, SWCA_REWARDS } from "./rewards";
 import type { SwcaReward } from "./rewards";
@@ -27,6 +30,7 @@ const SEGMENT_DEGREES = 360 / SWCA_REWARDS.length;
 
 export default function SwcaRewardWheel() {
   const toast = useToast();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const submissionId = searchParams.get("sid") ?? "";
   const token = searchParams.get("token") ?? "";
@@ -74,9 +78,35 @@ export default function SwcaRewardWheel() {
       window.setTimeout(() => {
         setReward(result.reward);
         setIsSpinning(false);
+        trackEvent("swca_reward_spin_success", {
+          reward_id: result.reward.id,
+          already_spun: result.alreadySpun,
+          mode: result.mode,
+        });
+        trackSwcaCampaignEvent({
+          eventName: "swca_reward_spin_success",
+          submissionId,
+          rewardId: result.reward.id,
+          mode: result.mode,
+          params: {
+            already_spun: result.alreadySpun,
+          },
+        });
       }, result.alreadySpun ? 150 : 2300);
     } catch (error) {
       setIsSpinning(false);
+      trackEvent("swca_reward_spin_error", {
+        has_submission_id: Boolean(submissionId),
+        has_token: Boolean(token),
+      });
+      trackSwcaCampaignEvent({
+        eventName: "swca_reward_spin_error",
+        submissionId,
+        params: {
+          has_submission_id: Boolean(submissionId),
+          has_token: Boolean(token),
+        },
+      });
       toast({
         title: "We could not complete the reward spin.",
         description: error instanceof Error ? error.message : "Please ask the clinic team for help.",
@@ -110,11 +140,24 @@ export default function SwcaRewardWheel() {
       });
 
       setContactSaved(true);
+      trackEvent("swca_reward_contact_saved", {
+        contact_method: contactMethod,
+        reward_id: reward?.id,
+      });
+      trackSwcaCampaignEvent({
+        eventName: "swca_reward_contact_saved",
+        submissionId,
+        rewardId: reward?.id,
+        contactMethod,
+      });
       toast({
         title: "Contact details saved.",
         status: "success",
         duration: 2800,
       });
+      window.setTimeout(() => {
+        navigate(APP_LINKS.internal.swcaFunnel);
+      }, 900);
     } catch (error) {
       toast({
         title: "We could not save your contact details.",
@@ -347,6 +390,33 @@ export default function SwcaRewardWheel() {
                     >
                       {contactSaved ? "Saved" : "Send my reward"}
                     </Button>
+                    {contactSaved ? (
+                      <Button
+                        as={Link}
+                        to={APP_LINKS.internal.swcaFunnel}
+                        variant="outline"
+                        borderColor={LINE}
+                        color={NAVY}
+                        onClick={() =>
+                          {
+                            trackCtaClick({
+                              ctaName: "swca_reward_continue_to_profile_funnel",
+                              ctaText: "Continue to free profile",
+                              placement: "swca_reward_contact_saved",
+                              destinationType: "internal",
+                              destinationUrl: APP_LINKS.internal.swcaFunnel,
+                            });
+                            trackSwcaCampaignEvent({
+                              eventName: "swca_reward_continue_to_profile_funnel",
+                              submissionId,
+                              rewardId: reward?.id,
+                            });
+                          }
+                        }
+                      >
+                        Continue to free profile
+                      </Button>
+                    ) : null}
                   </Stack>
                 </Box>
               ) : null}

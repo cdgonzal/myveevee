@@ -72,6 +72,36 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "standalone_brief",
     primary_goal: "support_brief_review",
   },
+  [APP_LINKS.internal.swcaRewards]: {
+    page_name: "swca_rewards_teaser",
+    page_section: "swca_campaign",
+    page_type: "campaign_teaser",
+    primary_goal: "start_swca_intake",
+  },
+  [APP_LINKS.internal.swcaIntake]: {
+    page_name: "swca_intake",
+    page_section: "swca_campaign",
+    page_type: "partner_intake",
+    primary_goal: "submit_swca_intake",
+  },
+  [APP_LINKS.internal.swcaWheel]: {
+    page_name: "swca_reward_wheel",
+    page_section: "swca_campaign",
+    page_type: "reward_claim",
+    primary_goal: "claim_swca_reward",
+  },
+  [APP_LINKS.internal.swcaFunnel]: {
+    page_name: "swca_profile_funnel",
+    page_section: "swca_campaign",
+    page_type: "post_reward_profile_cta",
+    primary_goal: "create_free_veevee_profile",
+  },
+  [APP_LINKS.internal.swcaAdmin]: {
+    page_name: "swca_admin_dashboard",
+    page_section: "swca_campaign",
+    page_type: "partner_admin",
+    primary_goal: "review_swca_campaign_performance",
+  },
 };
 
 export function getRouteAnalytics(pathname: string): RouteAnalyticsMetadata {

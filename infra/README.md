@@ -15,6 +15,10 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - DynamoDB reward eligibility/claim table for SWCA wheel spins
 - bundled reward spin Lambda handler from `../aws/swca-intake/spin-handler.mjs`
 - reward spin Lambda/API route with conditional one-spin enforcement
+- DynamoDB campaign events table for first-party SWCA funnel events
+- bundled admin/event Lambda handler from `../aws/swca-intake/admin-handler.mjs`
+- admin passcode session route, redacted report route, and public campaign event route
+- Secrets Manager secret lookups for the shared admin passcode and token signing key
 - frontend environment variable for the spin endpoint
 
 ## Live SWCA Intake Resources
@@ -36,6 +40,21 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
 - Frontend route: `https://myveevee.com/swca/wheel`
 - Amplify `main` environment variable: `VITE_SWCA_REWARD_SPIN_API_URL`
+
+## SWCA Admin and Campaign Event Resources
+
+Pending deployment from the current source:
+
+- DynamoDB campaign events table: `myveevee-swca-intake-campaign-events`
+- Lambda function: `myveevee-swca-intake-admin-handler`
+- Campaign event endpoint: `/forms/swca-event`
+- Admin session endpoint: `/forms/swca-admin-session`
+- Admin report endpoint: `/forms/swca-admin-report`
+- Frontend route: `https://myveevee.com/swca/admin`
+- Required Amplify env vars after deploy: `VITE_SWCA_EVENT_API_URL`, `VITE_SWCA_ADMIN_SESSION_API_URL`, `VITE_SWCA_ADMIN_REPORT_API_URL`
+- Required Secrets Manager secrets before live admin use: `/myveevee/swca/admin-passcode`, `/myveevee/swca/admin-token-signing-key`
+
+The report endpoint returns abbreviated names and contact method only. It does not return raw email or phone values.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 
@@ -73,6 +92,12 @@ Use real, verified SES identities. The current deployed values are `info@veevee.
 npx cdk deploy MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io
 ```
 
+Optional admin secret-name overrides:
+
+```powershell
+--parameters SwcaAdminPasscodeSecretName=/myveevee/swca/admin-passcode --parameters SwcaAdminTokenSecretName=/myveevee/swca/admin-token-signing-key
+```
+
 Optional allowed origins override:
 
 ```powershell
@@ -86,9 +111,10 @@ After a future stack change deploys:
 1. Confirm whether the `SwcaIntakeFormApiEndpoint...` output changed.
 2. If it changed, update `VITE_SWCA_INTAKE_API_URL` in the Amplify `main` branch environment.
 3. Confirm `VITE_SWCA_REWARD_SPIN_API_URL` still points to the `SwcaIntakeFormRewardSpinApiEndpoint...` output in the Amplify `main` branch environment.
-4. Redeploy Amplify `main` if any frontend env var changed.
-5. Submit one live test from `https://myveevee.com/swca/intake`.
-6. Confirm one S3 object, one SES email, one DynamoDB eligibility record, one reward claim after spinning, and contact fields after the winner form is submitted.
+4. Add `VITE_SWCA_EVENT_API_URL`, `VITE_SWCA_ADMIN_SESSION_API_URL`, and `VITE_SWCA_ADMIN_REPORT_API_URL` from the new CDK outputs.
+5. Redeploy Amplify `main` if any frontend env var changed.
+6. Submit one live test from `https://myveevee.com/swca/intake`.
+7. Confirm one S3 object, one SES email, one DynamoDB eligibility record, one reward claim after spinning, contact fields after the winner form is submitted, one campaign event row, and one redacted admin report row.
 
 ## Current Verification
 
@@ -107,6 +133,7 @@ After a future stack change deploys:
 ## What Is Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
+- Create the two Secrets Manager values for the SWCA admin passcode and token signing key before deploying the admin route.
 - Add CloudWatch alarms for Lambda errors and unusual API volume.
-- Decide whether marketing needs a CSV export script or dashboard.
+- Deploy the admin/event backend, set the three new Amplify environment variables, and smoke test `/swca/admin`.
 - Add a second `PartnerIntakeForm` config when the next clinic/form is ready.

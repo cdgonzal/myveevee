@@ -31,6 +31,7 @@ import { useScrollDepth } from "./analytics/useScrollDepth";
 import { APP_LINKS } from "./config/links";
 import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
+import { trackSwcaCampaignEvent } from "./swca/campaignEvents";
 
 const Home = lazy(() => import("./pages/Home"));
 const HealthTwinFunnel = lazy(() => import("./pages/HealthTwinFunnel"));
@@ -50,6 +51,8 @@ const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
 const SwcaRewardsTeaser = lazy(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
 const SpineWellnessIntakeForm = lazy(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
 const SwcaRewardWheel = lazy(() => import("./swca/rewardWheel/SwcaRewardWheel"));
+const SwcaProfileFunnel = lazy(() => import("./swca/profileFunnel/SwcaProfileFunnel"));
+const SwcaAdminDashboard = lazy(() => import("./swca/admin/SwcaAdminDashboard"));
 
 type FooterNavLink = {
   label: string;
@@ -126,6 +129,15 @@ function AnalyticsLifecycle() {
 
     const frameId = window.requestAnimationFrame(() => {
       trackPageView(pathname, search);
+      if (pathname.startsWith("/swca/") && pathname !== APP_LINKS.internal.swcaAdmin) {
+        trackSwcaCampaignEvent({
+          eventName: "swca_page_view",
+          pagePath: pathname,
+          params: {
+            search: search ? "present" : "none",
+          },
+        });
+      }
     });
 
     return () => {
@@ -150,7 +162,9 @@ export default function App() {
     pathname === APP_LINKS.internal.swcaBrief ||
     pathname === APP_LINKS.internal.swcaRewards ||
     pathname === APP_LINKS.internal.swcaIntake ||
-    pathname === APP_LINKS.internal.swcaWheel;
+    pathname === APP_LINKS.internal.swcaWheel ||
+    pathname === APP_LINKS.internal.swcaFunnel ||
+    pathname === APP_LINKS.internal.swcaAdmin;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -170,6 +184,8 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
+                <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
+                <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
               </Routes>
             </Suspense>
           </>
@@ -196,6 +212,8 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
+                <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
+                <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
               </Routes>
             </Suspense>
           </Container>

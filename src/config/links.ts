@@ -18,6 +18,8 @@ export const APP_LINKS = {
     swcaRewards: "/swca/rewards",
     swcaIntake: "/swca/intake",
     swcaWheel: "/swca/wheel",
+    swcaFunnel: "/swca/funnel",
+    swcaAdmin: "/swca/admin",
   },
   cta: {
     getStarted: "/",

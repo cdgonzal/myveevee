@@ -38,6 +38,10 @@ Campaign/direct-link route:
   - Spine and Wellness Centers of America intake form
   - intended for QR codes and shared links, not site navigation
   - `noindex`
+- `/swca/admin`
+  - private SWCA campaign dashboard for redacted traffic, reward, and contact-method reporting
+  - intended for direct admin access only, not site navigation
+  - `noindex`
 
 ## Scripts
 
@@ -59,6 +63,9 @@ Campaign/direct-link route:
 - The SWCA reward teaser is a campaign page that motivates users to start the intake form before the reward-wheel step.
 - The reward teaser uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`.
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture. See `_sandbox/codex/spine-wellness-intake-form/PLAN.md`.
+- The SWCA post-reward funnel route is `/swca/funnel`; it uses SWCA branding and provider recommendation copy to send users to create a free profile at `veevee.io`.
+- The SWCA admin dashboard route is `/swca/admin`; it uses a backend passcode session and returns abbreviated names plus contact method only.
+- First-party SWCA campaign events use `VITE_SWCA_EVENT_API_URL` after the admin/event backend is deployed.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

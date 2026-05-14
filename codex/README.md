@@ -63,10 +63,21 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - `noindex`
   - submits to API Gateway endpoint `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
 - `/swca/wheel`
-  - post-intake reward-wheel route implemented in the repo
-  - should stay direct-link only and `noindex`
+  - live post-intake reward-wheel route
+  - stays direct-link only and `noindex`
   - should be reached from a successful intake response using `submissionId` plus a one-time token
-  - live AWS/Amplify deployment is pending
+  - `/swca/funnel`
+  - post-reward SWCA-branded VeeVee profile CTA route
+  - reached after winner contact details are saved from `/swca/wheel`
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+  - CTA destination is `https://veevee.io`
+- `/swca/admin`
+  - private SWCA campaign dashboard route
+  - passcode-gated through the backend admin session endpoint
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+  - shows redacted reporting only: abbreviated names and contact method, not raw email or phone
 
 ## Page Inventory
 
@@ -109,6 +120,16 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - submits to `VITE_SWCA_REWARD_SPIN_API_URL`; falls back to local mock mode only when the env var is absent
 - `src/swca/rewardWheel/reward-wheel-config.json`
   - marketing-editable reward slot config for labels, descriptions, estimated values, colors, weights, and total slot count
+- `src/swca/profileFunnel/SwcaProfileFunnel.tsx`
+  - standalone SWCA-branded page recommending a free VeeVee profile after reward completion
+- `src/swca/profileFunnel/provider-comments.json`
+  - editable provider recommendation copy for the post-reward funnel page
+- `src/swca/admin/SwcaAdminDashboard.tsx`
+  - private SWCA campaign dashboard with passcode entry, metrics, distributions, redacted recent submissions, and CSV export
+- `src/swca/admin/api.ts`
+  - calls `VITE_SWCA_ADMIN_SESSION_API_URL` and `VITE_SWCA_ADMIN_REPORT_API_URL`; falls back to mock report mode when env vars are absent
+- `src/swca/campaignEvents.ts`
+  - sends first-party SWCA funnel events to `VITE_SWCA_EVENT_API_URL` when configured
 - `src/pages/AvatarPlaybackTest.tsx`
   - hidden video playback diagnostic page for `/avatar/*` assets
 - `src/pages/SeoLandingPage.tsx`
@@ -124,13 +145,17 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - API endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
 - Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
 - Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
+- Pending admin/event endpoints after next stack deploy: `/forms/swca-event`, `/forms/swca-admin-session`, `/forms/swca-admin-report`
 - CDK stack: `MyVeeVeeInfraStack`
 - S3 bucket: `myveevee-swca-intake-767828748348-us-east-1`
 - DynamoDB reward table: `myveevee-swca-intake-reward-claims`
+- Pending DynamoDB campaign event table: `myveevee-swca-intake-campaign-events`
 - Lambda function: `myveevee-swca-intake-handler`
 - Reward Lambda function: `myveevee-swca-intake-reward-spin-handler`
+- Pending admin/event Lambda function: `myveevee-swca-intake-admin-handler`
 - SES sender and recipient: `info@veevee.io`
 - Amplify `main` env vars: `VITE_SWCA_INTAKE_API_URL`, `VITE_SWCA_REWARD_SPIN_API_URL`
+- Pending Amplify `main` env vars after admin/event deploy: `VITE_SWCA_EVENT_API_URL`, `VITE_SWCA_ADMIN_SESSION_API_URL`, `VITE_SWCA_ADMIN_REPORT_API_URL`
 
 ### Verified
 
@@ -146,7 +171,9 @@ This repository is the public-facing marketing site for `myveevee.com`.
 ### Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before production traffic.
-- Decide whether marketing needs CSV export, a dashboard, or email-only operations.
+- Create Secrets Manager values for the SWCA admin passcode and admin token signing key.
+- Deploy the admin/event backend and set the three new Amplify env vars.
+- Smoke test `/swca/admin` against the live report endpoint and confirm a first-party event row is captured.
 - Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
 - Add monitoring or alarms for Lambda errors and unusual API volume.
 - If more clinics are added, create new `PartnerIntakeForm` instances from config instead of copying console resources.
@@ -188,8 +215,10 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - Lambda handler for SWCA intake validation, S3 persistence, SES notification, and reward eligibility creation
 - `aws/swca-intake/spin-handler.mjs`
   - Lambda handler for one-time SWCA reward spin claims and post-win contact capture
+- `aws/swca-intake/admin-handler.mjs`
+  - Lambda handler for SWCA campaign events, passcode-backed admin sessions, and redacted admin reports
 - `infra/lib/partner-intake-form.ts`
-  - reusable CDK construct for partner intake and reward-wheel backends
+  - reusable CDK construct for partner intake, reward-wheel, campaign-event, and redacted admin-report backends
 - `infra/lib/myveevee-infra-stack.ts`
   - deployed CDK stack currently instantiating the SWCA intake backend
 - `scripts/prerender-static-routes.mjs`

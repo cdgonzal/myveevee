@@ -198,4 +198,22 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.swcaFunnel]: {
+    title: "Create a Free VeeVee Profile | SWCA",
+    description: "Spine and Wellness Centers of America recommended next step to create a free VeeVee profile.",
+    canonicalPath: APP_LINKS.internal.swcaFunnel,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
+  [APP_LINKS.internal.swcaAdmin]: {
+    title: "SWCA Campaign Admin",
+    description: "Private SWCA campaign reporting dashboard.",
+    canonicalPath: APP_LINKS.internal.swcaAdmin,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
 };

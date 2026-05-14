@@ -22,6 +22,18 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       description: "Comma-separated browser origins allowed to submit the SWCA intake form.",
     });
 
+    const adminPasscodeSecretName = new cdk.CfnParameter(this, "SwcaAdminPasscodeSecretName", {
+      type: "String",
+      default: "/myveevee/swca/admin-passcode",
+      description: "Secrets Manager secret name containing the shared SWCA admin passcode.",
+    });
+
+    const adminTokenSecretName = new cdk.CfnParameter(this, "SwcaAdminTokenSecretName", {
+      type: "String",
+      default: "/myveevee/swca/admin-token-signing-key",
+      description: "Secrets Manager secret name containing the SWCA admin token signing key.",
+    });
+
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
       partnerKey: "swca",
       formId: "swca-wellness-priority-intake",
@@ -30,6 +42,12 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       rewardSpinApiPath: "/forms/swca-reward-spin",
       rewardContactApiPath: "/forms/swca-reward-contact",
       rewardSpinLambdaEntry: repoPath("aws", "swca-intake", "spin-handler.mjs"),
+      eventApiPath: "/forms/swca-event",
+      adminSessionApiPath: "/forms/swca-admin-session",
+      adminReportApiPath: "/forms/swca-admin-report",
+      adminLambdaEntry: repoPath("aws", "swca-intake", "admin-handler.mjs"),
+      adminPasscodeSecretName: adminPasscodeSecretName.valueAsString,
+      adminTokenSecretName: adminTokenSecretName.valueAsString,
       submissionsPrefix: "forms/swca-wellness-priority-intake",
       allowedOrigins: allowedOrigins.valueAsList,
       sesFromEmail: sesFromEmail.valueAsString,

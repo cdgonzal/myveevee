@@ -18,6 +18,12 @@ export type PartnerIntakeFormProps = {
   rewardSpinApiPath: string;
   rewardContactApiPath: string;
   rewardSpinLambdaEntry: string;
+  eventApiPath: string;
+  adminSessionApiPath: string;
+  adminReportApiPath: string;
+  adminLambdaEntry: string;
+  adminPasscodeSecretName: string;
+  adminTokenSecretName: string;
   submissionsPrefix: string;
   allowedOrigins: string[];
   sesFromEmail: string;
@@ -29,7 +35,9 @@ export class PartnerIntakeForm extends Construct {
   readonly bucket: s3.Bucket;
   readonly function: nodejs.NodejsFunction;
   readonly rewardClaimsTable: dynamodb.Table;
+  readonly campaignEventsTable: dynamodb.Table;
   readonly rewardSpinFunction: nodejs.NodejsFunction;
+  readonly adminFunction: nodejs.NodejsFunction;
 
   constructor(scope: Construct, id: string, props: PartnerIntakeFormProps) {
     super(scope, id);
@@ -37,6 +45,7 @@ export class PartnerIntakeForm extends Construct {
     const resourcePrefix = `myveevee-${props.partnerKey}-intake`;
     const functionName = `${resourcePrefix}-handler`;
     const rewardSpinFunctionName = `${resourcePrefix}-reward-spin-handler`;
+    const adminFunctionName = `${resourcePrefix}-admin-handler`;
 
     this.bucket = new s3.Bucket(this, "SubmissionsBucket", {
       bucketName: `${resourcePrefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}`,
@@ -54,6 +63,20 @@ export class PartnerIntakeForm extends Construct {
         type: dynamodb.AttributeType.STRING,
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: true,
+      },
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
+    this.campaignEventsTable = new dynamodb.Table(this, "CampaignEventsTable", {
+      tableName: `${resourcePrefix}-campaign-events`,
+      partitionKey: {
+        name: "eventId",
+        type: dynamodb.AttributeType.STRING,
+      },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      timeToLiveAttribute: "expiresAtEpoch",
       pointInTimeRecoverySpecification: {
         pointInTimeRecoveryEnabled: true,
       },
@@ -134,11 +157,67 @@ export class PartnerIntakeForm extends Construct {
 
     this.rewardClaimsTable.grantReadWriteData(this.rewardSpinFunction);
 
+    const adminLogGroup = new logs.LogGroup(this, "AdminHandlerLogGroup", {
+      logGroupName: `/aws/lambda/${adminFunctionName}`,
+      retention: logs.RetentionDays.ONE_MONTH,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    this.adminFunction = new nodejs.NodejsFunction(this, "AdminHandler", {
+      functionName: adminFunctionName,
+      entry: props.adminLambdaEntry,
+      handler: "handler",
+      runtime: lambda.Runtime.NODEJS_20_X,
+      architecture: lambda.Architecture.ARM_64,
+      projectRoot: repoPath(),
+      timeout: cdk.Duration.seconds(15),
+      memorySize: 256,
+      logGroup: adminLogGroup,
+      bundling: {
+        format: nodejs.OutputFormat.ESM,
+        mainFields: ["module", "main"],
+        minify: true,
+        sourceMap: true,
+        target: "node20",
+      },
+      environment: {
+        FORM_ID: props.formId,
+        SUBMISSIONS_BUCKET: this.bucket.bucketName,
+        SUBMISSIONS_PREFIX: props.submissionsPrefix,
+        REWARD_CLAIMS_TABLE: this.rewardClaimsTable.tableName,
+        CAMPAIGN_EVENTS_TABLE: this.campaignEventsTable.tableName,
+        ADMIN_PASSCODE_SECRET_NAME: props.adminPasscodeSecretName,
+        ADMIN_TOKEN_SECRET_NAME: props.adminTokenSecretName,
+        ALLOWED_ORIGINS: cdk.Fn.join(",", props.allowedOrigins),
+      },
+    });
+
+    this.rewardClaimsTable.grantReadData(this.adminFunction);
+    this.campaignEventsTable.grantReadWriteData(this.adminFunction);
+    this.bucket.grantRead(this.adminFunction, `${props.submissionsPrefix.replace(/\/+$/, "")}/*`);
+    this.adminFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          cdk.Fn.sub("arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${SecretName}*", {
+            SecretName: props.adminPasscodeSecretName,
+          }),
+          cdk.Fn.sub("arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${SecretName}*", {
+            SecretName: props.adminTokenSecretName,
+          }),
+        ],
+      })
+    );
+
     this.api = new apigatewayv2.HttpApi(this, "HttpApi", {
       apiName: `${resourcePrefix}-api`,
       corsPreflight: {
-        allowHeaders: ["content-type"],
-        allowMethods: [apigatewayv2.CorsHttpMethod.POST, apigatewayv2.CorsHttpMethod.OPTIONS],
+        allowHeaders: ["authorization", "content-type"],
+        allowMethods: [
+          apigatewayv2.CorsHttpMethod.GET,
+          apigatewayv2.CorsHttpMethod.POST,
+          apigatewayv2.CorsHttpMethod.OPTIONS,
+        ],
         allowOrigins: props.allowedOrigins,
       },
     });
@@ -159,6 +238,24 @@ export class PartnerIntakeForm extends Construct {
       path: props.rewardContactApiPath,
       methods: [apigatewayv2.HttpMethod.POST],
       integration: new integrations.HttpLambdaIntegration("RewardContactLambdaIntegration", this.rewardSpinFunction),
+    });
+
+    this.api.addRoutes({
+      path: props.eventApiPath,
+      methods: [apigatewayv2.HttpMethod.POST],
+      integration: new integrations.HttpLambdaIntegration("CampaignEventLambdaIntegration", this.adminFunction),
+    });
+
+    this.api.addRoutes({
+      path: props.adminSessionApiPath,
+      methods: [apigatewayv2.HttpMethod.POST],
+      integration: new integrations.HttpLambdaIntegration("AdminSessionLambdaIntegration", this.adminFunction),
+    });
+
+    this.api.addRoutes({
+      path: props.adminReportApiPath,
+      methods: [apigatewayv2.HttpMethod.GET],
+      integration: new integrations.HttpLambdaIntegration("AdminReportLambdaIntegration", this.adminFunction),
     });
 
     new cdk.CfnOutput(this, "ApiEndpoint", {
@@ -184,6 +281,26 @@ export class PartnerIntakeForm extends Construct {
     new cdk.CfnOutput(this, "RewardClaimsTableName", {
       value: this.rewardClaimsTable.tableName,
       description: `${props.partnerKey} reward eligibility and claim table`,
+    });
+
+    new cdk.CfnOutput(this, "CampaignEventsTableName", {
+      value: this.campaignEventsTable.tableName,
+      description: `${props.partnerKey} first-party campaign events table`,
+    });
+
+    new cdk.CfnOutput(this, "CampaignEventApiEndpoint", {
+      value: `${this.api.apiEndpoint}${props.eventApiPath}`,
+      description: `${props.partnerKey} campaign event API endpoint for VITE_SWCA_EVENT_API_URL`,
+    });
+
+    new cdk.CfnOutput(this, "AdminSessionApiEndpoint", {
+      value: `${this.api.apiEndpoint}${props.adminSessionApiPath}`,
+      description: `${props.partnerKey} admin session API endpoint for VITE_SWCA_ADMIN_SESSION_API_URL`,
+    });
+
+    new cdk.CfnOutput(this, "AdminReportApiEndpoint", {
+      value: `${this.api.apiEndpoint}${props.adminReportApiPath}`,
+      description: `${props.partnerKey} admin report API endpoint for VITE_SWCA_ADMIN_REPORT_API_URL`,
     });
   }
 }

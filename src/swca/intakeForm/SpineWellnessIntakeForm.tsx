@@ -13,6 +13,8 @@ import {
   VisuallyHidden,
   useToast,
 } from "@chakra-ui/react";
+import { trackEvent } from "../../analytics/trackEvent";
+import { trackSwcaCampaignEvent } from "../campaignEvents";
 import { submitSwcaIntake } from "./api";
 import { SWCA_CONCERNS, SWCA_INTAKE_FORM_ID } from "./concerns";
 import type { SwcaConcern, SwcaConcernId, SwcaIntakeSubmission } from "./types";
@@ -104,6 +106,21 @@ export default function SpineWellnessIntakeForm() {
     try {
       const result = await submitSwcaIntake(submission);
 
+      trackEvent("swca_intake_submit_success", {
+        mode: result.mode,
+        selected_count: selectedIds.length,
+        ranked_count: rankedIds.length,
+      });
+      trackSwcaCampaignEvent({
+        eventName: "swca_intake_submit_success",
+        submissionId: result.submissionId,
+        mode: result.mode,
+        params: {
+          selected_count: selectedIds.length,
+          ranked_count: rankedIds.length,
+        },
+      });
+
       setSubmitState("success");
       toast({
         title:
@@ -118,6 +135,18 @@ export default function SpineWellnessIntakeForm() {
         window.location.assign(result.wheelUrl);
       }
     } catch (error) {
+      trackEvent("swca_intake_submit_error", {
+        selected_count: selectedIds.length,
+        ranked_count: rankedIds.length,
+      });
+      trackSwcaCampaignEvent({
+        eventName: "swca_intake_submit_error",
+        params: {
+          selected_count: selectedIds.length,
+          ranked_count: rankedIds.length,
+        },
+      });
+
       toast({
         title: "We could not submit the form.",
         description: error instanceof Error ? error.message : "Please try again.",

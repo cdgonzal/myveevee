@@ -10,7 +10,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { trackCtaClick } from "../../analytics/trackCtaClick";
 import { APP_LINKS } from "../../config/links";
+import { trackSwcaCampaignEvent } from "../campaignEvents";
 
 const NAVY = "#071A3A";
 const ORANGE = "#F47B20";
@@ -124,6 +126,23 @@ export default function SwcaRewardsTeaser() {
                 fontWeight="900"
                 _hover={{ bg: "#D96712", textDecoration: "none" }}
                 boxShadow="0 18px 36px rgba(244,123,32,0.28)"
+                onClick={() =>
+                  {
+                    trackCtaClick({
+                      ctaName: "swca_rewards_start_intake",
+                      ctaText: "Start the intake",
+                      placement: "swca_rewards_teaser_hero",
+                      destinationType: "internal",
+                      destinationUrl: APP_LINKS.internal.swcaIntake,
+                    });
+                    trackSwcaCampaignEvent({
+                      eventName: "swca_rewards_start_intake",
+                      params: {
+                        placement: "swca_rewards_teaser_hero",
+                      },
+                    });
+                  }
+                }
               >
                 Start the intake
               </Button>
