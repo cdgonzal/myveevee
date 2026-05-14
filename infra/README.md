@@ -63,7 +63,7 @@ The report endpoint returns abbreviated names and contact method only. It does n
 - API alarms: `myveevee-swca-intake-api-5xx`, `myveevee-swca-intake-api-high-volume`
 - High-volume threshold: 250 API Gateway requests in five minutes
 
-The SNS email subscription must be confirmed from the recipient inbox before email alarm delivery starts.
+The SNS email subscription for `info@veevee.io` is confirmed.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 
@@ -121,7 +121,7 @@ After a future stack change deploys:
 2. If it changed, update `VITE_SWCA_INTAKE_API_URL` in the Amplify `main` branch environment.
 3. Confirm `VITE_SWCA_REWARD_SPIN_API_URL` still points to the `SwcaIntakeFormRewardSpinApiEndpoint...` output in the Amplify `main` branch environment.
 4. Confirm `VITE_SWCA_EVENT_API_URL`, `VITE_SWCA_ADMIN_SESSION_API_URL`, and `VITE_SWCA_ADMIN_REPORT_API_URL` still point to the current CDK outputs.
-5. Confirm the SNS subscription is confirmed if `SwcaAlertEmail` changed.
+5. Confirm the SNS subscription status if `SwcaAlertEmail` changed.
 6. Redeploy Amplify `main` if any frontend env var changed.
 7. Submit one live test from `https://myveevee.com/swca/intake`.
 8. Confirm one S3 object, one SES email, one DynamoDB eligibility record, one reward claim after spinning, contact fields after the winner form is submitted, one campaign event row, and one redacted admin report row.
@@ -145,12 +145,11 @@ After a future stack change deploys:
 - App 404 recovery and `/swca/teaser` alias deployed through Amplify release jobs `211`, `212`, and `213`.
 - Operational alarm CDK deploy completed successfully.
 - AWS CLI verification found five CloudWatch alarms under the `myveevee-swca-intake` prefix.
-- SNS subscription for `info@veevee.io` is pending recipient confirmation.
+- SNS subscription for `info@veevee.io` is confirmed.
 
 ## What Is Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
-- Confirm the SNS subscription email for operational alarms after deploy.
 - Rotate the SWCA admin passcode before broad team sharing.
 - Add a short admin runbook covering passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
 - Add a second `PartnerIntakeForm` config when the next clinic/form is ready.

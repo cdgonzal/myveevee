@@ -351,7 +351,7 @@ CDK manages operational alarms for the live SWCA backend:
 - API Gateway 5xx alarm
 - API Gateway high-volume alarm at 250 requests in five minutes
 
-The SNS email subscription must be confirmed from the recipient inbox before alarm emails are delivered.
+The SNS email subscription for `info@veevee.io` is confirmed.
 
 ## Minimum IAM
 
@@ -394,12 +394,11 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - Admin/event backend is deployed and the Amplify `main` branch has the live event, admin session, and admin report endpoint env vars.
 - Live admin/event smoke test confirmed the passcode session route, event write route, and redacted report route.
 - Operational alarm CDK deploy completed successfully; AWS CLI verification found five CloudWatch alarms under the `myveevee-swca-intake` prefix.
-- SNS subscription for `info@veevee.io` is pending recipient confirmation.
+- SNS subscription for `info@veevee.io` is confirmed.
 
 ## What Is Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before campaign traffic.
-- Confirm the SNS subscription email for CloudWatch alarm delivery.
 - Rotate the SWCA admin passcode before broad team sharing.
 - Add a short admin runbook for passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
 - Decide whether the email should include full ranked priorities long term or only a summary plus S3 submission id.

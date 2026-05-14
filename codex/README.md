@@ -180,12 +180,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - The reward spin assigned `wellness-gift`, duplicate spin returned the same reward, and the contact endpoint saved winner contact fields.
 - Admin/event backend was deployed, Amplify release job `210` succeeded, and live smoke tests confirmed admin session creation, event capture, and redacted report retrieval.
 - The app 404 recovery page, `/swca/teaser` compatibility alias, and timed `/how-it-works` redirect were deployed through Amplify release jobs `211`, `212`, and `213`.
-- Operational alarms were deployed through CDK; AWS CLI verification found five CloudWatch alarms and the SNS email subscription is pending confirmation.
+- Operational alarms were deployed through CDK; AWS CLI verification found five CloudWatch alarms and the SNS email subscription is confirmed.
 
 ### Next
 
 - Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before production traffic.
-- Confirm the SNS subscription email for operational alarm delivery.
 - Rotate the SWCA admin passcode once before broad team sharing.
 - Add an admin runbook covering passcode sharing, manual rotation, report refresh, CSV export, and stale-count troubleshooting.
 - Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
