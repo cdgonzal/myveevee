@@ -170,6 +170,16 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.swcaRewards]: {
+    title: "Spin for a Reward | Spine and Wellness Centers of America",
+    description:
+      "Complete the Spine and Wellness Centers of America wellness intake, then follow the clinic instructions to spin the reward wheel.",
+    canonicalPath: APP_LINKS.internal.swcaRewards,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
   [APP_LINKS.internal.swcaIntake]: {
     title: "Spine and Wellness Intake Form",
     description: "Spine and Wellness Centers of America wellness priority intake form.",

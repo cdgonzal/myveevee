@@ -2,6 +2,18 @@
 
 This folder contains the first AWS-native backend source for the campaign-only SWCA intake form at `/swca/intake`.
 
+Current deployed endpoint:
+
+```text
+https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake
+```
+
+Current deployed storage bucket:
+
+```text
+myveevee-swca-intake-767828748348-us-east-1
+```
+
 ## Runtime Path
 
 `Amplify-hosted React form -> API Gateway HTTP API -> Lambda -> S3 + SES`
@@ -29,13 +41,13 @@ https://myveevee.com,https://main.dc8zya6af7720.amplifyapp.com,http://127.0.0.1:
 
 ## Frontend Environment
 
-Configure this value in Amplify after API Gateway is created:
+This value is configured in the Amplify `main` branch environment:
 
 ```text
-VITE_SWCA_INTAKE_API_URL=https://<api-id>.execute-api.us-east-1.amazonaws.com/forms/swca-intake
+VITE_SWCA_INTAKE_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake
 ```
 
-Without this value, the React form stays in local mock mode and does not send a network request.
+Without this value in a local or future branch environment, the React form stays in local mock mode and does not send a network request.
 
 ## API Contract
 
@@ -100,6 +112,12 @@ The email contains:
 
 The S3 object remains the durable record.
 
+Current SES values:
+
+- sender: `info@veevee.io`
+- recipient: `info@veevee.io`
+- SES account status: production access enabled in `us-east-1`
+
 ## Minimum IAM
 
 Lambda execution role:
@@ -109,3 +127,16 @@ Lambda execution role:
 - CloudWatch Logs permissions.
 
 Keep the S3 bucket private with public access blocked and server-side encryption enabled.
+
+## Current Verification
+
+- Live API test returned submission id `4951deed-8fc7-4c9e-86db-b0f7cd40ee02`.
+- S3 object was created at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
+- Lambda log group `/aws/lambda/myveevee-swca-intake-handler` confirmed `SWCA intake submission stored and emailed`.
+- Invalid payload testing returned `400` and did not create another S3 object.
+
+## What Is Next
+
+- Add CloudWatch alarms for Lambda errors and API abuse signals.
+- Decide whether the email should include full ranked priorities long term or only a summary plus S3 submission id.
+- Build an export path if marketing needs CSV or reporting beyond email notifications.

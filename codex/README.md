@@ -9,10 +9,16 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - Routing: `react-router-dom`
 - Animation: Framer Motion
 - Deployment target: static `dist/` output via Amplify
+- Backend infrastructure: AWS CDK under `infra/`
 - Current SEO model:
   - route metadata is still applied client-side during SPA navigation
   - build-time prerender files are generated for public routes
   - live hosting still needs route-level serving verification for non-root prerendered pages
+- Current partner-form model:
+  - `/swca/rewards` is the QR-facing reward-wheel teaser route
+  - `/swca/intake` is a direct-link campaign route, not a menu route
+  - form submission is live through API Gateway, Lambda, S3, and SES
+  - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 
 ## Current Route Surface
 
@@ -42,6 +48,21 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - should remain `noindex`
   - not linked from nav, footer, or sitemap
 
+### Campaign/direct-link route
+
+- `/swca/rewards`
+  - Spine and Wellness Centers of America reward-wheel teaser page
+  - intended for QR codes and shared links before the intake form
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+  - CTA destination is `/swca/intake`
+- `/swca/intake`
+  - Spine and Wellness Centers of America wellness priority intake form
+  - intended for QR codes and shared links
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+  - submits to API Gateway endpoint `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
+
 ## Page Inventory
 
 - `src/pages/Home.tsx`
@@ -66,10 +87,47 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - SEO landing page for discharge follow-up and continuity discovery
 - `src/pages/SwcaBrief.tsx`
   - standalone internal SWCA brief page
+- `src/swca/rewardsTeaser/SwcaRewardsTeaser.tsx`
+  - standalone reward-wheel teaser for Spine and Wellness Centers of America
+  - uses the campaign flyer wheel asset and routes the primary CTA to `/swca/intake`
+- `src/swca/intakeForm/SpineWellnessIntakeForm.tsx`
+  - standalone campaign intake form for Spine and Wellness Centers of America
+  - supports multi-select, ranking, honeypot, loading, error, and success states
+- `src/swca/intakeForm/api.ts`
+  - submits to `VITE_SWCA_INTAKE_API_URL`; falls back to local mock mode only when the env var is absent
 - `src/pages/AvatarPlaybackTest.tsx`
   - hidden video playback diagnostic page for `/avatar/*` assets
 - `src/pages/SeoLandingPage.tsx`
   - shared layout scaffold for the SEO landing pages
+
+## Partner Intake Implementation State
+
+### Live
+
+- Frontend route: `https://myveevee.com/swca/intake`
+- Teaser route: `https://myveevee.com/swca/rewards`
+- API endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
+- CDK stack: `MyVeeVeeInfraStack`
+- S3 bucket: `myveevee-swca-intake-767828748348-us-east-1`
+- Lambda function: `myveevee-swca-intake-handler`
+- SES sender and recipient: `info@veevee.io`
+- Amplify `main` env var: `VITE_SWCA_INTAKE_API_URL`
+
+### Verified
+
+- Amplify release job `203` succeeded after the env var was added.
+- Live API test returned submission id `4951deed-8fc7-4c9e-86db-b0f7cd40ee02`.
+- S3 object was created at `forms/swca-wellness-priority-intake/year=2026/month=05/day=14/4951deed-8fc7-4c9e-86db-b0f7cd40ee02.json`.
+- Lambda logs confirmed `SWCA intake submission stored and emailed`.
+- Invalid payload testing returned `400` and did not create a second S3 object.
+
+### Next
+
+- Deploy and smoke-test the new `/swca/rewards` teaser route.
+- Decide whether marketing needs CSV export, a dashboard, or email-only operations.
+- Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
+- Add monitoring or alarms for Lambda errors and unusual API volume.
+- If more clinics are added, create new `PartnerIntakeForm` instances from config instead of copying console resources.
 
 ## SEO Implementation State
 
@@ -104,6 +162,12 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - per-route SEO metadata
 - `src/seo/applyRouteSeo.ts`
   - client-side head mutation for route changes
+- `aws/swca-intake/handler.mjs`
+  - Lambda handler for SWCA intake validation, S3 persistence, and SES notification
+- `infra/lib/partner-intake-form.ts`
+  - reusable CDK construct for partner intake backends
+- `infra/lib/myveevee-infra-stack.ts`
+  - deployed CDK stack currently instantiating the SWCA intake backend
 - `scripts/prerender-static-routes.mjs`
   - build-time route HTML generation for public pages
 - `scripts/verify-prerender-static-routes.mjs`
@@ -129,15 +193,25 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - full build plus prerender verification
 - `npm run normalize:payors`
   - payor-logo normalization utility
+- `cd infra; npm run build`
+  - TypeScript validation for CDK infrastructure
+- `cd infra; npx cdk synth --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io`
+  - synthesizes the deployed backend template
 
 ## Validation Baseline
 
-The current SEO work has been validated locally with:
+Current validation state:
 
-- `npm run typecheck`
 - `npm run test`
 - `npm run build`
 - `npm run verify:seo`
+- `cd infra; npm run build`
+- `cd infra; npx cdk synth ...`
+
+Known baseline issue:
+
+- `npm run typecheck` currently fails on pre-existing unrelated issues in `src/pages/AvatarPlaybackTest.tsx` and `src/pages/HealthTwinFunnel.tsx`.
+- The SWCA intake deploy path was validated through `npm run build`, `npm test`, CDK synth/deploy, Amplify release job `203`, live API submission, S3 object verification, and Lambda log verification.
 
 ## Related Docs
 
@@ -149,3 +223,7 @@ The current SEO work has been validated locally with:
   - current Phase 5 audience and intent map
 - `codex/readme_avatar_playback_test.md`
   - hidden playback-test page notes and Amplify hosting-rule diagnosis
+- `aws/swca-intake/README.md`
+  - SWCA intake Lambda contract, S3 object shape, and SES notification details
+- `infra/README.md`
+  - CDK setup, deploy commands, live resource names, and follow-on operations

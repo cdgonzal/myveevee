@@ -15,6 +15,7 @@ export const APP_LINKS = {
     contact: "/contact",
     terms: "/terms",
     swcaBrief: "/briefs/swca-4821.html",
+    swcaRewards: "/swca/rewards",
     swcaIntake: "/swca/intake",
   },
   cta: {
