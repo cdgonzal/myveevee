@@ -16,9 +16,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - live hosting still needs route-level serving verification for non-root prerendered pages
 - Current partner-form model:
   - `/swca/rewards` is the QR-facing reward-wheel teaser route
+  - `/swca/teaser` redirects to `/swca/rewards` as a compatibility alias
   - `/swca/intake` is a direct-link campaign route, not a menu route
   - form submission is live through API Gateway, Lambda, S3, and SES
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
+- Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
 ## Current Route Surface
 
@@ -56,6 +58,9 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
   - CTA destination is `/swca/intake`
+- `/swca/teaser`
+  - compatibility alias for `/swca/rewards`
+  - redirects client-side and remains out of navigation
 - `/swca/intake`
   - Spine and Wellness Centers of America wellness priority intake form
   - intended for QR codes and shared links
@@ -101,6 +106,9 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - SEO landing page for Medicare-related guidance and coverage discovery
 - `src/pages/HospitalToHome.tsx`
   - SEO landing page for discharge follow-up and continuity discovery
+- `src/pages/NotFoundPage.tsx`
+  - tracked recovery page for unknown app paths
+  - primary CTA points to `/how-it-works`
 - `src/pages/SwcaBrief.tsx`
   - standalone internal SWCA brief page
 - `src/swca/rewardsTeaser/SwcaRewardsTeaser.tsx`

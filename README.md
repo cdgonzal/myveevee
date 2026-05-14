@@ -58,9 +58,11 @@ Campaign/direct-link route:
 
 - `npm run build` generates the static site and route-level prerendered HTML for public routes.
 - `npm run verify:seo` rebuilds the site and verifies prerendered SEO output.
+- Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 - The internal SWCA brief should remain non-indexable.
 - The SWCA intake form is live and submits through API Gateway, Lambda, S3, and SES.
 - The SWCA reward teaser is a campaign page that motivates users to start the intake form before the reward-wheel step.
+- `/swca/teaser` is a compatibility alias that redirects to `/swca/rewards`.
 - The reward teaser uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`.
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture. See `_sandbox/codex/spine-wellness-intake-form/PLAN.md`.
 - The SWCA post-reward funnel route is `/swca/funnel`; it uses SWCA branding and provider recommendation copy to send users to create a free profile at `veevee.io`.

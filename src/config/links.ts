@@ -16,6 +16,7 @@ export const APP_LINKS = {
     terms: "/terms",
     swcaBrief: "/briefs/swca-4821.html",
     swcaRewards: "/swca/rewards",
+    swcaTeaserAlias: "/swca/teaser",
     swcaIntake: "/swca/intake",
     swcaWheel: "/swca/wheel",
     swcaFunnel: "/swca/funnel",

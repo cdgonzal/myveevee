@@ -22,7 +22,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { trackCtaClick } from "./analytics/trackCtaClick";
 import { trackEvent } from "./analytics/trackEvent";
 import { trackPageView } from "./analytics/trackPageView";
@@ -30,7 +30,7 @@ import { usePageEngagement } from "./analytics/usePageEngagement";
 import { useScrollDepth } from "./analytics/useScrollDepth";
 import { APP_LINKS } from "./config/links";
 import { applyRouteSeo } from "./seo/applyRouteSeo";
-import { DEFAULT_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
+import { DEFAULT_ROUTE_SEO, NOT_FOUND_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 import { trackSwcaCampaignEvent } from "./swca/campaignEvents";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -47,6 +47,7 @@ const MedicareGuidance = lazy(() => import("./pages/MedicareGuidance"));
 const HospitalToHome = lazy(() => import("./pages/HospitalToHome"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Terms = lazy(() => import("./pages/Terms"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
 const SwcaRewardsTeaser = lazy(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
 const SpineWellnessIntakeForm = lazy(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
@@ -125,7 +126,8 @@ function AnalyticsLifecycle() {
   usePageEngagement(pathname);
 
   useEffect(() => {
-    applyRouteSeo(ROUTE_SEO[pathname] ?? DEFAULT_ROUTE_SEO);
+    const routeSeo = ROUTE_SEO[pathname] ?? (pathname === "/" ? DEFAULT_ROUTE_SEO : NOT_FOUND_ROUTE_SEO);
+    applyRouteSeo(routeSeo);
 
     const frameId = window.requestAnimationFrame(() => {
       trackPageView(pathname, search);
@@ -161,6 +163,7 @@ export default function App() {
   const isStandalonePage =
     pathname === APP_LINKS.internal.swcaBrief ||
     pathname === APP_LINKS.internal.swcaRewards ||
+    pathname === APP_LINKS.internal.swcaTeaserAlias ||
     pathname === APP_LINKS.internal.swcaIntake ||
     pathname === APP_LINKS.internal.swcaWheel ||
     pathname === APP_LINKS.internal.swcaFunnel ||
@@ -182,6 +185,7 @@ export default function App() {
               <Routes>
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
+                <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
@@ -210,10 +214,12 @@ export default function App() {
                 <Route path={APP_LINKS.internal.terms} element={<Terms />} />
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
+                <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
           </Container>

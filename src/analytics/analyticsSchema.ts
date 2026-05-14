@@ -78,6 +78,12 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "campaign_teaser",
     primary_goal: "start_swca_intake",
   },
+  [APP_LINKS.internal.swcaTeaserAlias]: {
+    page_name: "swca_teaser_alias",
+    page_section: "swca_campaign",
+    page_type: "campaign_redirect",
+    primary_goal: "redirect_to_swca_rewards",
+  },
   [APP_LINKS.internal.swcaIntake]: {
     page_name: "swca_intake",
     page_section: "swca_campaign",
