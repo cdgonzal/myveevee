@@ -229,6 +229,8 @@ Success response:
 
 Invalid or expired tokens do not return reward details.
 
+The certificate lookup scans until the matching certificate id is found, then validates the secure token hash before returning reward details. A future higher-volume version should add a DynamoDB index on `certificateId`.
+
 ## Campaign Event API Contract
 
 Request:

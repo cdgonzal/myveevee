@@ -271,19 +271,12 @@ async function handleCertificateRequest(event, origin) {
     return response(400, { message: "Certificate link is incomplete." }, origin);
   }
 
-  const result = await dynamodb.send(
-    new ScanCommand({
-      TableName: process.env.REWARD_CLAIMS_TABLE,
-      FilterExpression: "certificateId = :certificateId",
-      ExpressionAttributeValues: {
-        ":certificateId": { S: certificateId },
-      },
-      Limit: 1,
-    })
-  );
-
-  const item = result.Items?.[0];
+  const item = await findRewardClaimByCertificateId(certificateId);
   if (!item || item.certificateTokenHash?.S !== hashCertificateToken(token)) {
+    console.warn("SWCA reward certificate lookup rejected", {
+      certificateId,
+      foundCertificate: Boolean(item),
+    });
     return response(403, { message: "This certificate link is not valid." }, origin);
   }
 
@@ -309,6 +302,31 @@ async function handleCertificateRequest(event, origin) {
     },
     origin
   );
+}
+
+async function findRewardClaimByCertificateId(certificateId) {
+  let exclusiveStartKey;
+
+  do {
+    const result = await dynamodb.send(
+      new ScanCommand({
+        TableName: process.env.REWARD_CLAIMS_TABLE,
+        FilterExpression: "certificateId = :certificateId",
+        ExpressionAttributeValues: {
+          ":certificateId": { S: certificateId },
+        },
+        ExclusiveStartKey: exclusiveStartKey,
+      })
+    );
+
+    if (result.Items?.[0]) {
+      return result.Items[0];
+    }
+
+    exclusiveStartKey = result.LastEvaluatedKey;
+  } while (exclusiveStartKey);
+
+  return undefined;
 }
 
 function validateConfig() {
