@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { trackEvent } from "../analytics/trackEvent";
 import { APP_LINKS } from "../config/links";
 
 export default function NotFoundPage() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     trackEvent("not_found_view", {
@@ -15,6 +16,20 @@ export default function NotFoundPage() {
       referrer: document.referrer ? "present" : "none",
     });
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const redirectId = window.setTimeout(() => {
+      trackEvent("not_found_auto_redirect", {
+        missing_path: location.pathname,
+        destination_url: APP_LINKS.internal.howItWorks,
+      });
+      navigate(APP_LINKS.internal.howItWorks, { replace: true });
+    }, 18000);
+
+    return () => {
+      window.clearTimeout(redirectId);
+    };
+  }, [location.pathname, navigate]);
 
   return (
     <Box minH={{ base: "58vh", md: "64vh" }} display="flex" alignItems="center">
@@ -29,6 +44,9 @@ export default function NotFoundPage() {
           <Text fontSize={{ base: "lg", md: "xl" }} color="text.muted" lineHeight="1.55">
             The page you requested is not available. The best next step is the short walkthrough of how VeeVee works and
             where to go from there.
+          </Text>
+          <Text color="text.muted" fontWeight="700">
+            Redirecting you in 18 seconds.
           </Text>
         </Stack>
 
