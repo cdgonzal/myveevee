@@ -62,6 +62,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
   - submits to API Gateway endpoint `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
+- `/swca/wheel`
+  - post-intake reward-wheel route implemented in the repo
+  - should stay direct-link only and `noindex`
+  - should be reached from a successful intake response using `submissionId` plus a one-time token
+  - live AWS/Amplify deployment is pending
 
 ## Page Inventory
 
@@ -96,6 +101,14 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - supports multi-select, ranking, honeypot, loading, error, and success states
 - `src/swca/intakeForm/api.ts`
   - submits to `VITE_SWCA_INTAKE_API_URL`; falls back to local mock mode only when the env var is absent
+- `src/swca/rewardWheel/SwcaRewardWheel.tsx`
+  - standalone post-intake reward wheel for Spine and Wellness Centers of America
+  - validates a `sid` and `token` query string before allowing a spin
+  - collects winner first name, last name, and email or phone after the reward is revealed
+- `src/swca/rewardWheel/api.ts`
+  - submits to `VITE_SWCA_REWARD_SPIN_API_URL`; falls back to local mock mode only when the env var is absent
+- `src/swca/rewardWheel/reward-wheel-config.json`
+  - marketing-editable reward slot config for labels, descriptions, estimated values, colors, weights, and total slot count
 - `src/pages/AvatarPlaybackTest.tsx`
   - hidden video playback diagnostic page for `/avatar/*` assets
 - `src/pages/SeoLandingPage.tsx`
@@ -124,7 +137,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Next
 
-- Deploy and smoke-test the new `/swca/rewards` teaser route.
+- Review the implemented reward catalog and odds before AWS deployment.
+- Deploy the CDK stack so the DynamoDB reward table and spin endpoint become live.
+- Add the CDK output value for `VITE_SWCA_REWARD_SPIN_API_URL` to Amplify `main`.
+- Deploy Amplify `main` and smoke-test the full `/swca/rewards` -> `/swca/intake` -> `/swca/wheel` flow.
+- Ask marketing to finalize `src/swca/rewardWheel/reward-wheel-config.json` before production traffic.
 - Decide whether marketing needs CSV export, a dashboard, or email-only operations.
 - Decide whether the email should keep full ranked concern detail or move toward a lighter notification with S3/admin lookup.
 - Add monitoring or alarms for Lambda errors and unusual API volume.
@@ -164,9 +181,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `src/seo/applyRouteSeo.ts`
   - client-side head mutation for route changes
 - `aws/swca-intake/handler.mjs`
-  - Lambda handler for SWCA intake validation, S3 persistence, and SES notification
+  - Lambda handler for SWCA intake validation, S3 persistence, SES notification, and reward eligibility creation
+- `aws/swca-intake/spin-handler.mjs`
+  - Lambda handler for one-time SWCA reward spin claims and post-win contact capture
 - `infra/lib/partner-intake-form.ts`
-  - reusable CDK construct for partner intake backends
+  - reusable CDK construct for partner intake and reward-wheel backends
 - `infra/lib/myveevee-infra-stack.ts`
   - deployed CDK stack currently instantiating the SWCA intake backend
 - `scripts/prerender-static-routes.mjs`
@@ -228,3 +247,5 @@ Known baseline issue:
   - SWCA intake Lambda contract, S3 object shape, and SES notification details
 - `infra/README.md`
   - CDK setup, deploy commands, live resource names, and follow-on operations
+- `_sandbox/codex/spine-wellness-intake-form/PLAN.md`
+  - active SWCA intake, teaser, and reward-wheel implementation plan with phases, tasks, and acceptance criteria

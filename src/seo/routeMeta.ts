@@ -189,4 +189,13 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.swcaWheel]: {
+    title: "SWCA Reward Wheel",
+    description: "Spine and Wellness Centers of America post-intake reward wheel.",
+    canonicalPath: APP_LINKS.internal.swcaWheel,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
 };

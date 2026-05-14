@@ -49,6 +49,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const SwcaBrief = lazy(() => import("./pages/SwcaBrief"));
 const SwcaRewardsTeaser = lazy(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
 const SpineWellnessIntakeForm = lazy(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
+const SwcaRewardWheel = lazy(() => import("./swca/rewardWheel/SwcaRewardWheel"));
 
 type FooterNavLink = {
   label: string;
@@ -148,7 +149,8 @@ export default function App() {
   const isStandalonePage =
     pathname === APP_LINKS.internal.swcaBrief ||
     pathname === APP_LINKS.internal.swcaRewards ||
-    pathname === APP_LINKS.internal.swcaIntake;
+    pathname === APP_LINKS.internal.swcaIntake ||
+    pathname === APP_LINKS.internal.swcaWheel;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -167,6 +169,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
+                <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
               </Routes>
             </Suspense>
           </>
@@ -192,6 +195,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
+                <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
               </Routes>
             </Suspense>
           </Container>

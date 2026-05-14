@@ -108,11 +108,15 @@ export default function SpineWellnessIntakeForm() {
       toast({
         title:
           result.mode === "mock"
-            ? "Local preview captured. AWS endpoint is not configured yet."
+            ? "Local preview captured. Opening the reward wheel."
             : "Thank you. Your priorities have been captured.",
         status: "success",
         duration: 3200,
       });
+
+      if (result.wheelUrl) {
+        window.location.assign(result.wheelUrl);
+      }
     } catch (error) {
       toast({
         title: "We could not submit the form.",

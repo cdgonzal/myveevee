@@ -31,5 +31,6 @@ export type SwcaIntakeSubmission = {
 
 export type SwcaIntakeSubmissionResult = {
   submissionId?: string;
+  wheelUrl?: string;
   mode: "mock" | "live";
 };

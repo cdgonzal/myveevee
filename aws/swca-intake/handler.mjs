@@ -1,8 +1,11 @@
+import { PutItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
-import { randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
+import rewardWheelConfig from "../../src/swca/rewardWheel/reward-wheel-config.json";
 
 const FORM_ID = "swca-wellness-priority-intake";
+const CAMPAIGN_ID = rewardWheelConfig.campaignId;
 const DEFAULT_PREFIX = "forms/swca-wellness-priority-intake";
 const JSON_CONTENT_TYPE = "application/json";
 
@@ -72,6 +75,7 @@ const CONCERNS = [
 
 const concernIds = new Set(CONCERNS.map((concern) => concern.id));
 const concernsById = new Map(CONCERNS.map((concern) => [concern.id, concern]));
+const dynamodb = new DynamoDBClient({});
 const s3 = new S3Client({});
 const ses = new SESClient({});
 
@@ -110,6 +114,8 @@ export async function handler(event) {
 
   const submittedAt = new Date().toISOString();
   const submissionId = randomUUID();
+  const rewardToken = createRewardToken();
+  const wheelUrl = buildWheelUrl(submissionId, rewardToken);
   const normalizedSubmission = normalizeSubmission(payload, submissionId, submittedAt, event);
   const objectKey = buildObjectKey(submittedAt, submissionId);
 
@@ -123,6 +129,15 @@ export async function handler(event) {
         ServerSideEncryption: "AES256",
       })
     );
+
+    await createRewardEligibility({
+      submissionId,
+      token: rewardToken,
+      createdAt: submittedAt,
+      sourcePath: normalizedSubmission.sourcePath,
+      pageUrl: normalizedSubmission.pageUrl,
+      event,
+    });
 
     await ses.send(
       new SendEmailCommand({
@@ -159,11 +174,13 @@ export async function handler(event) {
     objectKey,
   });
 
-  return response(200, { ok: true, submissionId }, origin);
+  return response(200, { ok: true, submissionId, wheelUrl }, origin);
 }
 
 function validateConfig() {
-  const missing = ["SUBMISSIONS_BUCKET", "SES_FROM_EMAIL", "SES_TO_EMAILS"].filter((name) => !process.env[name]);
+  const missing = ["SUBMISSIONS_BUCKET", "SES_FROM_EMAIL", "SES_TO_EMAILS", "REWARD_CLAIMS_TABLE"].filter(
+    (name) => !process.env[name]
+  );
   return missing.length > 0 ? `Missing environment variables: ${missing.join(", ")}` : null;
 }
 
@@ -259,6 +276,43 @@ function buildObjectKey(submittedAt, submissionId) {
   const day = String(date.getUTCDate()).padStart(2, "0");
   const prefix = (process.env.SUBMISSIONS_PREFIX ?? DEFAULT_PREFIX).replace(/\/+$/, "");
   return `${prefix}/year=${year}/month=${month}/day=${day}/${submissionId}.json`;
+}
+
+async function createRewardEligibility({ submissionId, token, createdAt, sourcePath, pageUrl, event }) {
+  await dynamodb.send(
+    new PutItemCommand({
+      TableName: process.env.REWARD_CLAIMS_TABLE,
+      ConditionExpression: "attribute_not_exists(submissionId)",
+      Item: {
+        submissionId: { S: submissionId },
+        campaignId: { S: CAMPAIGN_ID },
+        formId: { S: FORM_ID },
+        status: { S: "eligible" },
+        tokenHash: { S: hashToken(token) },
+        createdAt: { S: createdAt },
+        sourcePath: { S: sourcePath },
+        ...(pageUrl ? { pageUrl: { S: pageUrl } } : {}),
+        requestUserAgentHash: { S: hashValue(event.headers?.["user-agent"] ?? event.headers?.["User-Agent"] ?? "") },
+        sourceIpHash: { S: hashValue(event.requestContext?.http?.sourceIp ?? "") },
+      },
+    })
+  );
+}
+
+function createRewardToken() {
+  return randomBytes(32).toString("base64url");
+}
+
+function buildWheelUrl(submissionId, token) {
+  return `/swca/wheel?sid=${encodeURIComponent(submissionId)}&token=${encodeURIComponent(token)}`;
+}
+
+function hashToken(token) {
+  return createHash("sha256").update(`swca-reward-token:${token}`).digest("hex");
+}
+
+function hashValue(value) {
+  return createHash("sha256").update(String(value)).digest("hex");
 }
 
 function buildEmailBody(submission, objectKey) {

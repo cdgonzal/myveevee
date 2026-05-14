@@ -1,0 +1,64 @@
+{
+  "campaignId": "swca-reward-wheel-v1",
+  "rewardVersion": "2026-05-v1",
+  "totalSlots": 5,
+  "instructionsForMarketing": [
+    "Edit slotNumber, label, shortLabel, description, estimatedValue, weight, and color as needed.",
+    "Keep id stable after launch if reports or redemption tracking may reference that reward.",
+    "totalSlots must match the number of items in slots.",
+    "weight controls odds. Equal weights mean equal chance. Higher weight means more common.",
+    "Use shortLabel for wheel segments and label/description for the winner result."
+  ],
+  "slots": [
+    {
+      "slotNumber": 1,
+      "id": "healthy-snacks",
+      "label": "Healthy Snacks Reward",
+      "shortLabel": "Snacks",
+      "description": "A curated healthy snack reward selected by the Spine and Wellness team.",
+      "estimatedValue": "Value to be confirmed by marketing",
+      "weight": 20,
+      "color": "#F39A25"
+    },
+    {
+      "slotNumber": 2,
+      "id": "wellness-credit-25",
+      "label": "$25 Wellness Credit",
+      "shortLabel": "$25 Credit",
+      "description": "A wellness credit that can be applied according to clinic reward rules.",
+      "estimatedValue": "$25",
+      "weight": 20,
+      "color": "#071A3A"
+    },
+    {
+      "slotNumber": 3,
+      "id": "b12-shot",
+      "label": "Complimentary B12 Shot",
+      "shortLabel": "B12 Shot",
+      "description": "A complimentary B12 shot, subject to clinic eligibility and availability.",
+      "estimatedValue": "Value to be confirmed by marketing",
+      "weight": 20,
+      "color": "#2F7D7E"
+    },
+    {
+      "slotNumber": 4,
+      "id": "consult-upgrade",
+      "label": "Consultation Upgrade",
+      "shortLabel": "Upgrade",
+      "description": "A consultation upgrade or add-on determined by the clinic team.",
+      "estimatedValue": "Value to be confirmed by marketing",
+      "weight": 20,
+      "color": "#E8B84C"
+    },
+    {
+      "slotNumber": 5,
+      "id": "wellness-gift",
+      "label": "Wellness Gift",
+      "shortLabel": "Gift",
+      "description": "A wellness gift from the Spine and Wellness team.",
+      "estimatedValue": "Value to be confirmed by marketing",
+      "weight": 20,
+      "color": "#8A4D76"
+    }
+  ]
+}

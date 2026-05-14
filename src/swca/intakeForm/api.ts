@@ -2,6 +2,7 @@ import type { SwcaIntakeSubmission, SwcaIntakeSubmissionResult } from "./types";
 
 type SwcaIntakeApiResponse = {
   submissionId?: string;
+  wheelUrl?: string;
   message?: string;
 };
 
@@ -14,7 +15,11 @@ export async function submitSwcaIntake(
 
   if (!endpoint) {
     console.info("SWCA intake mock submission", submission);
-    return { mode: "mock" };
+    return {
+      mode: "mock",
+      submissionId: "local-preview",
+      wheelUrl: "/swca/wheel?sid=local-preview&token=local-preview-token-for-reward-wheel",
+    };
   }
 
   const response = await fetch(endpoint, {
@@ -34,5 +39,6 @@ export async function submitSwcaIntake(
   return {
     mode: "live",
     submissionId: payload.submissionId,
+    wheelUrl: payload.wheelUrl,
   };
 }
