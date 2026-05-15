@@ -30,6 +30,10 @@ export type SwcaAdminClaim = {
   messageStatus: string;
   messageSentAt: string;
   messageError: string;
+  topConcern1: string;
+  topConcern2: string;
+  careInterest: string;
+  moveForwardFactor: string;
 };
 
 export type SwcaAdminEvent = {
@@ -49,6 +53,9 @@ export type SwcaAdminReport = {
   metrics: SwcaAdminMetrics;
   rewardDistribution: Record<string, number>;
   contactMethodDistribution: Record<string, number>;
+  topConcernDistribution: Record<string, number>;
+  careInterestDistribution: Record<string, number>;
+  moveForwardFactorDistribution: Record<string, number>;
   eventCounts: Record<string, number>;
   recentClaims: SwcaAdminClaim[];
   recentEvents: SwcaAdminEvent[];
@@ -118,6 +125,9 @@ export async function fetchSwcaAdminReport(token: string): Promise<SwcaAdminRepo
     metrics: payload.metrics,
     rewardDistribution: payload.rewardDistribution ?? {},
     contactMethodDistribution: payload.contactMethodDistribution ?? {},
+    topConcernDistribution: payload.topConcernDistribution ?? {},
+    careInterestDistribution: payload.careInterestDistribution ?? {},
+    moveForwardFactorDistribution: payload.moveForwardFactorDistribution ?? {},
     eventCounts: payload.eventCounts ?? {},
     recentClaims: payload.recentClaims ?? [],
     recentEvents: payload.recentEvents ?? [],
@@ -146,6 +156,16 @@ function createMockReport(): SwcaAdminReport {
     contactMethodDistribution: {
       email: 1,
     },
+    topConcernDistribution: {
+      "Stress, Anxiety, and Burnout": 1,
+      "Poor Sleep / Insomnia": 1,
+    },
+    careInterestDistribution: {
+      "Very interested": 1,
+    },
+    moveForwardFactorDistribution: {
+      "Insurance coverage": 1,
+    },
     eventCounts: {
       swca_page_view: 7,
       swca_intake_submit_success: 3,
@@ -172,6 +192,10 @@ function createMockReport(): SwcaAdminReport {
         messageStatus: "sent",
         messageSentAt: new Date().toISOString(),
         messageError: "",
+        topConcern1: "Stress, Anxiety, and Burnout",
+        topConcern2: "Poor Sleep / Insomnia",
+        careInterest: "Very interested",
+        moveForwardFactor: "Insurance coverage",
       },
     ],
     recentEvents: [],

@@ -104,7 +104,7 @@ Acceptance criteria:
 
 ## Phase 5: Intake Payload And Persistence
 
-Status: complete for S3 persistence and backend validation. DynamoDB/admin summary fields are deferred to Phase 6.
+Status: complete. S3 persistence and backend validation are live.
 
 Tasks:
 
@@ -113,7 +113,7 @@ Tasks:
 - Add `intentAnswers` keyed by question id.
 - Validate the new fields in `aws/swca-intake/handler.mjs`.
 - Store the new fields in the S3 intake JSON.
-- Keep summarized DynamoDB/admin fields deferred until Phase 6 so the first launch stores the full structured payload in S3 without changing dashboard rows prematurely.
+- Keep summarized DynamoDB/admin fields out of the intake write path; the admin report reads redacted summaries from S3 when needed.
 
 Acceptance criteria:
 
@@ -125,16 +125,17 @@ Acceptance criteria:
 
 ## Phase 6: Admin And Reporting
 
-Status: next.
+Status: complete. The admin report now joins recent S3 intake records by `submissionId` and surfaces redacted signal summaries.
 
 Tasks:
 
 - Add top ranked concerns and intent answers to the admin report payload only as redacted/non-PII fields.
-- Add optional CSV columns for:
+- Add CSV columns for:
   - top concern 1
   - top concern 2
-  - key intent answer
-  - payment or insurance preference
+- care interest
+- move-forward factor
+- Add dashboard distributions for top concerns, care interest, and move-forward factor.
 - Keep raw contact fields hidden.
 
 Acceptance criteria:
@@ -146,6 +147,8 @@ Acceptance criteria:
 - Existing dashboard metrics continue to load for old and new submissions.
 
 ## Phase 7: Validation And Launch
+
+Status: in progress. Local validation passed; production deploy and final dashboard smoke remain the active launch checks.
 
 Tasks:
 

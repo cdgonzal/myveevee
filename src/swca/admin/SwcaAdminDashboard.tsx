@@ -210,6 +210,12 @@ export default function SwcaAdminDashboard() {
                       <Distribution title="First-party events" items={report.eventCounts} />
                     </SimpleGrid>
 
+                    <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
+                      <Distribution title="Top concerns" items={report.topConcernDistribution} />
+                      <Distribution title="Care interest" items={report.careInterestDistribution} />
+                      <Distribution title="Move-forward factor" items={report.moveForwardFactorDistribution} />
+                    </SimpleGrid>
+
                     <Box bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" overflow="hidden">
                       <Flex align="center" justify="space-between" p={5} borderBottom="1px solid" borderColor={LINE}>
                         <Box>
@@ -228,11 +234,13 @@ export default function SwcaAdminDashboard() {
                             <Tr>
                               <Th>Submitted</Th>
                               <Th>Status</Th>
-                      <Th>Reward</Th>
-                      <Th>Contact</Th>
-                      <Th>Message</Th>
-                      <Th>Name</Th>
-                      <Th>Submission</Th>
+                              <Th>Top concerns</Th>
+                              <Th>Intent</Th>
+                              <Th>Reward</Th>
+                              <Th>Contact</Th>
+                              <Th>Message</Th>
+                              <Th>Name</Th>
+                              <Th>Submission</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
@@ -240,10 +248,12 @@ export default function SwcaAdminDashboard() {
                               <Tr key={claim.submissionId}>
                                 <Td>{formatDateTime(claim.createdAt)}</Td>
                                 <Td>{claim.status || "eligible"}</Td>
-                        <Td>{claim.rewardLabel || "-"}</Td>
-                        <Td>{claim.contactMethod || "-"}</Td>
-                        <Td>{formatMessageStatus(claim.messageStatus)}</Td>
-                        <Td>{claim.contactName || "-"}</Td>
+                                <Td>{formatTopConcerns(claim)}</Td>
+                                <Td>{formatIntent(claim)}</Td>
+                                <Td>{claim.rewardLabel || "-"}</Td>
+                                <Td>{claim.contactMethod || "-"}</Td>
+                                <Td>{formatMessageStatus(claim.messageStatus)}</Td>
+                                <Td>{claim.contactName || "-"}</Td>
                                 <Td fontFamily="mono" fontSize="xs">
                                   {claim.submissionId}
                                 </Td>
@@ -433,10 +443,28 @@ function formatDateTime(value: string) {
 }
 
 function exportClaims(claims: SwcaAdminClaim[]) {
-  const header = ["submitted_at", "status", "reward", "contact_method", "message_channel", "message_status", "message_sent_at", "contact_name", "submission_id"];
+  const header = [
+    "submitted_at",
+    "status",
+    "top_concern_1",
+    "top_concern_2",
+    "care_interest",
+    "move_forward_factor",
+    "reward",
+    "contact_method",
+    "message_channel",
+    "message_status",
+    "message_sent_at",
+    "contact_name",
+    "submission_id",
+  ];
   const rows = claims.map((claim) => [
     claim.createdAt,
     claim.status,
+    claim.topConcern1,
+    claim.topConcern2,
+    claim.careInterest,
+    claim.moveForwardFactor,
     claim.rewardLabel,
     claim.contactMethod,
     claim.messageChannel,
@@ -462,4 +490,13 @@ function formatMessageStatus(value: string) {
   if (!value) return "-";
   if (value === "not_supported") return "not sent";
   return value;
+}
+
+function formatTopConcerns(claim: SwcaAdminClaim) {
+  return [claim.topConcern1, claim.topConcern2].filter(Boolean).join(" / ") || "-";
+}
+
+function formatIntent(claim: SwcaAdminClaim) {
+  const values = [claim.careInterest, claim.moveForwardFactor].filter(Boolean);
+  return values.length > 0 ? values.join(" / ") : "-";
 }

@@ -1,16 +1,22 @@
 import { PutItemCommand, ScanCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { GetObjectCommand, ListObjectsV2Command, S3Client } from "@aws-sdk/client-s3";
 import { GetSecretValueCommand, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import intakeConfig from "../../src/swca/intakeForm/swca-intake-config.json";
 
 const JSON_CONTENT_TYPE = "application/json";
 const CAMPAIGN_ID = "swca-reward-wheel-v1";
 const TOKEN_TTL_SECONDS = 60 * 60 * 8;
 const EVENT_TTL_DAYS = 400;
 const MAX_REPORT_ITEMS = 1000;
+const MAX_SIGNAL_OBJECTS = 250;
 
 const dynamodb = new DynamoDBClient({});
+const s3 = new S3Client({});
 const secrets = new SecretsManagerClient({});
 const secretCache = new Map();
+const concernsById = new Map(intakeConfig.concerns.map((concern) => [concern.id, concern]));
+const intentQuestionsById = new Map(intakeConfig.intentQuestions.map((question) => [question.id, question]));
 
 export async function handler(event) {
   const origin = getRequestOrigin(event);
@@ -145,18 +151,29 @@ async function handleAdminReport(event, origin) {
     return response(401, { message: "Admin session is invalid or expired." }, origin);
   }
 
-  const [rewardItems, eventItems] = await Promise.all([scanTable(process.env.REWARD_CLAIMS_TABLE), scanTable(process.env.CAMPAIGN_EVENTS_TABLE)]);
+  const [rewardItems, eventItems, intakeSignalsBySubmissionId] = await Promise.all([
+    scanTable(process.env.REWARD_CLAIMS_TABLE),
+    scanTable(process.env.CAMPAIGN_EVENTS_TABLE),
+    loadIntakeSignalsBySubmissionId(),
+  ]);
   const claims = rewardItems.map(normalizeClaim).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const enrichedClaims = claims.map((claim) => ({
+    ...claim,
+    ...(intakeSignalsBySubmissionId.get(claim.submissionId) ?? emptySignalSummary()),
+  }));
   const events = eventItems.map(normalizeEvent).sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
 
   return response(200, {
     ok: true,
     generatedAt: new Date().toISOString(),
-    metrics: buildMetrics(claims, events),
-    rewardDistribution: countBy(claims.filter((claim) => claim.rewardId), "rewardLabel"),
-    contactMethodDistribution: countBy(claims.filter((claim) => claim.contactSavedAt), "contactMethod"),
+    metrics: buildMetrics(enrichedClaims, events),
+    rewardDistribution: countBy(enrichedClaims.filter((claim) => claim.rewardId), "rewardLabel"),
+    contactMethodDistribution: countBy(enrichedClaims.filter((claim) => claim.contactSavedAt), "contactMethod"),
+    topConcernDistribution: countBy(enrichedClaims.filter((claim) => claim.topConcern1), "topConcern1"),
+    careInterestDistribution: countBy(enrichedClaims.filter((claim) => claim.careInterest), "careInterest"),
+    moveForwardFactorDistribution: countBy(enrichedClaims.filter((claim) => claim.moveForwardFactor), "moveForwardFactor"),
     eventCounts: countBy(events, "eventName"),
-    recentClaims: claims.slice(0, 250),
+    recentClaims: enrichedClaims.slice(0, 250),
     recentEvents: events.slice(0, 250),
   }, origin);
 }
@@ -168,6 +185,8 @@ function validateConfig() {
     "CAMPAIGN_EVENTS_TABLE",
     "FORM_ID",
     "REWARD_CLAIMS_TABLE",
+    "SUBMISSIONS_BUCKET",
+    "SUBMISSIONS_PREFIX",
   ].filter((name) => !process.env[name]);
   return missing.length > 0 ? `Missing environment variables: ${missing.join(", ")}` : null;
 }
@@ -215,6 +234,92 @@ async function scanTable(tableName) {
   } while (ExclusiveStartKey && items.length < MAX_REPORT_ITEMS);
 
   return items.slice(0, MAX_REPORT_ITEMS);
+}
+
+async function loadIntakeSignalsBySubmissionId() {
+  const objects = await listRecentSubmissionObjects();
+  const entries = await Promise.all(
+    objects.map(async (object) => {
+      try {
+        const submission = await readSubmissionObject(object.Key);
+        return [submission.submissionId, summarizeIntakeSignals(submission)];
+      } catch (error) {
+        console.warn("SWCA admin report could not read intake signal object", {
+          keyHash: hashLike(object.Key ?? ""),
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return null;
+      }
+    })
+  );
+
+  return new Map(entries.filter(Boolean));
+}
+
+async function listRecentSubmissionObjects() {
+  const prefix = String(process.env.SUBMISSIONS_PREFIX ?? "").replace(/\/+$/, "");
+  const objects = [];
+  let ContinuationToken;
+
+  do {
+    const result = await s3.send(
+      new ListObjectsV2Command({
+        Bucket: process.env.SUBMISSIONS_BUCKET,
+        Prefix: `${prefix}/`,
+        MaxKeys: 200,
+        ContinuationToken,
+      })
+    );
+
+    objects.push(...(result.Contents ?? []).filter((object) => object.Key?.endsWith(".json")));
+    ContinuationToken = result.NextContinuationToken;
+  } while (ContinuationToken && objects.length < MAX_SIGNAL_OBJECTS);
+
+  return objects
+    .sort((a, b) => new Date(b.LastModified ?? 0).getTime() - new Date(a.LastModified ?? 0).getTime())
+    .slice(0, MAX_SIGNAL_OBJECTS);
+}
+
+async function readSubmissionObject(key) {
+  const result = await s3.send(
+    new GetObjectCommand({
+      Bucket: process.env.SUBMISSIONS_BUCKET,
+      Key: key,
+    })
+  );
+  return JSON.parse(await result.Body.transformToString());
+}
+
+function summarizeIntakeSignals(submission) {
+  const topRankedConcernIds = Array.isArray(submission.topRankedConcernIds) ? submission.topRankedConcernIds : [];
+  const topConcern1Id = topRankedConcernIds[0] ?? "";
+  const topConcern2Id = topRankedConcernIds[1] ?? "";
+  const intentAnswers = submission.intentAnswers && typeof submission.intentAnswers === "object" ? submission.intentAnswers : {};
+
+  return {
+    topConcern1: concernsById.get(topConcern1Id)?.title ?? "",
+    topConcern2: concernsById.get(topConcern2Id)?.title ?? "",
+    careInterest: labelIntentAnswer("care_interest", intentAnswers.care_interest),
+    moveForwardFactor: labelIntentAnswer("move_forward_factor", intentAnswers.move_forward_factor),
+  };
+}
+
+function emptySignalSummary() {
+  return {
+    topConcern1: "",
+    topConcern2: "",
+    careInterest: "",
+    moveForwardFactor: "",
+  };
+}
+
+function labelIntentAnswer(questionId, answerValue) {
+  const question = intentQuestionsById.get(questionId);
+  if (!question) return "";
+
+  const answers = Array.isArray(answerValue) ? answerValue : [answerValue].filter(Boolean);
+  const optionsById = new Map((question.options ?? []).map((option) => [option.id, option]));
+  return answers.map((answer) => optionsById.get(answer)?.label).filter(Boolean).join("; ");
 }
 
 function normalizeClaim(item) {

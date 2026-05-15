@@ -48,9 +48,9 @@ Admin/reporting extension:
 
 `SWCA campaign pages -> event API -> DynamoDB campaign events`
 
-`/swca/admin -> admin session API -> Secrets Manager passcode check -> admin report API -> redacted DynamoDB report`
+`/swca/admin -> admin session API -> Secrets Manager passcode check -> admin report API -> redacted DynamoDB + S3 report`
 
-The admin report returns abbreviated names and contact method only. It does not return raw email addresses or phone numbers.
+The admin report returns abbreviated names, contact method, reward status, and structured intake signal summaries. It does not return raw email addresses, phone numbers, or full sensitive intake notes.
 
 ## Lambda Environment
 
@@ -305,7 +305,14 @@ GET /forms/swca-admin-report
 Authorization: Bearer <signed-session-token>
 ```
 
-The report includes aggregate counts, event counts, reward distribution, contact-method distribution, and recent redacted rows.
+The report includes aggregate counts, event counts, reward distribution, contact-method distribution, top-concern distribution, care-interest distribution, move-forward-factor distribution, and recent redacted rows.
+
+Recent rows include these non-PII signal fields when the matching S3 intake record is available:
+
+- `topConcern1`
+- `topConcern2`
+- `careInterest`
+- `moveForwardFactor`
 
 ## S3 Object Shape
 
