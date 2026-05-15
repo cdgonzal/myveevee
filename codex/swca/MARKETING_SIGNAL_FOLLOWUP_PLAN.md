@@ -16,6 +16,8 @@ The follow-up step should ask a small number of questions based on the user's to
 
 ## Phase 1: Editable Intake Question Config
 
+Status: complete. The editable config lives at `src/swca/intakeForm/swca-intake-config.json`.
+
 Tasks:
 
 - Replace the hardcoded concern list in `src/swca/intakeForm/concerns.ts` with a JSON-backed config.
@@ -35,6 +37,8 @@ Acceptance criteria:
 - Existing concern ids remain stable so historical reporting does not break.
 
 ## Phase 2: Concern-Specific Follow-Up Questions
+
+Status: next.
 
 Tasks:
 

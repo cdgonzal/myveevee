@@ -72,6 +72,7 @@ Campaign/direct-link route:
 - The SWCA post-reward funnel route is `/swca/funnel`; it uses SWCA branding and provider recommendation copy to send users to create a free profile at `veevee.io`.
 - The SWCA admin dashboard route is `/swca/admin`; it uses a backend passcode session and returns abbreviated names plus contact method only.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
+- Intake concern options and follow-up question placeholders are configured in `src/swca/intakeForm/swca-intake-config.json`.
 - The active SWCA implementation track is marketing signal follow-up questions after ranking. See [MARKETING_SIGNAL_FOLLOWUP_PLAN.md](/C:/w/myveevee/codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md:1).
 - Reward communication and admin handoff notes remain in [REWARD_COMMUNICATION_PLAN.md](/C:/w/myveevee/codex/swca/REWARD_COMMUNICATION_PLAN.md:1).
 - The SWCA admin runbook lives at [ADMIN_RUNBOOK.md](/C:/w/myveevee/codex/swca/ADMIN_RUNBOOK.md:1).

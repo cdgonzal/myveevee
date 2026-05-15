@@ -124,6 +124,8 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `src/swca/intakeForm/SpineWellnessIntakeForm.tsx`
   - standalone campaign intake form for Spine and Wellness Centers of America
   - supports multi-select, ranking, honeypot, loading, error, and success states
+- `src/swca/intakeForm/swca-intake-config.json`
+  - editable SWCA concern options plus follow-up and intent question configuration
 - `src/swca/intakeForm/api.ts`
   - submits to `VITE_SWCA_INTAKE_API_URL`; falls back to local mock mode only when the env var is absent
 - `src/swca/rewardWheel/SwcaRewardWheel.tsx`

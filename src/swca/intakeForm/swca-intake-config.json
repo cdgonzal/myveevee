@@ -1,0 +1,77 @@
+{
+  "formId": "swca-wellness-priority-intake",
+  "followUpTopRankedCount": 2,
+  "concerns": [
+    {
+      "id": "chronic-fatigue-low-energy",
+      "number": 1,
+      "title": "Chronic Fatigue / Low Energy",
+      "description": "Feelings of constant tiredness, low stamina, brain fog, or difficulty getting through the day.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "weight-gain-metabolic-dysfunction",
+      "number": 2,
+      "title": "Weight Gain / Metabolic Dysfunction",
+      "description": "Difficulty losing weight, especially around the midsection, slow metabolism, or concerns about blood sugar/insulin.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "hormonal-imbalance",
+      "number": 3,
+      "title": "Hormonal Imbalance",
+      "description": "Symptoms such as low libido, mood changes, hot flashes, PMS, low testosterone, or other hormone-related concerns.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "chronic-pain-inflammation",
+      "number": 4,
+      "title": "Chronic Pain and Inflammation",
+      "description": "Ongoing pain, stiffness, joint pain, back pain, or inflammation that interferes with daily activities.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "poor-sleep-insomnia",
+      "number": 5,
+      "title": "Poor Sleep / Insomnia",
+      "description": "Trouble falling asleep, staying asleep, or waking up feeling unrefreshed and tired.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "brain-fog-cognitive-decline",
+      "number": 6,
+      "title": "Brain Fog / Cognitive Decline",
+      "description": "Difficulty with memory, concentration, focus, or mental clarity.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "stress-anxiety-burnout",
+      "number": 7,
+      "title": "Stress, Anxiety, and Burnout",
+      "description": "High stress levels, anxiety, irritability, or feeling overwhelmed and unable to recharge.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "gut-health-issues",
+      "number": 8,
+      "title": "Gastrointestinal / Gut Health Issues",
+      "description": "Bloating, constipation, reflux, IBS-like symptoms, or food sensitivities.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "immune-dysfunction-frequent-illness",
+      "number": 9,
+      "title": "Immune Dysfunction / Frequent Illness",
+      "description": "Getting sick often, slow healing, chronic inflammation, or autoimmune-type symptoms.",
+      "followUpQuestions": []
+    },
+    {
+      "id": "aging-longevity-optimization",
+      "number": 10,
+      "title": "Aging / Longevity Optimization",
+      "description": "Desire to improve overall vitality, prevent age-related decline, and optimize long-term health and longevity.",
+      "followUpQuestions": []
+    }
+  ],
+  "intentQuestions": []
+}
