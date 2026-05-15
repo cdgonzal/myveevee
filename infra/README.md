@@ -102,6 +102,12 @@ Use real, verified SES identities. The current deployed values are `info@veevee.
 npx cdk deploy MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io --parameters SwcaAlertEmail=info@veevee.io --parameters SwcaPublicBaseUrl=https://myveevee.com
 ```
 
+Include the allowed origins parameter when deploying SWCA stack changes. In PowerShell, keep the comma-separated value in quotes so CloudFormation receives separate origins instead of one malformed space-joined origin:
+
+```powershell
+--parameters "SwcaAllowedOrigins=https://myveevee.com,https://www.myveevee.com,https://main.dc8zya6af7720.amplifyapp.com"
+```
+
 Optional admin secret-name overrides:
 
 ```powershell
@@ -111,7 +117,7 @@ Optional admin secret-name overrides:
 Optional allowed origins override:
 
 ```powershell
---parameters SwcaAllowedOrigins=https://myveevee.com,https://main.dc8zya6af7720.amplifyapp.com
+--parameters "SwcaAllowedOrigins=https://myveevee.com,https://www.myveevee.com,https://main.dc8zya6af7720.amplifyapp.com"
 ```
 
 ## Follow-On Step
