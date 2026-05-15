@@ -6,6 +6,7 @@ import {
   UpdateItemCommand,
   DynamoDBClient,
 } from "@aws-sdk/client-dynamodb";
+import { PinpointSMSVoiceV2Client, SendTextMessageCommand } from "@aws-sdk/client-pinpoint-sms-voice-v2";
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
 import { createHash, randomBytes, randomInt, randomUUID } from "node:crypto";
 import rewardWheelConfig from "../../src/swca/rewardWheel/reward-wheel-config.json";
@@ -21,6 +22,7 @@ const REWARDS = normalizeRewards(rewardWheelConfig);
 const rewardsById = new Map(REWARDS.map((reward) => [reward.id, reward]));
 const dynamodb = new DynamoDBClient({});
 const ses = new SESClient({});
+const sms = new PinpointSMSVoiceV2Client({});
 
 export async function handler(event) {
   const origin = getRequestOrigin(event);
@@ -170,6 +172,7 @@ async function handleContactRequest(event, origin) {
   const certificateId = currentClaim.certificateId?.S || randomUUID();
   const certificateExpiresAt = new Date(Date.now() + CERTIFICATE_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const certificateUrl = buildCertificateUrl(certificateId, certificateToken);
+  const pendingMessageStatus = getInitialMessageStatus(payload.contactMethod);
 
   try {
     await dynamodb.send(
@@ -197,10 +200,12 @@ async function handleContactRequest(event, origin) {
           ":certificateCreatedAt": { S: savedAt },
           ":certificateExpiresAt": { S: certificateExpiresAt },
           ":messageChannel": { S: payload.contactMethod },
-          ":messageStatus": { S: payload.contactMethod === "email" ? "pending" : "not_supported" },
+          ":messageStatus": { S: pendingMessageStatus },
         },
       })
     );
+
+    let finalMessageStatus = pendingMessageStatus;
 
     if (payload.contactMethod === "email") {
       await sendRewardEmail({
@@ -218,13 +223,29 @@ async function handleContactRequest(event, origin) {
         rewardId: currentClaim.rewardId?.S ?? "",
         contactMethod: payload.contactMethod,
       });
+      finalMessageStatus = "sent";
+    } else if (payload.contactMethod === "phone" && isSmsDeliveryEnabled()) {
+      const smsResult = await sendRewardSms({
+        toPhone: payload.phone.trim(),
+        rewardLabel: currentClaim.rewardLabel?.S || itemToReward(currentClaim).label,
+        certificateUrl,
+      });
+
+      await markMessageSent(payload.submissionId, new Date().toISOString(), smsResult.MessageId ?? "");
+      await writeCampaignEvent({
+        eventName: "swca_reward_sms_sent",
+        submissionId: payload.submissionId,
+        rewardId: currentClaim.rewardId?.S ?? "",
+        contactMethod: payload.contactMethod,
+      });
+      finalMessageStatus = "sent";
     }
 
     console.info("SWCA reward contact saved", {
       submissionId: payload.submissionId,
       contactMethod: payload.contactMethod,
       messageChannel: payload.contactMethod,
-      messageStatus: payload.contactMethod === "email" ? "sent" : "not_supported",
+      messageStatus: finalMessageStatus,
     });
 
     return response(
@@ -232,7 +253,7 @@ async function handleContactRequest(event, origin) {
       {
         ok: true,
         submissionId: payload.submissionId,
-        messageStatus: payload.contactMethod === "email" ? "sent" : "not_supported",
+        messageStatus: finalMessageStatus,
       },
       origin
     );
@@ -241,10 +262,10 @@ async function handleContactRequest(event, origin) {
       return response(403, { message: "This reward contact link is not valid." }, origin);
     }
 
-    if (payload.contactMethod === "email") {
+    if (payload.contactMethod === "email" || (payload.contactMethod === "phone" && isSmsDeliveryEnabled())) {
       await markMessageFailed(payload.submissionId, error);
       await writeCampaignEvent({
-        eventName: "swca_reward_email_failed",
+        eventName: payload.contactMethod === "email" ? "swca_reward_email_failed" : "swca_reward_sms_failed",
         submissionId: payload.submissionId,
         rewardId: currentClaim.rewardId?.S ?? "",
         contactMethod: payload.contactMethod,
@@ -475,17 +496,36 @@ async function sendRewardEmail({ toEmail, firstName, rewardLabel, rewardDescript
   );
 }
 
-async function markMessageSent(submissionId, sentAt) {
+async function sendRewardSms({ toPhone, rewardLabel, certificateUrl }) {
+  const originationIdentity = String(process.env.SMS_ORIGINATION_IDENTITY ?? "").trim();
+  if (!originationIdentity) {
+    throw new Error("SMS delivery is enabled but SMS_ORIGINATION_IDENTITY is not configured.");
+  }
+
+  const configurationSetName = String(process.env.SMS_CONFIGURATION_SET_NAME ?? "").trim();
+  return sms.send(
+    new SendTextMessageCommand({
+      DestinationPhoneNumber: normalizePhoneForSms(toPhone),
+      OriginationIdentity: originationIdentity,
+      MessageBody: buildRewardSmsText({ rewardLabel, certificateUrl }),
+      MessageType: "PROMOTIONAL",
+      ConfigurationSetName: configurationSetName || undefined,
+    })
+  );
+}
+
+async function markMessageSent(submissionId, sentAt, providerMessageId = "") {
   await dynamodb.send(
     new UpdateItemCommand({
       TableName: process.env.REWARD_CLAIMS_TABLE,
       Key: {
         submissionId: { S: submissionId },
       },
-      UpdateExpression: "SET messageStatus = :status, messageSentAt = :sentAt REMOVE messageError",
+      UpdateExpression: "SET messageStatus = :status, messageSentAt = :sentAt, messageProviderMessageId = :providerMessageId REMOVE messageError",
       ExpressionAttributeValues: {
         ":status": { S: "sent" },
         ":sentAt": { S: sentAt },
+        ":providerMessageId": { S: providerMessageId },
       },
     })
   );
@@ -610,6 +650,30 @@ function buildRewardEmailHtml({ firstName, rewardLabel, rewardDescription, certi
     </div>
   </body>
 </html>`;
+}
+
+function buildRewardSmsText({ rewardLabel, certificateUrl }) {
+  return `SWCA: Your wellness reward is ready: ${rewardLabel}. View your certificate: ${certificateUrl} Create your free VeeVee profile: https://veevee.io Reply STOP to opt out.`;
+}
+
+function getInitialMessageStatus(contactMethod) {
+  if (contactMethod === "email") return "pending";
+  if (contactMethod === "phone" && isSmsDeliveryEnabled()) return "pending";
+  return "not_supported";
+}
+
+function isSmsDeliveryEnabled() {
+  return String(process.env.SMS_DELIVERY_ENABLED ?? "").toLowerCase() === "true";
+}
+
+function normalizePhoneForSms(phone) {
+  const trimmed = String(phone).trim();
+  if (/^\+\d{10,15}$/.test(trimmed)) return trimmed;
+
+  const digits = trimmed.replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return `+${digits}`;
 }
 
 function selectReward() {

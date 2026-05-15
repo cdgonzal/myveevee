@@ -72,6 +72,14 @@ The frontend route remains `/swca/intake`. The deployed CDK output endpoint is c
 VITE_SWCA_INTAKE_API_URL=https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake
 ```
 
+SMS reward delivery is disabled until AWS End User Messaging SMS setup is complete:
+
+```text
+SwcaSmsDeliveryEnabled=false
+SwcaSmsOriginationIdentity=
+SwcaSmsConfigurationSetName=
+```
+
 ## Setup
 
 Install dependencies from this folder:
@@ -140,8 +148,12 @@ After a future stack change deploys:
 - Amplify `main` has the required SWCA environment variables.
 - Live smoke tests confirmed S3 storage, internal SES notification, reward claim, contact save, redacted admin report, and alarm subscription.
 - Reward email, certificate fields, and `swca_reward_email_sent` event were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
+- Latest end-to-end verification on 2026-05-15 confirmed intake, wheel, email, certificate, and certificate-view tracking for submission `7db059ef-eca9-439b-a398-e0ebd413b15d`.
+- API Gateway CORS is corrected and verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 
 ## What Is Next
 
-- Complete live verification for the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
-- Keep non-blocking work in that plan's backlog until reward communication is complete.
+- Operational handoff and admin readiness: rotate/share the admin passcode, use the admin runbook, confirm alert recipients, and validate the management report format.
+- Admin runbook: `codex/swca/ADMIN_RUNBOOK.md`.
+- SMS plan: `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
+- Keep GA4 dashboard integration, deeper operations reporting, and next-clinic configuration in backlog until requested.

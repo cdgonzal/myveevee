@@ -46,6 +46,25 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       description: "Public site base URL used in customer-facing SWCA reward links.",
     });
 
+    const smsDeliveryEnabled = new cdk.CfnParameter(this, "SwcaSmsDeliveryEnabled", {
+      type: "String",
+      default: "false",
+      allowedValues: ["true", "false"],
+      description: "Enable SWCA SMS reward delivery after AWS End User Messaging SMS setup is approved.",
+    });
+
+    const smsOriginationIdentity = new cdk.CfnParameter(this, "SwcaSmsOriginationIdentity", {
+      type: "String",
+      default: "",
+      description: "AWS End User Messaging SMS origination identity for SWCA reward SMS.",
+    });
+
+    const smsConfigurationSetName = new cdk.CfnParameter(this, "SwcaSmsConfigurationSetName", {
+      type: "String",
+      default: "",
+      description: "Optional AWS End User Messaging SMS configuration set for SWCA reward SMS.",
+    });
+
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
       partnerKey: "swca",
       formId: "swca-wellness-priority-intake",
@@ -67,6 +86,9 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       sesToEmails: sesToEmails.valueAsList,
       alertEmail: alertEmail.valueAsString,
       publicBaseUrl: publicBaseUrl.valueAsString,
+      smsDeliveryEnabled: smsDeliveryEnabled.valueAsString,
+      smsOriginationIdentity: smsOriginationIdentity.valueAsString,
+      smsConfigurationSetName: smsConfigurationSetName.valueAsString,
     });
   }
 }

@@ -19,7 +19,8 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - `/swca/teaser` redirects to `/swca/rewards` as a compatibility alias
   - `/swca/intake` is a direct-link campaign route, not a menu route
   - form submission, reward wheel, admin reporting, first-party events, and alarms are live
-  - active next track is customer reward communication after reward contact save
+  - customer reward email, secure certificate links, and certificate-view tracking are live
+  - active next track is operational handoff and admin readiness
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
@@ -184,12 +185,14 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - Customer reward email, secure certificate page, certificate API, and admin message status fields are implemented.
 - Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.
 - Reward email and certificate status were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
+- Latest end-to-end reward communication verification used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake, wheel, email, secure certificate link, and certificate-view event all matched `rewardId=wellness-gift`.
+- API Gateway CORS is verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 - App 404 recovery, `/swca/teaser`, and timed `/how-it-works` redirect are deployed.
 
 ### Next
 
-- Complete live verification for the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
-- Keep remaining non-blocking SWCA items in that plan's backlog until reward communication is complete.
+- Operational handoff and admin readiness: rotate/share the admin passcode, use the admin runbook, confirm alert recipients, and validate the management report format.
+- Keep remaining non-blocking SWCA items in `codex/swca/REWARD_COMMUNICATION_PLAN.md` backlog.
 
 ## SEO Implementation State
 
@@ -290,7 +293,11 @@ Known baseline issue:
 - `codex/readme_avatar_playback_test.md`
   - hidden playback-test page notes and Amplify hosting-rule diagnosis
 - `codex/swca/REWARD_COMMUNICATION_PLAN.md`
-  - active SWCA customer reward email, certificate, SMS, and dashboard-status plan
+  - completed email-first SWCA customer reward communication tracker plus operations/admin backlog
+- `codex/swca/ADMIN_RUNBOOK.md`
+  - SWCA admin dashboard, reporting, CSV export, alarm response, and troubleshooting runbook
+- `codex/swca/SMS_IMPLEMENTATION_PLAN.md`
+  - disabled-by-default SWCA SMS reward delivery plan and AWS setup checklist
 - `aws/swca-intake/README.md`
   - SWCA intake Lambda contract, S3 object shape, and SES notification details
 - `infra/README.md`

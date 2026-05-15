@@ -35,6 +35,9 @@ export type PartnerIntakeFormProps = {
   sesToEmails: string[];
   alertEmail: string;
   publicBaseUrl: string;
+  smsDeliveryEnabled: string;
+  smsOriginationIdentity: string;
+  smsConfigurationSetName: string;
 };
 
 export class PartnerIntakeForm extends Construct {
@@ -162,6 +165,9 @@ export class PartnerIntakeForm extends Construct {
         SES_FROM_EMAIL: props.sesFromEmail,
         PUBLIC_BASE_URL: props.publicBaseUrl,
         ALLOWED_ORIGINS: cdk.Fn.join(",", props.allowedOrigins),
+        SMS_DELIVERY_ENABLED: props.smsDeliveryEnabled,
+        SMS_ORIGINATION_IDENTITY: props.smsOriginationIdentity,
+        SMS_CONFIGURATION_SET_NAME: props.smsConfigurationSetName,
       },
     });
 
@@ -170,6 +176,12 @@ export class PartnerIntakeForm extends Construct {
     this.rewardSpinFunction.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
+        resources: ["*"],
+      })
+    );
+    this.rewardSpinFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["sms-voice:SendTextMessage"],
         resources: ["*"],
       })
     );

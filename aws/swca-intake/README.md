@@ -65,6 +65,9 @@ Required:
 - `ADMIN_PASSCODE_SECRET_NAME`: Secrets Manager secret name for the shared SWCA admin passcode.
 - `ADMIN_TOKEN_SECRET_NAME`: Secrets Manager secret name for the admin session signing key.
 - `PUBLIC_BASE_URL`: public site base URL used in customer reward links.
+- `SMS_DELIVERY_ENABLED`: set to `true` only after AWS End User Messaging SMS setup is approved.
+- `SMS_ORIGINATION_IDENTITY`: AWS End User Messaging SMS phone number, sender id, pool id, or ARN used for reward SMS.
+- `SMS_CONFIGURATION_SET_NAME`: optional AWS End User Messaging SMS configuration set.
 
 Optional:
 
@@ -198,7 +201,7 @@ For phone contact:
 
 The contact endpoint only saves details for a valid token after a reward has already been claimed.
 
-For email contacts, the endpoint also creates a certificate token, sends the customer reward email through SES, and records message status on the reward claim. Phone contacts are saved for follow-up; SMS remains a later phase.
+For email contacts, the endpoint also creates a certificate token, sends the customer reward email through SES, and records message status on the reward claim. Phone contacts are saved for follow-up. SMS delivery is implemented behind `SMS_DELIVERY_ENABLED` and remains off until AWS End User Messaging SMS setup is approved.
 
 ## Reward Certificate API Contract
 
@@ -331,6 +334,7 @@ Reward eligibility and claim records are keyed by `submissionId` and contain:
 - `messageChannel`
 - `messageStatus`
 - `messageSentAt`
+- `messageProviderMessageId` after customer messaging succeeds
 - `messageError` when customer messaging fails
 - hashed request context for basic abuse review
 
@@ -397,7 +401,7 @@ Current SES values:
 
 ## Customer Reward Communication
 
-The active next backend track is the customer-facing reward communication path after a user saves reward contact details.
+The email-first customer reward communication path is live after a user saves reward contact details.
 
 Source-of-truth plan:
 
@@ -405,18 +409,13 @@ Source-of-truth plan:
 codex/swca/REWARD_COMMUNICATION_PLAN.md
 ```
 
-Recommended launch order:
-
-- SES reward email first.
-- Secure certificate page next.
-- SMS through AWS End User Messaging SMS after registration, opt-out handling, and spend controls are ready.
-
 Implementation status:
 
 - SES reward email for email contacts is implemented.
 - Secure `/swca/certificate` page and certificate API are implemented.
 - Admin report includes message status fields.
-- SMS remains in backlog.
+- Certificate-view events are captured in the campaign event table.
+- SMS send code is implemented behind `SMS_DELIVERY_ENABLED=false`; no SMS origination identity is configured yet.
 
 ## CloudWatch Alarms
 
@@ -461,10 +460,14 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - Reward contact API is live and saves winner contact fields.
 - Reward email and certificate fields were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
 - Campaign event `swca_reward_email_sent` was captured for the smoke-test submission.
+- Latest end-to-end verification on 2026-05-15 used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: the wheel selected `Wellness Gift`, SES sent the reward email, certificate `f0c9ee71-11f8-4341-9948-b6f085a68a04` was created, and `swca_reward_certificate_view` was captured for the same submission and reward id.
+- API Gateway CORS is corrected and verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 - Admin/event API is live and feeds the redacted dashboard.
 - CloudWatch alarms are deployed and SNS email is confirmed.
 
 ## What Is Next
 
-- Build the customer reward communication path in `codex/swca/REWARD_COMMUNICATION_PLAN.md`.
-- Keep remaining non-blocking items in that plan's backlog until reward communication is complete.
+- Operational handoff and admin readiness: rotate/share the admin passcode, use the admin runbook, confirm alert recipients, and validate the management report format.
+- Admin runbook: `codex/swca/ADMIN_RUNBOOK.md`.
+- SMS plan: `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
+- Keep GA4 dashboard integration, deeper S3 plus DynamoDB reporting, and next-clinic configuration in backlog until requested.

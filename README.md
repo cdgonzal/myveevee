@@ -65,13 +65,15 @@ Campaign/direct-link route:
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 - The internal SWCA brief should remain non-indexable.
 - The SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and CloudWatch alarms are live.
-- The SWCA reward communication track is in implementation: email reward messages, secure certificate links, and dashboard message status.
+- The SWCA email-first reward communication path is live: reward email, secure certificate link, certificate page, and certificate-view tracking.
 - `/swca/teaser` is a compatibility alias that redirects to `/swca/rewards`.
 - The reward teaser uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`.
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture.
 - The SWCA post-reward funnel route is `/swca/funnel`; it uses SWCA branding and provider recommendation copy to send users to create a free profile at `veevee.io`.
 - The SWCA admin dashboard route is `/swca/admin`; it uses a backend passcode session and returns abbreviated names plus contact method only.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
-- The active SWCA implementation track is customer reward communication. See [REWARD_COMMUNICATION_PLAN.md](/C:/w/myveevee/codex/swca/REWARD_COMMUNICATION_PLAN.md:1).
+- The active SWCA implementation track is operational handoff and admin readiness. See [REWARD_COMMUNICATION_PLAN.md](/C:/w/myveevee/codex/swca/REWARD_COMMUNICATION_PLAN.md:1).
+- The SWCA admin runbook lives at [ADMIN_RUNBOOK.md](/C:/w/myveevee/codex/swca/ADMIN_RUNBOOK.md:1).
+- The SWCA SMS delivery plan lives at [SMS_IMPLEMENTATION_PLAN.md](/C:/w/myveevee/codex/swca/SMS_IMPLEMENTATION_PLAN.md:1).
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

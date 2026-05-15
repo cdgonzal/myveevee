@@ -110,28 +110,29 @@ Acceptance criteria:
 
 ## Phase 5: Admin Dashboard Message Status
 
-Status: partially implemented. Admin report and CSV include message status; the dashboard row shows basic message status.
+Status: mostly implemented. Admin report, dashboard rows, and CSV include message status. Certificate-view tracking is captured as a first-party event, but the dashboard does not yet join that event back into each row as a viewed/not-viewed indicator.
 
 Goal: make reward communication status visible to management and operators.
 
 Tasks:
 
 - Add message status fields to the admin report payload.
-- Add dashboard indicators for certificate created, message sent, and certificate viewed.
+- Add dashboard indicators for certificate created and message sent.
+- Add a future dashboard indicator for certificate viewed by joining certificate-view events back to recent reward rows.
 - Add CSV columns for message channel and status.
 - Keep raw phone and email hidden from the dashboard.
 
 Acceptance criteria:
 
 - Admin dashboard shows reward communication progress without raw contact details.
-- CSV export includes message status and certificate status.
+- CSV export includes message status.
 - A manager can identify users needing manual follow-up.
 
 ## Phase 6: SMS Follow-Up
 
 Goal: add text messaging only after email launch is stable.
 
-Status: backlog.
+Status: in progress as a disabled-by-default implementation track. See `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
 
 ## Current Verification
 
@@ -141,12 +142,15 @@ Status: backlog.
 - DynamoDB reward claim shows `messageStatus=sent`, `messageChannel=email`, `messageSentAt`, `certificateId`, `certificateCreatedAt`, and `certificateExpiresAt`.
 - Campaign event table contains `swca_reward_email_sent` for the smoke-test submission.
 - `/swca/certificate` serves from the live Amplify site.
+- Certificate lookup was fixed to scan until the matching certificate id is found before validating the secure token hash.
+- API Gateway CORS was corrected for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL after mobile/incognito submit failures.
+- Latest end-to-end verification on 2026-05-15 used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake succeeded, wheel selected `Wellness Gift`, reward contact saved by email, SES message status was `sent`, certificate `f0c9ee71-11f8-4341-9948-b6f085a68a04` was created, and `swca_reward_certificate_view` was captured for the same submission and reward id.
 
 Tasks:
 
 - Configure AWS End User Messaging SMS resources.
 - Confirm origination identity, spend limits, opt-out behavior, and message type.
-- Add SMS send path for `contactMethod=phone`.
+- Add SMS send path for `contactMethod=phone`, gated by `SMS_DELIVERY_ENABLED`.
 - Use the same secure certificate link and VeeVee CTA.
 - Store SMS sent/failure status on the reward claim.
 
@@ -157,13 +161,20 @@ Acceptance criteria:
 - SMS failures are visible in logs and admin message status.
 - Phone numbers are not exposed in the admin dashboard.
 
-## Post-Communication Backlog
+## Current Next Track
 
-Move these items back to active work only after the customer reward communication path is complete:
+Customer reward communication is complete for the email-first launch path. The next practical track is operational handoff and admin readiness:
 
 - Rotate the shared SWCA admin passcode before broad team sharing.
+- Use `codex/swca/ADMIN_RUNBOOK.md` for passcode handling, report refresh, CSV export, alarm handling, and stale-count troubleshooting.
+- Decide who receives operational alerts and whether `info@veevee.io` remains the SNS destination.
+- Confirm the admin dashboard report answers the first management questions after the live pilot starts.
+
+## Backlog
+
 - Finalize marketing reward labels, descriptions, values, and odds in `src/swca/rewardWheel/reward-wheel-config.json`.
-- Add an admin runbook for passcode sharing, report refresh, CSV export, alarm handling, and stale-count troubleshooting.
+- Add per-row certificate viewed status to the admin report.
 - Add deeper operations reporting that joins S3 intake records with DynamoDB reward records.
 - Add the GA4 dashboard tab through a server-side Google Analytics Data API integration.
+- Enable SMS reward delivery after AWS End User Messaging SMS setup, registration, opt-out handling, and spend controls are confirmed.
 - Create the next partner/clinic form by adding a new `PartnerIntakeForm` configuration.
