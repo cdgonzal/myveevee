@@ -183,6 +183,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 - SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and alarms are live.
 - Customer reward email, secure certificate page, certificate API, and admin message status fields are implemented.
+- Active SWCA product planning now includes marketing signal follow-up questions after ranking; see `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`.
 - Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.
 - Reward email and certificate status were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
 - Latest end-to-end reward communication verification used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake, wheel, email, secure certificate link, and certificate-view event all matched `rewardId=wellness-gift`.
@@ -191,7 +192,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Next
 
-- Operational handoff and admin readiness: rotate/share the admin passcode, use the admin runbook, confirm alert recipients, and validate the management report format.
+- Marketing signal follow-up questions: move concerns to editable JSON, ask top-ranked concern questions plus generic intent questions, store answers, and surface non-PII signals in admin reporting.
 - Keep remaining non-blocking SWCA items in `codex/swca/REWARD_COMMUNICATION_PLAN.md` backlog.
 
 ## SEO Implementation State
@@ -294,6 +295,8 @@ Known baseline issue:
   - hidden playback-test page notes and Amplify hosting-rule diagnosis
 - `codex/swca/REWARD_COMMUNICATION_PLAN.md`
   - completed email-first SWCA customer reward communication tracker plus operations/admin backlog
+- `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`
+  - active plan for top-ranked concern follow-up questions and generic purchase-intent signals
 - `codex/swca/ADMIN_RUNBOOK.md`
   - SWCA admin dashboard, reporting, CSV export, alarm response, and troubleshooting runbook
 - `codex/swca/SMS_IMPLEMENTATION_PLAN.md`
@@ -305,4 +308,4 @@ Known baseline issue:
 - `infra/README.md`
   - CDK setup, deploy commands, live resource names, and follow-on operations
 - `_sandbox/codex/spine-wellness-intake-form/PLAN.md`
-  - historical SWCA intake, teaser, reward-wheel, admin, and alarm implementation plan
+  - historical SWCA intake, teaser, reward-wheel, admin, alarm implementation plan, and active Phase 16 marketing follow-up-question plan
