@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender-static-routes.mjs",
+    "build": "node scripts/validate-swca-intake-config.mjs && vite build && node scripts/prerender-static-routes.mjs",
     "preview": "vite preview --port 5173",
     "normalize:payors": "node _sandbox/tools/normalizePayorLogos.cjs",
     "verify:seo": "npm run build && node scripts/verify-prerender-static-routes.mjs",

@@ -7,71 +7,369 @@
       "number": 1,
       "title": "Chronic Fatigue / Low Energy",
       "description": "Feelings of constant tiredness, low stamina, brain fog, or difficulty getting through the day.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "energy_goal",
+          "label": "What would you most like to improve about your energy?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Energy goal",
+          "options": [
+            { "id": "morning_energy", "label": "Wake up with more energy" },
+            { "id": "afternoon_stamina", "label": "Avoid afternoon crashes" },
+            { "id": "daily_function", "label": "Get through the day more easily" },
+            { "id": "mental_clarity", "label": "Feel less tired and foggy" }
+          ]
+        },
+        {
+          "id": "energy_timeline",
+          "label": "How soon would you like help with this?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Energy timeline",
+          "options": [
+            { "id": "now", "label": "As soon as possible" },
+            { "id": "this_month", "label": "This month" },
+            { "id": "one_to_three_months", "label": "In 1-3 months" },
+            { "id": "exploring", "label": "Just exploring" }
+          ]
+        }
+      ]
     },
     {
       "id": "weight-gain-metabolic-dysfunction",
       "number": 2,
       "title": "Weight Gain / Metabolic Dysfunction",
       "description": "Difficulty losing weight, especially around the midsection, slow metabolism, or concerns about blood sugar/insulin.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "weight_goal",
+          "label": "What would you most like help with?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Weight goal",
+          "options": [
+            { "id": "lose_10_20", "label": "Lose 10-20 pounds" },
+            { "id": "lose_20_plus", "label": "Lose more than 20 pounds" },
+            { "id": "metabolism", "label": "Improve metabolism" },
+            { "id": "blood_sugar", "label": "Improve blood sugar or insulin concerns" }
+          ]
+        },
+        {
+          "id": "weight_prior_attempts",
+          "label": "What best describes what you have already tried?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Weight prior attempts",
+          "options": [
+            { "id": "diet_exercise", "label": "Diet and exercise changes" },
+            { "id": "medical_programs", "label": "Medical or supervised programs" },
+            { "id": "medications", "label": "Medication or injections" },
+            { "id": "not_much_yet", "label": "Not much yet" }
+          ]
+        }
+      ]
     },
     {
       "id": "hormonal-imbalance",
       "number": 3,
       "title": "Hormonal Imbalance",
       "description": "Symptoms such as low libido, mood changes, hot flashes, PMS, low testosterone, or other hormone-related concerns.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "hormone_primary_concern",
+          "label": "Which area feels most important to address?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Hormone concern",
+          "options": [
+            { "id": "mood_energy", "label": "Mood or energy changes" },
+            { "id": "libido", "label": "Low libido or sexual wellness" },
+            { "id": "hot_flashes", "label": "Hot flashes or temperature changes" },
+            { "id": "testosterone", "label": "Low testosterone concerns" }
+          ]
+        },
+        {
+          "id": "hormone_testing_interest",
+          "label": "How interested are you in lab testing or a hormone review?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Hormone testing interest",
+          "options": [
+            { "id": "very_interested", "label": "Very interested" },
+            { "id": "somewhat_interested", "label": "Somewhat interested" },
+            { "id": "need_more_info", "label": "I need more information first" },
+            { "id": "not_sure", "label": "Not sure" }
+          ]
+        }
+      ]
     },
     {
       "id": "chronic-pain-inflammation",
       "number": 4,
       "title": "Chronic Pain and Inflammation",
       "description": "Ongoing pain, stiffness, joint pain, back pain, or inflammation that interferes with daily activities.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "pain_impact",
+          "label": "What does pain or inflammation interfere with most?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Pain impact",
+          "options": [
+            { "id": "work_daily_tasks", "label": "Work or daily tasks" },
+            { "id": "exercise_mobility", "label": "Exercise or mobility" },
+            { "id": "sleep_recovery", "label": "Sleep or recovery" },
+            { "id": "quality_of_life", "label": "Overall quality of life" }
+          ]
+        },
+        {
+          "id": "pain_support_interest",
+          "label": "What kind of support would be most useful?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Pain support interest",
+          "options": [
+            { "id": "find_cause", "label": "Understand what may be driving it" },
+            { "id": "reduce_pain", "label": "Reduce pain and stiffness" },
+            { "id": "move_better", "label": "Move better without flare-ups" },
+            { "id": "avoid_medication", "label": "Explore options beyond medication" }
+          ]
+        }
+      ]
     },
     {
       "id": "poor-sleep-insomnia",
       "number": 5,
       "title": "Poor Sleep / Insomnia",
       "description": "Trouble falling asleep, staying asleep, or waking up feeling unrefreshed and tired.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "sleep_problem",
+          "label": "Which sleep issue affects you most?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Sleep problem",
+          "options": [
+            { "id": "falling_asleep", "label": "Trouble falling asleep" },
+            { "id": "staying_asleep", "label": "Waking up during the night" },
+            { "id": "unrefreshed", "label": "Waking up tired or unrefreshed" },
+            { "id": "inconsistent_schedule", "label": "Inconsistent sleep schedule" }
+          ]
+        },
+        {
+          "id": "sleep_priority",
+          "label": "What outcome would matter most to you?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Sleep outcome",
+          "options": [
+            { "id": "more_restful_sleep", "label": "More restful sleep" },
+            { "id": "more_daytime_energy", "label": "More daytime energy" },
+            { "id": "less_stress", "label": "Less stress around bedtime" },
+            { "id": "better_routine", "label": "A better sleep routine" }
+          ]
+        }
+      ]
     },
     {
       "id": "brain-fog-cognitive-decline",
       "number": 6,
       "title": "Brain Fog / Cognitive Decline",
       "description": "Difficulty with memory, concentration, focus, or mental clarity.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "cognitive_challenge",
+          "label": "Which concern is most noticeable?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Cognitive challenge",
+          "options": [
+            { "id": "focus", "label": "Focus or concentration" },
+            { "id": "memory", "label": "Memory" },
+            { "id": "word_finding", "label": "Finding words or staying sharp" },
+            { "id": "mental_fatigue", "label": "Mental fatigue" }
+          ]
+        },
+        {
+          "id": "cognitive_goal",
+          "label": "What would improvement help you do?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Cognitive goal",
+          "options": [
+            { "id": "work_better", "label": "Perform better at work or tasks" },
+            { "id": "feel_sharper", "label": "Feel sharper day to day" },
+            { "id": "less_overwhelmed", "label": "Feel less overwhelmed" },
+            { "id": "prevent_decline", "label": "Be proactive about long-term brain health" }
+          ]
+        }
+      ]
     },
     {
       "id": "stress-anxiety-burnout",
       "number": 7,
       "title": "Stress, Anxiety, and Burnout",
       "description": "High stress levels, anxiety, irritability, or feeling overwhelmed and unable to recharge.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "stress_driver",
+          "label": "What feels like the biggest driver right now?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Stress driver",
+          "options": [
+            { "id": "work_pressure", "label": "Work or responsibility pressure" },
+            { "id": "sleep_energy", "label": "Poor sleep or low energy" },
+            { "id": "mood_anxiety", "label": "Anxiety or mood changes" },
+            { "id": "overloaded", "label": "Feeling overloaded in general" }
+          ]
+        },
+        {
+          "id": "stress_goal",
+          "label": "What would you most like to feel?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Stress goal",
+          "options": [
+            { "id": "calmer", "label": "Calmer" },
+            { "id": "more_control", "label": "More in control" },
+            { "id": "better_recovery", "label": "Better able to recharge" },
+            { "id": "less_irritable", "label": "Less irritable or reactive" }
+          ]
+        }
+      ]
     },
     {
       "id": "gut-health-issues",
       "number": 8,
       "title": "Gastrointestinal / Gut Health Issues",
       "description": "Bloating, constipation, reflux, IBS-like symptoms, or food sensitivities.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "gut_main_issue",
+          "label": "Which issue is most frustrating?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Gut main issue",
+          "options": [
+            { "id": "bloating", "label": "Bloating" },
+            { "id": "constipation", "label": "Constipation or irregularity" },
+            { "id": "reflux", "label": "Reflux or heartburn" },
+            { "id": "food_sensitivity", "label": "Food sensitivities" }
+          ]
+        },
+        {
+          "id": "gut_goal",
+          "label": "What would make the biggest difference?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Gut goal",
+          "options": [
+            { "id": "identify_triggers", "label": "Identify triggers" },
+            { "id": "less_discomfort", "label": "Less discomfort after meals" },
+            { "id": "regularity", "label": "Better regularity" },
+            { "id": "nutrition_plan", "label": "A clearer nutrition plan" }
+          ]
+        }
+      ]
     },
     {
       "id": "immune-dysfunction-frequent-illness",
       "number": 9,
       "title": "Immune Dysfunction / Frequent Illness",
       "description": "Getting sick often, slow healing, chronic inflammation, or autoimmune-type symptoms.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "immune_pattern",
+          "label": "Which pattern best fits your concern?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Immune pattern",
+          "options": [
+            { "id": "frequent_illness", "label": "Getting sick often" },
+            { "id": "slow_recovery", "label": "Slow recovery or healing" },
+            { "id": "inflammation", "label": "Ongoing inflammation" },
+            { "id": "autoimmune_concern", "label": "Autoimmune-type concerns" }
+          ]
+        },
+        {
+          "id": "immune_goal",
+          "label": "What would you most like support with?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Immune goal",
+          "options": [
+            { "id": "fewer_illnesses", "label": "Getting sick less often" },
+            { "id": "better_recovery", "label": "Recovering faster" },
+            { "id": "reduce_inflammation", "label": "Reducing inflammation" },
+            { "id": "understand_patterns", "label": "Understanding what is driving it" }
+          ]
+        }
+      ]
     },
     {
       "id": "aging-longevity-optimization",
       "number": 10,
       "title": "Aging / Longevity Optimization",
       "description": "Desire to improve overall vitality, prevent age-related decline, and optimize long-term health and longevity.",
-      "followUpQuestions": []
+      "followUpQuestions": [
+        {
+          "id": "longevity_goal",
+          "label": "What is your top longevity goal?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Longevity goal",
+          "options": [
+            { "id": "more_vitality", "label": "More vitality and energy" },
+            { "id": "prevent_decline", "label": "Prevent age-related decline" },
+            { "id": "optimize_labs", "label": "Optimize labs and health markers" },
+            { "id": "stay_active", "label": "Stay active and independent" }
+          ]
+        },
+        {
+          "id": "longevity_interest",
+          "label": "What kind of plan would interest you most?",
+          "type": "single_select",
+          "required": true,
+          "reportLabel": "Longevity plan interest",
+          "options": [
+            { "id": "baseline_assessment", "label": "A baseline health assessment" },
+            { "id": "personalized_plan", "label": "A personalized optimization plan" },
+            { "id": "ongoing_monitoring", "label": "Ongoing monitoring and coaching" },
+            { "id": "learn_options", "label": "Learning about available options first" }
+          ]
+        }
+      ]
     }
   ],
-  "intentQuestions": []
+  "intentQuestions": [
+    {
+      "id": "care_interest",
+      "label": "How interested are you in getting support from SWCA?",
+      "type": "single_select",
+      "required": true,
+      "reportLabel": "Care interest",
+      "options": [
+        { "id": "very_interested", "label": "Very interested" },
+        { "id": "somewhat_interested", "label": "Somewhat interested" },
+        { "id": "learning", "label": "Just learning right now" },
+        { "id": "not_sure", "label": "Not sure yet" }
+      ]
+    },
+    {
+      "id": "move_forward_factor",
+      "label": "What would make it easier for you to move forward?",
+      "type": "single_select",
+      "required": true,
+      "reportLabel": "Move-forward factor",
+      "options": [
+        { "id": "insurance_coverage", "label": "Insurance coverage" },
+        { "id": "affordable_payment", "label": "Affordable monthly payment" },
+        { "id": "clear_pricing", "label": "Clear program pricing" },
+        { "id": "doctor_recommendation", "label": "Doctor recommendation" },
+        { "id": "more_information", "label": "More information first" }
+      ]
+    }
+  ]
 }

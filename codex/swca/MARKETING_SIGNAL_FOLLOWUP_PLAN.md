@@ -38,7 +38,7 @@ Acceptance criteria:
 
 ## Phase 2: Concern-Specific Follow-Up Questions
 
-Status: next.
+Status: complete. The editable config now includes two structured questions for each concern.
 
 Tasks:
 
@@ -62,6 +62,8 @@ Acceptance criteria:
 
 ## Phase 3: Generic Intent Questions
 
+Status: complete. The editable config now includes two structured generic intent questions.
+
 Tasks:
 
 - Add 1-2 generic questions that always appear after concern-specific follow-ups.
@@ -79,6 +81,8 @@ Acceptance criteria:
 - Generic questions are stored separately from concern-specific answers.
 
 ## Phase 4: Follow-Up UI
+
+Status: next.
 
 Tasks:
 
