@@ -123,6 +123,13 @@ Request:
   "selectedConcernIds": ["poor-sleep-insomnia", "stress-anxiety-burnout"],
   "rankedConcernIds": ["stress-anxiety-burnout", "poor-sleep-insomnia"],
   "concernsSnapshot": [],
+  "consentAgreement": {
+    "rewardCommunicationConsent": true,
+    "consentVersion": "swca-reward-communication-v1",
+    "consentCopy": "I agree that Spine and Wellness Centers of America and VeeVee may use the contact information I provide in this reward flow to send my reward certificate and related follow-up by email or text message. Message and data rates may apply. Reply STOP to opt out of text messages.",
+    "consentedAt": "2026-05-15T00:00:00.000Z",
+    "consentSourcePath": "/swca/intake"
+  },
   "honeypot": ""
 }
 ```
@@ -305,6 +312,7 @@ The object contains:
 - `rankedConcernIds`
 - `selectedConcerns`
 - `rankedConcerns`
+- `consentAgreement`
 - limited request context
 
 ## DynamoDB Reward Claim Shape
@@ -317,6 +325,9 @@ Reward eligibility and claim records are keyed by `submissionId` and contain:
 - `status`
 - `tokenHash`
 - `createdAt`
+- `communicationConsent`
+- `communicationConsentVersion`
+- `communicationConsentedAt`
 - `spunAt` after claim
 - `rewardId` after claim
 - `rewardLabel` after claim

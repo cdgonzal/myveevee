@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Collapse,
   Flex,
   FormControl,
   Heading,
@@ -22,6 +23,9 @@ import type { SwcaConcern, SwcaConcernId, SwcaIntakeSubmission } from "./types";
 const NAVY = "#071A3A";
 const ORANGE = "#F39A25";
 const LINE = "#D6D8DE";
+const CONSENT_VERSION = "swca-reward-communication-v1";
+const CONSENT_COPY =
+  "I agree that Spine and Wellness Centers of America and VeeVee may use the contact information I provide in this reward flow to send my reward certificate and related follow-up by email or text message. Message and data rates may apply. Reply STOP to opt out of text messages.";
 
 function moveItem(items: SwcaConcernId[], fromIndex: number, toIndex: number) {
   const nextItems = [...items];
@@ -35,6 +39,8 @@ export default function SpineWellnessIntakeForm() {
   const [selectedIds, setSelectedIds] = useState<SwcaConcernId[]>([]);
   const [rankedIds, setRankedIds] = useState<SwcaConcernId[]>([]);
   const [honeypot, setHoneypot] = useState("");
+  const [hasCommunicationConsent, setHasCommunicationConsent] = useState(false);
+  const [isConsentExpanded, setIsConsentExpanded] = useState(false);
   const [submitState, setSubmitState] = useState<"idle" | "success">("idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,7 +53,7 @@ export default function SpineWellnessIntakeForm() {
     .map((id) => concernsById.get(id))
     .filter((concern): concern is SwcaConcern => Boolean(concern));
 
-  const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && !honeypot;
+  const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && hasCommunicationConsent && !honeypot;
 
   const toggleConcern = (concernId: SwcaConcernId) => {
     setSubmitState("idle");
@@ -82,7 +88,7 @@ export default function SpineWellnessIntakeForm() {
   const handleSubmit = async () => {
     if (!canSubmit) {
       toast({
-        title: "Select and rank at least one concern.",
+        title: hasCommunicationConsent ? "Select and rank at least one concern." : "Please accept the reward communication consent.",
         status: "warning",
         duration: 2400,
       });
@@ -98,6 +104,13 @@ export default function SpineWellnessIntakeForm() {
       selectedConcernIds: selectedIds,
       rankedConcernIds: rankedIds,
       concernsSnapshot: SWCA_CONCERNS,
+      consentAgreement: {
+        rewardCommunicationConsent: true,
+        consentVersion: CONSENT_VERSION,
+        consentCopy: CONSENT_COPY,
+        consentedAt: new Date().toISOString(),
+        consentSourcePath: window.location.pathname,
+      },
       honeypot,
     };
 
@@ -355,6 +368,49 @@ export default function SpineWellnessIntakeForm() {
               >
                 Submit
               </Button>
+
+              <Box maxW="720px" mx="auto" w="100%">
+                <Checkbox
+                  isChecked={hasCommunicationConsent}
+                  onChange={(event) => {
+                    setSubmitState("idle");
+                    setHasCommunicationConsent(event.target.checked);
+                  }}
+                  colorScheme="orange"
+                  alignItems="flex-start"
+                  size="sm"
+                >
+                  <Text as="span" fontSize={{ base: "xs", md: "sm" }} lineHeight="1.45" color="#34405A">
+                    I agree to receive my reward certificate and related follow-up using the contact information I provide.
+                  </Text>
+                </Checkbox>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  mt={2}
+                  px={0}
+                  h="auto"
+                  minH="28px"
+                  color={NAVY}
+                  fontWeight="700"
+                  fontSize="sm"
+                  onClick={() => setIsConsentExpanded((current) => !current)}
+                  _hover={{ bg: "transparent", color: "#102A55" }}
+                  aria-expanded={isConsentExpanded}
+                >
+                  <Box as="span" mr={2} transform={isConsentExpanded ? "rotate(180deg)" : "rotate(0deg)"} transition="transform 160ms ease">
+                    v
+                  </Box>
+                  Consent details
+                </Button>
+                <Collapse in={isConsentExpanded} animateOpacity>
+                  <Text fontSize={{ base: "xs", md: "sm" }} lineHeight="1.45" color="#34405A" pt={2}>
+                    {CONSENT_COPY}
+                  </Text>
+                </Collapse>
+              </Box>
 
               {submitState === "success" ? (
                 <Text textAlign="center" fontWeight="700">

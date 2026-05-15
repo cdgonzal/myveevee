@@ -48,6 +48,19 @@ Messaging use case:
 - Opt-in workflow description
 - Opt-in screenshot image, PNG under 400 KB
 
+Current opt-in surface:
+
+- Route: `/swca/intake`
+- Placement: required checkbox below the intake submit button, with expandable consent details.
+- Stored evidence: S3 intake submission includes `consentAgreement.rewardCommunicationConsent=true`, consent version, consent timestamp, source path, and exact consent copy.
+- Reward claim record stores `communicationConsent=true`, `communicationConsentVersion`, and `communicationConsentedAt`.
+
+Suggested opt-in workflow description:
+
+```text
+Users visit the SWCA reward intake page from a clinic link or QR code. Before submitting the intake form and continuing to the reward wheel, users must check a consent box agreeing that Spine and Wellness Centers of America and VeeVee may use the contact information provided in the reward flow to send the reward certificate and related follow-up by email or text message. The consent details are expandable on the page and include message/data rate and STOP opt-out language. The application stores the consent version, timestamp, source path, and exact consent copy with the intake submission.
+```
+
 Message sample:
 
 ```text

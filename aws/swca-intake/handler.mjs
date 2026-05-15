@@ -136,6 +136,7 @@ export async function handler(event) {
       createdAt: submittedAt,
       sourcePath: normalizedSubmission.sourcePath,
       pageUrl: normalizedSubmission.pageUrl,
+      consentAgreement: normalizedSubmission.consentAgreement,
       event,
     });
 
@@ -241,6 +242,20 @@ function validateSubmission(payload) {
     return "User agent must be a string.";
   }
 
+  if (!payload.consentAgreement || typeof payload.consentAgreement !== "object") {
+    return "Reward communication consent is required.";
+  }
+
+  if (payload.consentAgreement.rewardCommunicationConsent !== true) {
+    return "Reward communication consent is required.";
+  }
+
+  for (const fieldName of ["consentVersion", "consentCopy", "consentedAt", "consentSourcePath"]) {
+    if (typeof payload.consentAgreement[fieldName] !== "string" || !payload.consentAgreement[fieldName].trim()) {
+      return "Reward communication consent details are required.";
+    }
+  }
+
   return null;
 }
 
@@ -261,6 +276,13 @@ function normalizeSubmission(payload, submissionId, submittedAt, event) {
     rankedConcernIds: payload.rankedConcernIds,
     rankedConcerns,
     selectedConcerns: payload.selectedConcernIds.map((id) => concernsById.get(id)),
+    consentAgreement: {
+      rewardCommunicationConsent: true,
+      consentVersion: payload.consentAgreement.consentVersion,
+      consentCopy: payload.consentAgreement.consentCopy,
+      consentedAt: payload.consentAgreement.consentedAt,
+      consentSourcePath: payload.consentAgreement.consentSourcePath,
+    },
     request: {
       origin: getRequestOrigin(event),
       userAgent: payload.userAgent ?? event.headers?.["user-agent"] ?? event.headers?.["User-Agent"] ?? null,
@@ -278,7 +300,7 @@ function buildObjectKey(submittedAt, submissionId) {
   return `${prefix}/year=${year}/month=${month}/day=${day}/${submissionId}.json`;
 }
 
-async function createRewardEligibility({ submissionId, token, createdAt, sourcePath, pageUrl, event }) {
+async function createRewardEligibility({ submissionId, token, createdAt, sourcePath, pageUrl, consentAgreement, event }) {
   await dynamodb.send(
     new PutItemCommand({
       TableName: process.env.REWARD_CLAIMS_TABLE,
@@ -291,6 +313,9 @@ async function createRewardEligibility({ submissionId, token, createdAt, sourceP
         tokenHash: { S: hashToken(token) },
         createdAt: { S: createdAt },
         sourcePath: { S: sourcePath },
+        communicationConsent: { BOOL: true },
+        communicationConsentVersion: { S: consentAgreement.consentVersion },
+        communicationConsentedAt: { S: consentAgreement.consentedAt },
         ...(pageUrl ? { pageUrl: { S: pageUrl } } : {}),
         requestUserAgentHash: { S: hashValue(event.headers?.["user-agent"] ?? event.headers?.["User-Agent"] ?? "") },
         sourceIpHash: { S: hashValue(event.requestContext?.http?.sourceIp ?? "") },

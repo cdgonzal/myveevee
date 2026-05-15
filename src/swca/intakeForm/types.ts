@@ -26,6 +26,13 @@ export type SwcaIntakeSubmission = {
   selectedConcernIds: SwcaConcernId[];
   rankedConcernIds: SwcaConcernId[];
   concernsSnapshot: SwcaConcern[];
+  consentAgreement: {
+    rewardCommunicationConsent: true;
+    consentVersion: string;
+    consentCopy: string;
+    consentedAt: string;
+    consentSourcePath: string;
+  };
   honeypot?: string;
 };
 
