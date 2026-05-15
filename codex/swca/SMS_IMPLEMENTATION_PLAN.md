@@ -14,8 +14,10 @@ Checked in `us-east-1` on 2026-05-15:
 - Pools: none
 - Configuration sets: none
 - Opt-out lists: default opt-out list exists
+- Account tier: SMS sandbox
+- Toll-free registration draft: `registration-5b8f8b5311c4442f904051be74635331`
 
-This means SMS sending cannot be enabled yet.
+This means SMS sending cannot be enabled yet. The registration is tracked in [SMS_REGISTRATION_RUNBOOK.md](SMS_REGISTRATION_RUNBOOK.md).
 
 ## Delivery Design
 
@@ -89,12 +91,14 @@ Acceptance criteria:
 
 ### Phase 2: AWS SMS Resource Setup
 
-Status: blocked until campaign registration/origination identity exists.
+Status: started. Toll-free registration draft exists; business/compliance fields and toll-free number association are still pending.
 
 Tasks:
 
-- Create or request the SMS origination identity.
+- Fill out the toll-free registration with verified business, contact, opt-in, and message sample details.
+- Request or associate the SMS origination identity.
 - Confirm compliance registration state.
+- Request SMS production access because the account is currently in sandbox.
 - Configure spend controls.
 - Optionally create a configuration set.
 - Record the chosen identity in the deployment runbook.
@@ -102,6 +106,7 @@ Tasks:
 Acceptance criteria:
 
 - AWS account has an approved origination identity in `us-east-1`.
+- AWS account is out of SMS sandbox for production SMS.
 - A test number can receive SMS.
 - Opt-out behavior is confirmed.
 

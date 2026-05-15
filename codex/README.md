@@ -298,6 +298,8 @@ Known baseline issue:
   - SWCA admin dashboard, reporting, CSV export, alarm response, and troubleshooting runbook
 - `codex/swca/SMS_IMPLEMENTATION_PLAN.md`
   - disabled-by-default SWCA SMS reward delivery plan and AWS setup checklist
+- `codex/swca/SMS_REGISTRATION_RUNBOOK.md`
+  - AWS toll-free registration id, required business fields, and enablement guardrails
 - `aws/swca-intake/README.md`
   - SWCA intake Lambda contract, S3 object shape, and SES notification details
 - `infra/README.md`

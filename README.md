@@ -75,5 +75,6 @@ Campaign/direct-link route:
 - The active SWCA implementation track is operational handoff and admin readiness. See [REWARD_COMMUNICATION_PLAN.md](/C:/w/myveevee/codex/swca/REWARD_COMMUNICATION_PLAN.md:1).
 - The SWCA admin runbook lives at [ADMIN_RUNBOOK.md](/C:/w/myveevee/codex/swca/ADMIN_RUNBOOK.md:1).
 - The SWCA SMS delivery plan lives at [SMS_IMPLEMENTATION_PLAN.md](/C:/w/myveevee/codex/swca/SMS_IMPLEMENTATION_PLAN.md:1).
+- The AWS toll-free registration runbook lives at [SMS_REGISTRATION_RUNBOOK.md](/C:/w/myveevee/codex/swca/SMS_REGISTRATION_RUNBOOK.md:1).
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).
