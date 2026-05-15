@@ -40,6 +40,12 @@ export type SwcaIntakeConfig = {
   intentQuestions: SwcaFollowUpQuestion[];
 };
 
+export type SwcaQuestionAnswerValue = string | string[];
+
+export type SwcaFollowUpAnswers = Partial<Record<SwcaConcernId, Record<string, SwcaQuestionAnswerValue>>>;
+
+export type SwcaIntentAnswers = Record<string, SwcaQuestionAnswerValue>;
+
 export type SwcaIntakeSubmission = {
   formId: "swca-wellness-priority-intake";
   sourcePath: string;
@@ -48,6 +54,9 @@ export type SwcaIntakeSubmission = {
   userAgent: string;
   selectedConcernIds: SwcaConcernId[];
   rankedConcernIds: SwcaConcernId[];
+  topRankedConcernIds: SwcaConcernId[];
+  followUpAnswers: SwcaFollowUpAnswers;
+  intentAnswers: SwcaIntentAnswers;
   concernsSnapshot: SwcaConcern[];
   consentAgreement: {
     rewardCommunicationConsent: true;

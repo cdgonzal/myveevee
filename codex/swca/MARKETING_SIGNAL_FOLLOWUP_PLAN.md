@@ -82,7 +82,7 @@ Acceptance criteria:
 
 ## Phase 4: Follow-Up UI
 
-Status: next.
+Status: complete. The intake page now opens a required follow-up modal after ranking and consent, before final submission.
 
 Tasks:
 
@@ -104,6 +104,8 @@ Acceptance criteria:
 
 ## Phase 5: Intake Payload And Persistence
 
+Status: complete for S3 persistence and backend validation. DynamoDB/admin summary fields are deferred to Phase 6.
+
 Tasks:
 
 - Add `topRankedConcernIds`.
@@ -111,7 +113,7 @@ Tasks:
 - Add `intentAnswers` keyed by question id.
 - Validate the new fields in `aws/swca-intake/handler.mjs`.
 - Store the new fields in the S3 intake JSON.
-- Decide whether any summarized fields should also be copied to DynamoDB for admin report speed.
+- Keep summarized DynamoDB/admin fields deferred until Phase 6 so the first launch stores the full structured payload in S3 without changing dashboard rows prematurely.
 
 Acceptance criteria:
 
@@ -122,6 +124,8 @@ Acceptance criteria:
 - Backend errors do not expose raw payload details to the browser.
 
 ## Phase 6: Admin And Reporting
+
+Status: next.
 
 Tasks:
 

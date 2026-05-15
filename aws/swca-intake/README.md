@@ -122,6 +122,21 @@ Request:
   "userAgent": "...",
   "selectedConcernIds": ["poor-sleep-insomnia", "stress-anxiety-burnout"],
   "rankedConcernIds": ["stress-anxiety-burnout", "poor-sleep-insomnia"],
+  "topRankedConcernIds": ["stress-anxiety-burnout", "poor-sleep-insomnia"],
+  "followUpAnswers": {
+    "stress-anxiety-burnout": {
+      "stress_driver": "work_pressure",
+      "stress_goal": "calmer"
+    },
+    "poor-sleep-insomnia": {
+      "sleep_problem": "staying_asleep",
+      "sleep_priority": "more_restful_sleep"
+    }
+  },
+  "intentAnswers": {
+    "care_interest": "very_interested",
+    "move_forward_factor": "insurance_coverage"
+  },
   "concernsSnapshot": [],
   "consentAgreement": {
     "rewardCommunicationConsent": true,
@@ -310,6 +325,9 @@ The object contains:
 - `pageUrl`
 - `selectedConcernIds`
 - `rankedConcernIds`
+- `topRankedConcernIds`
+- `followUpAnswers`
+- `intentAnswers`
 - `selectedConcerns`
 - `rankedConcerns`
 - `consentAgreement`

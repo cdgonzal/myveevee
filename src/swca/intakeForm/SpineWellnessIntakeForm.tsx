@@ -9,6 +9,13 @@ import {
   Heading,
   Image,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
   Text,
   VisuallyHidden,
@@ -17,8 +24,16 @@ import {
 import { trackEvent } from "../../analytics/trackEvent";
 import { trackSwcaCampaignEvent } from "../campaignEvents";
 import { submitSwcaIntake } from "./api";
-import { SWCA_CONCERNS, SWCA_INTAKE_FORM_ID } from "./concerns";
-import type { SwcaConcern, SwcaConcernId, SwcaIntakeSubmission } from "./types";
+import { SWCA_CONCERNS, SWCA_FOLLOW_UP_TOP_RANKED_COUNT, SWCA_INTENT_QUESTIONS, SWCA_INTAKE_FORM_ID } from "./concerns";
+import type {
+  SwcaConcern,
+  SwcaConcernId,
+  SwcaFollowUpAnswers,
+  SwcaFollowUpQuestion,
+  SwcaIntakeSubmission,
+  SwcaIntentAnswers,
+  SwcaQuestionAnswerValue,
+} from "./types";
 
 const NAVY = "#071A3A";
 const ORANGE = "#F39A25";
@@ -41,6 +56,9 @@ export default function SpineWellnessIntakeForm() {
   const [honeypot, setHoneypot] = useState("");
   const [hasCommunicationConsent, setHasCommunicationConsent] = useState(false);
   const [isConsentExpanded, setIsConsentExpanded] = useState(false);
+  const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
+  const [followUpAnswers, setFollowUpAnswers] = useState<SwcaFollowUpAnswers>({});
+  const [intentAnswers, setIntentAnswers] = useState<SwcaIntentAnswers>({});
   const [submitState, setSubmitState] = useState<"idle" | "success">("idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -53,7 +71,21 @@ export default function SpineWellnessIntakeForm() {
     .map((id) => concernsById.get(id))
     .filter((concern): concern is SwcaConcern => Boolean(concern));
 
+  const topRankedConcernIds = rankedIds.slice(0, Math.min(SWCA_FOLLOW_UP_TOP_RANKED_COUNT, rankedIds.length));
+  const followUpConcerns = topRankedConcernIds
+    .map((id) => concernsById.get(id))
+    .filter((concern): concern is SwcaConcern => Boolean(concern));
+  const followUpQuestionCount =
+    followUpConcerns.reduce((count, concern) => count + (concern.followUpQuestions?.filter((question) => question.required).length ?? 0), 0) +
+    SWCA_INTENT_QUESTIONS.filter((question) => question.required).length;
+
   const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && hasCommunicationConsent && !honeypot;
+  const canSubmitFollowUp =
+    canSubmit &&
+    followUpConcerns.every((concern) =>
+      (concern.followUpQuestions ?? []).every((question) => !question.required || isAnswerComplete(followUpAnswers[concern.id]?.[question.id]))
+    ) &&
+    SWCA_INTENT_QUESTIONS.every((question) => !question.required || isAnswerComplete(intentAnswers[question.id]));
 
   const toggleConcern = (concernId: SwcaConcernId) => {
     setSubmitState("idle");
@@ -85,7 +117,24 @@ export default function SpineWellnessIntakeForm() {
     setRankedIds(moveItem(rankedIds, currentIndex, nextIndex));
   };
 
-  const handleSubmit = async () => {
+  const setFollowUpAnswer = (concernId: SwcaConcernId, question: SwcaFollowUpQuestion, optionId: string) => {
+    setFollowUpAnswers((currentAnswers) => ({
+      ...currentAnswers,
+      [concernId]: {
+        ...(currentAnswers[concernId] ?? {}),
+        [question.id]: resolveNextAnswerValue(currentAnswers[concernId]?.[question.id], optionId, question.type),
+      },
+    }));
+  };
+
+  const setIntentAnswer = (question: SwcaFollowUpQuestion, optionId: string) => {
+    setIntentAnswers((currentAnswers) => ({
+      ...currentAnswers,
+      [question.id]: resolveNextAnswerValue(currentAnswers[question.id], optionId, question.type),
+    }));
+  };
+
+  const handleSubmit = () => {
     if (!canSubmit) {
       toast({
         title: hasCommunicationConsent ? "Select and rank at least one concern." : "Please accept the reward communication consent.",
@@ -95,20 +144,37 @@ export default function SpineWellnessIntakeForm() {
       return;
     }
 
+    setIsFollowUpOpen(true);
+  };
+
+  const handleFinalSubmit = async () => {
+    if (!canSubmitFollowUp) {
+      toast({
+        title: "Please answer the quick follow-up questions.",
+        status: "warning",
+        duration: 2400,
+      });
+      return;
+    }
+
+    const submittedAt = new Date().toISOString();
     const submission: SwcaIntakeSubmission = {
       formId: SWCA_INTAKE_FORM_ID,
       sourcePath: window.location.pathname,
       pageUrl: window.location.href,
-      clientSubmittedAt: new Date().toISOString(),
+      clientSubmittedAt: submittedAt,
       userAgent: window.navigator.userAgent,
       selectedConcernIds: selectedIds,
       rankedConcernIds: rankedIds,
+      topRankedConcernIds,
+      followUpAnswers: buildFollowUpAnswerPayload(followUpConcerns, followUpAnswers),
+      intentAnswers: buildIntentAnswerPayload(intentAnswers),
       concernsSnapshot: SWCA_CONCERNS,
       consentAgreement: {
         rewardCommunicationConsent: true,
         consentVersion: CONSENT_VERSION,
         consentCopy: CONSENT_COPY,
-        consentedAt: new Date().toISOString(),
+        consentedAt: submittedAt,
         consentSourcePath: window.location.pathname,
       },
       honeypot,
@@ -123,6 +189,7 @@ export default function SpineWellnessIntakeForm() {
         mode: result.mode,
         selected_count: selectedIds.length,
         ranked_count: rankedIds.length,
+        follow_up_count: followUpQuestionCount,
       });
       trackSwcaCampaignEvent({
         eventName: "swca_intake_submit_success",
@@ -131,6 +198,7 @@ export default function SpineWellnessIntakeForm() {
         params: {
           selected_count: selectedIds.length,
           ranked_count: rankedIds.length,
+          follow_up_count: followUpQuestionCount,
         },
       });
 
@@ -151,12 +219,14 @@ export default function SpineWellnessIntakeForm() {
       trackEvent("swca_intake_submit_error", {
         selected_count: selectedIds.length,
         ranked_count: rankedIds.length,
+        follow_up_count: followUpQuestionCount,
       });
       trackSwcaCampaignEvent({
         eventName: "swca_intake_submit_error",
         params: {
           selected_count: selectedIds.length,
           ranked_count: rankedIds.length,
+          follow_up_count: followUpQuestionCount,
         },
       });
 
@@ -366,7 +436,7 @@ export default function SpineWellnessIntakeForm() {
                 _hover={{ bg: "#102A55" }}
                 _disabled={{ opacity: 0.45, cursor: "not-allowed" }}
               >
-                Submit
+                Continue
               </Button>
 
               <Box maxW="720px" mx="auto" w="100%">
@@ -421,6 +491,155 @@ export default function SpineWellnessIntakeForm() {
           </Box>
         </FormControl>
       </Box>
+
+      <Modal isOpen={isFollowUpOpen} onClose={() => !isSubmitting && setIsFollowUpOpen(false)} size="2xl" isCentered scrollBehavior="inside">
+        <ModalOverlay />
+        <ModalContent borderRadius="8px" mx={4}>
+          <ModalHeader color={NAVY} pb={2}>
+            A few quick follow-up questions
+          </ModalHeader>
+          <ModalCloseButton isDisabled={isSubmitting} />
+          <ModalBody>
+            <Stack spacing={5}>
+              <Text color="#34405A">
+                These help SWCA understand what kind of support may be most relevant for your top priorities.
+              </Text>
+
+              {followUpConcerns.map((concern) => (
+                <Box key={concern.id} border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 3, md: 4 }}>
+                  <Stack spacing={4}>
+                    <Box>
+                      <Text color={ORANGE} fontWeight="800" fontSize="sm" textTransform="uppercase">
+                        Priority {topRankedConcernIds.indexOf(concern.id) + 1}
+                      </Text>
+                      <Heading as="h3" size="sm" color={NAVY}>
+                        {concern.title}
+                      </Heading>
+                    </Box>
+
+                    {(concern.followUpQuestions ?? []).map((question) => (
+                      <QuestionBlock
+                        key={question.id}
+                        question={question}
+                        value={followUpAnswers[concern.id]?.[question.id]}
+                        onSelect={(optionId) => setFollowUpAnswer(concern.id, question, optionId)}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              ))}
+
+              <Box border="1px solid" borderColor="#F3D9B4" bg="#FFF7EC" borderRadius="8px" p={{ base: 3, md: 4 }}>
+                <Stack spacing={4}>
+                  <Heading as="h3" size="sm" color={NAVY}>
+                    Your interest
+                  </Heading>
+                  {SWCA_INTENT_QUESTIONS.map((question) => (
+                    <QuestionBlock
+                      key={question.id}
+                      question={question}
+                      value={intentAnswers[question.id]}
+                      onSelect={(optionId) => setIntentAnswer(question, optionId)}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+            </Stack>
+          </ModalBody>
+          <ModalFooter gap={3} flexWrap="wrap">
+            <Button variant="ghost" onClick={() => setIsFollowUpOpen(false)} isDisabled={isSubmitting}>
+              Back
+            </Button>
+            <Button
+              onClick={handleFinalSubmit}
+              isDisabled={!canSubmitFollowUp || isSubmitting}
+              isLoading={isSubmitting}
+              loadingText="Submitting"
+              bg={NAVY}
+              color="white"
+              _hover={{ bg: "#102A55" }}
+            >
+              Submit and spin
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
+}
+
+function QuestionBlock({
+  question,
+  value,
+  onSelect,
+}: {
+  question: SwcaFollowUpQuestion;
+  value?: SwcaQuestionAnswerValue;
+  onSelect: (optionId: string) => void;
+}) {
+  return (
+    <Stack spacing={2}>
+      <Text fontWeight="800" color={NAVY}>
+        {question.label}
+      </Text>
+      <Flex gap={2} wrap="wrap">
+        {question.options.map((option) => {
+          const isSelected = isOptionSelected(value, option.id);
+
+          return (
+            <Button
+              key={option.id}
+              type="button"
+              onClick={() => onSelect(option.id)}
+              variant={isSelected ? "solid" : "outline"}
+              bg={isSelected ? NAVY : "white"}
+              color={isSelected ? "white" : NAVY}
+              borderColor={isSelected ? NAVY : LINE}
+              minH="42px"
+              h="auto"
+              py={2}
+              px={3}
+              whiteSpace="normal"
+              textAlign="left"
+              _hover={isSelected ? { bg: "#102A55" } : { bg: "#F7FAFC" }}
+            >
+              {option.label}
+            </Button>
+          );
+        })}
+      </Flex>
+    </Stack>
+  );
+}
+
+function resolveNextAnswerValue(currentValue: SwcaQuestionAnswerValue | undefined, optionId: string, type: SwcaFollowUpQuestion["type"]) {
+  if (type === "single_select") return optionId;
+
+  const currentValues = Array.isArray(currentValue) ? currentValue : [];
+  return currentValues.includes(optionId)
+    ? currentValues.filter((currentOptionId) => currentOptionId !== optionId)
+    : [...currentValues, optionId];
+}
+
+function isOptionSelected(value: SwcaQuestionAnswerValue | undefined, optionId: string) {
+  return Array.isArray(value) ? value.includes(optionId) : value === optionId;
+}
+
+function isAnswerComplete(value: SwcaQuestionAnswerValue | undefined) {
+  if (Array.isArray(value)) return value.length > 0;
+  return typeof value === "string" && value.length > 0;
+}
+
+function buildFollowUpAnswerPayload(concerns: SwcaConcern[], answers: SwcaFollowUpAnswers) {
+  return concerns.reduce<SwcaFollowUpAnswers>((payload, concern) => {
+    payload[concern.id] = answers[concern.id] ?? {};
+    return payload;
+  }, {});
+}
+
+function buildIntentAnswerPayload(answers: SwcaIntentAnswers) {
+  return SWCA_INTENT_QUESTIONS.reduce<SwcaIntentAnswers>((payload, question) => {
+    payload[question.id] = answers[question.id];
+    return payload;
+  }, {});
 }

@@ -2,6 +2,7 @@ import { PutItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
+import intakeConfig from "../../src/swca/intakeForm/swca-intake-config.json";
 import rewardWheelConfig from "../../src/swca/rewardWheel/reward-wheel-config.json";
 
 const FORM_ID = "swca-wellness-priority-intake";
@@ -9,72 +10,12 @@ const CAMPAIGN_ID = rewardWheelConfig.campaignId;
 const DEFAULT_PREFIX = "forms/swca-wellness-priority-intake";
 const JSON_CONTENT_TYPE = "application/json";
 
-const CONCERNS = [
-  {
-    id: "chronic-fatigue-low-energy",
-    number: 1,
-    title: "Chronic Fatigue / Low Energy",
-    description: "Feelings of constant tiredness, low stamina, brain fog, or difficulty getting through the day.",
-  },
-  {
-    id: "weight-gain-metabolic-dysfunction",
-    number: 2,
-    title: "Weight Gain / Metabolic Dysfunction",
-    description:
-      "Difficulty losing weight, especially around the midsection, slow metabolism, or concerns about blood sugar/insulin.",
-  },
-  {
-    id: "hormonal-imbalance",
-    number: 3,
-    title: "Hormonal Imbalance",
-    description: "Symptoms such as low libido, mood changes, hot flashes, PMS, low testosterone, or other hormone-related concerns.",
-  },
-  {
-    id: "chronic-pain-inflammation",
-    number: 4,
-    title: "Chronic Pain and Inflammation",
-    description: "Ongoing pain, stiffness, joint pain, back pain, or inflammation that interferes with daily activities.",
-  },
-  {
-    id: "poor-sleep-insomnia",
-    number: 5,
-    title: "Poor Sleep / Insomnia",
-    description: "Trouble falling asleep, staying asleep, or waking up feeling unrefreshed and tired.",
-  },
-  {
-    id: "brain-fog-cognitive-decline",
-    number: 6,
-    title: "Brain Fog / Cognitive Decline",
-    description: "Difficulty with memory, concentration, focus, or mental clarity.",
-  },
-  {
-    id: "stress-anxiety-burnout",
-    number: 7,
-    title: "Stress, Anxiety, and Burnout",
-    description: "High stress levels, anxiety, irritability, or feeling overwhelmed and unable to recharge.",
-  },
-  {
-    id: "gut-health-issues",
-    number: 8,
-    title: "Gastrointestinal / Gut Health Issues",
-    description: "Bloating, constipation, reflux, IBS-like symptoms, or food sensitivities.",
-  },
-  {
-    id: "immune-dysfunction-frequent-illness",
-    number: 9,
-    title: "Immune Dysfunction / Frequent Illness",
-    description: "Getting sick often, slow healing, chronic inflammation, or autoimmune-type symptoms.",
-  },
-  {
-    id: "aging-longevity-optimization",
-    number: 10,
-    title: "Aging / Longevity Optimization",
-    description: "Desire to improve overall vitality, prevent age-related decline, and optimize long-term health and longevity.",
-  },
-];
-
+const CONCERNS = intakeConfig.concerns;
+const TOP_RANKED_FOLLOW_UP_COUNT = intakeConfig.followUpTopRankedCount;
 const concernIds = new Set(CONCERNS.map((concern) => concern.id));
 const concernsById = new Map(CONCERNS.map((concern) => [concern.id, concern]));
+const followUpQuestionsByConcernId = new Map(CONCERNS.map((concern) => [concern.id, concern.followUpQuestions ?? []]));
+const intentQuestions = intakeConfig.intentQuestions ?? [];
 const dynamodb = new DynamoDBClient({});
 const s3 = new S3Client({});
 const ses = new SESClient({});
@@ -230,6 +171,31 @@ function validateSubmission(payload) {
     }
   }
 
+  const expectedTopRankedConcernIds = payload.rankedConcernIds.slice(
+    0,
+    Math.min(TOP_RANKED_FOLLOW_UP_COUNT, payload.rankedConcernIds.length)
+  );
+
+  if (!Array.isArray(payload.topRankedConcernIds) || payload.topRankedConcernIds.length !== expectedTopRankedConcernIds.length) {
+    return "Top ranked concerns must match the configured follow-up count.";
+  }
+
+  for (let index = 0; index < expectedTopRankedConcernIds.length; index += 1) {
+    if (payload.topRankedConcernIds[index] !== expectedTopRankedConcernIds[index]) {
+      return "Top ranked concerns must match the ranking order.";
+    }
+  }
+
+  const followUpValidationError = validateFollowUpAnswers(payload.topRankedConcernIds, payload.followUpAnswers);
+  if (followUpValidationError) {
+    return followUpValidationError;
+  }
+
+  const intentValidationError = validateQuestionAnswers(intentQuestions, payload.intentAnswers, "Intent answers");
+  if (intentValidationError) {
+    return intentValidationError;
+  }
+
   if (payload.pageUrl && typeof payload.pageUrl !== "string") {
     return "Page URL must be a string.";
   }
@@ -259,6 +225,91 @@ function validateSubmission(payload) {
   return null;
 }
 
+function validateFollowUpAnswers(topRankedConcernIds, followUpAnswers) {
+  if (!followUpAnswers || typeof followUpAnswers !== "object" || Array.isArray(followUpAnswers)) {
+    return "Follow-up answers are required.";
+  }
+
+  const expectedConcernIds = new Set(topRankedConcernIds);
+  for (const concernId of Object.keys(followUpAnswers)) {
+    if (!expectedConcernIds.has(concernId)) {
+      return "Follow-up answers contain an unexpected concern.";
+    }
+  }
+
+  for (const concernId of topRankedConcernIds) {
+    const validationError = validateQuestionAnswers(
+      followUpQuestionsByConcernId.get(concernId) ?? [],
+      followUpAnswers[concernId],
+      `Follow-up answers for ${concernId}`
+    );
+    if (validationError) {
+      return validationError;
+    }
+  }
+
+  return null;
+}
+
+function validateQuestionAnswers(questions, answers, label) {
+  if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
+    return `${label} are required.`;
+  }
+
+  const questionById = new Map(questions.map((question) => [question.id, question]));
+  for (const questionId of Object.keys(answers)) {
+    if (!questionById.has(questionId)) {
+      return `${label} contain an unexpected question.`;
+    }
+  }
+
+  for (const question of questions) {
+    const answer = answers[question.id];
+    if (question.required && !isAnswerPresent(answer)) {
+      return `${label} are incomplete.`;
+    }
+
+    if (answer === undefined) {
+      continue;
+    }
+
+    const allowedOptionIds = new Set((question.options ?? []).map((option) => option.id));
+    if (question.type === "single_select") {
+      if (typeof answer !== "string" || !allowedOptionIds.has(answer)) {
+        return `${label} contain an invalid answer.`;
+      }
+      continue;
+    }
+
+    if (question.type === "multi_select") {
+      if (!Array.isArray(answer) || answer.length === 0) {
+        return `${label} contain an invalid answer.`;
+      }
+
+      const seenOptionIds = new Set();
+      for (const optionId of answer) {
+        if (typeof optionId !== "string" || !allowedOptionIds.has(optionId) || seenOptionIds.has(optionId)) {
+          return `${label} contain an invalid answer.`;
+        }
+        seenOptionIds.add(optionId);
+      }
+      continue;
+    }
+
+    return `${label} contain an unsupported question type.`;
+  }
+
+  return null;
+}
+
+function isAnswerPresent(answer) {
+  if (Array.isArray(answer)) {
+    return answer.length > 0;
+  }
+
+  return typeof answer === "string" && answer.length > 0;
+}
+
 function normalizeSubmission(payload, submissionId, submittedAt, event) {
   const rankedConcerns = payload.rankedConcernIds.map((id, index) => ({
     rank: index + 1,
@@ -274,8 +325,11 @@ function normalizeSubmission(payload, submissionId, submittedAt, event) {
     pageUrl: payload.pageUrl ?? null,
     selectedConcernIds: payload.selectedConcernIds,
     rankedConcernIds: payload.rankedConcernIds,
+    topRankedConcernIds: payload.topRankedConcernIds,
     rankedConcerns,
     selectedConcerns: payload.selectedConcernIds.map((id) => concernsById.get(id)),
+    followUpAnswers: payload.followUpAnswers,
+    intentAnswers: payload.intentAnswers,
     consentAgreement: {
       rewardCommunicationConsent: true,
       consentVersion: payload.consentAgreement.consentVersion,
