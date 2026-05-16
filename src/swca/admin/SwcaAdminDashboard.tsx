@@ -489,6 +489,7 @@ function csvCell(value: string) {
 function formatMessageStatus(value: string) {
   if (!value) return "-";
   if (value === "not_supported") return "not sent";
+  if (value === "duplicate_contact") return "duplicate contact";
   return value;
 }
 

@@ -61,7 +61,9 @@ Required:
 - `SES_TO_EMAILS`: comma-separated recipient list.
 - `ALLOWED_ORIGINS`: comma-separated allowed browser origins.
 - `REWARD_CLAIMS_TABLE`: DynamoDB table for reward eligibility and one-time claim state.
+- `REWARD_CONTACT_CLAIMS_TABLE`: DynamoDB table for one-reward-per-contact enforcement.
 - `CAMPAIGN_EVENTS_TABLE`: DynamoDB table for first-party campaign events.
+- `CONTACT_DEDUPE_SECRET_NAME`: Secrets Manager secret name for the HMAC key used to hash reward contact values.
 - `ADMIN_PASSCODE_SECRET_NAME`: Secrets Manager secret name for the shared SWCA admin passcode.
 - `ADMIN_TOKEN_SECRET_NAME`: Secrets Manager secret name for the admin session signing key.
 - `PUBLIC_BASE_URL`: public site base URL used in customer reward links.
@@ -221,9 +223,19 @@ For phone contact:
 }
 ```
 
-The contact endpoint only saves details for a valid token after a reward has already been claimed.
+The contact endpoint only saves details for a valid token after a reward has already been claimed. It enforces one reward per normalized email or phone value by writing an HMAC-hashed contact key to DynamoDB before delivery. The dedupe table does not store raw email addresses or phone numbers.
 
 For email contacts, the endpoint also creates a certificate token, sends the customer reward email through SES, and records message status on the reward claim. Phone contacts are saved for follow-up. SMS delivery is implemented behind `SMS_DELIVERY_ENABLED` and remains off until AWS End User Messaging SMS setup is approved.
+
+Duplicate contact response:
+
+```json
+{
+  "ok": false,
+  "duplicateContact": true,
+  "message": "This email or phone has already claimed a campaign reward."
+}
+```
 
 ## Reward Certificate API Contract
 
@@ -372,9 +384,27 @@ Reward eligibility and claim records are keyed by `submissionId` and contain:
 - `messageSentAt`
 - `messageProviderMessageId` after customer messaging succeeds
 - `messageError` when customer messaging fails
+- `contactDuplicateAt` and `messageStatus = duplicate_contact` when a different submission tries to claim a reward with an already-used contact
 - hashed request context for basic abuse review
 
 The raw token is never stored.
+
+## DynamoDB Reward Contact Claim Shape
+
+Reward contact uniqueness records are keyed by `contactKey`, an HMAC hash over campaign id, contact method, and normalized contact value. The table contains:
+
+- `contactKey`
+- `campaignId`
+- `formId`
+- `contactType`
+- `contactHash`
+- `submissionId`
+- `rewardId`
+- `rewardLabel`
+- `firstClaimedAt`
+- `updatedAt`
+
+The table does not store raw email addresses or phone numbers.
 
 ## DynamoDB Campaign Event Shape
 

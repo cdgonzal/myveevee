@@ -10,6 +10,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as nodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as logs from "aws-cdk-lib/aws-logs";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
 import { Construct } from "constructs";
@@ -45,6 +46,7 @@ export class PartnerIntakeForm extends Construct {
   readonly bucket: s3.Bucket;
   readonly function: nodejs.NodejsFunction;
   readonly rewardClaimsTable: dynamodb.Table;
+  readonly rewardContactClaimsTable: dynamodb.Table;
   readonly campaignEventsTable: dynamodb.Table;
   readonly rewardSpinFunction: nodejs.NodejsFunction;
   readonly adminFunction: nodejs.NodejsFunction;
@@ -56,6 +58,7 @@ export class PartnerIntakeForm extends Construct {
     const functionName = `${resourcePrefix}-handler`;
     const rewardSpinFunctionName = `${resourcePrefix}-reward-spin-handler`;
     const adminFunctionName = `${resourcePrefix}-admin-handler`;
+    const contactDedupeSecretName = `/myveevee/${props.partnerKey}/reward-contact-dedupe-key`;
 
     this.bucket = new s3.Bucket(this, "SubmissionsBucket", {
       bucketName: `${resourcePrefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}`,
@@ -79,6 +82,19 @@ export class PartnerIntakeForm extends Construct {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
+    this.rewardContactClaimsTable = new dynamodb.Table(this, "RewardContactClaimsTable", {
+      tableName: `${resourcePrefix}-reward-contact-claims`,
+      partitionKey: {
+        name: "contactKey",
+        type: dynamodb.AttributeType.STRING,
+      },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: true,
+      },
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
     this.campaignEventsTable = new dynamodb.Table(this, "CampaignEventsTable", {
       tableName: `${resourcePrefix}-campaign-events`,
       partitionKey: {
@@ -89,6 +105,16 @@ export class PartnerIntakeForm extends Construct {
       timeToLiveAttribute: "expiresAtEpoch",
       pointInTimeRecoverySpecification: {
         pointInTimeRecoveryEnabled: true,
+      },
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
+    const contactDedupeSecret = new secretsmanager.Secret(this, "RewardContactDedupeSecret", {
+      secretName: contactDedupeSecretName,
+      description: `${props.partnerKey.toUpperCase()} reward contact HMAC key for one-claim-per-contact enforcement.`,
+      generateSecretString: {
+        passwordLength: 48,
+        excludePunctuation: true,
       },
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
@@ -161,6 +187,7 @@ export class PartnerIntakeForm extends Construct {
       },
       environment: {
         REWARD_CLAIMS_TABLE: this.rewardClaimsTable.tableName,
+        REWARD_CONTACT_CLAIMS_TABLE: this.rewardContactClaimsTable.tableName,
         CAMPAIGN_EVENTS_TABLE: this.campaignEventsTable.tableName,
         SES_FROM_EMAIL: props.sesFromEmail,
         PUBLIC_BASE_URL: props.publicBaseUrl,
@@ -168,11 +195,14 @@ export class PartnerIntakeForm extends Construct {
         SMS_DELIVERY_ENABLED: props.smsDeliveryEnabled,
         SMS_ORIGINATION_IDENTITY: props.smsOriginationIdentity,
         SMS_CONFIGURATION_SET_NAME: props.smsConfigurationSetName,
+        CONTACT_DEDUPE_SECRET_NAME: contactDedupeSecretName,
       },
     });
 
     this.rewardClaimsTable.grantReadWriteData(this.rewardSpinFunction);
+    this.rewardContactClaimsTable.grantReadWriteData(this.rewardSpinFunction);
     this.campaignEventsTable.grantWriteData(this.rewardSpinFunction);
+    contactDedupeSecret.grantRead(this.rewardSpinFunction);
     this.rewardSpinFunction.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
@@ -389,6 +419,11 @@ export class PartnerIntakeForm extends Construct {
     new cdk.CfnOutput(this, "RewardClaimsTableName", {
       value: this.rewardClaimsTable.tableName,
       description: `${props.partnerKey} reward eligibility and claim table`,
+    });
+
+    new cdk.CfnOutput(this, "RewardContactClaimsTableName", {
+      value: this.rewardContactClaimsTable.tableName,
+      description: `${props.partnerKey} hashed reward contact uniqueness table`,
     });
 
     new cdk.CfnOutput(this, "CampaignEventsTableName", {

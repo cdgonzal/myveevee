@@ -8,7 +8,8 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import { PinpointSMSVoiceV2Client, SendTextMessageCommand } from "@aws-sdk/client-pinpoint-sms-voice-v2";
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
-import { createHash, randomBytes, randomInt, randomUUID } from "node:crypto";
+import { GetSecretValueCommand, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
+import { createHash, createHmac, randomBytes, randomInt, randomUUID } from "node:crypto";
 import rewardWheelConfig from "../../src/swca/rewardWheel/reward-wheel-config.json";
 
 const FORM_ID = "swca-wellness-priority-intake";
@@ -23,6 +24,8 @@ const rewardsById = new Map(REWARDS.map((reward) => [reward.id, reward]));
 const dynamodb = new DynamoDBClient({});
 const ses = new SESClient({});
 const sms = new PinpointSMSVoiceV2Client({});
+const secrets = new SecretsManagerClient({});
+const secretCache = new Map();
 
 export async function handler(event) {
   const origin = getRequestOrigin(event);
@@ -155,6 +158,11 @@ async function handleContactRequest(event, origin) {
   }
 
   if (currentClaim.messageStatus?.S === "sent" && currentClaim.messageSentAt?.S) {
+    const dedupeResult = await reserveContactClaim(payload, currentClaim, savedAt);
+    if (dedupeResult.duplicate) {
+      return duplicateContactResponse(origin);
+    }
+
     await saveContactDetails(payload, savedAt);
     return response(
       200,
@@ -175,6 +183,18 @@ async function handleContactRequest(event, origin) {
   const pendingMessageStatus = getInitialMessageStatus(payload.contactMethod);
 
   try {
+    const dedupeResult = await reserveContactClaim(payload, currentClaim, savedAt);
+    if (dedupeResult.duplicate) {
+      await markDuplicateContactAttempt(payload, currentClaim, savedAt);
+      await writeCampaignEvent({
+        eventName: "swca_reward_contact_duplicate",
+        submissionId: payload.submissionId,
+        rewardId: currentClaim.rewardId?.S ?? "",
+        contactMethod: payload.contactMethod,
+      });
+      return duplicateContactResponse(origin);
+    }
+
     await dynamodb.send(
       new UpdateItemCommand({
         TableName: process.env.REWARD_CLAIMS_TABLE,
@@ -351,9 +371,14 @@ async function findRewardClaimByCertificateId(certificateId) {
 }
 
 function validateConfig() {
-  const missing = ["REWARD_CLAIMS_TABLE", "SES_FROM_EMAIL", "PUBLIC_BASE_URL", "CAMPAIGN_EVENTS_TABLE"].filter(
-    (name) => !process.env[name]
-  );
+  const missing = [
+    "REWARD_CLAIMS_TABLE",
+    "REWARD_CONTACT_CLAIMS_TABLE",
+    "SES_FROM_EMAIL",
+    "PUBLIC_BASE_URL",
+    "CAMPAIGN_EVENTS_TABLE",
+    "CONTACT_DEDUPE_SECRET_NAME",
+  ].filter((name) => !process.env[name]);
   return missing.length > 0 ? `Missing environment variables: ${missing.join(", ")}` : null;
 }
 
@@ -466,6 +491,76 @@ async function saveContactDetails(payload, savedAt) {
         ":savedAt": { S: savedAt },
       },
     })
+  );
+}
+
+async function reserveContactClaim(payload, currentClaim, savedAt) {
+  const normalizedContact = normalizeContactValue(payload);
+  const contactHash = await hashContactValue(payload.contactMethod, normalizedContact);
+  const contactKey = `${CAMPAIGN_ID}#${payload.contactMethod}#${contactHash}`;
+
+  try {
+    await dynamodb.send(
+      new UpdateItemCommand({
+        TableName: process.env.REWARD_CONTACT_CLAIMS_TABLE,
+        Key: {
+          contactKey: { S: contactKey },
+        },
+        ConditionExpression: "attribute_not_exists(contactKey) OR submissionId = :submissionId",
+        UpdateExpression:
+          "SET campaignId = :campaignId, formId = :formId, contactType = :contactType, contactHash = :contactHash, submissionId = :submissionId, rewardId = :rewardId, rewardLabel = :rewardLabel, firstClaimedAt = if_not_exists(firstClaimedAt, :savedAt), updatedAt = :savedAt",
+        ExpressionAttributeValues: {
+          ":campaignId": { S: CAMPAIGN_ID },
+          ":formId": { S: FORM_ID },
+          ":contactType": { S: payload.contactMethod },
+          ":contactHash": { S: contactHash },
+          ":submissionId": { S: payload.submissionId },
+          ":rewardId": { S: currentClaim.rewardId?.S ?? "" },
+          ":rewardLabel": { S: currentClaim.rewardLabel?.S ?? itemToReward(currentClaim).label },
+          ":savedAt": { S: savedAt },
+        },
+      })
+    );
+
+    return { duplicate: false };
+  } catch (error) {
+    if (error instanceof ConditionalCheckFailedException || error?.name === "ConditionalCheckFailedException") {
+      return { duplicate: true };
+    }
+
+    throw error;
+  }
+}
+
+async function markDuplicateContactAttempt(payload, currentClaim, duplicateAt) {
+  await dynamodb.send(
+    new UpdateItemCommand({
+      TableName: process.env.REWARD_CLAIMS_TABLE,
+      Key: {
+        submissionId: { S: payload.submissionId },
+      },
+      UpdateExpression:
+        "SET contactMethod = :contactMethod, contactDuplicateAt = :duplicateAt, messageChannel = :messageChannel, messageStatus = :messageStatus, duplicateRewardId = :duplicateRewardId",
+      ExpressionAttributeValues: {
+        ":contactMethod": { S: payload.contactMethod },
+        ":duplicateAt": { S: duplicateAt },
+        ":messageChannel": { S: payload.contactMethod },
+        ":messageStatus": { S: "duplicate_contact" },
+        ":duplicateRewardId": { S: currentClaim.rewardId?.S ?? "" },
+      },
+    })
+  );
+}
+
+function duplicateContactResponse(origin) {
+  return response(
+    409,
+    {
+      ok: false,
+      duplicateContact: true,
+      message: "This email or phone has already claimed a campaign reward.",
+    },
+    origin
   );
 }
 
@@ -731,6 +826,43 @@ function createCertificateToken() {
 
 function hashCertificateToken(token) {
   return createHash("sha256").update(`swca-certificate-token:${token}`).digest("hex");
+}
+
+function normalizeContactValue(payload) {
+  if (payload.contactMethod === "email") {
+    return String(payload.email ?? "").trim().toLowerCase();
+  }
+
+  const digits = String(payload.phone ?? "").replace(/\D/g, "");
+  if (digits.length === 10) return `1${digits}`;
+  return digits;
+}
+
+async function hashContactValue(contactMethod, normalizedContact) {
+  const secret = await getContactDedupeSecret();
+  return createHmac("sha256", secret)
+    .update(`${CAMPAIGN_ID}:${contactMethod}:${normalizedContact}`)
+    .digest("hex");
+}
+
+async function getContactDedupeSecret() {
+  const secretName = process.env.CONTACT_DEDUPE_SECRET_NAME;
+  if (!secretName) {
+    throw new Error("CONTACT_DEDUPE_SECRET_NAME is not configured.");
+  }
+
+  if (secretCache.has(secretName)) {
+    return secretCache.get(secretName);
+  }
+
+  const result = await secrets.send(new GetSecretValueCommand({ SecretId: secretName }));
+  const secretValue = result.SecretString ?? Buffer.from(result.SecretBinary ?? "").toString("utf8");
+  if (!secretValue) {
+    throw new Error("Contact dedupe secret is empty.");
+  }
+
+  secretCache.set(secretName, secretValue);
+  return secretValue;
 }
 
 function buildCertificateUrl(certificateId, token) {

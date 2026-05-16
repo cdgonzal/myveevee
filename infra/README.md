@@ -13,6 +13,8 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - SES send permissions
 - one-month CloudWatch log retention
 - DynamoDB reward eligibility/claim table for SWCA wheel spins
+- DynamoDB hashed reward contact claims table for one-reward-per-contact enforcement
+- Secrets Manager generated HMAC key for reward contact dedupe hashing
 - bundled reward spin Lambda handler from `../aws/swca-intake/spin-handler.mjs`
 - reward spin Lambda/API route with conditional one-spin enforcement
 - DynamoDB campaign events table for first-party SWCA funnel events
@@ -36,12 +38,16 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 ## Live SWCA Reward Wheel Resources
 
 - DynamoDB table: `myveevee-swca-intake-reward-claims`
+- DynamoDB contact dedupe table: `myveevee-swca-intake-reward-contact-claims`
+- Secrets Manager contact dedupe key: `/myveevee/swca/reward-contact-dedupe-key`
 - Lambda function: `myveevee-swca-intake-reward-spin-handler`
 - Reward spin endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-spin`
 - Reward contact endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-contact`
 - Reward certificate endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-reward-certificate`
 - Frontend route: `https://myveevee.com/swca/wheel`
 - Amplify `main` environment variable: `VITE_SWCA_REWARD_SPIN_API_URL`
+
+The contact dedupe table stores hashed contact keys only. It enforces one reward per normalized email or phone value without exposing raw contact values in the dedupe index.
 
 ## SWCA Admin and Campaign Event Resources
 
