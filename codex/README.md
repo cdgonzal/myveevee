@@ -20,7 +20,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - `/swca/intake` is a direct-link campaign route, not a menu route
   - form submission, reward wheel, admin reporting, first-party events, and alarms are live
   - customer reward email, secure certificate links, and certificate-view tracking are live
-  - `/swca` is the lean provider hub for public SWCA reward, interest, and service-category paths
+  - `/swca` is the lean provider hub for public SWCA reward, interest, and Health Twin account-creation paths
   - active next track is operational handoff and admin readiness
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
@@ -57,7 +57,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 - `/swca`
   - Spine and Wellness Centers of America provider hub
-  - public entry point for rewards, general interest, and service-category paths
+  - public entry point for rewards, general interest, and Health Twin account creation
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
 - `/swca/rewards`
@@ -124,7 +124,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `src/pages/SwcaBrief.tsx`
   - standalone internal SWCA brief page
 - `src/swca/providerHub/SwcaProviderHub.tsx`
-  - standalone SWCA provider hub for public reward, interest, and service-category paths
+  - standalone SWCA provider hub for public reward, interest, and Health Twin account-creation paths
   - uses the clinic-provided trust image at `/swca/provider-trust-profile.webp`
 - `src/swca/rewardsTeaser/SwcaRewardsTeaser.tsx`
   - standalone reward-wheel teaser for Spine and Wellness Centers of America

@@ -20,7 +20,7 @@ The page should feel like the clinic's campaign, with VeeVee as the quiet techno
 
 | Route | Current page | Purpose | Reusable for new providers? | Clinic-specific inputs |
 | --- | --- | --- | --- | --- |
-| `/swca` | `src/swca/providerHub/SwcaProviderHub.tsx` | Lean provider hub for public reward, interest, and service-category paths | Mostly reusable | Provider name, logo, location, specialty, service categories, slug, action destinations |
+| `/swca` | `src/swca/providerHub/SwcaProviderHub.tsx` | Lean provider hub for public reward, interest, and Health Twin account-creation paths | Mostly reusable | Provider name, logo, location, specialty, optional trust image, slug, action destinations |
 | `/swca/rewards` | `src/swca/rewardsTeaser/SwcaRewardsTeaser.tsx` | QR/link landing page that motivates the user to start | Mostly reusable | Provider name, logo, colors, reward category, slug, CTA destination |
 | `/swca/teaser` | client redirect in `src/App.tsx` | Compatibility alias to `/swca/rewards` | Reusable pattern | Alias path if the clinic needs one |
 | `/swca/intake` | `src/swca/intakeForm/SpineWellnessIntakeForm.tsx` | General-interest selection, ranking, follow-up questions, consent, submit | Reusable after provider config extraction | Provider copy, logo, concern list, follow-up questions, consent copy, form id, API env var |

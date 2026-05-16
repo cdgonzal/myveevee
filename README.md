@@ -32,7 +32,7 @@ Campaign/direct-link route:
 
 - `/swca`
   - Spine and Wellness Centers of America provider hub
-  - public provider network entry point for rewards, general interest, and service-category paths
+  - public provider network entry point for rewards, general interest, and Health Twin account creation
   - `noindex`
 - `/swca/rewards`
   - Spine and Wellness Centers of America reward-wheel teaser page
@@ -69,7 +69,7 @@ Campaign/direct-link route:
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 - The internal SWCA brief should remain non-indexable.
 - The SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and CloudWatch alarms are live.
-- `/swca` is the lean provider hub for SWCA's public VeeVee network paths.
+- `/swca` is the lean provider hub for SWCA's public VeeVee network paths, including the direct Health Twin CTA to `veevee.io`.
 - The SWCA provider hub uses the clinic-provided trust image at `/swca/provider-trust-profile.webp`.
 - The SWCA email-first reward communication path is live: reward email, secure certificate link, certificate page, and certificate-view tracking.
 - `/swca/teaser` is a compatibility alias that redirects to `/swca/rewards`.

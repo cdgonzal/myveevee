@@ -22,35 +22,29 @@ const LINE = "rgba(7,26,58,0.12)";
 const actions = [
   {
     title: "Claim a reward",
-    body: "Start the reward path and unlock the next step.",
+    body: "Start here to unlock your SWCA reward.",
     cta: "Claim a reward",
     to: APP_LINKS.internal.swcaRewards,
     eventName: "swca_hub_claim_reward",
+    destinationType: "internal",
   },
   {
-    title: "Tell us what you're interested in",
-    body: "Share general interests so the clinic can understand what offers or services may fit.",
+    title: "Share your interests",
+    body: "Answer a few quick questions so SWCA can understand what you may want next.",
     cta: "Share interests",
     to: APP_LINKS.internal.swcaIntake,
     eventName: "swca_hub_start_interest",
+    destinationType: "internal",
   },
   {
-    title: "Learn about services",
-    body: "Review broad service categories before choosing a next step.",
-    cta: "View services",
-    to: "#services",
-    eventName: "swca_hub_view_services",
+    title: "Make your Health Twin",
+    body: "Create your own Health Twin in seconds. Free and personalized.",
+    cta: "Make your twin now",
+    to: APP_LINKS.external.authenticatedConsole,
+    eventName: "swca_hub_make_health_twin",
+    destinationType: "external",
   },
-];
-
-const serviceCategories = [
-  "Wellness and prevention",
-  "Spine and joint support",
-  "Recovery and mobility",
-  "Weight and metabolic wellness",
-  "Energy, sleep, and stress support",
-  "Longevity and performance goals",
-];
+] as const;
 
 export default function SwcaProviderHub() {
   const trackAction = (action: (typeof actions)[number]) => {
@@ -58,7 +52,7 @@ export default function SwcaProviderHub() {
       ctaName: action.eventName,
       ctaText: action.cta,
       placement: "swca_provider_hub",
-      destinationType: "internal",
+      destinationType: action.destinationType,
       destinationUrl: action.to,
     });
     trackSwcaCampaignEvent({
@@ -115,14 +109,14 @@ export default function SwcaProviderHub() {
             <Heading
               as="h1"
               fontFamily="Georgia, 'Times New Roman', serif"
-              fontSize={{ base: "4xl", md: "6xl" }}
+              fontSize={{ base: "4xl", md: "5xl" }}
               lineHeight="0.96"
               letterSpacing="0"
             >
-              Spine and Wellness Centers of America partners with VeeVee to help patients discover rewards, services, and care options.
+              SWCA and VeeVee help you discover rewards and next steps.
             </Heading>
             <Text fontSize={{ base: "lg", md: "xl" }} color="#303A50" lineHeight="1.5" maxW="760px">
-              This provider is part of the VeeVee network. Choose a public path below to claim a reward, share general interests, or review service categories.
+              Choose a path below. No private medical details needed here.
             </Text>
           </Stack>
 
@@ -150,26 +144,45 @@ export default function SwcaProviderHub() {
                       {action.body}
                     </Text>
                   </Stack>
-                  <Button
-                    as={RouterLink}
-                    to={action.to}
-                    alignSelf="flex-start"
-                    bg={action.title === "Claim a reward" ? ORANGE : NAVY}
-                    color="white"
-                    borderRadius="full"
-                    px={6}
-                    minH="48px"
-                    fontWeight="900"
-                    _hover={{
-                      bg: action.title === "Claim a reward" ? "#D96712" : "#102A55",
-                      textDecoration: "none",
-                      transform: "translateY(-1px)",
-                    }}
-                    _active={{ transform: "translateY(1px)" }}
-                    onClick={() => trackAction(action)}
-                  >
-                    {action.cta}
-                  </Button>
+                  {action.destinationType === "external" ? (
+                    <Button
+                      as="a"
+                      href={action.to}
+                      alignSelf="flex-start"
+                      bg={NAVY}
+                      color="white"
+                      borderRadius="full"
+                      px={6}
+                      minH="48px"
+                      fontWeight="900"
+                      _hover={{ bg: "#102A55", textDecoration: "none", transform: "translateY(-1px)" }}
+                      _active={{ transform: "translateY(1px)" }}
+                      onClick={() => trackAction(action)}
+                    >
+                      {action.cta}
+                    </Button>
+                  ) : (
+                    <Button
+                      as={RouterLink}
+                      to={action.to}
+                      alignSelf="flex-start"
+                      bg={action.title === "Claim a reward" ? ORANGE : NAVY}
+                      color="white"
+                      borderRadius="full"
+                      px={6}
+                      minH="48px"
+                      fontWeight="900"
+                      _hover={{
+                        bg: action.title === "Claim a reward" ? "#D96712" : "#102A55",
+                        textDecoration: "none",
+                        transform: "translateY(-1px)",
+                      }}
+                      _active={{ transform: "translateY(1px)" }}
+                      onClick={() => trackAction(action)}
+                    >
+                      {action.cta}
+                    </Button>
+                  )}
                 </Flex>
               );
             })}
@@ -181,8 +194,8 @@ export default function SwcaProviderHub() {
                 <Heading as="h2" fontSize={{ base: "xl", md: "2xl" }} letterSpacing="0">
                   About the provider
                 </Heading>
-                <Text mt={2} color="#566071" maxW="760px">
-                  This overview was provided by Spine and Wellness Centers of America.
+                <Text mt={2} color="#566071" maxW="620px">
+                  Clinic-provided team overview.
                 </Text>
               </Box>
               <Image
@@ -196,39 +209,8 @@ export default function SwcaProviderHub() {
             </Stack>
           </Box>
 
-          <Box id="services" bg="rgba(255,255,255,0.72)" border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 5, md: 7 }}>
-            <Stack spacing={4}>
-              <Stack spacing={2}>
-                <Heading as="h2" fontSize={{ base: "2xl", md: "3xl" }} letterSpacing="0">
-                  Service categories
-                </Heading>
-                <Text color="#566071" maxW="760px">
-                  These are general service areas only. This page does not collect private medical details or provide treatment recommendations.
-                </Text>
-              </Stack>
-              <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} spacing={3}>
-                {serviceCategories.map((category) => (
-                  <Box key={category} bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" px={4} py={3} fontWeight="800">
-                    {category}
-                  </Box>
-                ))}
-              </SimpleGrid>
-            </Stack>
-          </Box>
-
-          <Box bg="white" border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 5, md: 6 }}>
-            <Stack spacing={2}>
-              <Heading as="h2" fontSize={{ base: "xl", md: "2xl" }} letterSpacing="0">
-                How VeeVee helps
-              </Heading>
-              <Text color="#566071" lineHeight="1.55">
-                VeeVee helps participating providers collect general interest information and connect people with relevant offers, services, and next steps.
-              </Text>
-            </Stack>
-          </Box>
-
           <Text fontSize="xs" color="#6A7280" textAlign="center">
-            Spine and Wellness Centers of America manages eligibility, rewards, and clinical services.
+            SWCA manages eligibility, rewards, and clinical services. VeeVee helps power the digital experience.
           </Text>
         </Stack>
       </Box>
