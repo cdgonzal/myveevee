@@ -46,6 +46,7 @@ export default function SwcaRewardWheel() {
   const [isSavingContact, setIsSavingContact] = useState(false);
   const [contactSaved, setContactSaved] = useState(false);
   const hasValidLink = submissionId.length > 0 && token.length > 0;
+  const canSpin = hasValidLink && !isSpinning && !reward;
   const canSaveContact =
     firstName.trim().length > 0 &&
     lastName.trim().length > 0 &&
@@ -62,7 +63,7 @@ export default function SwcaRewardWheel() {
   }, []);
 
   const handleSpin = async () => {
-    if (!hasValidLink || isSpinning || reward) return;
+    if (!canSpin) return;
 
     setIsSpinning(true);
 
@@ -204,7 +205,19 @@ export default function SwcaRewardWheel() {
         {hasValidLink ? (
           <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, lg: 12 }} alignItems="center">
             <Stack spacing={6} align="center">
-              <Box position="relative" w="min(82vw, 430px)" aspectRatio="1">
+              <Box
+                as="button"
+                type="button"
+                position="relative"
+                w="min(82vw, 430px)"
+                aspectRatio="1"
+                onClick={handleSpin}
+                disabled={!canSpin}
+                cursor={canSpin ? "pointer" : "default"}
+                aria-label="Spin the reward wheel"
+                _focusVisible={{ outline: "4px solid", outlineColor: ORANGE, outlineOffset: "8px" }}
+                _disabled={{ opacity: reward ? 1 : 0.68 }}
+              >
                 <Box
                   position="absolute"
                   top="-16px"
@@ -229,18 +242,19 @@ export default function SwcaRewardWheel() {
                   bg={wheelGradient}
                   transform={`rotate(${rotation}deg)`}
                   transition={alreadySpun ? "transform 120ms ease-out" : "transform 2200ms cubic-bezier(0.16, 0.84, 0.28, 1)"}
+                  _hover={canSpin ? { boxShadow: "0 28px 88px rgba(7, 26, 58, 0.28)" } : undefined}
                 >
                   <Flex
                     align="center"
                     justify="center"
                     boxSize={{ base: "104px", md: "130px" }}
                     borderRadius="full"
-                    bg="#FFFFFF"
+                    bg="#D7263D"
                     border="8px solid"
-                    borderColor={ORANGE}
-                    boxShadow="0 10px 30px rgba(7, 26, 58, 0.18)"
+                    borderColor="#FFFFFF"
+                    boxShadow="0 10px 30px rgba(7, 26, 58, 0.28), inset 0 -10px 0 rgba(0, 0, 0, 0.16)"
                   >
-                    <Text fontWeight="900" color={NAVY} letterSpacing="0.08em" textTransform="uppercase">
+                    <Text fontWeight="900" color="white" letterSpacing="0.08em" textTransform="uppercase">
                       Spin
                     </Text>
                   </Flex>
@@ -249,17 +263,25 @@ export default function SwcaRewardWheel() {
 
               <Button
                 onClick={handleSpin}
-                isDisabled={!hasValidLink || isSpinning || Boolean(reward)}
+                isDisabled={!canSpin}
                 isLoading={isSpinning}
                 loadingText="Spinning"
-                minW={{ base: "100%", sm: "240px" }}
-                h="52px"
-                bg={NAVY}
+                boxSize={{ base: "132px", md: "150px" }}
+                borderRadius="full"
+                bg="#D7263D"
                 color="white"
-                _hover={{ bg: "#102A55" }}
+                border="8px solid"
+                borderColor="#FFFFFF"
+                boxShadow="0 16px 34px rgba(215, 38, 61, 0.32), inset 0 -12px 0 rgba(0, 0, 0, 0.18)"
+                fontSize={{ base: "lg", md: "xl" }}
+                fontWeight="900"
+                letterSpacing="0.08em"
+                textTransform="uppercase"
+                _hover={{ bg: "#C91F35", transform: canSpin ? "translateY(-2px)" : "none" }}
+                _active={{ transform: canSpin ? "translateY(2px)" : "none", boxShadow: "0 8px 18px rgba(215, 38, 61, 0.28), inset 0 -6px 0 rgba(0, 0, 0, 0.18)" }}
                 _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
               >
-                Spin the wheel
+                Spin
               </Button>
             </Stack>
 

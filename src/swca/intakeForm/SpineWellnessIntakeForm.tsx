@@ -120,6 +120,12 @@ export default function SpineWellnessIntakeForm() {
   const followUpProgressValue =
     followUpSteps.length > 0 ? Math.round(((currentFollowUpStepIndex + (currentFollowUpStepComplete ? 1 : 0)) / followUpSteps.length) * 100) : 0;
   const isLastFollowUpStep = currentFollowUpStepIndex >= followUpSteps.length - 1;
+  const advanceFollowUpStep = () => {
+    if (isLastFollowUpStep) return;
+    window.setTimeout(() => {
+      setCurrentFollowUpStepIndex((current) => Math.min(followUpSteps.length - 1, current + 1));
+    }, 180);
+  };
 
   const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && hasCommunicationConsent && !honeypot;
   const canSubmitFollowUp =
@@ -590,10 +596,12 @@ export default function SpineWellnessIntakeForm() {
                   onSelect={(optionId) => {
                     if (currentFollowUpStep.kind === "concern") {
                       setFollowUpAnswer(currentFollowUpStep.concern.id, currentFollowUpStep.question, optionId);
+                      advanceFollowUpStep();
                       return;
                     }
 
                     setIntentAnswer(currentFollowUpStep.question, optionId);
+                    advanceFollowUpStep();
                   }}
                 />
               ) : null}
