@@ -42,6 +42,14 @@ Campaign/direct-link route:
   - Spine and Wellness Centers of America intake form
   - intended for QR codes and shared links, not site navigation
   - `noindex`
+- `/swca/wheel`
+  - post-intake reward wheel and contact capture route
+  - reached from a valid intake response
+  - `noindex`
+- `/swca/funnel`
+  - post-reward Health Twin CTA route
+  - conversion-focused final step after reward/contact completion
+  - `noindex`
 - `/swca/admin`
   - private SWCA campaign dashboard for redacted traffic, reward, and contact-method reporting
   - intended for direct admin access only, not site navigation
@@ -68,20 +76,20 @@ Campaign/direct-link route:
 - `npm run verify:seo` rebuilds the site and verifies prerendered SEO output.
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 - The internal SWCA brief should remain non-indexable.
-- The SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and CloudWatch alarms are live.
+- The SWCA intake, teaser, wheel, Health Twin funnel, admin dashboard, first-party events, and CloudWatch alarms are live.
 - `/swca` is the lean provider hub for SWCA's public VeeVee network paths, including the direct Health Twin CTA to `veevee.io`.
 - The SWCA provider hub uses the clinic-provided trust image at `/swca/provider-trust-profile.webp`.
 - The SWCA email-first reward communication path is live: reward email, secure certificate link, certificate page, and certificate-view tracking.
 - `/swca/teaser` is a compatibility alias that redirects to `/swca/rewards`.
 - The reward teaser now uses a provider-sponsored landing pattern with SWCA branding, a reusable reward-wheel visual, and one CTA to `/swca/intake`.
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture.
-- The SWCA post-reward funnel route is `/swca/funnel`; it uses SWCA branding and provider recommendation copy to send users to create a free profile at `veevee.io`.
+- The SWCA post-reward funnel route is `/swca/funnel`; it sells the user's free Health Twin with minimal text and one dominant CTA to `veevee.io`.
 - The SWCA admin dashboard route is `/swca/admin`; it uses a backend passcode session and returns abbreviated names plus contact method only.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
-- Intake concern options and follow-up question placeholders are configured in `src/swca/intakeForm/swca-intake-config.json`.
-- The active SWCA mobile UX plan lives at [MOBILE_FUNNEL_UX_PLAN.md](/C:/w/myveevee/codex/swca/MOBILE_FUNNEL_UX_PLAN.md:1).
-- The active SWCA implementation track is marketing signal follow-up questions after ranking. See [MARKETING_SIGNAL_FOLLOWUP_PLAN.md](/C:/w/myveevee/codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md:1).
-- Reward communication and admin handoff notes remain in [REWARD_COMMUNICATION_PLAN.md](/C:/w/myveevee/codex/swca/REWARD_COMMUNICATION_PLAN.md:1).
+- Intake concern options, top-ranked follow-up questions, and generic intent questions are configured in `src/swca/intakeForm/swca-intake-config.json`.
+- The completed SWCA mobile UX rollout lives at [MOBILE_FUNNEL_UX_PLAN.md](/C:/w/myveevee/codex/swca/MOBILE_FUNNEL_UX_PLAN.md:1).
+- The completed SWCA marketing signal follow-up work lives at [MARKETING_SIGNAL_FOLLOWUP_PLAN.md](/C:/w/myveevee/codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md:1).
+- Reward communication and admin handoff notes live in [REWARD_COMMUNICATION_PLAN.md](/C:/w/myveevee/codex/swca/REWARD_COMMUNICATION_PLAN.md:1).
 - The SWCA admin runbook lives at [ADMIN_RUNBOOK.md](/C:/w/myveevee/codex/swca/ADMIN_RUNBOOK.md:1).
 - The provider onboarding playbook lives at [PROVIDER_ONBOARDING_PLAYBOOK.md](/C:/w/myveevee/codex/swca/PROVIDER_ONBOARDING_PLAYBOOK.md:1).
 - The SWCA SMS delivery plan lives at [SMS_IMPLEMENTATION_PLAN.md](/C:/w/myveevee/codex/swca/SMS_IMPLEMENTATION_PLAN.md:1).

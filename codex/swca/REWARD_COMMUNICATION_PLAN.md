@@ -132,7 +132,7 @@ Acceptance criteria:
 
 Goal: add text messaging only after email launch is stable.
 
-Status: in progress as a disabled-by-default implementation track. See `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
+Status: code path is complete and disabled by default; AWS registration and production enablement remain pending. See `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
 
 ## Current Verification
 
@@ -144,6 +144,7 @@ Status: in progress as a disabled-by-default implementation track. See `codex/sw
 - `/swca/certificate` serves from the live Amplify site.
 - Certificate lookup was fixed to scan until the matching certificate id is found before validating the secure token hash.
 - API Gateway CORS was corrected for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL after mobile/incognito submit failures.
+- One-reward-per-contact enforcement is live for normalized email or phone values. Duplicate contacts show a clear denial message and redirect users to `/swca/funnel` so the campaign still moves them toward the VeeVee Health Twin CTA.
 - Latest end-to-end verification on 2026-05-15 used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake succeeded, wheel selected `Wellness Gift`, reward contact saved by email, SES message status was `sent`, certificate `f0c9ee71-11f8-4341-9948-b6f085a68a04` was created, and `swca_reward_certificate_view` was captured for the same submission and reward id.
 
 Tasks:
@@ -161,14 +162,15 @@ Acceptance criteria:
 - SMS failures are visible in logs and admin message status.
 - Phone numbers are not exposed in the admin dashboard.
 
-## Current Next Track
+## Current Operations Track
 
-Customer reward communication is complete for the email-first launch path. The next practical track is operational handoff and admin readiness:
+Customer reward communication is complete for the email-first launch path. Current operations work is handoff and readiness:
 
 - Rotate the shared SWCA admin passcode before broad team sharing.
 - Use `codex/swca/ADMIN_RUNBOOK.md` for passcode handling, report refresh, CSV export, alarm handling, and stale-count troubleshooting.
 - Decide who receives operational alerts and whether `info@veevee.io` remains the SNS destination.
 - Confirm the admin dashboard report answers the first management questions after the live pilot starts.
+- Continue SMS registration, but keep SMS disabled until AWS approval and a controlled test send are complete.
 
 ## Backlog
 

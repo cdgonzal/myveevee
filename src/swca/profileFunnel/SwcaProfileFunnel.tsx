@@ -17,6 +17,9 @@ const NAVY = "#071A3A";
 const ORANGE = "#F39A25";
 const CREAM = "#FFF7EC";
 const LINE = "#F0D2A4";
+const AVATAR_WEBM = "/avatar/health-twin-funnel-avatar.webm";
+const AVATAR_MP4 = "/avatar/health-twin-funnel-avatar.mp4";
+const AVATAR_POSTER = "/avatar/health-twin-funnel-avatar-poster.webp";
 
 const PROFILE_BENEFITS = [
   "Make your reward more personal",
@@ -95,6 +98,33 @@ export default function SwcaProfileFunnel() {
               </Text>
             </Stack>
 
+            <Box
+              display={{ base: "block", lg: "none" }}
+              w={{ base: "150px", sm: "172px" }}
+              overflow="hidden"
+              borderRadius="18px"
+              border="4px solid"
+              borderColor="white"
+              bg="white"
+              boxShadow="0 18px 42px rgba(7,26,58,0.16)"
+            >
+              <Box
+                as="video"
+                w="100%"
+                h="auto"
+                display="block"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                poster={AVATAR_POSTER}
+              >
+                <source src={AVATAR_WEBM} type="video/webm" />
+                <source src={AVATAR_MP4} type="video/mp4" />
+              </Box>
+            </Box>
+
             <Button
               as="a"
               href={APP_LINKS.external.authenticatedConsole}
@@ -162,18 +192,42 @@ export default function SwcaProfileFunnel() {
             border="1px solid"
             borderColor={LINE}
             borderRadius="8px"
-            p={7}
+            p={5}
             boxShadow="0 22px 54px rgba(7,26,58,0.10)"
           >
-            <Stack spacing={5}>
-              <Text fontSize="xs" letterSpacing="0.16em" textTransform="uppercase" color={ORANGE} fontWeight="900">
-                {providerComments.comments[2]?.role ?? "SWCA provider recommendation"}
-              </Text>
-              <Text fontSize="2xl" lineHeight="1.25" fontFamily="Georgia, 'Times New Roman', serif" fontWeight="700">
-                Create your free profile now so your wellness journey does not end with today's reward.
-              </Text>
-              <Box borderTop="1px solid" borderColor={LINE} pt={5}>
-                <Text fontWeight="900">Your digital twin can help VeeVee personalize what comes next.</Text>
+            <Stack spacing={4}>
+              <Box
+                overflow="hidden"
+                borderRadius="8px"
+                bg={CREAM}
+                maxH="390px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Box
+                  as="video"
+                  maxW="100%"
+                  h="auto"
+                  display="block"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  poster={AVATAR_POSTER}
+                >
+                  <source src={AVATAR_WEBM} type="video/webm" />
+                  <source src={AVATAR_MP4} type="video/mp4" />
+                </Box>
+              </Box>
+              <Box px={2} pb={1}>
+                <Text fontSize="xs" letterSpacing="0.16em" textTransform="uppercase" color={ORANGE} fontWeight="900">
+                  {providerComments.comments[2]?.role ?? "SWCA provider recommendation"}
+                </Text>
+                <Text mt={2} fontSize="lg" lineHeight="1.3" fontFamily="Georgia, 'Times New Roman', serif" fontWeight="700">
+                  Create your free profile now so your wellness journey does not end with today's reward.
+                </Text>
               </Box>
             </Stack>
           </Box>

@@ -38,6 +38,7 @@ Open `/swca/admin` and confirm:
 - Email message status is mostly `sent`.
 - Reward distribution looks reasonable.
 - Recent rows show abbreviated names only and no raw contact details.
+- Duplicate-contact attempts are not treated as system failures; they are expected to deny a second reward and push the user to `/swca/funnel`.
 
 If the counts are flat during an active campaign:
 
@@ -130,6 +131,10 @@ Current durable sources:
 - S3 intake archive: `myveevee-swca-intake-767828748348-us-east-1`
 - DynamoDB reward claims: `myveevee-swca-intake-reward-claims`
 - DynamoDB campaign events: `myveevee-swca-intake-campaign-events`
+
+## Abuse Review Notes
+
+The reward claim record stores hashed request context and spin telemetry for basic abuse review. This includes hashed IP signals, hashed user-agent data, browser/device summary fields, and sanitized client hints. Raw IP addresses, raw user-agent strings, raw emails, and raw phone numbers are not exposed in the admin dashboard.
 
 ## Known Backlog
 

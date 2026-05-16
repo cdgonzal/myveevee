@@ -34,7 +34,7 @@ Marketing feedback:
 
 ## Phase 1: Mobile Teaser One-Screen CTA
 
-Status: complete. `/swca/rewards` now uses mobile-specific compact provider identity, short reward copy, a full-width above-the-fold CTA, mobile-only compact trust text, and hides the decorative wheel visual on phone breakpoints while preserving the desktop layout.
+Status: complete. `/swca/rewards` now uses mobile-specific compact provider identity, short reward copy, a full-width above-the-fold CTA, compact trust text, and a smaller mobile reward-wheel visual while preserving the desktop layout.
 
 Goal: make `/swca/rewards` a fast mobile conversion page.
 
@@ -50,7 +50,7 @@ Tasks:
   - one short support line
   - one primary CTA
 - Keep CTA above the fold on common mobile sizes.
-- Hide, shrink, or reposition the reward-wheel visual on mobile if it competes with the CTA.
+- Shrink and reposition the reward-wheel visual on mobile so it supports the CTA without competing with it.
 - Move privacy/reward eligibility text below the first viewport on mobile, or reduce it to a single compact line.
 - Preserve CTA tracking.
 
@@ -118,7 +118,7 @@ Regression Checks:
 
 ## Phase 3: Mobile Intake Step Guidance
 
-Status: complete. `/swca/intake` now has a mobile-only step strip, shorter mobile header copy, scroll-forward buttons for ranking and consent, the existing large consent card, and a mobile sticky Continue button once the form is ready.
+Status: complete. `/swca/intake` now uses mobile-gated steps without the old progress pills: users select concerns, tap the bottom action to rank, tap `Ready!`, then consent and answer the one-question-at-a-time follow-up modal.
 
 Goal: make `/swca/intake` feel like a guided sequence rather than a long form.
 
@@ -126,11 +126,7 @@ Tasks:
 
 - Keep desktop layout as-is.
 - On mobile, reduce explanatory copy above the concern list.
-- Add lightweight step indicators:
-  - `1 Select`
-  - `2 Rank`
-  - `3 Agree`
-  - `4 Answer`
+- Do not show the old `1 Select / 2 Rank / 3 Agree / 4 Answer` pills; marketing asked to remove them.
 - After the first concern selection, make the next action visually obvious.
 - After ranking is complete, scroll or focus the user toward the large consent card.
 - Keep the large full-card consent control.
@@ -139,7 +135,7 @@ Tasks:
 
 Acceptance Criteria:
 
-- On mobile, users can understand the current step without reading long instructions.
+- On mobile, users can understand the current step from the visible question and bottom CTA, without the old progress pills.
 - Consent card is easy to tap and remains visually prominent.
 - The Continue CTA is visible or quickly reachable after the user completes required selections/ranking.
 - Follow-up modal remains one question at a time.
@@ -201,3 +197,10 @@ Known baseline:
 - Add analytics for mobile scroll depth and post-spin result visibility.
 - Build a generic provider mobile-funnel component once SWCA mobile UX is validated.
 - Add automated Playwright checks for mobile first-viewport CTA visibility.
+
+## Latest Mobile Outcome
+
+- The reward teaser follows the provider-sponsored mobile mockup with SWCA identity, a dominant `Start now` CTA, compact reassurance copy, and the wheel visible lower on the screen.
+- The intake removes progress pills and uses bottom actions to force the next mobile step instead of allowing users to scroll past the intended flow.
+- The wheel opens the reward/contact capture on mobile after spin completion.
+- Duplicate reward contacts show the rejection toast and then redirect to `/swca/funnel`, keeping the funnel moving toward the Health Twin CTA.

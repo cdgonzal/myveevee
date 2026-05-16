@@ -133,8 +133,8 @@ Tasks:
 - Add CSV columns for:
   - top concern 1
   - top concern 2
-- care interest
-- move-forward factor
+  - care interest
+  - move-forward factor
 - Add dashboard distributions for top concerns, care interest, and move-forward factor.
 - Keep raw contact fields hidden.
 
@@ -148,7 +148,7 @@ Acceptance criteria:
 
 ## Phase 7: Validation And Launch
 
-Status: in progress. Local validation passed; production deploy and final dashboard smoke remain the active launch checks.
+Status: complete. Production intake now captures structured follow-up answers, persists them with the intake record, and surfaces redacted summaries in the admin dashboard.
 
 Tasks:
 
@@ -170,3 +170,17 @@ Acceptance criteria:
 - Existing teaser, wheel, reward contact, certificate, and funnel routes still work.
 - Users who do not complete follow-ups do not create partial submissions.
 - Mobile test can complete the full flow without confusing extra steps.
+
+## Current State
+
+- The concern list and follow-up questions are JSON-backed in `src/swca/intakeForm/swca-intake-config.json`.
+- The intake uses the top ranked concerns from the user's ranking and asks one follow-up question at a time.
+- Generic intent questions are included after concern-specific questions.
+- The backend validates submitted answer ids and persists `topRankedConcernIds`, `followUpAnswers`, and `intentAnswers`.
+- The admin dashboard and CSV expose redacted signal summaries for management.
+
+## Backlog
+
+- Marketing can revise question labels and answer options in the JSON config.
+- Increase top-ranked follow-ups from 2 to 3 only if marketing accepts the added mobile friction.
+- Add richer management reporting if the current top-concern and intent summaries are not enough.

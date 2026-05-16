@@ -540,10 +540,11 @@ Keep the S3 bucket private with public access blocked and server-side encryption
 - API Gateway CORS is corrected and verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 - Admin/event API is live and feeds the redacted dashboard.
 - CloudWatch alarms are deployed and SNS email is confirmed.
+- One-reward-per-contact enforcement is live for email and phone values through the HMAC contact dedupe table.
+- Reward spin telemetry is stored as hashed request context and sanitized client hints for abuse review; raw IP addresses and raw user-agent strings are not stored in the reward claim record.
 
 ## What Is Next
 
-- Operational handoff and admin readiness: rotate/share the admin passcode, use the admin runbook, confirm alert recipients, and validate the management report format.
-- Admin runbook: `codex/swca/ADMIN_RUNBOOK.md`.
-- SMS plan: `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
-- Keep GA4 dashboard integration, deeper S3 plus DynamoDB reporting, and next-clinic configuration in backlog until requested.
+- Operational handoff: rotate/share the admin passcode through a secure channel, use `codex/swca/ADMIN_RUNBOOK.md`, and confirm alert recipients.
+- SMS remains disabled until AWS End User Messaging SMS registration, sandbox exit, opt-out behavior, and a controlled test send are complete. See `codex/swca/SMS_IMPLEMENTATION_PLAN.md`.
+- Keep GA4 dashboard integration, deeper S3 plus DynamoDB reporting, and next-clinic provider config extraction in backlog until requested.

@@ -21,7 +21,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - form submission, reward wheel, admin reporting, first-party events, and alarms are live
   - customer reward email, secure certificate links, and certificate-view tracking are live
   - `/swca` is the lean provider hub for public SWCA reward, interest, and Health Twin account-creation paths
-  - active next track is mobile funnel UX: reduce text, reduce scrolling, and move users forward after each tap
+  - completed mobile funnel UX pass: reward teaser, intake, wheel, duplicate-contact redirect, and final Health Twin CTA now move users forward with less reading and less scrolling
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
@@ -84,7 +84,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
 - `/swca/funnel`
-  - post-reward SWCA-branded VeeVee profile CTA route
+  - post-reward SWCA-branded Health Twin CTA route
   - reached after winner contact details are saved from `/swca/wheel`
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
@@ -150,7 +150,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `src/swca/certificate/api.ts`
   - calls `VITE_SWCA_REWARD_CERTIFICATE_API_URL`; derives from the reward spin endpoint if the explicit env var is absent
 - `src/swca/profileFunnel/SwcaProfileFunnel.tsx`
-  - standalone SWCA-branded page recommending a free VeeVee profile after reward completion
+  - standalone SWCA-branded final CTA page selling the free Health Twin after reward completion
 - `src/swca/profileFunnel/provider-comments.json`
   - editable provider recommendation copy for the post-reward funnel page
 - `src/swca/admin/SwcaAdminDashboard.tsx`
@@ -193,19 +193,22 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Verified
 
-- SWCA intake, teaser, wheel, funnel, admin dashboard, first-party events, and alarms are live.
+- SWCA intake, teaser, wheel, Health Twin funnel, admin dashboard, first-party events, and alarms are live.
 - Customer reward email, secure certificate page, certificate API, and admin message status fields are implemented.
-- Active SWCA product planning now includes marketing signal follow-up questions after ranking; see `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`.
+- Marketing signal follow-up questions after ranking are implemented and documented in `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`.
 - Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.
 - Reward email and certificate status were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
 - Latest end-to-end reward communication verification used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake, wheel, email, secure certificate link, and certificate-view event all matched `rewardId=wellness-gift`.
 - API Gateway CORS is verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 - App 404 recovery, `/swca/teaser`, and timed `/how-it-works` redirect are deployed.
+- Latest frontend deploy checkpoint: Amplify job `249` succeeded on 2026-05-16 for the streamlined `/swca/funnel` Health Twin CTA.
 
-### Next
+### Backlog
 
-- Mobile funnel UX: simplify `/swca/rewards` on mobile, move users directly to reward/contact capture after the wheel spin, and make `/swca/intake` feel more step-based on mobile.
-- Keep remaining non-blocking SWCA items in `codex/swca/REWARD_COMMUNICATION_PLAN.md` backlog.
+- Complete AWS End User Messaging SMS registration before enabling text reward delivery.
+- Rotate/share the SWCA admin passcode through a secure channel before broad staff rollout.
+- Add deeper operations reporting only if management outgrows the redacted dashboard and CSV.
+- Extract provider-neutral campaign config before adding clinic 2.
 
 ## SEO Implementation State
 
@@ -293,7 +296,7 @@ Current validation state:
 Known baseline issue:
 
 - `npm run typecheck` currently fails on pre-existing unrelated issues in `src/pages/AvatarPlaybackTest.tsx` and `src/pages/HealthTwinFunnel.tsx`.
-- The SWCA intake deploy path was validated through `npm run build`, `npm test`, CDK synth/deploy, Amplify release job `203`, live API submission, S3 object verification, and Lambda log verification.
+- The SWCA deploy path has been validated through `npm run build`, `npm test`, CDK synth/deploy, Amplify deploys, live API submission, S3 object verification, DynamoDB reward/contact records, certificate-view events, and Lambda log verification.
 
 ## Related Docs
 
@@ -308,9 +311,9 @@ Known baseline issue:
 - `codex/swca/REWARD_COMMUNICATION_PLAN.md`
   - completed email-first SWCA customer reward communication tracker plus operations/admin backlog
 - `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`
-  - active plan for top-ranked concern follow-up questions and generic purchase-intent signals
+  - completed plan for top-ranked concern follow-up questions and generic purchase-intent signals
 - `codex/swca/MOBILE_FUNNEL_UX_PLAN.md`
-  - recommended implementation order for mobile-first SWCA funnel improvements without disrupting desktop
+  - completed mobile-first SWCA funnel improvements without disrupting desktop
 - `codex/swca/PROVIDER_ONBOARDING_PLAYBOOK.md`
   - repeatable provider/clinic onboarding packet, SWCA page inventory, reusable surfaces, and clinic information request checklist
 - `codex/swca/ADMIN_RUNBOOK.md`
@@ -324,4 +327,4 @@ Known baseline issue:
 - `infra/README.md`
   - CDK setup, deploy commands, live resource names, and follow-on operations
 - `_sandbox/codex/spine-wellness-intake-form/PLAN.md`
-  - historical SWCA intake, teaser, reward-wheel, admin, alarm implementation plan, and active Phase 16 marketing follow-up-question plan
+  - historical SWCA intake, teaser, reward-wheel, admin, alarm, mobile, and marketing-signal implementation plan
