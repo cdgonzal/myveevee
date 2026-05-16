@@ -21,7 +21,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - form submission, reward wheel, admin reporting, first-party events, and alarms are live
   - customer reward email, secure certificate links, and certificate-view tracking are live
   - `/swca` is the lean provider hub for public SWCA reward, interest, and Health Twin account-creation paths
-  - completed mobile funnel UX pass: reward teaser, intake, wheel, duplicate-contact redirect, and final Health Twin CTA now move users forward with less reading and less scrolling
+  - completed mobile funnel UX pass: reward teaser, intake, wheel, duplicate-contact redirect, and Health Twin CTA variants now move users forward with less reading and less scrolling
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
@@ -89,6 +89,12 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
   - CTA destination is `https://veevee.io`
+- `/swca/funnel-visual`
+  - post-reward SWCA-branded visual/function Health Twin CTA test route
+  - reached for roughly half of reward completions through deterministic `submissionId` assignment
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+  - CTA destination is `https://veevee.io`
 - `/swca/admin`
   - private SWCA campaign dashboard route
   - passcode-gated through the backend admin session endpoint
@@ -150,7 +156,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `src/swca/certificate/api.ts`
   - calls `VITE_SWCA_REWARD_CERTIFICATE_API_URL`; derives from the reward spin endpoint if the explicit env var is absent
 - `src/swca/profileFunnel/SwcaProfileFunnel.tsx`
-  - standalone SWCA-branded final CTA page selling the free Health Twin after reward completion
+  - standalone SWCA-branded avatar variant selling the free Health Twin after reward completion
+- `src/swca/profileFunnel/SwcaProfileFunnelVisual.tsx`
+  - standalone SWCA-branded visual/function variant for Health Twin CTA testing
+- `src/swca/profileFunnel/variant.ts`
+  - deterministic A/B assignment helper that maps reward `submissionId` values to `/swca/funnel` or `/swca/funnel-visual`
 - `src/swca/profileFunnel/provider-comments.json`
   - editable provider recommendation copy for the post-reward funnel page
 - `src/swca/admin/SwcaAdminDashboard.tsx`
@@ -193,7 +203,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Verified
 
-- SWCA intake, teaser, wheel, Health Twin funnel, admin dashboard, first-party events, and alarms are live.
+- SWCA intake, teaser, wheel, Health Twin funnel variants, admin dashboard, first-party events, and alarms are live.
 - Customer reward email, secure certificate page, certificate API, and admin message status fields are implemented.
 - Marketing signal follow-up questions after ranking are implemented and documented in `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`.
 - Live smoke tests confirmed S3 storage, internal SES notification, one-spin reward claim, contact save, redacted admin report, and alarm subscription.

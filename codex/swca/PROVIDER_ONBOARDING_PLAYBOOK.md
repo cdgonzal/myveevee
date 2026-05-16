@@ -26,7 +26,8 @@ The page should feel like the clinic's campaign, with VeeVee as the quiet techno
 | `/swca/intake` | `src/swca/intakeForm/SpineWellnessIntakeForm.tsx` | General-interest selection, ranking, follow-up questions, consent, submit | Reusable after provider config extraction | Provider copy, logo, concern list, follow-up questions, consent copy, form id, API env var |
 | `/swca/wheel` | `src/swca/rewardWheel/SwcaRewardWheel.tsx` | Validates intake token, spins reward wheel, collects winner contact | Reusable after provider config extraction | Logo, colors, reward slots, reward API env vars, contact wording |
 | `/swca/certificate` | `src/swca/certificate/SwcaRewardCertificate.tsx` | Secure reward certificate linked from customer email | Reusable after provider config extraction | Provider name/logo/colors, redemption text, CTA copy, certificate API env var |
-| `/swca/funnel` | `src/swca/profileFunnel/SwcaProfileFunnel.tsx` | Post-reward Health Twin CTA that converts reward completers into VeeVee account/profile creation | Reusable after provider config extraction | Provider trust copy, Health Twin CTA copy, redirect destination |
+| `/swca/funnel` | `src/swca/profileFunnel/SwcaProfileFunnel.tsx` | Post-reward Health Twin CTA avatar variant | Reusable after provider config extraction | Provider trust copy, Health Twin CTA copy, redirect destination |
+| `/swca/funnel-visual` | `src/swca/profileFunnel/SwcaProfileFunnelVisual.tsx` | Post-reward Health Twin CTA visual/function variant for funnel competition | Reusable after provider config extraction | Provider trust copy, visual/function card copy, redirect destination |
 | `/swca/admin` | `src/swca/admin/SwcaAdminDashboard.tsx` | Redacted campaign reporting and executive summary | Reusable after provider config extraction | Provider name, admin passcode secret, report API env vars, exported report label |
 | `/briefs/swca-4821.html` | `src/pages/SwcaBrief.tsx` plus static brief | Internal SWCA brief | Not part of the repeatable reward path | Only create if the new clinic needs an internal brief |
 
@@ -38,6 +39,7 @@ The page should feel like the clinic's campaign, with VeeVee as the quiet techno
 | `src/swca/intakeForm/swca-intake-config.json` | Form id, concern options, top-ranked follow-up questions, generic intent questions | Should become provider-specific JSON |
 | `src/swca/rewardWheel/reward-wheel-config.json` | Reward campaign id, reward version, slot count, labels, descriptions, values, colors, odds | Already marketing-editable; should become provider-specific JSON |
 | `src/swca/profileFunnel/provider-comments.json` | Post-reward provider recommendation copy used by the desktop Health Twin CTA page | Should become provider-specific JSON or folded into the provider campaign registry |
+| `src/swca/profileFunnel/variant.ts` | Deterministic A/B assignment between Health Twin CTA variants | Should become provider/campaign configurable |
 | `src/config/links.ts` | Public route constants | Needs new provider route constants |
 | `src/App.tsx` | Route registration and SWCA page-view tracking | Needs provider route registration and generic campaign tracking |
 | `src/seo/routeMeta.ts` | Noindex metadata for campaign routes | Needs new provider route metadata |

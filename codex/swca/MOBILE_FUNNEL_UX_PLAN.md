@@ -203,4 +203,5 @@ Known baseline:
 - The reward teaser follows the provider-sponsored mobile mockup with SWCA identity, a dominant `Start now` CTA, compact reassurance copy, and the wheel visible lower on the screen.
 - The intake removes progress pills and uses bottom actions to force the next mobile step instead of allowing users to scroll past the intended flow.
 - The wheel opens the reward/contact capture on mobile after spin completion.
-- Duplicate reward contacts show the rejection toast and then redirect to `/swca/funnel`, keeping the funnel moving toward the Health Twin CTA.
+- Duplicate reward contacts show the rejection toast and then redirect to the assigned Health Twin CTA variant, keeping the funnel moving.
+- Reward completion now runs a funnel competition: `/swca/funnel` is the avatar variant and `/swca/funnel-visual` is the visual/function variant. Assignment is deterministic from `submissionId` so traffic stays close to 50/50.

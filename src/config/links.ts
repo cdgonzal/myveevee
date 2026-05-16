@@ -22,6 +22,7 @@ export const APP_LINKS = {
     swcaWheel: "/swca/wheel",
     swcaCertificate: "/swca/certificate",
     swcaFunnel: "/swca/funnel",
+    swcaFunnelVisual: "/swca/funnel-visual",
     swcaAdmin: "/swca/admin",
   },
   cta: {

@@ -102,6 +102,12 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "post_reward_profile_cta",
     primary_goal: "create_free_veevee_profile",
   },
+  [APP_LINKS.internal.swcaFunnelVisual]: {
+    page_name: "swca_profile_funnel_visual",
+    page_section: "swca_campaign",
+    page_type: "post_reward_profile_cta_test",
+    primary_goal: "create_free_veevee_profile",
+  },
   [APP_LINKS.internal.swcaAdmin]: {
     page_name: "swca_admin_dashboard",
     page_section: "swca_campaign",

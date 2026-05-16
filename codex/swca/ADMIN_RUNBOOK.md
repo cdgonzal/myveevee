@@ -38,7 +38,7 @@ Open `/swca/admin` and confirm:
 - Email message status is mostly `sent`.
 - Reward distribution looks reasonable.
 - Recent rows show abbreviated names only and no raw contact details.
-- Duplicate-contact attempts are not treated as system failures; they are expected to deny a second reward and push the user to `/swca/funnel`.
+- Duplicate-contact attempts are not treated as system failures; they are expected to deny a second reward and push the user to the assigned Health Twin CTA variant.
 
 If the counts are flat during an active campaign:
 
@@ -144,3 +144,4 @@ The reward claim record stores hashed request context and spin telemetry for bas
 - Add deeper S3 plus DynamoDB joined reporting.
 - Add GA4 dashboard integration later through a server-side Google Analytics Data API path.
 - Enable SMS reward delivery after AWS End User Messaging SMS setup is complete.
+- Add a dashboard funnel-variant comparison if management wants conversion reporting directly in `/swca/admin`.

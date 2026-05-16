@@ -246,6 +246,15 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.swcaFunnelVisual]: {
+    title: "Create Your Health Twin | SWCA",
+    description: "Spine and Wellness Centers of America recommended Health Twin next step after claiming a reward.",
+    canonicalPath: APP_LINKS.internal.swcaFunnelVisual,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
   [APP_LINKS.internal.swcaAdmin]: {
     title: "SWCA Campaign Admin",
     description: "Private SWCA campaign reporting dashboard.",

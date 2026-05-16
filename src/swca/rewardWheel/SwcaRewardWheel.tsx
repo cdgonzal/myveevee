@@ -25,6 +25,7 @@ import { trackCtaClick } from "../../analytics/trackCtaClick";
 import { trackEvent } from "../../analytics/trackEvent";
 import { APP_LINKS } from "../../config/links";
 import { trackSwcaCampaignEvent } from "../campaignEvents";
+import { getSwcaProfileFunnelPath, getSwcaProfileFunnelVariant } from "../profileFunnel/variant";
 import { RewardContactError, spinSwcaReward, submitSwcaRewardContact } from "./api";
 import { getRewardIndex, SWCA_REWARDS } from "./rewards";
 import type { SwcaReward } from "./rewards";
@@ -44,6 +45,8 @@ export default function SwcaRewardWheel() {
   const [searchParams] = useSearchParams();
   const submissionId = searchParams.get("sid") ?? "";
   const token = searchParams.get("token") ?? "";
+  const profileFunnelVariant = getSwcaProfileFunnelVariant(submissionId);
+  const profileFunnelPath = getSwcaProfileFunnelPath(submissionId);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [reward, setReward] = useState<SwcaReward | null>(null);
@@ -164,6 +167,9 @@ export default function SwcaRewardWheel() {
         submissionId,
         rewardId: reward?.id,
         contactMethod,
+        params: {
+          profile_funnel_variant: profileFunnelVariant,
+        },
       });
       toast({
         title: "Contact details saved.",
@@ -172,7 +178,17 @@ export default function SwcaRewardWheel() {
         duration: 4800,
       });
       window.setTimeout(() => {
-        navigate(APP_LINKS.internal.swcaFunnel);
+        trackSwcaCampaignEvent({
+          eventName: "swca_profile_funnel_variant_assigned",
+          submissionId,
+          rewardId: reward?.id,
+          contactMethod,
+          params: {
+            profile_funnel_variant: profileFunnelVariant,
+            destination_path: profileFunnelPath,
+          },
+        });
+        navigate(profileFunnelPath);
       }, 900);
     } catch (error) {
       const isDuplicateContact = error instanceof RewardContactError && error.duplicateContact;
@@ -202,7 +218,18 @@ export default function SwcaRewardWheel() {
       });
       if (isDuplicateContact) {
         window.setTimeout(() => {
-          navigate(APP_LINKS.internal.swcaFunnel);
+          trackSwcaCampaignEvent({
+            eventName: "swca_profile_funnel_variant_assigned",
+            submissionId,
+            rewardId: reward?.id,
+            contactMethod,
+            params: {
+              profile_funnel_variant: profileFunnelVariant,
+              destination_path: profileFunnelPath,
+              reason: "duplicate_contact",
+            },
+          });
+          navigate(profileFunnelPath);
         }, 3800);
       }
     } finally {
@@ -307,7 +334,7 @@ export default function SwcaRewardWheel() {
         {contactSaved ? (
           <Button
             as={Link}
-            to={APP_LINKS.internal.swcaFunnel}
+            to={profileFunnelPath}
             variant="outline"
             borderColor={LINE}
             color={NAVY}
@@ -317,12 +344,16 @@ export default function SwcaRewardWheel() {
                 ctaText: "Continue to free profile",
                 placement: "swca_reward_contact_saved",
                 destinationType: "internal",
-                destinationUrl: APP_LINKS.internal.swcaFunnel,
+                destinationUrl: profileFunnelPath,
               });
               trackSwcaCampaignEvent({
                 eventName: "swca_reward_continue_to_profile_funnel",
                 submissionId,
                 rewardId: reward?.id,
+                params: {
+                  profile_funnel_variant: profileFunnelVariant,
+                  destination_path: profileFunnelPath,
+                },
               });
             }}
           >

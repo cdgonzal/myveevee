@@ -50,6 +50,10 @@ Campaign/direct-link route:
   - post-reward Health Twin CTA route
   - conversion-focused final step after reward/contact completion
   - `noindex`
+- `/swca/funnel-visual`
+  - visual-function Health Twin CTA test route
+  - used as the B variant for post-reward funnel competition
+  - `noindex`
 - `/swca/admin`
   - private SWCA campaign dashboard for redacted traffic, reward, and contact-method reporting
   - intended for direct admin access only, not site navigation
@@ -83,7 +87,7 @@ Campaign/direct-link route:
 - `/swca/teaser` is a compatibility alias that redirects to `/swca/rewards`.
 - The reward teaser now uses a provider-sponsored landing pattern with SWCA branding, a reusable reward-wheel visual, and one CTA to `/swca/intake`.
 - The SWCA reward wheel is live as a post-intake route backed by DynamoDB one-spin enforcement and reward-contact capture.
-- The SWCA post-reward funnel route is `/swca/funnel`; it sells the user's free Health Twin with minimal text and one dominant CTA to `veevee.io`.
+- The SWCA post-reward funnel competition uses `/swca/funnel` as the avatar variant and `/swca/funnel-visual` as the visual/function variant. Reward completion assigns traffic deterministically from `submissionId` to keep the split close to 50/50.
 - The SWCA admin dashboard route is `/swca/admin`; it uses a backend passcode session and returns abbreviated names plus contact method only.
 - Reward slots are configured in `src/swca/rewardWheel/reward-wheel-config.json` so marketing can edit labels, descriptions, estimated values, colors, odds, and total slots.
 - Intake concern options, top-ranked follow-up questions, and generic intent questions are configured in `src/swca/intakeForm/swca-intake-config.json`.

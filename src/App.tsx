@@ -81,6 +81,7 @@ const SpineWellnessIntakeForm = lazyWithRetry(() => import("./swca/intakeForm/Sp
 const SwcaRewardWheel = lazyWithRetry(() => import("./swca/rewardWheel/SwcaRewardWheel"));
 const SwcaRewardCertificate = lazyWithRetry(() => import("./swca/certificate/SwcaRewardCertificate"));
 const SwcaProfileFunnel = lazyWithRetry(() => import("./swca/profileFunnel/SwcaProfileFunnel"));
+const SwcaProfileFunnelVisual = lazyWithRetry(() => import("./swca/profileFunnel/SwcaProfileFunnelVisual"));
 const SwcaAdminDashboard = lazyWithRetry(() => import("./swca/admin/SwcaAdminDashboard"));
 
 type FooterNavLink = {
@@ -197,6 +198,7 @@ export default function App() {
     pathname === APP_LINKS.internal.swcaWheel ||
     pathname === APP_LINKS.internal.swcaCertificate ||
     pathname === APP_LINKS.internal.swcaFunnel ||
+    pathname === APP_LINKS.internal.swcaFunnelVisual ||
     pathname === APP_LINKS.internal.swcaAdmin;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
@@ -221,6 +223,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
                 <Route path={APP_LINKS.internal.swcaCertificate} element={<SwcaRewardCertificate />} />
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
+                <Route path={APP_LINKS.internal.swcaFunnelVisual} element={<SwcaProfileFunnelVisual />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
               </Routes>
             </Suspense>
@@ -252,6 +255,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaWheel} element={<SwcaRewardWheel />} />
                 <Route path={APP_LINKS.internal.swcaCertificate} element={<SwcaRewardCertificate />} />
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
+                <Route path={APP_LINKS.internal.swcaFunnelVisual} element={<SwcaProfileFunnelVisual />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
