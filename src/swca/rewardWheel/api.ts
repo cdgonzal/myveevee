@@ -29,6 +29,21 @@ export type RewardContactPayload = {
   phone?: string;
 };
 
+type RewardContactApiResponse = {
+  message?: string;
+  duplicateContact?: boolean;
+};
+
+export class RewardContactError extends Error {
+  duplicateContact: boolean;
+
+  constructor(message: string, options?: { duplicateContact?: boolean }) {
+    super(message);
+    this.name = "RewardContactError";
+    this.duplicateContact = Boolean(options?.duplicateContact);
+  }
+}
+
 const SWCA_REWARD_SPIN_API_URL = import.meta.env.VITE_SWCA_REWARD_SPIN_API_URL as string | undefined;
 
 export async function spinSwcaReward({
@@ -97,10 +112,12 @@ export async function submitSwcaRewardContact(payload: RewardContactPayload): Pr
     body: JSON.stringify(payload),
   });
 
-  const responsePayload = (await response.json().catch(() => ({}))) as { message?: string };
+  const responsePayload = (await response.json().catch(() => ({}))) as RewardContactApiResponse;
 
   if (!response.ok) {
-    throw new Error(responsePayload.message ?? "The reward contact details could not be saved.");
+    throw new RewardContactError(responsePayload.message ?? "The reward contact details could not be saved.", {
+      duplicateContact: Boolean(responsePayload.duplicateContact),
+    });
   }
 
   return { mode: "live" };

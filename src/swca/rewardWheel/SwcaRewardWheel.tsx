@@ -25,7 +25,7 @@ import { trackCtaClick } from "../../analytics/trackCtaClick";
 import { trackEvent } from "../../analytics/trackEvent";
 import { APP_LINKS } from "../../config/links";
 import { trackSwcaCampaignEvent } from "../campaignEvents";
-import { spinSwcaReward, submitSwcaRewardContact } from "./api";
+import { RewardContactError, spinSwcaReward, submitSwcaRewardContact } from "./api";
 import { getRewardIndex, SWCA_REWARDS } from "./rewards";
 import type { SwcaReward } from "./rewards";
 
@@ -175,12 +175,36 @@ export default function SwcaRewardWheel() {
         navigate(APP_LINKS.internal.swcaFunnel);
       }, 900);
     } catch (error) {
-      toast({
-        title: "We could not save your contact details.",
-        description: error instanceof Error ? error.message : "Please ask the clinic team for help.",
-        status: "error",
-        duration: 4200,
+      const isDuplicateContact = error instanceof RewardContactError && error.duplicateContact;
+      trackEvent("swca_reward_contact_error", {
+        contact_method: contactMethod,
+        reward_id: reward?.id,
+        reason: isDuplicateContact ? "duplicate_contact" : "save_failed",
       });
+      trackSwcaCampaignEvent({
+        eventName: "swca_reward_contact_error",
+        submissionId,
+        rewardId: reward?.id,
+        contactMethod,
+        params: {
+          reason: isDuplicateContact ? "duplicate_contact" : "save_failed",
+        },
+      });
+      toast({
+        title: isDuplicateContact ? "This contact already claimed a reward." : "We could not save your contact details.",
+        description: isDuplicateContact
+          ? "We will still take you to the next step."
+          : error instanceof Error
+            ? error.message
+            : "Please ask the clinic team for help.",
+        status: "error",
+        duration: isDuplicateContact ? 3800 : 4200,
+      });
+      if (isDuplicateContact) {
+        window.setTimeout(() => {
+          navigate(APP_LINKS.internal.swcaFunnel);
+        }, 3800);
+      }
     } finally {
       setIsSavingContact(false);
     }
