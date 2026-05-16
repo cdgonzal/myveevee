@@ -65,61 +65,82 @@ export default function SwcaProfileFunnelVisual() {
           </Stack>
         </Flex>
 
-        <Stack spacing={{ base: 4, md: 7 }} align="center" textAlign="center">
-          <Badge
-            bg={NAVY}
-            color="white"
-            borderRadius="full"
-            px={{ base: 5, md: 6 }}
-            py={{ base: 2.5, md: 3 }}
-            fontSize={{ base: "sm", md: "md" }}
-            letterSpacing="0.04em"
+        <Flex
+          direction={{ base: "column", lg: "row" }}
+          align={{ base: "center", lg: "center" }}
+          justify="space-between"
+          gap={{ base: 4, md: 7, lg: 12 }}
+        >
+          <Stack
+            spacing={{ base: 4, md: 7, lg: 8 }}
+            align={{ base: "center", lg: "flex-start" }}
+            textAlign={{ base: "center", lg: "left" }}
+            flex="1"
+            maxW={{ base: "780px", lg: "540px" }}
           >
-            Your Health Twin
-          </Badge>
-
-          <Stack spacing={{ base: 3, md: 4 }} align="center">
-            <Heading
-              as="h1"
-              fontFamily="Georgia, 'Times New Roman', serif"
-              fontSize={{ base: "50px", md: "8xl" }}
-              lineHeight={{ base: "0.86", md: "0.84" }}
-              letterSpacing="0"
-              maxW={{ base: "390px", md: "780px" }}
+            <Badge
+              bg={NAVY}
+              color="white"
+              borderRadius="full"
+              px={{ base: 5, md: 6 }}
+              py={{ base: 2.5, md: 3 }}
+              fontSize={{ base: "sm", md: "md" }}
+              letterSpacing="0.04em"
             >
-              Create your digital twin.
-            </Heading>
-            <Text fontSize={{ base: "xl", md: "2xl" }} lineHeight="1.18" color={NAVY} maxW={{ base: "360px", md: "620px" }} fontWeight="800">
-              Answer a few quick questions and VeeVee builds your personalized health profile.
+              Your Health Twin
+            </Badge>
+
+            <Stack spacing={{ base: 3, md: 4 }} align={{ base: "center", lg: "flex-start" }}>
+              <Heading
+                as="h1"
+                fontFamily="Georgia, 'Times New Roman', serif"
+                fontSize={{ base: "50px", md: "8xl", lg: "7xl", xl: "8xl" }}
+                lineHeight={{ base: "0.86", md: "0.84" }}
+                letterSpacing="0"
+                maxW={{ base: "390px", md: "780px", lg: "540px" }}
+              >
+                Create your digital twin.
+              </Heading>
+              <Text
+                fontSize={{ base: "xl", md: "2xl" }}
+                lineHeight="1.18"
+                color={NAVY}
+                maxW={{ base: "360px", md: "620px", lg: "500px" }}
+                fontWeight="800"
+              >
+                Answer a few quick questions and VeeVee builds your personalized health profile.
+              </Text>
+            </Stack>
+
+            <Button
+              as="a"
+              href={APP_LINKS.external.authenticatedConsole}
+              onClick={handleCtaClick}
+              bg={ORANGE}
+              color="white"
+              borderRadius="full"
+              minH={{ base: "68px", md: "78px" }}
+              w={{ base: "100%", md: "auto" }}
+              minW={{ base: "100%", md: "560px", lg: "420px" }}
+              maxW={{ base: "520px", md: "none" }}
+              px={{ base: 8, md: 14, lg: 12 }}
+              fontSize={{ base: "xl", md: "3xl", lg: "2xl", xl: "3xl" }}
+              fontWeight="900"
+              boxShadow="0 22px 46px rgba(249,115,22,0.34)"
+              _hover={{ bg: "#EA580C", textDecoration: "none", transform: "translateY(-1px)" }}
+            >
+              Create My Health Twin
+            </Button>
+
+            <Text fontSize={{ base: "md", md: "lg" }} color={SOFT_GRAY} fontWeight="900">
+              Free to start. Takes less than a minute.
             </Text>
           </Stack>
 
-          <HealthTwinPhoneVisual />
-
-          <Button
-            as="a"
-            href={APP_LINKS.external.authenticatedConsole}
-            onClick={handleCtaClick}
-            bg={ORANGE}
-            color="white"
-            borderRadius="full"
-            minH={{ base: "68px", md: "78px" }}
-            w={{ base: "100%", md: "auto" }}
-            minW={{ base: "100%", md: "560px" }}
-            maxW={{ base: "520px", md: "none" }}
-            px={{ base: 8, md: 14 }}
-            fontSize={{ base: "xl", md: "3xl" }}
-            fontWeight="900"
-            boxShadow="0 22px 46px rgba(249,115,22,0.34)"
-            _hover={{ bg: "#EA580C", textDecoration: "none", transform: "translateY(-1px)" }}
-          >
-            Create My Health Twin
-          </Button>
-
-          <Text fontSize={{ base: "md", md: "lg" }} color={SOFT_GRAY} fontWeight="900">
-            Free to start. Takes less than a minute.
-          </Text>
-        </Stack>
+          <Box flex="1" w="100%" maxW={{ base: "760px", lg: "560px", xl: "600px" }}>
+            <HealthTwinPhoneVisual />
+          </Box>
+        </Flex>
       </Box>
     </Box>
   );
@@ -127,15 +148,15 @@ export default function SwcaProfileFunnelVisual() {
 
 function HealthTwinPhoneVisual() {
   return (
-    <Box w="100%" maxW={{ base: "360px", md: "760px" }} position="relative" minH={{ base: "316px", md: "520px" }}>
+    <Box w="100%" maxW={{ base: "360px", md: "760px", lg: "600px" }} mx="auto" position="relative" minH={{ base: "316px", md: "520px", lg: "500px" }}>
       <FeatureOrbit />
       <Box
         position="absolute"
         left="50%"
         top={{ base: "6px", md: "4px" }}
         transform="translateX(-50%)"
-        w={{ base: "172px", md: "270px" }}
-        h={{ base: "306px", md: "480px" }}
+        w={{ base: "172px", md: "270px", lg: "250px", xl: "270px" }}
+        h={{ base: "306px", md: "480px", lg: "444px", xl: "480px" }}
         borderRadius={{ base: "28px", md: "34px" }}
         bg="#151922"
         p={{ base: "8px", md: "10px" }}
