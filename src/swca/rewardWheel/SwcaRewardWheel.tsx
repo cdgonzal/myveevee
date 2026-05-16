@@ -27,6 +27,8 @@ const ORANGE = "#F39A25";
 const CREAM = "#FFF7EC";
 const LINE = "#F0D2A4";
 const SEGMENT_DEGREES = 360 / SWCA_REWARDS.length;
+const SPIN_DURATION_MS = 3200;
+const SPIN_TURNS = 7;
 
 export default function SwcaRewardWheel() {
   const toast = useToast();
@@ -71,7 +73,7 @@ export default function SwcaRewardWheel() {
       const result = await spinSwcaReward({ submissionId, token });
       const rewardIndex = getRewardIndex(result.reward.id);
       const targetCenter = rewardIndex * SEGMENT_DEGREES + SEGMENT_DEGREES / 2;
-      const nextRotation = 1440 + (360 - targetCenter);
+      const nextRotation = SPIN_TURNS * 360 + (360 - targetCenter);
 
       setAlreadySpun(result.alreadySpun);
       setRotation(nextRotation);
@@ -93,7 +95,7 @@ export default function SwcaRewardWheel() {
             already_spun: result.alreadySpun,
           },
         });
-      }, result.alreadySpun ? 150 : 2300);
+      }, result.alreadySpun ? 150 : SPIN_DURATION_MS);
     } catch (error) {
       setIsSpinning(false);
       trackEvent("swca_reward_spin_error", {
@@ -215,6 +217,9 @@ export default function SwcaRewardWheel() {
                 disabled={!canSpin}
                 cursor={canSpin ? "pointer" : "default"}
                 aria-label="Spin the reward wheel"
+                bg="transparent"
+                border="0"
+                p="0"
                 _focusVisible={{ outline: "4px solid", outlineColor: ORANGE, outlineOffset: "8px" }}
                 _disabled={{ opacity: reward ? 1 : 0.68 }}
               >
@@ -230,33 +235,42 @@ export default function SwcaRewardWheel() {
                   borderTop={`34px solid ${NAVY}`}
                   zIndex={2}
                 />
-                <Flex
+                <Box
                   position="absolute"
                   inset="0"
-                  align="center"
-                  justify="center"
                   borderRadius="full"
                   border="10px solid"
                   borderColor="#FFFFFF"
                   boxShadow="0 24px 80px rgba(7, 26, 58, 0.22)"
                   bg={wheelGradient}
                   transform={`rotate(${rotation}deg)`}
-                  transition={alreadySpun ? "transform 120ms ease-out" : "transform 2200ms cubic-bezier(0.16, 0.84, 0.28, 1)"}
+                  transition={alreadySpun ? "transform 120ms ease-out" : `transform ${SPIN_DURATION_MS}ms cubic-bezier(0.12, 0.72, 0.16, 1)`}
+                  willChange="transform"
                   _hover={canSpin ? { boxShadow: "0 28px 88px rgba(7, 26, 58, 0.28)" } : undefined}
-                >
+                />
+                <Flex position="absolute" inset="0" align="center" justify="center" pointerEvents="none">
                   <Flex
                     align="center"
                     justify="center"
-                    boxSize={{ base: "104px", md: "130px" }}
+                    boxSize={{ base: "130px", md: "158px" }}
                     borderRadius="full"
-                    bg="#D7263D"
-                    border="8px solid"
-                    borderColor="#FFFFFF"
-                    boxShadow="0 10px 30px rgba(7, 26, 58, 0.28), inset 0 -10px 0 rgba(0, 0, 0, 0.16)"
+                    bg="rgba(255, 255, 255, 0.88)"
+                    boxShadow="0 14px 36px rgba(7, 26, 58, 0.2)"
                   >
-                    <Text fontWeight="900" color="white" letterSpacing="0.08em" textTransform="uppercase">
-                      Spin
-                    </Text>
+                    <Flex
+                      align="center"
+                      justify="center"
+                      boxSize={{ base: "104px", md: "130px" }}
+                      borderRadius="full"
+                      bg="#D7263D"
+                      border="8px solid"
+                      borderColor="#FFFFFF"
+                      boxShadow="0 10px 30px rgba(7, 26, 58, 0.28), inset 0 -10px 0 rgba(0, 0, 0, 0.16)"
+                    >
+                      <Text fontWeight="900" color="white" letterSpacing="0.08em" textTransform="uppercase">
+                        Spin
+                      </Text>
+                    </Flex>
                   </Flex>
                 </Flex>
               </Box>
