@@ -155,8 +155,9 @@ export default function SwcaRewardWheel() {
       });
       toast({
         title: "Contact details saved.",
+        description: "Your reward email is on the way. Please check your spam folder if you do not see it.",
         status: "success",
-        duration: 2800,
+        duration: 4800,
       });
       window.setTimeout(() => {
         navigate(APP_LINKS.internal.swcaFunnel);
