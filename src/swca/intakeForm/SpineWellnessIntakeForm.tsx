@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -17,7 +17,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Progress,
-  SimpleGrid,
   Stack,
   Text,
   VisuallyHidden,
@@ -57,6 +56,8 @@ type FollowUpStep =
       question: SwcaFollowUpQuestion;
     };
 
+type MobileIntakeStep = "select" | "rank" | "consent";
+
 function moveItem(items: SwcaConcernId[], fromIndex: number, toIndex: number) {
   const nextItems = [...items];
   const [item] = nextItems.splice(fromIndex, 1);
@@ -66,8 +67,7 @@ function moveItem(items: SwcaConcernId[], fromIndex: number, toIndex: number) {
 
 export default function SpineWellnessIntakeForm() {
   const toast = useToast();
-  const rankSectionRef = useRef<HTMLDivElement | null>(null);
-  const consentSectionRef = useRef<HTMLDivElement | null>(null);
+  const [mobileStep, setMobileStep] = useState<MobileIntakeStep>("select");
   const [selectedIds, setSelectedIds] = useState<SwcaConcernId[]>([]);
   const [rankedIds, setRankedIds] = useState<SwcaConcernId[]>([]);
   const [honeypot, setHoneypot] = useState("");
@@ -131,6 +131,13 @@ export default function SpineWellnessIntakeForm() {
   };
 
   const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && hasCommunicationConsent && !honeypot;
+  const canRankOnMobile = selectedIds.length > 0;
+  const canConsentOnMobile = selectedIds.length > 0 && rankedIds.length === selectedIds.length;
+  const showMobileAction =
+    (mobileStep === "select" && canRankOnMobile) ||
+    (mobileStep === "rank" && canConsentOnMobile) ||
+    (mobileStep === "consent" && hasCommunicationConsent);
+  const mobileActionLabel = mobileStep === "select" ? "Rank Your Choices" : mobileStep === "rank" ? "Ready!" : "Consent";
   const canSubmitFollowUp =
     canSubmit &&
     followUpConcerns.every((concern) =>
@@ -158,12 +165,33 @@ export default function SpineWellnessIntakeForm() {
     });
   };
 
-  const scrollToRankSection = () => {
-    rankSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  useEffect(() => {
+    if (selectedIds.length === 0) {
+      setMobileStep("select");
+      return;
+    }
 
-  const scrollToConsentSection = () => {
-    consentSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (mobileStep === "rank" && !canConsentOnMobile) {
+      setMobileStep("select");
+    }
+  }, [canConsentOnMobile, mobileStep, selectedIds.length]);
+
+  const handleMobileAction = () => {
+    if (mobileStep === "select") {
+      if (!canRankOnMobile) return;
+      setMobileStep("rank");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    if (mobileStep === "rank") {
+      if (!canConsentOnMobile) return;
+      setMobileStep("consent");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    handleSubmit();
   };
 
   const moveRank = (concernId: SwcaConcernId, direction: "up" | "down") => {
@@ -302,7 +330,7 @@ export default function SpineWellnessIntakeForm() {
   };
 
   return (
-    <Box minH="100vh" bg="#FFFFFF" color={NAVY} px={{ base: 4, md: 8 }} py={{ base: 5, md: 10 }} pb={{ base: canSubmit ? 28 : 8, md: 10 }}>
+    <Box minH="100vh" bg="#FFFFFF" color={NAVY} px={{ base: 4, md: 8 }} py={{ base: 5, md: 10 }} pb={{ base: showMobileAction ? 28 : 8, md: 10 }}>
       <Box maxW="980px" mx="auto">
         <Flex
           align={{ base: "center", md: "flex-start" }}
@@ -357,31 +385,6 @@ export default function SpineWellnessIntakeForm() {
           </Text>
         </Stack>
 
-        <SimpleGrid display={{ base: "grid", md: "none" }} columns={4} spacing={2} mb={4}>
-          {[
-            { label: "1 Select", isActive: selectedIds.length === 0, isDone: selectedIds.length > 0 },
-            { label: "2 Rank", isActive: selectedIds.length > 0 && !hasCommunicationConsent, isDone: hasCommunicationConsent },
-            { label: "3 Agree", isActive: selectedIds.length > 0 && !hasCommunicationConsent, isDone: hasCommunicationConsent },
-            { label: "4 Answer", isActive: hasCommunicationConsent, isDone: false },
-          ].map((step) => (
-            <Box
-              key={step.label}
-              textAlign="center"
-              border="1px solid"
-              borderColor={step.isActive || step.isDone ? ORANGE : "#D8DDE6"}
-              bg={step.isDone ? "#FFF3E4" : step.isActive ? NAVY : "white"}
-              color={step.isActive ? "white" : NAVY}
-              borderRadius="full"
-              px={2}
-              py={2}
-              fontSize="xs"
-              fontWeight="900"
-            >
-              {step.label}
-            </Box>
-          ))}
-        </SimpleGrid>
-
         <FormControl as="form" onSubmit={(event) => event.preventDefault()}>
           <VisuallyHidden>
             <Input
@@ -393,7 +396,7 @@ export default function SpineWellnessIntakeForm() {
             />
           </VisuallyHidden>
 
-          <Stack spacing={3}>
+          <Stack spacing={3} display={{ base: mobileStep === "select" ? "flex" : "none", md: "flex" }}>
             {SWCA_CONCERNS.map((concern) => {
               const isSelected = selectedIds.includes(concern.id);
 
@@ -459,24 +462,15 @@ export default function SpineWellnessIntakeForm() {
             })}
           </Stack>
 
-          {selectedConcerns.length > 0 ? (
-            <Button
-              display={{ base: "flex", md: "none" }}
-              type="button"
-              onClick={scrollToRankSection}
-              mt={4}
-              w="100%"
-              minH="54px"
-              bg={ORANGE}
-              color={NAVY}
-              fontWeight="900"
-              _hover={{ bg: "#E88D19" }}
-            >
-              Continue to ranking
-            </Button>
-          ) : null}
-
-          <Box ref={rankSectionRef} mt={{ base: 6, md: 8 }} border="1px solid" borderColor="#F3D9B4" bg="#FFF7EC" borderRadius="8px" p={{ base: 4, md: 6 }} scrollMarginTop="18px">
+          <Box
+            mt={{ base: 0, md: 8 }}
+            border="1px solid"
+            borderColor="#F3D9B4"
+            bg="#FFF7EC"
+            borderRadius="8px"
+            p={{ base: 4, md: 6 }}
+            display={{ base: mobileStep === "rank" ? "block" : "none", md: "block" }}
+          >
             <Stack spacing={4}>
               <Stack spacing={1} textAlign="center">
                 <Box
@@ -556,22 +550,6 @@ export default function SpineWellnessIntakeForm() {
                 </Text>
               )}
 
-              {selectedConcerns.length > 0 && !hasCommunicationConsent ? (
-                <Button
-                  display={{ base: "flex", md: "none" }}
-                  type="button"
-                  onClick={scrollToConsentSection}
-                  w="100%"
-                  minH="54px"
-                  bg={ORANGE}
-                  color={NAVY}
-                  fontWeight="900"
-                  _hover={{ bg: "#E88D19" }}
-                >
-                  Continue to agree
-                </Button>
-              ) : null}
-
               <Button
                 display={{ base: "none", md: "inline-flex" }}
                 type="button"
@@ -595,93 +573,18 @@ export default function SpineWellnessIntakeForm() {
                 </Text>
               ) : null}
 
-              <Box ref={consentSectionRef} maxW="720px" mx="auto" w="100%" scrollMarginTop="18px">
-                <Checkbox
-                  id="swca-reward-consent"
-                  isChecked={hasCommunicationConsent}
-                  onChange={(event) => {
+              <Box maxW="720px" mx="auto" w="100%" display={{ base: "none", md: "block" }}>
+                <ConsentAgreement
+                  consentId="swca-reward-consent-desktop"
+                  hasCommunicationConsent={hasCommunicationConsent}
+                  onConsentChange={(checked) => {
                     setSubmitState("idle");
-                    setHasCommunicationConsent(event.target.checked);
+                    setHasCommunicationConsent(checked);
                   }}
-                  colorScheme="orange"
-                  alignItems="flex-start"
-                  size="lg"
-                  w="100%"
-                  p={{ base: 4, md: 5 }}
-                  border="2px solid"
-                  borderColor={hasCommunicationConsent ? ORANGE : "#C8CEDA"}
-                  borderRadius="8px"
-                  bg={hasCommunicationConsent ? "#FFF3E4" : "white"}
-                  boxShadow={hasCommunicationConsent ? "0 14px 30px rgba(244,123,32,0.16)" : "0 10px 24px rgba(7,26,58,0.07)"}
-                  cursor="pointer"
-                  transition="border-color 160ms ease, background 160ms ease, box-shadow 160ms ease"
-                  _hover={{
-                    borderColor: ORANGE,
-                    bg: hasCommunicationConsent ? "#FFF3E4" : "#FFF9F1",
-                  }}
-                  sx={{
-                    ".chakra-checkbox__control": {
-                      width: "28px",
-                      height: "28px",
-                      marginTop: "2px",
-                    },
-                    ".chakra-checkbox__label": {
-                      width: "100%",
-                      marginLeft: "14px",
-                    },
-                  }}
-                >
-                  <Text as="span" display="block" fontSize={{ base: "md", md: "lg" }} lineHeight="1.35" color="#17233D" fontWeight="900">
-                    Tap here to agree
-                  </Text>
-                  <Text as="span" display="block" mt={1} fontSize={{ base: "sm", md: "md" }} lineHeight="1.45" color="#34405A" fontWeight="700">
-                    I agree to receive my reward certificate and related follow-up using the contact information I provide.
-                  </Text>
-                </Checkbox>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  mt={2}
-                  px={0}
-                  h="auto"
-                  minH="28px"
-                  color={NAVY}
-                  fontWeight="700"
-                  fontSize="sm"
-                  onClick={() => setIsConsentExpanded((current) => !current)}
-                  _hover={{ bg: "transparent", color: "#102A55" }}
-                  aria-expanded={isConsentExpanded}
-                >
-                  <Box as="span" mr={2} transform={isConsentExpanded ? "rotate(180deg)" : "rotate(0deg)"} transition="transform 160ms ease">
-                    v
-                  </Box>
-                  Consent details
-                </Button>
-                <Collapse in={isConsentExpanded} animateOpacity>
-                  <Text fontSize={{ base: "xs", md: "sm" }} lineHeight="1.45" color="#34405A" pt={2}>
-                    {CONSENT_COPY}
-                  </Text>
-                </Collapse>
+                  isConsentExpanded={isConsentExpanded}
+                  onToggleConsentDetails={() => setIsConsentExpanded((current) => !current)}
+                />
               </Box>
-
-              <Button
-                display={{ base: "flex", md: "none" }}
-                type="button"
-                onClick={handleSubmit}
-                isDisabled={!canSubmit || isSubmitting}
-                isLoading={isSubmitting}
-                loadingText="Submitting"
-                w="100%"
-                minH="58px"
-                bg={NAVY}
-                color="white"
-                _hover={{ bg: "#102A55" }}
-                _disabled={{ opacity: 0.45, cursor: "not-allowed" }}
-              >
-                Continue
-              </Button>
 
               {submitState === "success" ? (
                 <Text textAlign="center" fontWeight="700">
@@ -690,14 +593,51 @@ export default function SpineWellnessIntakeForm() {
               ) : null}
             </Stack>
           </Box>
+
+          <Box
+            maxW="720px"
+            mx="auto"
+            w="100%"
+            display={{ base: mobileStep === "consent" ? "block" : "none", md: "none" }}
+          >
+            <Stack spacing={4}>
+              <Stack spacing={1} textAlign="center">
+                <Box
+                  boxSize="22px"
+                  borderLeft="3px solid"
+                  borderBottom="3px solid"
+                  borderColor={ORANGE}
+                  transform="rotate(-45deg)"
+                  alignSelf="center"
+                />
+                <Heading as="h2" fontFamily="Georgia, 'Times New Roman', serif" size="sm" fontWeight="500">
+                  Consent to receive your reward
+                </Heading>
+                <Text fontStyle="italic" color="#5B6681">
+                  Tap the card below. The action button appears after you agree.
+                </Text>
+              </Stack>
+
+              <ConsentAgreement
+                consentId="swca-reward-consent-mobile"
+                hasCommunicationConsent={hasCommunicationConsent}
+                onConsentChange={(checked) => {
+                  setSubmitState("idle");
+                  setHasCommunicationConsent(checked);
+                }}
+                isConsentExpanded={isConsentExpanded}
+                onToggleConsentDetails={() => setIsConsentExpanded((current) => !current)}
+              />
+            </Stack>
+          </Box>
         </FormControl>
       </Box>
 
-      {canSubmit ? (
+      {showMobileAction ? (
         <Box display={{ base: "block", md: "none" }} position="fixed" left={0} right={0} bottom={0} zIndex={10} bg="rgba(255,255,255,0.96)" borderTop="1px solid" borderColor="#E5E8EF" px={4} py={3} boxShadow="0 -10px 24px rgba(7,26,58,0.12)">
           <Button
             type="button"
-            onClick={handleSubmit}
+            onClick={handleMobileAction}
             isDisabled={isSubmitting}
             isLoading={isSubmitting}
             loadingText="Submitting"
@@ -707,7 +647,7 @@ export default function SpineWellnessIntakeForm() {
             color="white"
             _hover={{ bg: "#102A55" }}
           >
-            Continue
+            {mobileActionLabel}
           </Button>
         </Box>
       ) : null}
@@ -849,6 +789,90 @@ function QuestionBlock({
         })}
       </Stack>
     </Stack>
+  );
+}
+
+function ConsentAgreement({
+  consentId,
+  hasCommunicationConsent,
+  onConsentChange,
+  isConsentExpanded,
+  onToggleConsentDetails,
+}: {
+  consentId: string;
+  hasCommunicationConsent: boolean;
+  onConsentChange: (checked: boolean) => void;
+  isConsentExpanded: boolean;
+  onToggleConsentDetails: () => void;
+}) {
+  return (
+    <Box>
+      <Checkbox
+        id={consentId}
+        isChecked={hasCommunicationConsent}
+        onChange={(event) => onConsentChange(event.target.checked)}
+        colorScheme="orange"
+        alignItems="flex-start"
+        size="lg"
+        w="100%"
+        p={{ base: 4, md: 5 }}
+        border="2px solid"
+        borderColor={hasCommunicationConsent ? ORANGE : "#C8CEDA"}
+        borderRadius="8px"
+        bg={hasCommunicationConsent ? "#FFF3E4" : "white"}
+        boxShadow={hasCommunicationConsent ? "0 14px 30px rgba(244,123,32,0.16)" : "0 10px 24px rgba(7,26,58,0.07)"}
+        cursor="pointer"
+        transition="border-color 160ms ease, background 160ms ease, box-shadow 160ms ease"
+        _hover={{
+          borderColor: ORANGE,
+          bg: hasCommunicationConsent ? "#FFF3E4" : "#FFF9F1",
+        }}
+        sx={{
+          ".chakra-checkbox__control": {
+            width: "28px",
+            height: "28px",
+            marginTop: "2px",
+          },
+          ".chakra-checkbox__label": {
+            width: "100%",
+            marginLeft: "14px",
+          },
+        }}
+      >
+        <Text as="span" display="block" fontSize={{ base: "md", md: "lg" }} lineHeight="1.35" color="#17233D" fontWeight="900">
+          Tap here to agree
+        </Text>
+        <Text as="span" display="block" mt={1} fontSize={{ base: "sm", md: "md" }} lineHeight="1.45" color="#34405A" fontWeight="700">
+          I agree to receive my reward certificate and related follow-up using the contact information I provide.
+        </Text>
+      </Checkbox>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        mt={2}
+        px={0}
+        h="auto"
+        minH="28px"
+        color={NAVY}
+        fontWeight="700"
+        fontSize="sm"
+        onClick={onToggleConsentDetails}
+        _hover={{ bg: "transparent", color: "#102A55" }}
+        aria-expanded={isConsentExpanded}
+      >
+        <Box as="span" mr={2} transform={isConsentExpanded ? "rotate(180deg)" : "rotate(0deg)"} transition="transform 160ms ease">
+          v
+        </Box>
+        Consent details
+      </Button>
+      <Collapse in={isConsentExpanded} animateOpacity>
+        <Text fontSize={{ base: "xs", md: "sm" }} lineHeight="1.45" color="#34405A" pt={2}>
+          {CONSENT_COPY}
+        </Text>
+      </Collapse>
+    </Box>
   );
 }
 
