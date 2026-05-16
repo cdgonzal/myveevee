@@ -656,8 +656,8 @@ export default function SpineWellnessIntakeForm() {
       ) : null}
 
       <Modal isOpen={isFollowUpOpen} onClose={() => !isSubmitting && setIsFollowUpOpen(false)} size="xl" isCentered scrollBehavior="inside">
-        <ModalOverlay />
-        <ModalContent borderRadius="8px" mx={4}>
+        <ModalOverlay bg="rgba(255, 247, 236, 0.72)" backdropFilter="blur(2px)" />
+        <ModalContent borderRadius="8px" mx={4} bg="white">
           <ModalHeader color={NAVY} pb={2}>
             A few quick follow-up questions
           </ModalHeader>
