@@ -16,6 +16,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Progress,
   Stack,
   Text,
   VisuallyHidden,
@@ -42,6 +43,19 @@ const CONSENT_VERSION = "swca-reward-communication-v1";
 const CONSENT_COPY =
   "I agree that Spine and Wellness Centers of America and VeeVee may use the contact information I provide in this reward flow to send my reward certificate and related follow-up by email or text message. Message and data rates may apply. Reply STOP to opt out of text messages.";
 
+type FollowUpStep =
+  | {
+      kind: "concern";
+      concern: SwcaConcern;
+      priority: number;
+      question: SwcaFollowUpQuestion;
+    }
+  | {
+      kind: "intent";
+      priority: number;
+      question: SwcaFollowUpQuestion;
+    };
+
 function moveItem(items: SwcaConcernId[], fromIndex: number, toIndex: number) {
   const nextItems = [...items];
   const [item] = nextItems.splice(fromIndex, 1);
@@ -57,6 +71,7 @@ export default function SpineWellnessIntakeForm() {
   const [hasCommunicationConsent, setHasCommunicationConsent] = useState(false);
   const [isConsentExpanded, setIsConsentExpanded] = useState(false);
   const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
+  const [currentFollowUpStepIndex, setCurrentFollowUpStepIndex] = useState(0);
   const [followUpAnswers, setFollowUpAnswers] = useState<SwcaFollowUpAnswers>({});
   const [intentAnswers, setIntentAnswers] = useState<SwcaIntentAnswers>({});
   const [submitState, setSubmitState] = useState<"idle" | "success">("idle");
@@ -78,6 +93,33 @@ export default function SpineWellnessIntakeForm() {
   const followUpQuestionCount =
     followUpConcerns.reduce((count, concern) => count + (concern.followUpQuestions?.filter((question) => question.required).length ?? 0), 0) +
     SWCA_INTENT_QUESTIONS.filter((question) => question.required).length;
+  const followUpSteps = useMemo<FollowUpStep[]>(() => {
+    const concernSteps = followUpConcerns.flatMap((concern) =>
+      (concern.followUpQuestions ?? []).map((question) => ({
+        kind: "concern" as const,
+        concern,
+        priority: topRankedConcernIds.indexOf(concern.id) + 1,
+        question,
+      }))
+    );
+    const intentSteps = SWCA_INTENT_QUESTIONS.map((question, index) => ({
+      kind: "intent" as const,
+      priority: index + 1,
+      question,
+    }));
+
+    return [...concernSteps, ...intentSteps];
+  }, [followUpConcerns, topRankedConcernIds]);
+  const currentFollowUpStep = followUpSteps[currentFollowUpStepIndex];
+  const currentFollowUpValue = currentFollowUpStep
+    ? currentFollowUpStep.kind === "concern"
+      ? followUpAnswers[currentFollowUpStep.concern.id]?.[currentFollowUpStep.question.id]
+      : intentAnswers[currentFollowUpStep.question.id]
+    : undefined;
+  const currentFollowUpStepComplete = currentFollowUpStep ? !currentFollowUpStep.question.required || isAnswerComplete(currentFollowUpValue) : false;
+  const followUpProgressValue =
+    followUpSteps.length > 0 ? Math.round(((currentFollowUpStepIndex + (currentFollowUpStepComplete ? 1 : 0)) / followUpSteps.length) * 100) : 0;
+  const isLastFollowUpStep = currentFollowUpStepIndex >= followUpSteps.length - 1;
 
   const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && hasCommunicationConsent && !honeypot;
   const canSubmitFollowUp =
@@ -144,6 +186,7 @@ export default function SpineWellnessIntakeForm() {
       return;
     }
 
+    setCurrentFollowUpStepIndex(0);
     setIsFollowUpOpen(true);
   };
 
@@ -303,18 +346,29 @@ export default function SpineWellnessIntakeForm() {
             />
           </VisuallyHidden>
 
-          <Stack spacing={0} borderTop="1px solid" borderColor={LINE}>
+          <Stack spacing={3}>
             {SWCA_CONCERNS.map((concern) => {
               const isSelected = selectedIds.includes(concern.id);
 
               return (
                 <Flex
+                  as="label"
                   key={concern.id}
                   align={{ base: "flex-start", md: "center" }}
                   gap={{ base: 3, md: 5 }}
-                  py={{ base: 4, md: 5 }}
-                  borderBottom="1px solid"
-                  borderColor={LINE}
+                  p={{ base: 4, md: 5 }}
+                  border="2px solid"
+                  borderColor={isSelected ? ORANGE : LINE}
+                  borderRadius="8px"
+                  bg={isSelected ? "#FFF7EC" : "white"}
+                  boxShadow={isSelected ? "0 10px 26px rgba(243, 154, 37, 0.16)" : "0 4px 14px rgba(7, 26, 58, 0.04)"}
+                  cursor="pointer"
+                  transition="border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease"
+                  _hover={{
+                    borderColor: isSelected ? ORANGE : "#AEB4C0",
+                    bg: isSelected ? "#FFF7EC" : "#F8FAFC",
+                    transform: "translateY(-1px)",
+                  }}
                 >
                   <Checkbox
                     isChecked={isSelected}
@@ -323,6 +377,14 @@ export default function SpineWellnessIntakeForm() {
                     colorScheme="orange"
                     mt={{ base: 1, md: 0 }}
                     aria-label={`Select ${concern.title}`}
+                    sx={{
+                      ".chakra-checkbox__control": {
+                        borderColor: isSelected ? ORANGE : "#7C8496",
+                        borderWidth: "2px",
+                        boxSize: { base: "30px", md: "34px" },
+                        bg: isSelected ? ORANGE : "white",
+                      },
+                    }}
                   />
                   <Flex
                     align="center"
@@ -365,7 +427,9 @@ export default function SpineWellnessIntakeForm() {
                   Rank your selected priorities.
                 </Heading>
                 <Text fontStyle="italic">
-                  Move the most important items to the top before submitting.
+                  {selectedConcerns.length > 0
+                    ? `${selectedConcerns.length} selected. Put the most important item first.`
+                    : "Tap any concern above, then put the most important item first."}
                 </Text>
               </Stack>
 
@@ -439,6 +503,12 @@ export default function SpineWellnessIntakeForm() {
                 Continue
               </Button>
 
+              {selectedConcerns.length > 0 && !hasCommunicationConsent ? (
+                <Text textAlign="center" color="#5B6681" fontSize="sm" fontWeight="700">
+                  Check the consent box below to continue.
+                </Text>
+              ) : null}
+
               <Box maxW="720px" mx="auto" w="100%">
                 <Checkbox
                   isChecked={hasCommunicationConsent}
@@ -492,7 +562,7 @@ export default function SpineWellnessIntakeForm() {
         </FormControl>
       </Box>
 
-      <Modal isOpen={isFollowUpOpen} onClose={() => !isSubmitting && setIsFollowUpOpen(false)} size="2xl" isCentered scrollBehavior="inside">
+      <Modal isOpen={isFollowUpOpen} onClose={() => !isSubmitting && setIsFollowUpOpen(false)} size="xl" isCentered scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent borderRadius="8px" mx={4}>
           <ModalHeader color={NAVY} pb={2}>
@@ -500,67 +570,73 @@ export default function SpineWellnessIntakeForm() {
           </ModalHeader>
           <ModalCloseButton isDisabled={isSubmitting} />
           <ModalBody>
-            <Stack spacing={5}>
-              <Text color="#34405A">
-                These help SWCA understand what kind of support may be most relevant for your top priorities.
-              </Text>
-
-              {followUpConcerns.map((concern) => (
-                <Box key={concern.id} border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 3, md: 4 }}>
-                  <Stack spacing={4}>
-                    <Box>
-                      <Text color={ORANGE} fontWeight="800" fontSize="sm" textTransform="uppercase">
-                        Priority {topRankedConcernIds.indexOf(concern.id) + 1}
-                      </Text>
-                      <Heading as="h3" size="sm" color={NAVY}>
-                        {concern.title}
-                      </Heading>
-                    </Box>
-
-                    {(concern.followUpQuestions ?? []).map((question) => (
-                      <QuestionBlock
-                        key={question.id}
-                        question={question}
-                        value={followUpAnswers[concern.id]?.[question.id]}
-                        onSelect={(optionId) => setFollowUpAnswer(concern.id, question, optionId)}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
-              ))}
-
-              <Box border="1px solid" borderColor="#F3D9B4" bg="#FFF7EC" borderRadius="8px" p={{ base: 3, md: 4 }}>
-                <Stack spacing={4}>
-                  <Heading as="h3" size="sm" color={NAVY}>
-                    Your interest
-                  </Heading>
-                  {SWCA_INTENT_QUESTIONS.map((question) => (
-                    <QuestionBlock
-                      key={question.id}
-                      question={question}
-                      value={intentAnswers[question.id]}
-                      onSelect={(optionId) => setIntentAnswer(question, optionId)}
-                    />
-                  ))}
-                </Stack>
+            <Stack spacing={5} minH={{ base: "360px", md: "390px" }}>
+              <Box>
+                <Flex justify="space-between" gap={4} mb={2}>
+                  <Text color="#34405A" fontSize="sm" fontWeight="700">
+                    Question {Math.min(currentFollowUpStepIndex + 1, followUpSteps.length)} of {followUpSteps.length}
+                  </Text>
+                  <Text color="#34405A" fontSize="sm" fontWeight="700">
+                    {followUpProgressValue}%
+                  </Text>
+                </Flex>
+                <Progress value={followUpProgressValue} size="sm" borderRadius="full" colorScheme="orange" bg="#EEF0F4" />
               </Box>
+
+              {currentFollowUpStep ? (
+                <QuestionStep
+                  step={currentFollowUpStep}
+                  value={currentFollowUpValue}
+                  onSelect={(optionId) => {
+                    if (currentFollowUpStep.kind === "concern") {
+                      setFollowUpAnswer(currentFollowUpStep.concern.id, currentFollowUpStep.question, optionId);
+                      return;
+                    }
+
+                    setIntentAnswer(currentFollowUpStep.question, optionId);
+                  }}
+                />
+              ) : null}
             </Stack>
           </ModalBody>
           <ModalFooter gap={3} flexWrap="wrap">
-            <Button variant="ghost" onClick={() => setIsFollowUpOpen(false)} isDisabled={isSubmitting}>
-              Back
-            </Button>
             <Button
-              onClick={handleFinalSubmit}
-              isDisabled={!canSubmitFollowUp || isSubmitting}
-              isLoading={isSubmitting}
-              loadingText="Submitting"
-              bg={NAVY}
-              color="white"
-              _hover={{ bg: "#102A55" }}
+              variant="ghost"
+              onClick={() => {
+                if (currentFollowUpStepIndex > 0) {
+                  setCurrentFollowUpStepIndex((current) => Math.max(0, current - 1));
+                  return;
+                }
+
+                setIsFollowUpOpen(false);
+              }}
+              isDisabled={isSubmitting}
             >
-              Submit and spin
+              {currentFollowUpStepIndex > 0 ? "Previous" : "Back"}
             </Button>
+            {isLastFollowUpStep ? (
+              <Button
+                onClick={handleFinalSubmit}
+                isDisabled={!canSubmitFollowUp || isSubmitting}
+                isLoading={isSubmitting}
+                loadingText="Submitting"
+                bg={NAVY}
+                color="white"
+                _hover={{ bg: "#102A55" }}
+              >
+                Submit and spin
+              </Button>
+            ) : (
+              <Button
+                onClick={() => setCurrentFollowUpStepIndex((current) => Math.min(followUpSteps.length - 1, current + 1))}
+                isDisabled={!currentFollowUpStepComplete || isSubmitting}
+                bg={NAVY}
+                color="white"
+                _hover={{ bg: "#102A55" }}
+              >
+                Next
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -572,17 +648,26 @@ function QuestionBlock({
   question,
   value,
   onSelect,
+  helper,
 }: {
   question: SwcaFollowUpQuestion;
   value?: SwcaQuestionAnswerValue;
   onSelect: (optionId: string) => void;
+  helper?: string;
 }) {
   return (
-    <Stack spacing={2}>
-      <Text fontWeight="800" color={NAVY}>
-        {question.label}
-      </Text>
-      <Flex gap={2} wrap="wrap">
+    <Stack spacing={3}>
+      <Box>
+        <Text fontWeight="800" color={NAVY} fontSize={{ base: "lg", md: "xl" }} lineHeight="1.25">
+          {question.label}
+        </Text>
+        {helper ? (
+          <Text color="#5B6681" fontSize="sm" mt={1}>
+            {helper}
+          </Text>
+        ) : null}
+      </Box>
+      <Stack spacing={2}>
         {question.options.map((option) => {
           const isSelected = isOptionSelected(value, option.id);
 
@@ -595,20 +680,54 @@ function QuestionBlock({
               bg={isSelected ? NAVY : "white"}
               color={isSelected ? "white" : NAVY}
               borderColor={isSelected ? NAVY : LINE}
-              minH="42px"
+              justifyContent="flex-start"
+              minH="48px"
               h="auto"
-              py={2}
-              px={3}
+              py={3}
+              px={4}
               whiteSpace="normal"
               textAlign="left"
+              borderRadius="8px"
+              w="100%"
               _hover={isSelected ? { bg: "#102A55" } : { bg: "#F7FAFC" }}
             >
               {option.label}
             </Button>
           );
         })}
-      </Flex>
+      </Stack>
     </Stack>
+  );
+}
+
+function QuestionStep({
+  step,
+  value,
+  onSelect,
+}: {
+  step: FollowUpStep;
+  value?: SwcaQuestionAnswerValue;
+  onSelect: (optionId: string) => void;
+}) {
+  const eyebrow = step.kind === "concern" ? `Priority ${step.priority}` : "Your interest";
+  const heading = step.kind === "concern" ? step.concern.title : "A little more context";
+  const helper = step.question.type === "multi_select" ? "Select all that apply." : "Select one answer.";
+
+  return (
+    <Box border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 4, md: 5 }} bg="white">
+      <Stack spacing={5}>
+        <Box>
+          <Text color={ORANGE} fontWeight="800" fontSize="sm" textTransform="uppercase">
+            {eyebrow}
+          </Text>
+          <Heading as="h3" size="sm" color={NAVY} mt={1}>
+            {heading}
+          </Heading>
+        </Box>
+
+        <QuestionBlock question={step.question} value={value} onSelect={onSelect} helper={helper} />
+      </Stack>
+    </Box>
   );
 }
 
