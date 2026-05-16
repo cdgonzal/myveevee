@@ -15,6 +15,7 @@ export const APP_LINKS = {
     contact: "/contact",
     terms: "/terms",
     swcaBrief: "/briefs/swca-4821.html",
+    swcaHub: "/swca",
     swcaRewards: "/swca/rewards",
     swcaTeaserAlias: "/swca/teaser",
     swcaIntake: "/swca/intake",

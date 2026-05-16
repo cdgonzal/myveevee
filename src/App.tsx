@@ -75,6 +75,7 @@ const Contact = lazyWithRetry(() => import("./pages/Contact"));
 const Terms = lazyWithRetry(() => import("./pages/Terms"));
 const NotFoundPage = lazyWithRetry(() => import("./pages/NotFoundPage"));
 const SwcaBrief = lazyWithRetry(() => import("./pages/SwcaBrief"));
+const SwcaProviderHub = lazyWithRetry(() => import("./swca/providerHub/SwcaProviderHub"));
 const SwcaRewardsTeaser = lazyWithRetry(() => import("./swca/rewardsTeaser/SwcaRewardsTeaser"));
 const SpineWellnessIntakeForm = lazyWithRetry(() => import("./swca/intakeForm/SpineWellnessIntakeForm"));
 const SwcaRewardWheel = lazyWithRetry(() => import("./swca/rewardWheel/SwcaRewardWheel"));
@@ -189,6 +190,7 @@ export default function App() {
   const { pathname } = useLocation();
   const isStandalonePage =
     pathname === APP_LINKS.internal.swcaBrief ||
+    pathname === APP_LINKS.internal.swcaHub ||
     pathname === APP_LINKS.internal.swcaRewards ||
     pathname === APP_LINKS.internal.swcaTeaserAlias ||
     pathname === APP_LINKS.internal.swcaIntake ||
@@ -212,6 +214,7 @@ export default function App() {
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
+                <Route path={APP_LINKS.internal.swcaHub} element={<SwcaProviderHub />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />
@@ -242,6 +245,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.contact} element={<Contact />} />
                 <Route path={APP_LINKS.internal.terms} element={<Terms />} />
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
+                <Route path={APP_LINKS.internal.swcaHub} element={<SwcaProviderHub />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
                 <Route path={APP_LINKS.internal.swcaIntake} element={<SpineWellnessIntakeForm />} />

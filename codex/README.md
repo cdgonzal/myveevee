@@ -20,6 +20,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - `/swca/intake` is a direct-link campaign route, not a menu route
   - form submission, reward wheel, admin reporting, first-party events, and alarms are live
   - customer reward email, secure certificate links, and certificate-view tracking are live
+  - `/swca` is the lean provider hub for public SWCA reward, interest, and service-category paths
   - active next track is operational handoff and admin readiness
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
@@ -54,6 +55,11 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Campaign/direct-link route
 
+- `/swca`
+  - Spine and Wellness Centers of America provider hub
+  - public entry point for rewards, general interest, and service-category paths
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
 - `/swca/rewards`
   - Spine and Wellness Centers of America reward-wheel teaser page
   - intended for QR codes and shared links before the intake form
@@ -117,9 +123,12 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - primary CTA points to `/how-it-works`
 - `src/pages/SwcaBrief.tsx`
   - standalone internal SWCA brief page
+- `src/swca/providerHub/SwcaProviderHub.tsx`
+  - standalone SWCA provider hub for public reward, interest, and service-category paths
+  - uses the clinic-provided trust image at `/swca/provider-trust-profile.webp`
 - `src/swca/rewardsTeaser/SwcaRewardsTeaser.tsx`
   - standalone reward-wheel teaser for Spine and Wellness Centers of America
-  - uses `/swca/spin-wheel-rewards.webp`, generated from `/swca/spin-wheel-rewards-source_2.png`
+  - uses an inline provider campaign config for SWCA branding, colors, CTA destination, and reward category
   - routes the primary CTA to `/swca/intake`
 - `src/swca/intakeForm/SpineWellnessIntakeForm.tsx`
   - standalone campaign intake form for Spine and Wellness Centers of America
@@ -160,6 +169,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 ### Live
 
 - Frontend route: `https://myveevee.com/swca/intake`
+- Provider hub route: `https://myveevee.com/swca`
 - Teaser route: `https://myveevee.com/swca/rewards`
 - Wheel route: `https://myveevee.com/swca/wheel`
 - API endpoint: `https://6o3st0r6ee.execute-api.us-east-1.amazonaws.com/forms/swca-intake`
@@ -299,6 +309,8 @@ Known baseline issue:
   - completed email-first SWCA customer reward communication tracker plus operations/admin backlog
 - `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`
   - active plan for top-ranked concern follow-up questions and generic purchase-intent signals
+- `codex/swca/PROVIDER_ONBOARDING_PLAYBOOK.md`
+  - repeatable provider/clinic onboarding packet, SWCA page inventory, reusable surfaces, and clinic information request checklist
 - `codex/swca/ADMIN_RUNBOOK.md`
   - SWCA admin dashboard, reporting, CSV export, alarm response, and troubleshooting runbook
 - `codex/swca/SMS_IMPLEMENTATION_PLAN.md`
