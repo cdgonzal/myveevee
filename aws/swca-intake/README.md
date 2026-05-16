@@ -386,8 +386,18 @@ Reward eligibility and claim records are keyed by `submissionId` and contain:
 - `messageError` when customer messaging fails
 - `contactDuplicateAt` and `messageStatus = duplicate_contact` when a different submission tries to claim a reward with an already-used contact
 - hashed request context for basic abuse review
+- `spinTelemetry` after the first reward spin:
+  - hashed source IP
+  - hashed coarse IP prefix
+  - hashed user agent
+  - device/browser summary
+  - accepted language and origin
+  - sanitized referrer path
+  - client hints such as timezone, language, screen size, viewport size, device pixel ratio, touch support, platform, and page path
+- `lastSpinAttemptAt`, `lastSpinTelemetry`, and `spinAttemptCount` when an already-spun link is clicked again
 
 The raw token is never stored.
+Raw IP addresses and raw user-agent strings are not stored in the reward claim record.
 
 ## DynamoDB Reward Contact Claim Shape
 

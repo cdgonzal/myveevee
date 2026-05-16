@@ -29,6 +29,22 @@ export type RewardContactPayload = {
   phone?: string;
 };
 
+type SpinClientHints = {
+  timezone?: string;
+  language?: string;
+  languages?: string[];
+  screenWidth?: number;
+  screenHeight?: number;
+  viewportWidth?: number;
+  viewportHeight?: number;
+  devicePixelRatio?: number;
+  touchSupport?: boolean;
+  platform?: string;
+  referrer?: string;
+  pagePath?: string;
+  pageUrl?: string;
+};
+
 type RewardContactApiResponse = {
   message?: string;
   duplicateContact?: boolean;
@@ -64,7 +80,7 @@ export async function spinSwcaReward({
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ submissionId, token }),
+    body: JSON.stringify({ submissionId, token, clientHints: collectSpinClientHints() }),
   });
 
   const payload = (await response.json().catch(() => ({}))) as SpinRewardApiResponse;
@@ -83,6 +99,24 @@ export async function spinSwcaReward({
       label: payload.reward.label ?? reward.label,
       version: payload.reward.version,
     },
+  };
+}
+
+function collectSpinClientHints(): SpinClientHints {
+  return {
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    language: window.navigator.language,
+    languages: Array.from(window.navigator.languages ?? []),
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+    devicePixelRatio: window.devicePixelRatio,
+    touchSupport: "ontouchstart" in window || window.navigator.maxTouchPoints > 0,
+    platform: window.navigator.platform,
+    referrer: document.referrer,
+    pagePath: window.location.pathname,
+    pageUrl: window.location.href,
   };
 }
 

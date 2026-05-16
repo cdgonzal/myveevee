@@ -68,6 +68,10 @@ export async function handler(event) {
   const tokenHash = hashToken(payload.token);
   const reward = selectReward();
   const spunAt = new Date().toISOString();
+  const spinTelemetry = buildSpinTelemetry(event, payload, {
+    occurredAt: spunAt,
+    alreadySpun: false,
+  });
 
   try {
     const updateResult = await dynamodb.send(
@@ -79,7 +83,7 @@ export async function handler(event) {
         ConditionExpression:
           "tokenHash = :tokenHash AND campaignId = :campaignId AND formId = :formId AND attribute_not_exists(rewardId)",
         UpdateExpression:
-          "SET #status = :status, spunAt = :spunAt, rewardId = :rewardId, rewardLabel = :rewardLabel, rewardVersion = :rewardVersion, requestUserAgentHash = :userAgentHash, sourceIpHash = :sourceIpHash",
+          "SET #status = :status, spunAt = :spunAt, rewardId = :rewardId, rewardLabel = :rewardLabel, rewardVersion = :rewardVersion, requestUserAgentHash = :userAgentHash, sourceIpHash = :sourceIpHash, spinTelemetry = :spinTelemetry",
         ExpressionAttributeNames: {
           "#status": "status",
         },
@@ -94,6 +98,7 @@ export async function handler(event) {
           ":rewardVersion": { S: REWARD_VERSION },
           ":userAgentHash": { S: hashValue(event.headers?.["user-agent"] ?? event.headers?.["User-Agent"] ?? "") },
           ":sourceIpHash": { S: hashValue(event.requestContext?.http?.sourceIp ?? "") },
+          ":spinTelemetry": { M: toDynamoMap(spinTelemetry) },
         },
         ReturnValues: "ALL_NEW",
       })
@@ -118,7 +123,7 @@ export async function handler(event) {
     );
   } catch (error) {
     if (error instanceof ConditionalCheckFailedException || error?.name === "ConditionalCheckFailedException") {
-      return getExistingRewardResponse(payload.submissionId, tokenHash, origin);
+      return getExistingRewardResponse(payload.submissionId, tokenHash, origin, spinTelemetry);
     }
 
     console.error("SWCA reward spin failed", {
@@ -400,7 +405,123 @@ function validateSpinRequest(payload) {
     return "Reward token is required.";
   }
 
+  if (payload.clientHints !== undefined && (typeof payload.clientHints !== "object" || payload.clientHints === null || Array.isArray(payload.clientHints))) {
+    return "Client hints must be an object.";
+  }
+
   return null;
+}
+
+function buildSpinTelemetry(event, payload, { occurredAt, alreadySpun }) {
+  const headers = event.headers ?? {};
+  const sourceIp = event.requestContext?.http?.sourceIp ?? "";
+  const userAgent = headers["user-agent"] ?? headers["User-Agent"] ?? "";
+  const referrer = headers.referer ?? headers.Referer ?? headers.referrer ?? headers.Referrer ?? "";
+  const clientHints = sanitizeClientHints(payload.clientHints);
+
+  return {
+    occurredAt,
+    alreadySpun,
+    sourceIpHash: hashValue(sourceIp),
+    sourceIpPrefixHash: hashValue(coarseIpPrefix(sourceIp)),
+    userAgentHash: hashValue(userAgent),
+    userAgentSummary: summarizeUserAgent(userAgent),
+    acceptLanguage: trimString(headers["accept-language"] ?? headers["Accept-Language"] ?? "", 120),
+    origin: trimString(getRequestOrigin(event), 160),
+    referrerPath: safeUrlPath(referrer),
+    clientHints,
+  };
+}
+
+function sanitizeClientHints(clientHints) {
+  if (!clientHints || typeof clientHints !== "object" || Array.isArray(clientHints)) return {};
+
+  const languages = Array.isArray(clientHints.languages)
+    ? clientHints.languages
+        .filter((value) => typeof value === "string")
+        .slice(0, 5)
+        .map((value) => trimString(value, 24))
+    : [];
+
+  return {
+    timezone: trimString(clientHints.timezone, 64),
+    language: trimString(clientHints.language, 24),
+    languages: languages.join(","),
+    screenWidth: safeNumber(clientHints.screenWidth, 10000),
+    screenHeight: safeNumber(clientHints.screenHeight, 10000),
+    viewportWidth: safeNumber(clientHints.viewportWidth, 10000),
+    viewportHeight: safeNumber(clientHints.viewportHeight, 10000),
+    devicePixelRatio: safeNumber(clientHints.devicePixelRatio, 10),
+    touchSupport: Boolean(clientHints.touchSupport),
+    platform: trimString(clientHints.platform, 80),
+    referrerPath: safeUrlPath(clientHints.referrer),
+    pagePath: trimString(clientHints.pagePath, 160),
+    pageUrlPath: safeUrlPath(clientHints.pageUrl),
+  };
+}
+
+function summarizeUserAgent(userAgent) {
+  const value = String(userAgent).toLowerCase();
+  const browser = value.includes("edg/")
+    ? "edge"
+    : value.includes("chrome/")
+      ? "chrome"
+      : value.includes("safari/") && !value.includes("chrome/")
+        ? "safari"
+        : value.includes("firefox/")
+          ? "firefox"
+          : "other";
+  const os = value.includes("iphone") || value.includes("ipad")
+    ? "ios"
+    : value.includes("android")
+      ? "android"
+      : value.includes("windows")
+        ? "windows"
+        : value.includes("mac os")
+          ? "macos"
+          : "other";
+  const device = value.includes("mobile") || value.includes("iphone") || value.includes("android")
+    ? "mobile"
+    : value.includes("ipad") || value.includes("tablet")
+      ? "tablet"
+      : "desktop";
+
+  return `${device}:${os}:${browser}`;
+}
+
+function coarseIpPrefix(sourceIp) {
+  const value = String(sourceIp ?? "");
+  if (!value) return "";
+
+  if (value.includes(".")) {
+    return value.split(".").slice(0, 3).join(".");
+  }
+
+  if (value.includes(":")) {
+    return value.split(":").slice(0, 4).join(":");
+  }
+
+  return value;
+}
+
+function safeUrlPath(value) {
+  if (typeof value !== "string" || !value.trim()) return "";
+  try {
+    const url = new URL(value);
+    return `${url.hostname}${url.pathname}`.slice(0, 180);
+  } catch (error) {
+    return trimString(value.split("?")[0], 180);
+  }
+}
+
+function safeNumber(value, max) {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue) || numberValue < 0) return 0;
+  return Math.min(numberValue, max);
+}
+
+function trimString(value, maxLength) {
+  return typeof value === "string" ? value.slice(0, maxLength) : "";
 }
 
 function validateContactRequest(payload) {
@@ -436,7 +557,7 @@ function validateContactRequest(payload) {
   return null;
 }
 
-async function getExistingRewardResponse(submissionId, tokenHash, origin) {
+async function getExistingRewardResponse(submissionId, tokenHash, origin, spinTelemetry) {
   const item = await getRewardClaim(submissionId);
   if (!item || item.tokenHash?.S !== tokenHash) {
     return response(403, { message: "This reward link is not valid." }, origin);
@@ -445,6 +566,11 @@ async function getExistingRewardResponse(submissionId, tokenHash, origin) {
   if (!item.rewardId?.S) {
     return response(409, { message: "This reward is not ready to spin yet." }, origin);
   }
+
+  await markRepeatSpinAttempt(submissionId, {
+    ...spinTelemetry,
+    alreadySpun: true,
+  });
 
   const reward = itemToReward(item);
   return response(
@@ -456,6 +582,24 @@ async function getExistingRewardResponse(submissionId, tokenHash, origin) {
       reward,
     },
     origin
+  );
+}
+
+async function markRepeatSpinAttempt(submissionId, spinTelemetry) {
+  await dynamodb.send(
+    new UpdateItemCommand({
+      TableName: process.env.REWARD_CLAIMS_TABLE,
+      Key: {
+        submissionId: { S: submissionId },
+      },
+      UpdateExpression:
+        "SET lastSpinAttemptAt = :attemptedAt, lastSpinTelemetry = :spinTelemetry ADD spinAttemptCount :one",
+      ExpressionAttributeValues: {
+        ":attemptedAt": { S: String(spinTelemetry.occurredAt ?? new Date().toISOString()) },
+        ":spinTelemetry": { M: toDynamoMap(spinTelemetry) },
+        ":one": { N: "1" },
+      },
+    })
   );
 }
 
@@ -688,6 +832,25 @@ function normalizeEventParams(params) {
       acc[safeKey] = { BOOL: value };
     } else if (typeof value === "number" && Number.isFinite(value)) {
       acc[safeKey] = { N: String(value) };
+    }
+
+    return acc;
+  }, {});
+}
+
+function toDynamoMap(value) {
+  return Object.entries(value).reduce((acc, [key, item]) => {
+    const safeKey = key.replace(/[^A-Za-z0-9_]/g, "").slice(0, 80);
+    if (!safeKey || item === undefined || item === null) return acc;
+
+    if (typeof item === "string") {
+      acc[safeKey] = { S: item };
+    } else if (typeof item === "boolean") {
+      acc[safeKey] = { BOOL: item };
+    } else if (typeof item === "number" && Number.isFinite(item)) {
+      acc[safeKey] = { N: String(item) };
+    } else if (typeof item === "object" && !Array.isArray(item)) {
+      acc[safeKey] = { M: toDynamoMap(item) };
     }
 
     return acc;
