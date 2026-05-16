@@ -153,17 +153,36 @@ export default function SwcaRewardsTeaser() {
             </Stack>
           </Stack>
 
-          <Flex display={{ base: "none", md: "flex" }} flex="0 1 360px" align="center" justify="center" w="100%">
+          <Flex
+            display="flex"
+            flex={{ base: "0 0 auto", lg: "0 1 360px" }}
+            align="center"
+            justify="center"
+            w="100%"
+            mt={{ base: 1, md: 0 }}
+            maxH={{ base: "150px", md: "none" }}
+            overflow="visible"
+          >
             <Box
               position="relative"
-              boxSize={{ base: "250px", sm: "300px", md: "340px" }}
+              boxSize={{ base: "118px", sm: "132px", md: "340px" }}
               borderRadius="full"
               bg={`conic-gradient(from -18deg, ${providerCampaign.primaryColor} 0deg 45deg, #FFFFFF 45deg 90deg, ${providerCampaign.secondaryColor} 90deg 135deg, ${providerCampaign.accentColor} 135deg 180deg, ${providerCampaign.primaryColor} 180deg 225deg, #FFFFFF 225deg 270deg, ${providerCampaign.secondaryColor} 270deg 315deg, ${providerCampaign.accentColor} 315deg 360deg)`}
-              border="10px solid white"
-              boxShadow="0 28px 70px rgba(7,26,58,0.2)"
+              border={{ base: "5px solid white", md: "10px solid white" }}
+              boxShadow={{ base: "0 12px 26px rgba(7,26,58,0.16)", md: "0 28px 70px rgba(7,26,58,0.2)" }}
               aria-hidden="true"
             >
-              <Box position="absolute" top="-14px" left="50%" transform="translateX(-50%)" w="0" h="0" borderLeft="14px solid transparent" borderRight="14px solid transparent" borderTop={`26px solid ${providerCampaign.secondaryColor}`} />
+              <Box
+                position="absolute"
+                top={{ base: "-8px", md: "-14px" }}
+                left="50%"
+                transform="translateX(-50%)"
+                w="0"
+                h="0"
+                borderLeft={{ base: "8px solid transparent", md: "14px solid transparent" }}
+                borderRight={{ base: "8px solid transparent", md: "14px solid transparent" }}
+                borderTop={{ base: `16px solid ${providerCampaign.secondaryColor}`, md: `26px solid ${providerCampaign.secondaryColor}` }}
+              />
               <Flex
                 position="absolute"
                 inset="29%"
@@ -171,11 +190,11 @@ export default function SwcaRewardsTeaser() {
                 justify="center"
                 borderRadius="full"
                 bg="white"
-                border="6px solid"
+                border={{ base: "3px solid", md: "6px solid" }}
                 borderColor={CREAM}
                 boxShadow="inset 0 0 0 1px rgba(7,26,58,0.08)"
               >
-                <Text fontWeight="900" color={providerCampaign.secondaryColor} fontSize={{ base: "lg", md: "xl" }}>
+                <Text fontWeight="900" color={providerCampaign.secondaryColor} fontSize={{ base: "xs", md: "xl" }}>
                   REWARD
                 </Text>
               </Flex>

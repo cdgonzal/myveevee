@@ -71,6 +71,8 @@ Regression Checks:
 
 ## Phase 2: Mobile Wheel Result Handoff
 
+Status: complete. `/swca/wheel` now opens a mobile-only reward claim sheet after the spin completes. The sheet shows the backend-assigned reward and the contact capture form immediately, while the existing desktop wheel/result layout remains in place.
+
 Goal: after the user spins, immediately move them to the reward result and contact capture without manual scrolling.
 
 Preferred UX:
@@ -115,6 +117,8 @@ Regression Checks:
 - Email reward delivery remains unchanged.
 
 ## Phase 3: Mobile Intake Step Guidance
+
+Status: complete. `/swca/intake` now has a mobile-only step strip, shorter mobile header copy, scroll-forward buttons for ranking and consent, the existing large consent card, and a mobile sticky Continue button once the form is ready.
 
 Goal: make `/swca/intake` feel like a guided sequence rather than a long form.
 
