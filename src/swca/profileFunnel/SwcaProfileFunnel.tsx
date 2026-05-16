@@ -5,7 +5,6 @@ import {
   Flex,
   Heading,
   Image,
-  SimpleGrid,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -20,36 +19,36 @@ const CREAM = "#FFF7EC";
 const LINE = "#F0D2A4";
 
 const PROFILE_BENEFITS = [
-  "Keep your wellness priorities in one place",
-  "Bring clearer context into your next conversation",
-  "Start a free profile you can build over time",
+  "Make your reward more personal",
+  "Keep your goals and next steps together",
+  "Build a profile that gets smarter over time",
 ];
 
 export default function SwcaProfileFunnel() {
   return (
-    <Box minH="100vh" bg="#FFFFFF" color={NAVY} overflow="hidden">
-      <Box position="absolute" inset={0} bg="linear-gradient(135deg, rgba(255,247,236,0.92), rgba(255,255,255,0.94) 48%, rgba(243,154,37,0.12))" />
-      <Box position="relative" maxW="1120px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 7, md: 10 }}>
-        <Flex align="center" justify="space-between" gap={5} mb={{ base: 7, md: 10 }}>
+    <Box minH="100vh" bg={CREAM} color={NAVY} overflow="hidden">
+      <Box position="absolute" inset={0} bg="linear-gradient(145deg, rgba(255,247,236,0.96), rgba(255,255,255,0.98) 54%, rgba(243,154,37,0.16))" />
+      <Box position="relative" maxW="1120px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 5, md: 10 }}>
+        <Flex align="center" justify="space-between" gap={5} mb={{ base: 6, md: 12 }}>
           <Flex align="center" gap={3}>
             <Image
               src="/swca/spine-wellness-logo.png"
               alt="Spine and Wellness Centers of America"
-              boxSize={{ base: "68px", md: "88px" }}
+              boxSize={{ base: "58px", md: "82px" }}
               objectFit="contain"
             />
             <Stack spacing={0}>
-              <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" letterSpacing="0.12em" textTransform="uppercase">
-                Spine and Wellness
+              <Text fontSize={{ base: "sm", md: "sm" }} fontWeight="900" letterSpacing={{ base: "0", md: "0.12em" }} textTransform={{ base: "none", md: "uppercase" }}>
+                SWCA recommends VeeVee
               </Text>
-              <Text fontSize={{ base: "sm", md: "md" }} fontWeight="700" color="#566071">
-                Centers of America
+              <Text display={{ base: "none", md: "block" }} fontSize="md" fontWeight="700" color="#566071">
+                Create your free Health Twin
               </Text>
             </Stack>
           </Flex>
 
           <Badge
-            display={{ base: "none", sm: "inline-flex" }}
+            display={{ base: "none", md: "inline-flex" }}
             bg="white"
             color={NAVY}
             border="1px solid"
@@ -60,36 +59,39 @@ export default function SwcaProfileFunnel() {
             fontSize="sm"
             boxShadow="0 10px 24px rgba(7,26,58,0.08)"
           >
-            Recommended by SWCA
+            Final step
           </Badge>
         </Flex>
 
-        <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, lg: 12 }} alignItems="center">
-          <Stack spacing={{ base: 6, md: 7 }}>
-            <Stack spacing={4}>
+        <Flex direction={{ base: "column", lg: "row" }} align="center" justify="space-between" gap={{ base: 6, lg: 12 }} minH={{ base: "auto", md: "68vh" }}>
+          <Stack spacing={{ base: 5, md: 7 }} textAlign={{ base: "center", lg: "left" }} align={{ base: "center", lg: "flex-start" }} flex="1" w="100%">
+            <Stack spacing={{ base: 3, md: 5 }} align={{ base: "center", lg: "flex-start" }}>
               <Badge
-                alignSelf="flex-start"
                 bg={NAVY}
                 color="white"
                 borderRadius="full"
-                px={4}
-                py={2}
-                fontSize="sm"
-                letterSpacing="0.08em"
+                px={{ base: 5, md: 4 }}
+                py={{ base: 2.5, md: 2 }}
+                fontSize={{ base: "sm", md: "sm" }}
+                letterSpacing={{ base: "0", md: "0.08em" }}
               >
-                Provider-recommended next step
+                Your Health Twin
               </Badge>
               <Heading
                 as="h1"
                 fontFamily="Georgia, 'Times New Roman', serif"
-                fontSize={{ base: "4xl", md: "6xl" }}
-                lineHeight="0.95"
+                fontSize={{ base: "44px", md: "7xl" }}
+                lineHeight={{ base: "0.92", md: "0.9" }}
                 letterSpacing="0"
+                maxW={{ base: "390px", md: "760px" }}
               >
-                {providerComments.headline}
+                Create your digital twin.
               </Heading>
-              <Text fontSize={{ base: "lg", md: "xl" }} lineHeight="1.45" color="#24314D" maxW="660px">
-                {providerComments.subheadline}
+              <Text fontSize={{ base: "lg", md: "2xl" }} lineHeight={{ base: "1.22", md: "1.32" }} color="#10254B" fontWeight="900" maxW={{ base: "340px", md: "680px" }}>
+                Get a more personalized VeeVee profile built around you.
+              </Text>
+              <Text display={{ base: "none", md: "block" }} fontSize="lg" lineHeight="1.5" color="#4F596B" maxW="640px" fontWeight="700">
+                You claimed the reward. Now turn that momentum into a free Health Twin that helps organize your priorities and gives you a better next step inside VeeVee.
               </Text>
             </Stack>
 
@@ -100,39 +102,44 @@ export default function SwcaProfileFunnel() {
               bg={ORANGE}
               color="white"
               borderRadius="full"
-              px={8}
-              minH="56px"
-              maxW={{ base: "100%", sm: "340px" }}
+              px={{ base: 8, md: 12 }}
+              minH={{ base: "76px", md: "70px" }}
+              w={{ base: "100%", md: "auto" }}
+              minW={{ base: "100%", md: "360px" }}
+              maxW={{ base: "520px", md: "none" }}
+              fontSize={{ base: "2xl", md: "2xl" }}
               fontWeight="900"
               _hover={{ bg: "#D96712", textDecoration: "none" }}
-              boxShadow="0 18px 36px rgba(243,154,37,0.28)"
-              onClick={() =>
-                {
-                  trackCtaClick({
-                    ctaName: "swca_profile_funnel_create_free_profile",
-                    ctaText: "Create my free profile",
+              boxShadow="0 22px 44px rgba(243,154,37,0.30)"
+              onClick={() => {
+                trackCtaClick({
+                  ctaName: "swca_profile_funnel_create_free_profile",
+                  ctaText: "Create my Health Twin",
+                  placement: "swca_profile_funnel_hero",
+                  destinationType: "external",
+                  destinationUrl: APP_LINKS.external.authenticatedConsole,
+                });
+                trackSwcaCampaignEvent({
+                  eventName: "swca_profile_funnel_create_free_profile",
+                  params: {
                     placement: "swca_profile_funnel_hero",
-                    destinationType: "external",
-                    destinationUrl: APP_LINKS.external.authenticatedConsole,
-                  });
-                  trackSwcaCampaignEvent({
-                    eventName: "swca_profile_funnel_create_free_profile",
-                    params: {
-                      placement: "swca_profile_funnel_hero",
-                    },
-                  });
-                }
-              }
+                  },
+                });
+              }}
             >
-              Create my free profile
+              Create my Health Twin
             </Button>
 
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3}>
+            <Text fontSize={{ base: "md", md: "md" }} color="#5F6878" fontWeight="900">
+              Free to start. Takes less than a minute.
+            </Text>
+
+            <Flex display={{ base: "none", md: "flex" }} gap={3} wrap="wrap">
               {PROFILE_BENEFITS.map((benefit) => (
                 <Flex
                   key={benefit}
                   align="center"
-                  minH="76px"
+                  minH="68px"
                   bg="white"
                   border="1px solid"
                   borderColor="rgba(7,26,58,0.12)"
@@ -145,39 +152,32 @@ export default function SwcaProfileFunnel() {
                   </Text>
                 </Flex>
               ))}
-            </SimpleGrid>
+            </Flex>
           </Stack>
 
-          <Stack spacing={4}>
-            {providerComments.comments.map((comment) => (
-              <Box
-                key={comment.role}
-                bg="white"
-                border="1px solid"
-                borderColor={LINE}
-                borderRadius="8px"
-                p={{ base: 5, md: 6 }}
-                boxShadow="0 18px 44px rgba(7,26,58,0.10)"
-              >
-                <Stack spacing={3}>
-                  <Text fontSize="xs" letterSpacing="0.16em" textTransform="uppercase" color={ORANGE} fontWeight="900">
-                    {comment.role}
-                  </Text>
-                  <Text fontSize={{ base: "lg", md: "xl" }} lineHeight="1.42" fontFamily="Georgia, 'Times New Roman', serif">
-                    {comment.body}
-                  </Text>
-                </Stack>
-              </Box>
-            ))}
-
-            <Box bg={CREAM} border="1px solid" borderColor={LINE} borderRadius="8px" p={{ base: 5, md: 6 }}>
-              <Text fontWeight="900">Free profile. Clearer next step.</Text>
-              <Text mt={1} color="#5F6878">
-                VeeVee is where you can start organizing your health goals and context after today's SWCA experience.
+          <Box
+            display={{ base: "none", lg: "block" }}
+            flex="0 1 360px"
+            bg="white"
+            border="1px solid"
+            borderColor={LINE}
+            borderRadius="8px"
+            p={7}
+            boxShadow="0 22px 54px rgba(7,26,58,0.10)"
+          >
+            <Stack spacing={5}>
+              <Text fontSize="xs" letterSpacing="0.16em" textTransform="uppercase" color={ORANGE} fontWeight="900">
+                {providerComments.comments[2]?.role ?? "SWCA provider recommendation"}
               </Text>
-            </Box>
-          </Stack>
-        </SimpleGrid>
+              <Text fontSize="2xl" lineHeight="1.25" fontFamily="Georgia, 'Times New Roman', serif" fontWeight="700">
+                Create your free profile now so your wellness journey does not end with today's reward.
+              </Text>
+              <Box borderTop="1px solid" borderColor={LINE} pt={5}>
+                <Text fontWeight="900">Your digital twin can help VeeVee personalize what comes next.</Text>
+              </Box>
+            </Stack>
+          </Box>
+        </Flex>
       </Box>
     </Box>
   );
