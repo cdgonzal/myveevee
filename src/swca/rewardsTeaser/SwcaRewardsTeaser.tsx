@@ -30,18 +30,23 @@ const providerCampaign = {
 export default function SwcaRewardsTeaser() {
   return (
     <Box minH="100vh" bg={CREAM} color={providerCampaign.secondaryColor}>
-      <Box maxW="1040px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 7, md: 10 }}>
-        <Flex align="center" justify="space-between" gap={5} mb={{ base: 9, md: 12 }}>
+      <Box maxW="1040px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 5, md: 10 }}>
+        <Flex align="center" justify="space-between" gap={5} mb={{ base: 5, md: 12 }}>
           <Flex align="center" gap={3}>
             <Image
               src={providerCampaign.logoSrc}
               alt={providerCampaign.providerName}
-              boxSize={{ base: "64px", md: "86px" }}
+              boxSize={{ base: "52px", md: "86px" }}
               objectFit="contain"
             />
             <Stack spacing={0}>
               <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" letterSpacing="0.12em" textTransform="uppercase">
-                {providerCampaign.providerName}
+                <Box as="span" display={{ base: "none", md: "inline" }}>
+                  {providerCampaign.providerName}
+                </Box>
+                <Box as="span" display={{ base: "inline", md: "none" }}>
+                  {providerCampaign.providerShortName} Rewards
+                </Box>
               </Text>
               <Text fontSize={{ base: "sm", md: "md" }} fontWeight="700" color="#566071">
                 Rewards powered by VeeVee
@@ -69,18 +74,18 @@ export default function SwcaRewardsTeaser() {
           align="center"
           justify="center"
           direction={{ base: "column", lg: "row" }}
-          gap={{ base: 8, lg: 12 }}
-          minH={{ base: "auto", md: "64vh" }}
+          gap={{ base: 5, lg: 12 }}
+          minH={{ base: "calc(100dvh - 116px)", md: "64vh" }}
         >
-          <Stack spacing={{ base: 6, md: 7 }} align={{ base: "center", lg: "flex-start" }} textAlign={{ base: "center", lg: "left" }} flex="1">
-            <Stack spacing={4} align={{ base: "center", lg: "flex-start" }}>
+          <Stack spacing={{ base: 5, md: 7 }} align={{ base: "center", lg: "flex-start" }} textAlign={{ base: "center", lg: "left" }} flex="1">
+            <Stack spacing={{ base: 3, md: 4 }} align={{ base: "center", lg: "flex-start" }}>
               <Badge
                 bg={providerCampaign.secondaryColor}
                 color="white"
                 borderRadius="full"
-                px={4}
-                py={2}
-                fontSize="sm"
+                px={{ base: 3, md: 4 }}
+                py={{ base: 1.5, md: 2 }}
+                fontSize={{ base: "xs", md: "sm" }}
                 letterSpacing="0.08em"
               >
                 {providerCampaign.providerShortName} Rewards
@@ -88,15 +93,20 @@ export default function SwcaRewardsTeaser() {
               <Heading
                 as="h1"
                 fontFamily="Georgia, 'Times New Roman', serif"
-                fontSize={{ base: "5xl", md: "7xl" }}
-                lineHeight="0.92"
+                fontSize={{ base: "4xl", md: "7xl" }}
+                lineHeight={{ base: "0.98", md: "0.92" }}
                 letterSpacing="0"
                 maxW="760px"
               >
                 Unlock your {providerCampaign.rewardCategory} reward.
               </Heading>
-              <Text fontSize={{ base: "lg", md: "2xl" }} lineHeight="1.35" color="#24314D" maxW="680px" fontWeight="700">
-                Answer a few quick questions so {providerCampaign.providerName} can match you with available rewards, offers, or services.
+              <Text fontSize={{ base: "lg", md: "2xl" }} lineHeight="1.35" color="#24314D" maxW={{ base: "340px", md: "680px" }} fontWeight="700">
+                <Box as="span" display={{ base: "none", md: "inline" }}>
+                  Answer a few quick questions so {providerCampaign.providerName} can match you with available rewards, offers, or services.
+                </Box>
+                <Box as="span" display={{ base: "inline", md: "none" }}>
+                  Answer a few quick questions to unlock your prize.
+                </Box>
               </Text>
             </Stack>
 
@@ -109,7 +119,7 @@ export default function SwcaRewardsTeaser() {
                 color="white"
                 borderRadius="full"
                 px={{ base: 8, md: 12 }}
-                minH={{ base: "62px", md: "70px" }}
+                minH={{ base: "64px", md: "70px" }}
                 minW={{ base: "100%", sm: "300px" }}
                 fontSize={{ base: "xl", md: "2xl" }}
                 fontWeight="900"
@@ -137,10 +147,13 @@ export default function SwcaRewardsTeaser() {
               <Text fontSize={{ base: "sm", md: "md" }} color="#5F6878" fontWeight="700">
                 Takes about one minute.
               </Text>
+              <Text display={{ base: "block", md: "none" }} fontSize="xs" color="#6A7280" fontWeight="700">
+                General interest only. Rewards managed by SWCA.
+              </Text>
             </Stack>
           </Stack>
 
-          <Flex flex="0 1 360px" align="center" justify="center" w="100%">
+          <Flex display={{ base: "none", md: "flex" }} flex="0 1 360px" align="center" justify="center" w="100%">
             <Box
               position="relative"
               boxSize={{ base: "250px", sm: "300px", md: "340px" }}
@@ -170,7 +183,7 @@ export default function SwcaRewardsTeaser() {
           </Flex>
         </Flex>
 
-        <Stack spacing={1} mt={{ base: 9, md: 10 }} align="center" textAlign="center">
+        <Stack display={{ base: "none", md: "flex" }} spacing={1} mt={{ base: 9, md: 10 }} align="center" textAlign="center">
           <Text fontSize={{ base: "sm", md: "md" }} color="#4F596B" fontWeight="700">
             General interest form only. Please do not enter private medical details.
           </Text>

@@ -21,7 +21,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - form submission, reward wheel, admin reporting, first-party events, and alarms are live
   - customer reward email, secure certificate links, and certificate-view tracking are live
   - `/swca` is the lean provider hub for public SWCA reward, interest, and Health Twin account-creation paths
-  - active next track is operational handoff and admin readiness
+  - active next track is mobile funnel UX: reduce text, reduce scrolling, and move users forward after each tap
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
@@ -204,7 +204,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 
 ### Next
 
-- Marketing signal follow-up questions: move concerns to editable JSON, ask top-ranked concern questions plus generic intent questions, store answers, and surface non-PII signals in admin reporting.
+- Mobile funnel UX: simplify `/swca/rewards` on mobile, move users directly to reward/contact capture after the wheel spin, and make `/swca/intake` feel more step-based on mobile.
 - Keep remaining non-blocking SWCA items in `codex/swca/REWARD_COMMUNICATION_PLAN.md` backlog.
 
 ## SEO Implementation State
@@ -309,6 +309,8 @@ Known baseline issue:
   - completed email-first SWCA customer reward communication tracker plus operations/admin backlog
 - `codex/swca/MARKETING_SIGNAL_FOLLOWUP_PLAN.md`
   - active plan for top-ranked concern follow-up questions and generic purchase-intent signals
+- `codex/swca/MOBILE_FUNNEL_UX_PLAN.md`
+  - recommended implementation order for mobile-first SWCA funnel improvements without disrupting desktop
 - `codex/swca/PROVIDER_ONBOARDING_PLAYBOOK.md`
   - repeatable provider/clinic onboarding packet, SWCA page inventory, reusable surfaces, and clinic information request checklist
 - `codex/swca/ADMIN_RUNBOOK.md`
