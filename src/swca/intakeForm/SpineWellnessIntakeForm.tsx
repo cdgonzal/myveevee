@@ -517,6 +517,7 @@ export default function SpineWellnessIntakeForm() {
 
               <Box maxW="720px" mx="auto" w="100%">
                 <Checkbox
+                  id="swca-reward-consent"
                   isChecked={hasCommunicationConsent}
                   onChange={(event) => {
                     setSubmitState("idle");
@@ -524,9 +525,36 @@ export default function SpineWellnessIntakeForm() {
                   }}
                   colorScheme="orange"
                   alignItems="flex-start"
-                  size="sm"
+                  size="lg"
+                  w="100%"
+                  p={{ base: 4, md: 5 }}
+                  border="2px solid"
+                  borderColor={hasCommunicationConsent ? ORANGE : "#C8CEDA"}
+                  borderRadius="8px"
+                  bg={hasCommunicationConsent ? "#FFF3E4" : "white"}
+                  boxShadow={hasCommunicationConsent ? "0 14px 30px rgba(244,123,32,0.16)" : "0 10px 24px rgba(7,26,58,0.07)"}
+                  cursor="pointer"
+                  transition="border-color 160ms ease, background 160ms ease, box-shadow 160ms ease"
+                  _hover={{
+                    borderColor: ORANGE,
+                    bg: hasCommunicationConsent ? "#FFF3E4" : "#FFF9F1",
+                  }}
+                  sx={{
+                    ".chakra-checkbox__control": {
+                      width: "28px",
+                      height: "28px",
+                      marginTop: "2px",
+                    },
+                    ".chakra-checkbox__label": {
+                      width: "100%",
+                      marginLeft: "14px",
+                    },
+                  }}
                 >
-                  <Text as="span" fontSize={{ base: "xs", md: "sm" }} lineHeight="1.45" color="#34405A">
+                  <Text as="span" display="block" fontSize={{ base: "md", md: "lg" }} lineHeight="1.35" color="#17233D" fontWeight="900">
+                    Tap here to agree
+                  </Text>
+                  <Text as="span" display="block" mt={1} fontSize={{ base: "sm", md: "md" }} lineHeight="1.45" color="#34405A" fontWeight="700">
                     I agree to receive my reward certificate and related follow-up using the contact information I provide.
                   </Text>
                 </Checkbox>
