@@ -567,12 +567,6 @@ export default function SpineWellnessIntakeForm() {
                 Continue
               </Button>
 
-              {selectedConcerns.length > 0 && !hasCommunicationConsent ? (
-                <Text textAlign="center" color="#5B6681" fontSize="sm" fontWeight="700">
-                  Check the consent box below to continue.
-                </Text>
-              ) : null}
-
               <Box maxW="720px" mx="auto" w="100%" display={{ base: "none", md: "block" }}>
                 <ConsentAgreement
                   consentId="swca-reward-consent-desktop"
@@ -602,14 +596,23 @@ export default function SpineWellnessIntakeForm() {
           >
             <Stack spacing={4}>
               <Stack spacing={1} textAlign="center">
-                <Box
-                  boxSize="22px"
-                  borderLeft="3px solid"
-                  borderBottom="3px solid"
+                <Flex
+                  align="center"
+                  justify="center"
+                  boxSize="38px"
+                  borderRadius="full"
+                  bg="#FFF3E4"
+                  color={ORANGE}
+                  border="2px solid"
                   borderColor={ORANGE}
-                  transform="rotate(-45deg)"
                   alignSelf="center"
-                />
+                  fontSize="xl"
+                  fontWeight="900"
+                  lineHeight="1"
+                  aria-hidden="true"
+                >
+                  ✓
+                </Flex>
                 <Heading as="h2" fontFamily="Georgia, 'Times New Roman', serif" size="sm" fontWeight="500">
                   Consent to receive your reward
                 </Heading>
