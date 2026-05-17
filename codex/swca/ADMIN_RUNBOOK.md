@@ -39,6 +39,7 @@ Open `/swca/admin` and confirm:
 - Reward distribution looks reasonable.
 - Recent rows show abbreviated names only and no raw contact details.
 - Duplicate-contact attempts are not treated as system failures; they are expected to deny a second reward and push the user to the assigned Health Twin CTA variant.
+- Post-reward traffic is split between `/swca/funnel` and `/swca/funnel-visual` by deterministic `submissionId` assignment.
 
 If the counts are flat during an active campaign:
 
@@ -138,7 +139,7 @@ The reward claim record stores hashed request context and spin telemetry for bas
 
 ## Known Backlog
 
-- Rotate the shared admin passcode before broad team sharing.
+- Rotate the shared admin passcode before broad team sharing or whenever access should be revoked.
 - Confirm final operational alert recipients.
 - Add per-row certificate viewed status to the admin report.
 - Add deeper S3 plus DynamoDB joined reporting.

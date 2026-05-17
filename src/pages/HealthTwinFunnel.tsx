@@ -19,6 +19,8 @@ import { runWellnessMirrorSimulation, type SimulationResult } from "../simulator
 import { DEFAULT_SIMULATOR_INPUT, type SimulatorInput } from "../simulator/schema";
 
 type FunnelStep = 0 | 1 | 2 | 3;
+type UploadVisualType = "mri" | "record" | "injury" | "lab";
+type TileVisualType = UploadVisualType | "timeline" | "sleep" | "meds" | "goals";
 
 type UploadOption = {
   id: string;
@@ -27,7 +29,7 @@ type UploadOption = {
   micro: string;
   whyMatters: string;
   metrics: string[];
-  visualType: "mri" | "record" | "injury" | "lab";
+  visualType: UploadVisualType;
   imageSrc: string;
   input: SimulatorInput;
 };
@@ -523,7 +525,7 @@ function TileVisual({
   imageSrc,
   imageAlt,
 }: {
-  visualType: UploadOption["visualType"];
+  visualType: TileVisualType;
   isSelected: boolean;
   imageSrc?: string;
   imageAlt: string;

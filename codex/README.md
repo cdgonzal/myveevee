@@ -22,6 +22,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - customer reward email, secure certificate links, and certificate-view tracking are live
   - `/swca` is the lean provider hub for public SWCA reward, interest, and Health Twin account-creation paths
   - completed mobile funnel UX pass: reward teaser, intake, wheel, duplicate-contact redirect, and Health Twin CTA variants now move users forward with less reading and less scrolling
+  - post-reward A/B test is live: `/swca/funnel` is the avatar variant and `/swca/funnel-visual` is the visual/function variant
   - CDK stack `MyVeeVeeInfraStack` owns the deployed backend resources
 - Unknown app routes render a tracked `noindex` recovery page with a primary CTA to `/how-it-works`.
 
@@ -92,6 +93,8 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `/swca/funnel-visual`
   - post-reward SWCA-branded visual/function Health Twin CTA test route
   - reached for roughly half of reward completions through deterministic `submissionId` assignment
+  - mobile uses compact icon cards and short labels
+  - desktop uses a two-column CTA plus Health Twin visual with compact cards
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
   - CTA destination is `https://veevee.io`
@@ -159,6 +162,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - standalone SWCA-branded avatar variant selling the free Health Twin after reward completion
 - `src/swca/profileFunnel/SwcaProfileFunnelVisual.tsx`
   - standalone SWCA-branded visual/function variant for Health Twin CTA testing
+  - uses compact feature cards on mobile and desktop, with a two-column desktop layout
 - `src/swca/profileFunnel/variant.ts`
   - deterministic A/B assignment helper that maps reward `submissionId` values to `/swca/funnel` or `/swca/funnel-visual`
 - `src/swca/profileFunnel/provider-comments.json`
@@ -211,12 +215,12 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - Latest end-to-end reward communication verification used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake, wheel, email, secure certificate link, and certificate-view event all matched `rewardId=wellness-gift`.
 - API Gateway CORS is verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 - App 404 recovery, `/swca/teaser`, and timed `/how-it-works` redirect are deployed.
-- Latest frontend deploy checkpoint: Amplify job `249` succeeded on 2026-05-16 for the streamlined `/swca/funnel` Health Twin CTA.
+- Latest frontend deploy checkpoint: Amplify job `254` succeeded on 2026-05-17 for the tightened `/swca/funnel-visual` desktop hero and compact visual cards.
 
 ### Backlog
 
 - Complete AWS End User Messaging SMS registration before enabling text reward delivery.
-- Rotate/share the SWCA admin passcode through a secure channel before broad staff rollout.
+- Rotate/share the SWCA admin passcode through a secure channel before broad staff rollout or whenever access should be revoked.
 - Add deeper operations reporting only if management outgrows the redacted dashboard and CSV.
 - Extract provider-neutral campaign config before adding clinic 2.
 

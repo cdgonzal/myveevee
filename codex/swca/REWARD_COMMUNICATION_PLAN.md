@@ -145,7 +145,7 @@ Status: code path is complete and disabled by default; AWS registration and prod
 - Certificate lookup was fixed to scan until the matching certificate id is found before validating the secure token hash.
 - API Gateway CORS was corrected for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL after mobile/incognito submit failures.
 - One-reward-per-contact enforcement is live for normalized email or phone values. Duplicate contacts show a clear denial message and redirect users to their assigned Health Twin CTA variant so the campaign still moves them toward VeeVee.
-- Post-reward funnel competition is live in code: `/swca/funnel` is the avatar variant and `/swca/funnel-visual` is the visual/function variant. Assignment uses `submissionId` to keep traffic close to 50/50.
+- Post-reward funnel competition is live: `/swca/funnel` is the avatar variant and `/swca/funnel-visual` is the visual/function variant. Assignment uses `submissionId` to keep traffic close to 50/50. The visual variant has been tightened for mobile and desktop with compact cards and a stronger CTA layout.
 - Latest end-to-end verification on 2026-05-15 used submission `7db059ef-eca9-439b-a398-e0ebd413b15d`: intake succeeded, wheel selected `Wellness Gift`, reward contact saved by email, SES message status was `sent`, certificate `f0c9ee71-11f8-4341-9948-b6f085a68a04` was created, and `swca_reward_certificate_view` was captured for the same submission and reward id.
 
 Tasks:
@@ -167,7 +167,7 @@ Acceptance criteria:
 
 Customer reward communication is complete for the email-first launch path. Current operations work is handoff and readiness:
 
-- Rotate the shared SWCA admin passcode before broad team sharing.
+- Rotate the shared SWCA admin passcode before broad team sharing or whenever access should be revoked.
 - Use `codex/swca/ADMIN_RUNBOOK.md` for passcode handling, report refresh, CSV export, alarm handling, and stale-count troubleshooting.
 - Decide who receives operational alerts and whether `info@veevee.io` remains the SNS destination.
 - Confirm the admin dashboard report answers the first management questions after the live pilot starts.

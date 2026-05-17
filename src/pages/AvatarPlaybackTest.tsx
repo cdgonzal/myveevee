@@ -10,7 +10,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { type SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 
@@ -127,6 +127,12 @@ function VideoProbe({
     });
   };
 
+  const recordVideoEvent =
+    (nextStatus: PlaybackState, eventName: string) =>
+    (event: SyntheticEvent<HTMLVideoElement>) => {
+      record(nextStatus, `${eventName} fired\n${describeVideoElement(event.currentTarget)}`);
+    };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -178,16 +184,14 @@ function VideoProbe({
             w="100%"
             h="100%"
             objectFit="contain"
-            onLoadedMetadata={(event) => record("loaded", `loadedmetadata fired\n${describeVideoElement(event.currentTarget)}`)}
-            onLoadedData={(event) => record("loaded", `loadeddata fired\n${describeVideoElement(event.currentTarget)}`)}
-            onCanPlay={(event) => record("can-play", `canplay fired\n${describeVideoElement(event.currentTarget)}`)}
-            onPlay={(event) => record("playing", `play fired\n${describeVideoElement(event.currentTarget)}`)}
-            onStalled={(event) => record("error", `stalled fired\n${describeVideoElement(event.currentTarget)}`)}
-            onSuspend={(event) => record(status, `suspend fired\n${describeVideoElement(event.currentTarget)}`)}
-            onAbort={(event) => record("error", `abort fired\n${describeVideoElement(event.currentTarget)}`)}
-            onError={(event) =>
-              record("error", `video error fired\n${describeVideoElement(event.currentTarget)}`)
-            }
+            onLoadedMetadata={recordVideoEvent("loaded", "loadedmetadata")}
+            onLoadedData={recordVideoEvent("loaded", "loadeddata")}
+            onCanPlay={recordVideoEvent("can-play", "canplay")}
+            onPlay={recordVideoEvent("playing", "play")}
+            onStalled={recordVideoEvent("error", "stalled")}
+            onSuspend={recordVideoEvent(status, "suspend")}
+            onAbort={recordVideoEvent("error", "abort")}
+            onError={recordVideoEvent("error", "video error")}
           >
             {mode === "webm" ? (
               <source

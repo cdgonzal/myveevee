@@ -205,3 +205,4 @@ Known baseline:
 - The wheel opens the reward/contact capture on mobile after spin completion.
 - Duplicate reward contacts show the rejection toast and then redirect to the assigned Health Twin CTA variant, keeping the funnel moving.
 - Reward completion now runs a funnel competition: `/swca/funnel` is the avatar variant and `/swca/funnel-visual` is the visual/function variant. Assignment is deterministic from `submissionId` so traffic stays close to 50/50.
+- The visual/function variant now uses compact icon cards and short labels on mobile, and a two-column desktop layout with the Health Twin visual beside the CTA.

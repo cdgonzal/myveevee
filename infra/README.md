@@ -157,10 +157,10 @@ After a future stack change deploys:
 - Latest end-to-end verification on 2026-05-15 confirmed intake, wheel, email, certificate, and certificate-view tracking for submission `7db059ef-eca9-439b-a398-e0ebd413b15d`.
 - API Gateway CORS is corrected and verified for `https://myveevee.com`, `https://www.myveevee.com`, and the Amplify branch URL.
 - Contact dedupe enforcement and reward spin telemetry are deployed. Duplicate contact attempts do not issue a second reward, and spin telemetry stores hashed request context plus sanitized browser hints for abuse review.
-- Amplify job `249` deployed the streamlined `/swca/funnel` Health Twin CTA on 2026-05-16.
+- Amplify job `254` deployed the tightened `/swca/funnel-visual` desktop hero and compact visual cards on 2026-05-17.
 
 ## What Is Next
 
-- Operational handoff: rotate/share the admin passcode through a secure channel, use `codex/swca/ADMIN_RUNBOOK.md`, and confirm alert recipients.
+- Operational handoff: rotate/share the admin passcode through a secure channel before broad staff rollout, use `codex/swca/ADMIN_RUNBOOK.md`, and keep alert recipients current.
 - SMS plan: continue `codex/swca/SMS_IMPLEMENTATION_PLAN.md`; do not enable SMS until registration and sandbox exit are complete.
 - Keep GA4 dashboard integration, deeper operations reporting, and next-clinic provider config extraction in backlog until requested.
