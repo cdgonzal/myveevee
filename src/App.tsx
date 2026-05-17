@@ -198,6 +198,7 @@ function PageFallback() {
 export default function App() {
   const { pathname } = useLocation();
   const isStandalonePage =
+    pathname === APP_LINKS.internal.create ||
     pathname === APP_LINKS.internal.healthTwin ||
     pathname === APP_LINKS.internal.healthTwinCreate ||
     pathname === APP_LINKS.internal.swcaBrief ||
@@ -226,6 +227,7 @@ export default function App() {
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
+                <Route path={APP_LINKS.internal.create} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.healthTwin} element={<HealthTwinFunnel />} />
                 <Route path={APP_LINKS.internal.healthTwinCreate} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.swcaHub} element={<SwcaProviderHub />} />
@@ -245,6 +247,7 @@ export default function App() {
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.home} element={<Home />} />
+                <Route path={APP_LINKS.internal.create} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.healthTwin} element={<HealthTwinFunnel />} />
                 <Route path={APP_LINKS.internal.healthTwinCreate} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.avatarPlaybackTest} element={<AvatarPlaybackTest />} />
