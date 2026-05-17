@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -67,6 +67,7 @@ function moveItem(items: SwcaConcernId[], fromIndex: number, toIndex: number) {
 
 export default function SpineWellnessIntakeForm() {
   const toast = useToast();
+  const followUpBodyRef = useRef<HTMLDivElement | null>(null);
   const [mobileStep, setMobileStep] = useState<MobileIntakeStep>("select");
   const [selectedIds, setSelectedIds] = useState<SwcaConcernId[]>([]);
   const [rankedIds, setRankedIds] = useState<SwcaConcernId[]>([]);
@@ -124,12 +125,20 @@ export default function SpineWellnessIntakeForm() {
   const followUpProgressValue =
     followUpSteps.length > 0 ? Math.round(((currentFollowUpStepIndex + (currentFollowUpStepComplete ? 1 : 0)) / followUpSteps.length) * 100) : 0;
   const isLastFollowUpStep = currentFollowUpStepIndex >= followUpSteps.length - 1;
+  const resetFollowUpScroll = () => {
+    followUpBodyRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  };
   const advanceFollowUpStep = () => {
     if (isLastFollowUpStep) return;
     window.setTimeout(() => {
       setCurrentFollowUpStepIndex((current) => Math.min(followUpSteps.length - 1, current + 1));
     }, 180);
   };
+
+  useEffect(() => {
+    if (!isFollowUpOpen) return;
+    resetFollowUpScroll();
+  }, [currentFollowUpStepIndex, isFollowUpOpen]);
 
   const canSubmit = selectedIds.length > 0 && rankedIds.length === selectedIds.length && hasCommunicationConsent && !honeypot;
   const canRankOnMobile = selectedIds.length > 0;
@@ -240,6 +249,7 @@ export default function SpineWellnessIntakeForm() {
     }
 
     setCurrentFollowUpStepIndex(0);
+    window.scrollTo({ top: 0, behavior: "auto" });
     setIsFollowUpOpen(true);
   };
 
@@ -686,7 +696,7 @@ export default function SpineWellnessIntakeForm() {
             A few quick follow-up questions
           </ModalHeader>
           <ModalCloseButton isDisabled={isSubmitting} />
-          <ModalBody>
+          <ModalBody ref={followUpBodyRef}>
             <Stack spacing={5} minH={{ base: "360px", md: "390px" }}>
               <Box>
                 <Flex justify="space-between" gap={4} mb={2}>
@@ -724,6 +734,7 @@ export default function SpineWellnessIntakeForm() {
               onClick={() => {
                 if (currentFollowUpStepIndex > 0) {
                   setCurrentFollowUpStepIndex((current) => Math.max(0, current - 1));
+                  window.setTimeout(resetFollowUpScroll, 0);
                   return;
                 }
 
@@ -747,7 +758,10 @@ export default function SpineWellnessIntakeForm() {
               </Button>
             ) : (
               <Button
-                onClick={() => setCurrentFollowUpStepIndex((current) => Math.min(followUpSteps.length - 1, current + 1))}
+                onClick={() => {
+                  setCurrentFollowUpStepIndex((current) => Math.min(followUpSteps.length - 1, current + 1));
+                  window.setTimeout(resetFollowUpScroll, 0);
+                }}
                 isDisabled={!currentFollowUpStepComplete || isSubmitting}
                 bg={NAVY}
                 color="white"
