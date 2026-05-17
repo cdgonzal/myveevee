@@ -46,8 +46,6 @@ type EvolutionOption = {
   apply: (input: SimulatorInput) => SimulatorInput;
 };
 
-type TeaserTone = "danger" | "success" | "action";
-
 type StepThreeTeaser = {
   headline: string;
   watch: string;
@@ -833,97 +831,38 @@ function FocusTile({
   );
 }
 
-function MetricCard({
-  label,
-  value,
-  tone = "default",
-}: {
-  label: string;
-  value: string;
-  tone?: "default" | "accent" | TeaserTone;
-}) {
-  const toneStyles = {
-    default: {
-      border: "border.default",
-      bg: "rgba(255, 255, 255, 0.72)",
-      color: "text.primary",
-    },
-    accent: {
-      border: "rgba(17, 119, 186, 0.36)",
-      bg: "rgba(17, 119, 186, 0.10)",
-      color: "accent.soft",
-    },
-    danger: {
-      border: "rgba(220, 38, 38, 0.34)",
-      bg: "rgba(254, 226, 226, 0.84)",
-      color: "#B91C1C",
-    },
-    success: {
-      border: "rgba(22, 163, 74, 0.34)",
-      bg: "rgba(220, 252, 231, 0.82)",
-      color: "#15803D",
-    },
-    action: {
-      border: "rgba(17, 119, 186, 0.34)",
-      bg: "rgba(219, 234, 254, 0.82)",
-      color: "#1177BA",
-    },
-  }[tone];
-
-  return (
-    <Box
-      borderWidth="1px"
-      borderColor={toneStyles.border}
-      borderRadius="2xl"
-      bg={toneStyles.bg}
-      p={4}
-    >
-      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" color="text.subtle" mb={2}>
-        {label}
-      </Text>
-      <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="900" lineHeight="1" color={toneStyles.color}>
-        {value}
-      </Text>
-    </Box>
-  );
-}
-
-function TeaserRecommendationCard({
+function RecommendationStep({
+  number,
   label,
   body,
-  tone,
 }: {
+  number: number;
   label: string;
   body: string;
-  tone: TeaserTone;
 }) {
-  const styles = {
-    danger: {
-      border: "rgba(220, 38, 38, 0.36)",
-      bg: "rgba(254, 226, 226, 0.72)",
-      label: "#B91C1C",
-    },
-    success: {
-      border: "rgba(22, 163, 74, 0.36)",
-      bg: "rgba(220, 252, 231, 0.72)",
-      label: "#15803D",
-    },
-    action: {
-      border: "rgba(17, 119, 186, 0.36)",
-      bg: "rgba(219, 234, 254, 0.74)",
-      label: "#1177BA",
-    },
-  }[tone];
-
   return (
-    <Box borderWidth="1px" borderColor={styles.border} borderRadius="2xl" bg={styles.bg} p={4}>
-      <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" fontWeight="900" color={styles.label} mb={2}>
-        {label}
-      </Text>
-      <Text fontSize="sm" color="text.primary" lineHeight="1.45" fontWeight="650">
-        {body}
-      </Text>
-    </Box>
+    <HStack align="flex-start" spacing={4}>
+      <Flex
+        align="center"
+        justify="center"
+        boxSize={{ base: "34px", md: "38px" }}
+        borderRadius="full"
+        bg="rgba(17,119,186,0.12)"
+        color={VEEVEE_BLUE}
+        fontWeight="900"
+        flexShrink={0}
+      >
+        {number}
+      </Flex>
+      <Box flex="1" minW={0}>
+        <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.14em" fontWeight="900" color="accent.soft" mb={1}>
+          {label}
+        </Text>
+        <Text fontSize={{ base: "sm", md: "md" }} color="text.primary" lineHeight="1.45" fontWeight="700">
+          {body}
+        </Text>
+      </Box>
+    </HStack>
   );
 }
 
@@ -1326,15 +1265,6 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
     handleConversionClick();
   };
 
-  const handleBack = () => {
-    if (step === 0) {
-      return;
-    }
-    const previousStep = (step - 1) as FunnelStep;
-    setStep(previousStep);
-    trackEvent("health_twin_funnel_step_back", { from_step: step + 1, to_step: previousStep + 1 });
-  };
-
   return (
     <Box as="main" minH="100vh" bg={VEEVEE_LIGHT} color={VEEVEE_NAVY} overflow="hidden">
       <Box position="absolute" inset={0} bg="linear-gradient(160deg, rgba(239,251,255,0.98), rgba(255,255,255,0.96) 52%, rgba(54,197,255,0.18))" />
@@ -1576,35 +1506,22 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
                 </Text>
               </Box>
 
-              <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
-                <MetricCard label="Input" value={selectedUpload.title} tone="accent" />
-                <MetricCard label={stepThreeTeaser.metricLabel} value={stepThreeTeaser.metricValue} tone="action" />
-                <MetricCard label="Watch" value={result.riskLevel.toUpperCase()} tone="danger" />
-                <MetricCard label="Good Signal" value="Clear Goal" tone="success" />
-              </SimpleGrid>
-
-              <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={5}>
-                <Stack spacing={4}>
-                  <Heading as="h3" size="md">
+              <Box borderWidth="1px" borderColor={insightAccentBorder} borderRadius="3xl" bg={insightCardBg} p={{ base: 5, md: 6 }}>
+                <Stack spacing={{ base: 5, md: 6 }}>
+                  <Stack spacing={2}>
+                    <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft" fontWeight="900">
+                      First recommendation
+                    </Text>
+                    <Heading as="h3" size={{ base: "md", md: "lg" }} lineHeight="1.1">
                     {stepThreeTeaser.headline}
-                  </Heading>
-                  <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3}>
-                    <TeaserRecommendationCard label="Watch this" body={stepThreeTeaser.watch} tone="danger" />
-                    <TeaserRecommendationCard label="Good sign" body={stepThreeTeaser.good} tone="success" />
-                    <TeaserRecommendationCard label="Next move" body={stepThreeTeaser.next} tone="action" />
-                  </SimpleGrid>
-                  <Button
-                    variant="link"
-                    color="accent.primary"
-                    fontWeight="900"
-                    w="fit-content"
-                    onClick={() => {
-                      setStep(3);
-                      trackEvent("health_twin_funnel_step_advance", { from_step: 3, to_step: 4, teaser_click: true });
-                    }}
-                  >
-                    Get more info
-                  </Button>
+                    </Heading>
+                  </Stack>
+
+                  <Stack spacing={4}>
+                    <RecommendationStep number={1} label="What to watch" body={stepThreeTeaser.watch} />
+                    <RecommendationStep number={2} label="Why this is useful" body={stepThreeTeaser.good} />
+                    <RecommendationStep number={3} label="Next move" body={stepThreeTeaser.next} />
+                  </Stack>
                 </Stack>
               </Box>
             </Stack>
@@ -1614,10 +1531,7 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
         ) : null}
 
         {!showConversion ? (
-        <Stack direction={{ base: "column", sm: "row" }} justify="space-between" spacing={3}>
-          <Button variant="ghost" onClick={handleBack} isDisabled={step === 0}>
-            Back
-          </Button>
+        <Stack direction={{ base: "column", sm: "row" }} justify="flex-end" spacing={3}>
           {step === 2 ? (
             <Button
               onClick={handleNext}
