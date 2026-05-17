@@ -370,7 +370,7 @@ export default function SwcaRewardWheel() {
       <Box maxW="1080px" mx="auto">
         <Flex justify="center" mb={{ base: 5, md: 7 }}>
           <Image
-            src="/swca/spine-wellness-logo.png"
+            src="/swca/spine-wellness-logo.webp"
             alt="Spine and Wellness Centers of America"
             boxSize={{ base: "110px", md: "150px" }}
             objectFit="contain"

@@ -20,7 +20,7 @@ const CREAM = "#FFF9EF";
 const providerCampaign = {
   providerName: "Spine and Wellness Centers of America",
   providerShortName: "SWCA",
-  logoSrc: "/swca/spine-wellness-logo.png",
+  logoSrc: "/swca/spine-wellness-logo.webp",
   primaryColor: ORANGE,
   secondaryColor: NAVY,
   accentColor: "#FFC247",

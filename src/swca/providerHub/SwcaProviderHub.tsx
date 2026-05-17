@@ -70,7 +70,7 @@ export default function SwcaProviderHub() {
         <Flex align="center" justify="space-between" gap={5} mb={{ base: 9, md: 12 }}>
           <Flex align="center" gap={3}>
             <Image
-              src="/swca/spine-wellness-logo.png"
+              src="/swca/spine-wellness-logo.webp"
               alt="Spine and Wellness Centers of America"
               boxSize={{ base: "64px", md: "84px" }}
               objectFit="contain"

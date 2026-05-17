@@ -120,7 +120,7 @@ export default function SwcaAdminDashboard() {
       <Box maxW="1240px" mx="auto">
         <Flex align={{ base: "flex-start", md: "center" }} justify="space-between" gap={5} mb={7}>
           <Flex align="center" gap={3}>
-            <Image src="/swca/spine-wellness-logo.png" alt="Spine and Wellness Centers of America" boxSize="72px" objectFit="contain" />
+            <Image src="/swca/spine-wellness-logo.webp" alt="Spine and Wellness Centers of America" boxSize="72px" objectFit="contain" />
             <Box>
               <Text fontSize="sm" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color={ORANGE}>
                 Private admin

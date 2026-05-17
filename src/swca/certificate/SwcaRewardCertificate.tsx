@@ -53,7 +53,7 @@ export default function SwcaRewardCertificate() {
     <Box minH="100vh" bg="#F8FAFC" color={NAVY} px={{ base: 4, md: 8 }} py={{ base: 7, md: 10 }}>
       <Box maxW="920px" mx="auto">
         <Flex align="center" gap={3} mb={7}>
-          <Image src="/swca/spine-wellness-logo.png" alt="Spine and Wellness Centers of America" boxSize="72px" objectFit="contain" />
+          <Image src="/swca/spine-wellness-logo.webp" alt="Spine and Wellness Centers of America" boxSize="72px" objectFit="contain" />
           <Box>
             <Text fontSize="sm" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color={ORANGE}>
               Spine and Wellness Centers of America

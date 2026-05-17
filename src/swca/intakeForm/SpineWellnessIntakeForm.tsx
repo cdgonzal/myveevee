@@ -358,7 +358,7 @@ export default function SpineWellnessIntakeForm() {
           mb={{ base: 4, md: 8 }}
         >
           <Image
-            src="/swca/spine-wellness-logo.png"
+            src="/swca/spine-wellness-logo.webp"
             alt="Spine and Wellness Centers of America"
             boxSize={{ base: "74px", md: "150px" }}
             objectFit="contain"

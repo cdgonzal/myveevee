@@ -50,7 +50,7 @@ export default function SwcaProfileFunnelVisual() {
       <Box position="relative" maxW="1160px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 4, md: 10 }}>
         <Flex align="center" gap={{ base: 3, md: 4 }} mb={{ base: 4, md: 9 }}>
           <Image
-            src="/swca/spine-wellness-logo.png"
+            src="/swca/spine-wellness-logo.webp"
             alt="Spine and Wellness Centers of America"
             boxSize={{ base: "62px", md: "82px" }}
             objectFit="contain"
