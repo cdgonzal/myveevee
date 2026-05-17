@@ -45,7 +45,20 @@ export default function SwcaProfileFunnelVisual() {
   };
 
   return (
-    <Box minH="100vh" bg={CREAM} color={NAVY} overflow="hidden">
+    <Box
+      as="a"
+      href={APP_LINKS.external.authenticatedConsole}
+      onClick={handleCtaClick}
+      display="block"
+      minH="100vh"
+      bg={CREAM}
+      color={NAVY}
+      overflow="hidden"
+      cursor="pointer"
+      textDecoration="none"
+      _hover={{ textDecoration: "none", color: NAVY }}
+      _focusVisible={{ outline: "4px solid", outlineColor: ORANGE, outlineOffset: "-4px" }}
+    >
       <Box position="absolute" inset={0} bg="linear-gradient(160deg, rgba(255,249,240,0.98), rgba(255,255,255,0.96) 52%, rgba(249,115,22,0.12))" />
       <Box position="relative" maxW="1160px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 4, md: 10 }}>
         <Flex align="center" gap={{ base: 3, md: 4 }} mb={{ base: 4, md: 9 }}>
@@ -113,9 +126,7 @@ export default function SwcaProfileFunnelVisual() {
             </Stack>
 
             <Button
-              as="a"
-              href={APP_LINKS.external.authenticatedConsole}
-              onClick={handleCtaClick}
+              as="span"
               bg={ORANGE}
               color="white"
               borderRadius="full"

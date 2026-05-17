@@ -28,8 +28,37 @@ const PROFILE_BENEFITS = [
 ];
 
 export default function SwcaProfileFunnel() {
+  const handleCtaClick = () => {
+    trackCtaClick({
+      ctaName: "swca_profile_funnel_create_free_profile",
+      ctaText: "Create my Health Twin",
+      placement: "swca_profile_funnel_hero",
+      destinationType: "external",
+      destinationUrl: APP_LINKS.external.authenticatedConsole,
+    });
+    trackSwcaCampaignEvent({
+      eventName: "swca_profile_funnel_create_free_profile",
+      params: {
+        placement: "swca_profile_funnel_hero",
+      },
+    });
+  };
+
   return (
-    <Box minH="100vh" bg={CREAM} color={NAVY} overflow="hidden">
+    <Box
+      as="a"
+      href={APP_LINKS.external.authenticatedConsole}
+      onClick={handleCtaClick}
+      display="block"
+      minH="100vh"
+      bg={CREAM}
+      color={NAVY}
+      overflow="hidden"
+      cursor="pointer"
+      textDecoration="none"
+      _hover={{ textDecoration: "none", color: NAVY }}
+      _focusVisible={{ outline: "4px solid", outlineColor: ORANGE, outlineOffset: "-4px" }}
+    >
       <Box position="absolute" inset={0} bg="linear-gradient(145deg, rgba(255,247,236,0.96), rgba(255,255,255,0.98) 54%, rgba(243,154,37,0.16))" />
       <Box position="relative" maxW="1120px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 5, md: 10 }}>
         <Flex align="center" justify="space-between" gap={5} mb={{ base: 6, md: 12 }}>
@@ -126,8 +155,7 @@ export default function SwcaProfileFunnel() {
             </Box>
 
             <Button
-              as="a"
-              href={APP_LINKS.external.authenticatedConsole}
+              as="span"
               size="lg"
               bg={ORANGE}
               color="white"
@@ -141,21 +169,6 @@ export default function SwcaProfileFunnel() {
               fontWeight="900"
               _hover={{ bg: "#D96712", textDecoration: "none" }}
               boxShadow="0 22px 44px rgba(243,154,37,0.30)"
-              onClick={() => {
-                trackCtaClick({
-                  ctaName: "swca_profile_funnel_create_free_profile",
-                  ctaText: "Create my Health Twin",
-                  placement: "swca_profile_funnel_hero",
-                  destinationType: "external",
-                  destinationUrl: APP_LINKS.external.authenticatedConsole,
-                });
-                trackSwcaCampaignEvent({
-                  eventName: "swca_profile_funnel_create_free_profile",
-                  params: {
-                    placement: "swca_profile_funnel_hero",
-                  },
-                });
-              }}
             >
               Create my Health Twin
             </Button>
