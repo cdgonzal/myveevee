@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState, type ComponentType } from "react";
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState, type ComponentType } from "react";
 import {
   Box,
   Button,
@@ -139,11 +139,19 @@ const FOOTER_NAV_GROUPS: Array<{ title: string; links: FooterNavLink[] }> = [
 ];
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { hash, pathname, search } = useLocation();
+  const previousLocation = useRef({ pathname, search });
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+  useLayoutEffect(() => {
+    const pathChanged = previousLocation.current.pathname !== pathname || previousLocation.current.search !== search;
+    previousLocation.current = { pathname, search };
+
+    if (!pathChanged || hash) {
+      return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [hash, pathname, search]);
 
   return null;
 }
@@ -207,12 +215,12 @@ export default function App() {
 
   return (
     <Flex minH="100vh" direction="column" bgGradient={pageGradient}>
+      <ScrollToTop />
       {!isStandalonePage && <Header />}
       <Box as="main" flex="1">
         <AnalyticsLifecycle />
         {isStandalonePage ? (
           <>
-            <ScrollToTop />
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
@@ -230,7 +238,6 @@ export default function App() {
           </>
         ) : (
           <Container maxW="6xl" py={{ base: 8, md: 12 }}>
-            <ScrollToTop />
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.home} element={<Home />} />
