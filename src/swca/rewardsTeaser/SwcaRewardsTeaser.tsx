@@ -8,7 +8,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { trackCtaClick } from "../../analytics/trackCtaClick";
 import { APP_LINKS } from "../../config/links";
 import { trackSwcaCampaignEvent } from "../campaignEvents";
@@ -28,8 +29,51 @@ const providerCampaign = {
 };
 
 export default function SwcaRewardsTeaser() {
+  const navigate = useNavigate();
+
+  const moveToIntake = (trigger: "click" | "timeout") => {
+    trackCtaClick({
+      ctaName: trigger === "timeout" ? "swca_rewards_auto_start_intake" : "swca_rewards_start_intake",
+      ctaText: trigger === "timeout" ? "Auto start" : "Start now",
+      placement: "swca_rewards_teaser_hero",
+      destinationType: "internal",
+      destinationUrl: providerCampaign.intakePath,
+    });
+    trackSwcaCampaignEvent({
+      eventName: trigger === "timeout" ? "swca_rewards_auto_start_intake" : "swca_rewards_start_intake",
+      params: {
+        placement: "swca_rewards_teaser_hero",
+        trigger,
+      },
+    });
+    navigate(providerCampaign.intakePath);
+  };
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      moveToIntake("timeout");
+    }, 20000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   return (
-    <Box minH="100vh" bg={CREAM} color={providerCampaign.secondaryColor}>
+    <Box
+      minH="100vh"
+      bg={CREAM}
+      color={providerCampaign.secondaryColor}
+      role="link"
+      tabIndex={0}
+      aria-label="Start SWCA rewards intake"
+      cursor="pointer"
+      onClick={() => moveToIntake("click")}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        moveToIntake("click");
+      }}
+      _hover={{ textDecoration: "none" }}
+    >
       <Box maxW="1040px" mx="auto" px={{ base: 6, md: 8 }} py={{ base: 7, md: 10 }}>
         <Flex align="center" justify="space-between" gap={5} mb={{ base: 9, md: 12 }}>
           <Flex align="center" gap={3}>
@@ -130,8 +174,6 @@ export default function SwcaRewardsTeaser() {
 
             <Stack spacing={{ base: 5, md: 3 }} align={{ base: "center", lg: "flex-start" }} w="100%">
               <Button
-                as={RouterLink}
-                to={providerCampaign.intakePath}
                 size="lg"
                 bg={providerCampaign.primaryColor}
                 color="white"
@@ -146,21 +188,6 @@ export default function SwcaRewardsTeaser() {
                 _hover={{ bg: "#D96712", textDecoration: "none", transform: "translateY(-2px)" }}
                 _active={{ transform: "translateY(1px)" }}
                 boxShadow={{ base: "0 18px 36px rgba(244,123,32,0.22)", md: "0 22px 44px rgba(244,123,32,0.32)" }}
-                onClick={() => {
-                  trackCtaClick({
-                    ctaName: "swca_rewards_start_intake",
-                    ctaText: "Start now",
-                    placement: "swca_rewards_teaser_hero",
-                    destinationType: "internal",
-                    destinationUrl: providerCampaign.intakePath,
-                  });
-                  trackSwcaCampaignEvent({
-                    eventName: "swca_rewards_start_intake",
-                    params: {
-                      placement: "swca_rewards_teaser_hero",
-                    },
-                  });
-                }}
               >
                 Start now
               </Button>

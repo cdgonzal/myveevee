@@ -267,24 +267,24 @@ export default function SwcaRewardWheel() {
           </Text>
         </Stack>
 
-        <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={3}>
-          <Input
+        <Stack spacing={3}>
+          <ContactInputField
+            label="First name"
             value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
+            onChange={setFirstName}
             placeholder="First name"
-            bg="white"
-            borderColor={LINE}
+            autoComplete="given-name"
             isDisabled={contactSaved}
           />
-          <Input
+          <ContactInputField
+            label="Last name"
             value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
+            onChange={setLastName}
             placeholder="Last name"
-            bg="white"
-            borderColor={LINE}
+            autoComplete="family-name"
             isDisabled={contactSaved}
           />
-        </SimpleGrid>
+        </Stack>
 
         <RadioGroup value={contactMethod} onChange={(value) => setContactMethod(value as "email" | "phone")}>
           <Flex gap={4} justify="center" wrap="wrap">
@@ -298,23 +298,25 @@ export default function SwcaRewardWheel() {
         </RadioGroup>
 
         {contactMethod === "email" ? (
-          <Input
+          <ContactInputField
+            label="Email address"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={setEmail}
             placeholder="Email address"
-            type="email"
-            bg="white"
-            borderColor={LINE}
+            type="text"
+            inputMode="email"
+            autoComplete="email"
             isDisabled={contactSaved}
           />
         ) : (
-          <Input
+          <ContactInputField
+            label="Phone number"
             value={phone}
-            onChange={(event) => setPhone(event.target.value)}
+            onChange={setPhone}
             placeholder="Phone number"
             type="tel"
-            bg="white"
-            borderColor={LINE}
+            inputMode="tel"
+            autoComplete="tel"
             isDisabled={contactSaved}
           />
         )}
@@ -580,5 +582,73 @@ export default function SwcaRewardWheel() {
         </ModalContent>
       </Modal>
     </Box>
+  );
+}
+
+function ContactInputField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  inputMode,
+  autoComplete,
+  isDisabled,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  type?: string;
+  inputMode?: "email" | "tel";
+  autoComplete: string;
+  isDisabled: boolean;
+}) {
+  const trimmedValue = value.trim();
+  const showReviewValue = trimmedValue.length > 18;
+
+  return (
+    <Stack spacing={1.5}>
+      <Text fontSize="xs" fontWeight="900" letterSpacing="0.12em" textTransform="uppercase" color="#5B6681">
+        {label}
+      </Text>
+      <Input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
+        bg="white"
+        borderColor={LINE}
+        isDisabled={isDisabled}
+        minH={{ base: "58px", md: "52px" }}
+        fontSize={{ base: "lg", md: "md" }}
+        px={4}
+        spellCheck={false}
+        sx={{
+          overflowX: "auto",
+          textOverflow: "clip",
+          whiteSpace: "nowrap",
+        }}
+      />
+      {showReviewValue ? (
+        <Text
+          fontSize="sm"
+          color="#2D3B59"
+          fontWeight="800"
+          lineHeight="1.35"
+          wordBreak="break-all"
+          bg="#FFF7EC"
+          border="1px solid"
+          borderColor={LINE}
+          borderRadius="8px"
+          px={3}
+          py={2}
+        >
+          {trimmedValue}
+        </Text>
+      ) : null}
+    </Stack>
   );
 }

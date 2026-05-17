@@ -70,6 +70,7 @@ export default function SpineWellnessIntakeForm() {
   const [mobileStep, setMobileStep] = useState<MobileIntakeStep>("select");
   const [selectedIds, setSelectedIds] = useState<SwcaConcernId[]>([]);
   const [rankedIds, setRankedIds] = useState<SwcaConcernId[]>([]);
+  const [draggedRankId, setDraggedRankId] = useState<SwcaConcernId | null>(null);
   const [honeypot, setHoneypot] = useState("");
   const [hasCommunicationConsent, setHasCommunicationConsent] = useState(false);
   const [isConsentExpanded, setIsConsentExpanded] = useState(false);
@@ -200,6 +201,13 @@ export default function SpineWellnessIntakeForm() {
 
     const nextIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
     if (nextIndex < 0 || nextIndex >= rankedIds.length) return;
+
+    setRankedIds(moveItem(rankedIds, currentIndex, nextIndex));
+  };
+
+  const moveRankToIndex = (concernId: SwcaConcernId, nextIndex: number) => {
+    const currentIndex = rankedIds.indexOf(concernId);
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= rankedIds.length || currentIndex === nextIndex) return;
 
     setRankedIds(moveItem(rankedIds, currentIndex, nextIndex));
   };
@@ -372,16 +380,11 @@ export default function SpineWellnessIntakeForm() {
         </Flex>
 
         <Stack spacing={1} textAlign="center" mb={{ base: 4, md: 6 }}>
-          <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="700">
-            <Box as="span" display={{ base: "none", md: "inline" }}>
-              Please check all that apply.
-            </Box>
-            <Box as="span" display={{ base: "inline", md: "none" }}>
-              Tap what matters most.
-            </Box>
+          <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="900">
+            Select all that apply.
           </Text>
-          <Text display={{ base: "none", md: "block" }} fontSize={{ base: "md", md: "lg" }} fontStyle="italic">
-            This helps us customize your care and support your wellness journey.
+          <Text fontSize={{ base: "sm", md: "md" }} color="#5B6681" fontWeight="700">
+            Pick every area you want help with. You will rank them next.
           </Text>
         </Stack>
 
@@ -396,7 +399,7 @@ export default function SpineWellnessIntakeForm() {
             />
           </VisuallyHidden>
 
-          <Stack spacing={3} display={{ base: mobileStep === "select" ? "flex" : "none", md: "flex" }}>
+          <Stack spacing={2.5} display={{ base: mobileStep === "select" ? "flex" : "none", md: "flex" }}>
             {SWCA_CONCERNS.map((concern) => {
               const isSelected = selectedIds.includes(concern.id);
 
@@ -404,9 +407,9 @@ export default function SpineWellnessIntakeForm() {
                 <Flex
                   as="label"
                   key={concern.id}
-                  align={{ base: "flex-start", md: "center" }}
-                  gap={{ base: 3, md: 5 }}
-                  p={{ base: 4, md: 5 }}
+                  align="center"
+                  gap={{ base: 2.5, md: 4 }}
+                  p={{ base: 3, md: 3.5 }}
                   border="2px solid"
                   borderColor={isSelected ? ORANGE : LINE}
                   borderRadius="8px"
@@ -425,13 +428,12 @@ export default function SpineWellnessIntakeForm() {
                     onChange={() => toggleConcern(concern.id)}
                     size="lg"
                     colorScheme="orange"
-                    mt={{ base: 1, md: 0 }}
                     aria-label={`Select ${concern.title}`}
                     sx={{
                       ".chakra-checkbox__control": {
                         borderColor: isSelected ? ORANGE : "#7C8496",
                         borderWidth: "2px",
-                        boxSize: { base: "30px", md: "34px" },
+                        boxSize: { base: "28px", md: "30px" },
                         bg: isSelected ? ORANGE : "white",
                       },
                     }}
@@ -439,21 +441,21 @@ export default function SpineWellnessIntakeForm() {
                   <Flex
                     align="center"
                     justify="center"
-                    boxSize={{ base: "34px", md: "38px" }}
+                    boxSize={{ base: "30px", md: "34px" }}
                     flex="0 0 auto"
                     borderRadius="full"
                     bg={NAVY}
                     color="white"
                     fontWeight="800"
-                    fontSize={{ base: "md", md: "lg" }}
+                    fontSize={{ base: "sm", md: "md" }}
                   >
                     {concern.number}
                   </Flex>
                   <Box flex="1" minW={0}>
-                    <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="800" lineHeight="1.18">
+                    <Text fontSize={{ base: "md", md: "xl" }} fontWeight="900" lineHeight="1.1">
                       {concern.title}
                     </Text>
-                    <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.35" mt={1}>
+                    <Text fontSize={{ base: "sm", md: "md" }} lineHeight="1.25" mt={0.5} color="#2D3B59" fontWeight="650">
                       {concern.description}
                     </Text>
                   </Box>
@@ -491,7 +493,7 @@ export default function SpineWellnessIntakeForm() {
                 </Heading>
                 <Text fontStyle="italic">
                   {selectedConcerns.length > 0
-                    ? `${selectedConcerns.length} selected. Put the most important item first.`
+                    ? `${selectedConcerns.length} selected. Drag to reorder, or use the buttons.`
                     : "Tap any concern above, then put the most important item first."}
                 </Text>
               </Stack>
@@ -501,20 +503,42 @@ export default function SpineWellnessIntakeForm() {
                   {selectedConcerns.map((concern, index) => (
                     <Flex
                       key={concern.id}
+                      draggable
                       align={{ base: "stretch", sm: "center" }}
                       direction={{ base: "column", sm: "row" }}
                       justify="space-between"
                       gap={3}
                       bg="white"
                       border="1px solid"
-                      borderColor="#F0D2A4"
+                      borderColor={draggedRankId === concern.id ? ORANGE : "#F0D2A4"}
                       borderRadius="8px"
                       p={3}
+                      cursor="grab"
+                      opacity={draggedRankId === concern.id ? 0.7 : 1}
+                      onDragStart={(event) => {
+                        setDraggedRankId(concern.id);
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", concern.id);
+                      }}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        const droppedConcernId = event.dataTransfer.getData("text/plain") as SwcaConcernId;
+                        moveRankToIndex(droppedConcernId || draggedRankId || concern.id, index);
+                        setDraggedRankId(null);
+                      }}
+                      onDragEnd={() => setDraggedRankId(null)}
                     >
                       <Flex align="center" gap={3}>
                         <Flex align="center" justify="center" boxSize="30px" borderRadius="full" bg={ORANGE} color={NAVY} fontWeight="900">
                           {index + 1}
                         </Flex>
+                        <Text color="#7C8496" fontWeight="900" letterSpacing="0.08em" aria-hidden="true">
+                          ::
+                        </Text>
                         <Text fontWeight="800" lineHeight="1.2">
                           {concern.title}
                         </Text>

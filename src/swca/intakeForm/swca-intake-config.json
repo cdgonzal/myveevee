@@ -5,8 +5,8 @@
     {
       "id": "chronic-fatigue-low-energy",
       "number": 1,
-      "title": "Chronic Fatigue / Low Energy",
-      "description": "Feelings of constant tiredness, low stamina, brain fog, or difficulty getting through the day.",
+      "title": "Low Energy",
+      "description": "Tired, foggy, or drained most days.",
       "followUpQuestions": [
         {
           "id": "energy_goal",
@@ -39,8 +39,8 @@
     {
       "id": "weight-gain-metabolic-dysfunction",
       "number": 2,
-      "title": "Weight Gain / Metabolic Dysfunction",
-      "description": "Difficulty losing weight, especially around the midsection, slow metabolism, or concerns about blood sugar/insulin.",
+      "title": "Weight or Metabolism",
+      "description": "Weight gain, slow metabolism, or blood sugar concerns.",
       "followUpQuestions": [
         {
           "id": "weight_goal",
@@ -73,8 +73,8 @@
     {
       "id": "hormonal-imbalance",
       "number": 3,
-      "title": "Hormonal Imbalance",
-      "description": "Symptoms such as low libido, mood changes, hot flashes, PMS, low testosterone, or other hormone-related concerns.",
+      "title": "Hormones",
+      "description": "Mood, libido, hot flashes, PMS, or testosterone concerns.",
       "followUpQuestions": [
         {
           "id": "hormone_primary_concern",
@@ -107,8 +107,8 @@
     {
       "id": "chronic-pain-inflammation",
       "number": 4,
-      "title": "Chronic Pain and Inflammation",
-      "description": "Ongoing pain, stiffness, joint pain, back pain, or inflammation that interferes with daily activities.",
+      "title": "Pain or Inflammation",
+      "description": "Back pain, joint pain, stiffness, or swelling.",
       "followUpQuestions": [
         {
           "id": "pain_impact",
@@ -141,8 +141,8 @@
     {
       "id": "poor-sleep-insomnia",
       "number": 5,
-      "title": "Poor Sleep / Insomnia",
-      "description": "Trouble falling asleep, staying asleep, or waking up feeling unrefreshed and tired.",
+      "title": "Poor Sleep",
+      "description": "Trouble falling asleep, staying asleep, or waking tired.",
       "followUpQuestions": [
         {
           "id": "sleep_problem",
@@ -175,8 +175,8 @@
     {
       "id": "brain-fog-cognitive-decline",
       "number": 6,
-      "title": "Brain Fog / Cognitive Decline",
-      "description": "Difficulty with memory, concentration, focus, or mental clarity.",
+      "title": "Brain Fog",
+      "description": "Memory, focus, or mental clarity feels off.",
       "followUpQuestions": [
         {
           "id": "cognitive_challenge",
@@ -209,8 +209,8 @@
     {
       "id": "stress-anxiety-burnout",
       "number": 7,
-      "title": "Stress, Anxiety, and Burnout",
-      "description": "High stress levels, anxiety, irritability, or feeling overwhelmed and unable to recharge.",
+      "title": "Stress or Burnout",
+      "description": "Anxious, overwhelmed, irritable, or unable to recharge.",
       "followUpQuestions": [
         {
           "id": "stress_driver",
@@ -243,8 +243,8 @@
     {
       "id": "gut-health-issues",
       "number": 8,
-      "title": "Gastrointestinal / Gut Health Issues",
-      "description": "Bloating, constipation, reflux, IBS-like symptoms, or food sensitivities.",
+      "title": "Gut Health",
+      "description": "Bloating, reflux, constipation, IBS, or food sensitivity.",
       "followUpQuestions": [
         {
           "id": "gut_main_issue",
@@ -277,8 +277,8 @@
     {
       "id": "immune-dysfunction-frequent-illness",
       "number": 9,
-      "title": "Immune Dysfunction / Frequent Illness",
-      "description": "Getting sick often, slow healing, chronic inflammation, or autoimmune-type symptoms.",
+      "title": "Immune Health",
+      "description": "Getting sick often, slow healing, or autoimmune concerns.",
       "followUpQuestions": [
         {
           "id": "immune_pattern",
@@ -311,8 +311,8 @@
     {
       "id": "aging-longevity-optimization",
       "number": 10,
-      "title": "Aging / Longevity Optimization",
-      "description": "Desire to improve overall vitality, prevent age-related decline, and optimize long-term health and longevity.",
+      "title": "Longevity",
+      "description": "More vitality, healthier aging, and long-term prevention.",
       "followUpQuestions": [
         {
           "id": "longevity_goal",
