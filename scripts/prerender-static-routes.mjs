@@ -58,6 +58,23 @@ const ROUTES = [
     `,
   },
   {
+    path: "/health-twin/create",
+    title: "Create Your Health Twin | VeeVee",
+    description:
+      "Create a free personalized VeeVee Health Twin and turn your health signals into a clearer next step.",
+    robots: "index, follow",
+    image: "https://myveevee.com/og/home.svg",
+    body: `
+      <main data-prerendered-route="/health-twin/create" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Create your free Health Twin</p>
+        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Create your digital twin.</h1>
+        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
+          Turn your health signals into a personalized Health Twin inside VeeVee.
+        </p>
+      </main>
+    `,
+  },
+  {
     path: "/how-it-works",
     title: "How VeeVee Works | 3 Simple Steps for Health Questions",
     description:

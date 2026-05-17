@@ -198,6 +198,8 @@ function PageFallback() {
 export default function App() {
   const { pathname } = useLocation();
   const isStandalonePage =
+    pathname === APP_LINKS.internal.healthTwin ||
+    pathname === APP_LINKS.internal.healthTwinCreate ||
     pathname === APP_LINKS.internal.swcaBrief ||
     pathname === APP_LINKS.internal.swcaHub ||
     pathname === APP_LINKS.internal.swcaRewards ||
@@ -224,6 +226,8 @@ export default function App() {
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />
+                <Route path={APP_LINKS.internal.healthTwin} element={<HealthTwinFunnel />} />
+                <Route path={APP_LINKS.internal.healthTwinCreate} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.swcaHub} element={<SwcaProviderHub />} />
                 <Route path={APP_LINKS.internal.swcaRewards} element={<SwcaRewardsTeaser />} />
                 <Route path={APP_LINKS.internal.swcaTeaserAlias} element={<Navigate to={APP_LINKS.internal.swcaRewards} replace />} />
@@ -242,6 +246,7 @@ export default function App() {
               <Routes>
                 <Route path={APP_LINKS.internal.home} element={<Home />} />
                 <Route path={APP_LINKS.internal.healthTwin} element={<HealthTwinFunnel />} />
+                <Route path={APP_LINKS.internal.healthTwinCreate} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.avatarPlaybackTest} element={<AvatarPlaybackTest />} />
                 <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
                 <Route path={APP_LINKS.internal.hospitalValue} element={<HospitalValue />} />

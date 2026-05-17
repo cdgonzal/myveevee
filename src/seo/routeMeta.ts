@@ -52,6 +52,16 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.healthTwinCreate]: {
+    title: "Create Your Health Twin | VeeVee",
+    description:
+      "Create a free personalized VeeVee Health Twin and turn your health signals into a clearer next step.",
+    canonicalPath: APP_LINKS.internal.healthTwinCreate,
+    robots: DEFAULT_ROBOTS,
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
   [APP_LINKS.internal.avatarPlaybackTest]: {
     title: "Avatar Playback Test | VeeVee",
     description: "Hidden VeeVee avatar video playback diagnostic page.",

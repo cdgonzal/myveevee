@@ -2,6 +2,7 @@ export const APP_LINKS = {
   internal: {
     home: "/",
     healthTwin: "/health-twin",
+    healthTwinCreate: "/health-twin/create",
     avatarPlaybackTest: "/avatar-playback-test",
     howItWorks: "/how-it-works",
     hospitalValue: "/hospital-value",

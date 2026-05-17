@@ -9,9 +9,15 @@
   </url>
   <url>
     <loc>https://myveevee.com/health-twin</loc>
-    <lastmod>2026-05-08</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://myveevee.com/health-twin/create</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://myveevee.com/how-it-works</loc>

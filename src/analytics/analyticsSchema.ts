@@ -24,6 +24,12 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "interactive_funnel",
     primary_goal: "drive_account_creation",
   },
+  [APP_LINKS.internal.healthTwinCreate]: {
+    page_name: "health_twin_create",
+    page_section: "marketing",
+    page_type: "conversion_cta",
+    primary_goal: "drive_account_creation",
+  },
   [APP_LINKS.internal.howItWorks]: {
     page_name: "how_it_works",
     page_section: "marketing",

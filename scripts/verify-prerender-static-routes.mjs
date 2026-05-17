@@ -14,6 +14,20 @@ const ROUTES = [
     image: "https://myveevee.com/og/home.svg",
   },
   {
+    path: "/health-twin",
+    title: "Create Your Health Twin | Guided VeeVee Funnel Preview",
+    description:
+      "Walk through a four-step VeeVee funnel: simulate health data input, evolve the twin with more context, review insights, and then create your own.",
+    image: "https://myveevee.com/og/home.svg",
+  },
+  {
+    path: "/health-twin/create",
+    title: "Create Your Health Twin | VeeVee",
+    description:
+      "Create a free personalized VeeVee Health Twin and turn your health signals into a clearer next step.",
+    image: "https://myveevee.com/og/home.svg",
+  },
+  {
     path: "/features",
     title: "VeeVee Features | Connected Care, Guidance, and Family Support",
     description:

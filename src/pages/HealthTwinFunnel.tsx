@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  Flex,
   Heading,
   HStack,
   Image,
@@ -55,6 +56,20 @@ type StepThreeTeaser = {
   metricLabel: string;
   metricValue: string;
 };
+
+const VEEVEE_NAVY = "#06254C";
+const VEEVEE_BLUE = "#1177BA";
+const VEEVEE_CYAN = "#36C5FF";
+const VEEVEE_LIGHT = "#EFFBFF";
+const VEEVEE_MUTED = "#496078";
+
+const HERO_FEATURE_CARDS = [
+  { label: "Profile", mobileLabel: "Profile", copy: "At a glance", symbol: "P", color: VEEVEE_BLUE },
+  { label: "Signals", mobileLabel: "Signals", copy: "What matters", symbol: "S", color: VEEVEE_CYAN },
+  { label: "Goals", mobileLabel: "Goals", copy: "Your priority", symbol: "G", color: "#17318C" },
+  { label: "Benefits", mobileLabel: "Benefits", copy: "What you gain", symbol: "B", color: "#00BFFF" },
+  { label: "Plan", mobileLabel: "Plan", copy: "Next steps", symbol: "Plan", color: "#E26FFF" },
+];
 
 const FUNNEL_STEPS = [
   {
@@ -1043,25 +1058,146 @@ function MobileJourneyStep({
   );
 }
 
-export default function HealthTwinFunnel() {
+function HealthTwinHeroVisual() {
+  return (
+    <Box w="100%" maxW={{ base: "330px", md: "760px", lg: "600px" }} mx="auto" position="relative" minH={{ base: "292px", md: "520px", lg: "500px" }}>
+      <HeroFeatureOrbit />
+      <Box
+        position="absolute"
+        left="50%"
+        top={{ base: "6px", md: "4px" }}
+        transform="translateX(-50%)"
+        w={{ base: "160px", md: "270px", lg: "250px", xl: "270px" }}
+        h={{ base: "284px", md: "480px", lg: "444px", xl: "480px" }}
+        borderRadius={{ base: "28px", md: "34px" }}
+        bg="#101827"
+        p={{ base: "8px", md: "10px" }}
+        boxShadow="0 30px 70px rgba(6,37,76,0.24)"
+        zIndex={2}
+      >
+        <Box position="absolute" top="10px" left="50%" transform="translateX(-50%)" w="88px" h="20px" bg="#101827" borderBottomRadius="16px" zIndex={3} />
+        <Box h="100%" borderRadius="26px" bg="linear-gradient(180deg, #F1FBFF, #FFFFFF)" overflow="hidden" position="relative">
+          <Image
+            src="/images/marketing/hero-avatar-b.png"
+            alt=""
+            position="absolute"
+            top={{ base: "34px", md: "62px" }}
+            left="50%"
+            transform="translateX(-50%)"
+            h={{ base: "184px", md: "310px" }}
+            w="auto"
+            objectFit="contain"
+          />
+          <Box position="absolute" inset={{ base: "54px 22px auto", md: "88px 34px auto" }} h={{ base: "104px", md: "190px" }} border="2px solid rgba(255,255,255,0.86)" borderRadius="full" />
+          <Stack position="absolute" left={{ base: 4, md: 6 }} right={{ base: 4, md: 6 }} bottom={{ base: 4, md: 6 }} spacing={{ base: 2, md: 2.5 }}>
+            <Box bg="rgba(255,255,255,0.94)" borderRadius="12px" p={{ base: 2, md: 3 }} boxShadow="0 8px 24px rgba(6,37,76,0.12)">
+              <Flex align="center" justify="space-between">
+                <Stack spacing={0} align="flex-start">
+                  <Text fontSize="xs" color={VEEVEE_MUTED} fontWeight="800">Health Twin</Text>
+                  <Text fontSize={{ base: "2xl", md: "3xl" }} lineHeight="1" fontWeight="900" color={VEEVEE_NAVY}>85<Text as="span" fontSize="sm" color={VEEVEE_MUTED}>/100</Text></Text>
+                  <Text fontSize="xs" color="#168A52" fontWeight="900">Strong start</Text>
+                </Stack>
+                <Box boxSize={{ base: "42px", md: "54px" }} borderRadius="full" border={{ base: "7px solid #1177BA", md: "9px solid #1177BA" }} borderLeftColor="#D6F5FF" />
+              </Flex>
+            </Box>
+            <Flex align="center" gap={{ base: 2, md: 3 }} bg="rgba(255,255,255,0.94)" borderRadius="12px" p={{ base: 2, md: 3 }} boxShadow="0 8px 24px rgba(6,37,76,0.12)">
+              <Flex boxSize={{ base: "30px", md: "38px" }} borderRadius="full" bg={VEEVEE_NAVY} color="white" align="center" justify="center" fontWeight="900">
+                +
+              </Flex>
+              <Stack spacing={0} align="flex-start" flex="1">
+                <Text fontSize="xs" color={VEEVEE_MUTED} fontWeight="800">Top Priority</Text>
+                <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="900" color={VEEVEE_NAVY}>Pick your focus</Text>
+              </Stack>
+              <Text fontSize="xl" color={VEEVEE_MUTED}>{">"}</Text>
+            </Flex>
+          </Stack>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+function HeroFeatureOrbit() {
+  return (
+    <SimpleGrid columns={2} spacing={{ base: 3, md: 6 }} position="absolute" inset={0} alignItems="center">
+      <Stack spacing={{ base: 4, md: 7 }} align="flex-start" justify="center">
+        {HERO_FEATURE_CARDS.slice(0, 3).map((card) => (
+          <HeroFeatureCard key={card.label} {...card} />
+        ))}
+      </Stack>
+      <Stack spacing={{ base: 7, md: 12 }} align="flex-end" justify="center" pt={{ base: 11, md: 16 }}>
+        {HERO_FEATURE_CARDS.slice(3).map((card) => (
+          <HeroFeatureCard key={card.label} {...card} />
+        ))}
+      </Stack>
+    </SimpleGrid>
+  );
+}
+
+function HeroFeatureCard({
+  label,
+  mobileLabel,
+  symbol,
+  color,
+}: {
+  label: string;
+  mobileLabel: string;
+  copy: string;
+  symbol: string;
+  color: string;
+}) {
+  return (
+    <Flex
+      align="center"
+      gap={{ base: 2, md: 3 }}
+      bg="rgba(255,255,255,0.94)"
+      borderRadius={{ base: "12px", md: "14px" }}
+      p={{ base: 1.5, md: 4 }}
+      w={{ base: "96px", md: "150px" }}
+      minH={{ base: "46px", md: "68px" }}
+      boxShadow={{ base: "0 10px 22px rgba(6,37,76,0.1)", md: "0 14px 34px rgba(6,37,76,0.12)" }}
+      border="1px solid rgba(17,119,186,0.08)"
+    >
+      <Flex
+        boxSize={{ base: "30px", md: "46px" }}
+        borderRadius="full"
+        bg={`${color}1F`}
+        color={color}
+        align="center"
+        justify="center"
+        flex="0 0 auto"
+      >
+        <Text fontSize={{ base: "13px", md: "22px" }} lineHeight="1" fontWeight="900">
+          {symbol}
+        </Text>
+      </Flex>
+      <Stack spacing={0} align="flex-start" textAlign="left">
+        <Text display={{ base: "block", md: "none" }} fontSize="11px" lineHeight="1.05" fontWeight="900" color={VEEVEE_NAVY}>
+          {mobileLabel}
+        </Text>
+        <Text display={{ base: "none", md: "block" }} fontSize="md" lineHeight="1.05" fontWeight="900" color={VEEVEE_NAVY}>
+          {label}
+        </Text>
+      </Stack>
+    </Flex>
+  );
+}
+
+type HealthTwinFunnelProps = {
+  conversionOnly?: boolean;
+};
+
+export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinFunnelProps) {
   const [step, setStep] = useState<FunnelStep>(0);
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [selectedEvolutionIds, setSelectedEvolutionIds] = useState<string[]>([]);
 
-  const pageGradient = useColorModeValue(
-    "linear(to-b, #FFFFFF, #9CE7FF)",
-    "linear(to-b, surface.900, surface.800)"
-  );
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
   const panelBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.70)");
   const cardBg = useColorModeValue("rgba(255, 255, 255, 0.92)", "rgba(6, 37, 76, 0.62)");
   const activeCardBg = useColorModeValue("rgba(17, 119, 186, 0.10)", "rgba(17, 119, 186, 0.20)");
   const activeBorder = useColorModeValue("#1177BA", "#9CE7FF");
-  const heroBg = useColorModeValue(
-    "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(230,247,255,0.96) 52%, rgba(205,240,255,0.92) 100%)",
-    "linear-gradient(135deg, rgba(8,23,54,0.98) 0%, rgba(13,34,73,0.96) 52%, rgba(16,58,106,0.92) 100%)"
-  );
   const heroSurface = useColorModeValue("rgba(255,255,255,0.74)", "rgba(255,255,255,0.06)");
   const heroBorder = useColorModeValue("rgba(23, 49, 140, 0.14)", "rgba(156, 231, 255, 0.16)");
   const insightPanelBg = useColorModeValue(
@@ -1070,13 +1206,6 @@ export default function HealthTwinFunnel() {
   );
   const insightCardBg = useColorModeValue("rgba(255,255,255,0.88)", "rgba(10, 44, 88, 0.82)");
   const insightAccentBorder = useColorModeValue("rgba(17, 119, 186, 0.34)", "rgba(156, 231, 255, 0.42)");
-  const conversionPanelBg = useColorModeValue(
-    "linear-gradient(135deg, rgba(9,30,102,0.98) 0%, rgba(23,49,140,0.96) 36%, rgba(54,197,255,0.92) 100%)",
-    "linear-gradient(135deg, rgba(9,30,102,0.98) 0%, rgba(23,49,140,0.96) 36%, rgba(54,197,255,0.88) 100%)"
-  );
-  const conversionCardBg = useColorModeValue("rgba(255,255,255,0.14)", "rgba(255,255,255,0.08)");
-  const conversionBorder = useColorModeValue("rgba(255,255,255,0.24)", "rgba(156, 231, 255, 0.22)");
-
   const selectedUpload = useMemo(
     () => UPLOAD_OPTIONS.find((option) => option.id === selectedUploadId) ?? null,
     [selectedUploadId]
@@ -1119,7 +1248,7 @@ export default function HealthTwinFunnel() {
       }
     : null;
   const activeFunnelStep = FUNNEL_STEPS[step];
-
+  const showConversion = conversionOnly || step === 3;
   const canAdvance =
     (step === 0 && !!selectedUpload) ||
     (step === 1 && selectedEvolutionIds.length > 0) ||
@@ -1186,61 +1315,164 @@ export default function HealthTwinFunnel() {
   };
 
   return (
-    <Box as="main" minH="100vh" bgGradient={pageGradient} color="text.primary" py={{ base: 10, md: 20 }}>
-      <Stack spacing={{ base: 5, md: 6 }} maxW="6xl" mx="auto" px={{ base: 6, md: 10 }}>
-        <Box
-          borderWidth="1px"
-          borderColor={heroBorder}
-          borderRadius="3xl"
-          bgGradient={heroBg}
-          boxShadow="0 22px 50px rgba(6, 37, 76, 0.10)"
-          p={{ base: 5, md: 8 }}
-          overflow="hidden"
-          position="relative"
-        >
-          <Stack spacing={{ base: 5, md: 7 }} position="relative">
-            <Badge alignSelf="flex-start" colorScheme="blue" variant="subtle" px={3} py={1} borderRadius="full">
-              HEALTH TWIN
-            </Badge>
-
-            <Stack spacing={2} maxW="760px">
-              <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" fontWeight="900">
-                {activeFunnelStep.stepLabel}
-              </Text>
-              <Heading as="h1" size={{ base: "lg", md: "2xl" }} fontWeight="900" lineHeight="0.96">
-                {activeFunnelStep.label}
-              </Heading>
-              <Text fontSize={{ base: "sm", md: "lg" }} color={muted} maxW="680px">
-                {activeFunnelStep.subtitle}
-              </Text>
-            </Stack>
-
-            <Box display={{ base: "none", md: "block" }} bg={heroSurface} border="1px solid" borderColor={heroBorder} borderRadius="2xl" px={5} py={5}>
-              <DesktopProgressBar currentStep={step} />
-            </Box>
-
-            <Box display={{ base: "block", md: "none" }} bg={heroSurface} border="1px solid" borderColor={heroBorder} borderRadius="2xl" px={4} py={4}>
+    <Box as="main" minH="100vh" bg={VEEVEE_LIGHT} color={VEEVEE_NAVY} overflow="hidden">
+      <Box position="absolute" inset={0} bg="linear-gradient(160deg, rgba(239,251,255,0.98), rgba(255,255,255,0.96) 52%, rgba(54,197,255,0.18))" />
+      <Stack spacing={{ base: 5, md: 7 }} position="relative" maxW="1160px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 4, md: 10 }}>
+        {showConversion ? (
+          <>
+            <Flex align="center" gap={{ base: 3, md: 4 }} mb={{ base: 1, md: 2 }}>
+              <Image src="/brand/2026/icon.svg" alt="VeeVee icon" h={{ base: "44px", md: "58px" }} w="auto" objectFit="contain" />
               <Stack spacing={0}>
-                {FUNNEL_STEPS.map((funnelStep, index) => (
-                  <MobileJourneyStep
-                    key={funnelStep.key}
-                    stepNumber={index + 1}
-                    stepLabel={funnelStep.stepLabel}
-                    label={funnelStep.label}
-                    isActive={index === step}
-                    isComplete={index < step}
-                  />
-                ))}
+                <Image src="/brand/2026/wordmark.svg" alt="VeeVee" h={{ base: "12px", md: "15px" }} w="auto" objectFit="contain" />
+                <Text color={VEEVEE_MUTED} fontWeight="800" fontSize={{ base: "sm", md: "md" }}>
+                  Create your free Health Twin
+                </Text>
               </Stack>
-            </Box>
-          </Stack>
-        </Box>
+            </Flex>
 
+            <Flex
+              direction={{ base: "column", lg: "row" }}
+              align={{ base: "center", lg: "center" }}
+              justify="space-between"
+              gap={{ base: 4, md: 7, lg: 12 }}
+            >
+              <Stack
+                spacing={{ base: 3, md: 6, lg: 6 }}
+                align={{ base: "center", lg: "flex-start" }}
+                textAlign={{ base: "center", lg: "left" }}
+                flex="1"
+                maxW={{ base: "780px", lg: "540px" }}
+              >
+                <Badge
+                  bg={VEEVEE_NAVY}
+                  color="white"
+                  borderRadius="full"
+                  px={{ base: 5, md: 6 }}
+                  py={{ base: 2.5, md: 3 }}
+                  fontSize={{ base: "sm", md: "md" }}
+                  letterSpacing="0.04em"
+                >
+                  Your Health Twin
+                </Badge>
+
+                <Stack spacing={{ base: 3, md: 4 }} align={{ base: "center", lg: "flex-start" }}>
+                  <Heading
+                    as="h1"
+                    fontFamily="Georgia, 'Times New Roman', serif"
+                    fontSize={{ base: "48px", md: "8xl", lg: "6xl", xl: "7xl" }}
+                    lineHeight={{ base: "0.88", md: "0.84", lg: "0.9" }}
+                    letterSpacing="0"
+                    maxW={{ base: "390px", md: "780px", lg: "500px" }}
+                    color={VEEVEE_NAVY}
+                  >
+                    Create your digital twin.
+                  </Heading>
+                  <Text
+                    fontSize={{ base: "xl", md: "2xl" }}
+                    lineHeight="1.18"
+                    color={VEEVEE_NAVY}
+                    maxW={{ base: "360px", md: "620px", lg: "460px" }}
+                    fontWeight="800"
+                  >
+                    Turn this preview into a free personalized Health Twin inside VeeVee.
+                  </Text>
+                </Stack>
+
+                <Button
+                  as="a"
+                  href={APP_LINKS.external.authenticatedConsole}
+                  onClick={() =>
+                    trackCtaClick({
+                      ctaName: "health_twin_funnel_create_from_step_4_visual",
+                      ctaText: "Create My Health Twin",
+                      placement: "health_twin_step_4_visual",
+                      destinationType: "external",
+                      destinationUrl: APP_LINKS.external.authenticatedConsole,
+                      pagePath: conversionOnly ? APP_LINKS.internal.healthTwinCreate : APP_LINKS.internal.healthTwin,
+                    })
+                  }
+                  bg={VEEVEE_BLUE}
+                  color="white"
+                  borderRadius="full"
+                  minH={{ base: "66px", md: "76px" }}
+                  w={{ base: "100%", md: "auto" }}
+                  minW={{ base: "100%", md: "520px", lg: "420px" }}
+                  maxW={{ base: "520px", md: "none" }}
+                  px={{ base: 8, md: 14, lg: 12 }}
+                  fontSize={{ base: "xl", md: "3xl", lg: "2xl", xl: "3xl" }}
+                  fontWeight="900"
+                  boxShadow="0 22px 46px rgba(17,119,186,0.34)"
+                  _hover={{ bg: "#006FA2", textDecoration: "none", transform: "translateY(-1px)" }}
+                >
+                  Create My Health Twin
+                </Button>
+
+                <Text fontSize={{ base: "sm", md: "lg" }} color={VEEVEE_MUTED} fontWeight="900">
+                  Free to start. Takes less than a minute.
+                </Text>
+              </Stack>
+
+              <Box flex="1" w="100%" maxW={{ base: "760px", lg: "560px", xl: "600px" }}>
+                <HealthTwinHeroVisual />
+              </Box>
+            </Flex>
+          </>
+        ) : (
+          <Box
+            borderWidth="1px"
+            borderColor={heroBorder}
+            borderRadius="3xl"
+            bg="rgba(255,255,255,0.78)"
+            boxShadow="0 18px 44px rgba(6, 37, 76, 0.08)"
+            p={{ base: 5, md: 8 }}
+            overflow="hidden"
+            position="relative"
+          >
+            <Stack spacing={{ base: 5, md: 7 }} position="relative">
+              <Badge alignSelf="flex-start" bg={VEEVEE_NAVY} color="white" px={3} py={1} borderRadius="full">
+                HEALTH TWIN
+              </Badge>
+
+              <Stack spacing={2} maxW="760px">
+                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="accent.soft" fontWeight="900">
+                  {activeFunnelStep.stepLabel}
+                </Text>
+                <Heading as="h1" size={{ base: "lg", md: "2xl" }} fontWeight="900" lineHeight="0.96" color={VEEVEE_NAVY}>
+                  {activeFunnelStep.label}
+                </Heading>
+                <Text fontSize={{ base: "sm", md: "lg" }} color={muted} maxW="680px">
+                  {activeFunnelStep.subtitle}
+                </Text>
+              </Stack>
+
+              <Box display={{ base: "none", md: "block" }} bg={heroSurface} border="1px solid" borderColor={heroBorder} borderRadius="2xl" px={5} py={5}>
+                <DesktopProgressBar currentStep={step} />
+              </Box>
+
+              <Box display={{ base: "block", md: "none" }} bg={heroSurface} border="1px solid" borderColor={heroBorder} borderRadius="2xl" px={4} py={4}>
+                <Stack spacing={0}>
+                  {FUNNEL_STEPS.map((funnelStep, index) => (
+                    <MobileJourneyStep
+                      key={funnelStep.key}
+                      stepNumber={index + 1}
+                      stepLabel={funnelStep.stepLabel}
+                      label={funnelStep.label}
+                      isActive={index === step}
+                      isComplete={index < step}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+            </Stack>
+          </Box>
+        )}
+
+        {!showConversion ? (
         <Box
           borderWidth="1px"
-          borderColor={step === 2 ? insightAccentBorder : step === 3 ? conversionBorder : border}
+          borderColor={step === 2 ? insightAccentBorder : border}
           borderRadius="3xl"
-          bg={step === 2 ? insightPanelBg : step === 3 ? conversionPanelBg : panelBg}
+          bg={step === 2 ? insightPanelBg : panelBg}
           boxShadow="0 20px 42px rgba(6, 37, 76, 0.10)"
           p={{ base: 6, md: 8 }}
         >
@@ -1361,39 +1593,10 @@ export default function HealthTwinFunnel() {
             </Stack>
           ) : null}
 
-          {step === 3 ? (
-            <Stack spacing={5} align={{ base: "stretch", md: "flex-start" }}>
-              <Box>
-                <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.18em" color="whiteAlpha.800" mb={2}>
-                  Step 4
-                </Text>
-                <Heading as="h2" size={{ base: "lg", md: "xl" }} mb={2} color="white" lineHeight="0.98">
-                  Create your own Health Twin
-                </Heading>
-                <Text fontSize={{ base: "sm", md: "md" }} color="whiteAlpha.900" maxW="2xl">
-                  FREE, FREE, FREE. Secure and Personalized to You.
-                </Text>
-              </Box>
-              <Button
-                as="a"
-                href={APP_LINKS.external.authenticatedConsole}
-                size="lg"
-                borderRadius="full"
-                px={10}
-                fontWeight="900"
-                alignSelf="flex-start"
-                bg="white"
-                color="#17318C"
-                _hover={{ bg: "whiteAlpha.900" }}
-                boxShadow="0 20px 40px rgba(6, 37, 76, 0.24)"
-              >
-                Create my own Health Twin
-              </Button>
-
-            </Stack>
-          ) : null}
         </Box>
+        ) : null}
 
+        {!showConversion ? (
         <Stack direction={{ base: "column", sm: "row" }} justify="space-between" spacing={3}>
           <Button variant="ghost" onClick={handleBack} isDisabled={step === 0}>
             Back
@@ -1411,6 +1614,7 @@ export default function HealthTwinFunnel() {
             </Button>
           ) : null}
         </Stack>
+        ) : null}
       </Stack>
     </Box>
   );
