@@ -8,7 +8,6 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -512,7 +511,14 @@ export default function SwcaRewardWheel() {
         )}
       </Box>
 
-      <Modal isOpen={isMobileRewardFlow && isRewardSheetOpen && Boolean(reward)} onClose={() => setIsRewardSheetOpen(false)} size="full" isCentered={false}>
+      <Modal
+        isOpen={isMobileRewardFlow && isRewardSheetOpen && Boolean(reward)}
+        onClose={() => undefined}
+        size="full"
+        isCentered={false}
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+      >
         <ModalOverlay bg="rgba(7,26,58,0.48)" />
         <ModalContent
           mt="auto"
@@ -526,7 +532,6 @@ export default function SwcaRewardWheel() {
           <ModalHeader color={NAVY} pb={2}>
             Your reward is ready
           </ModalHeader>
-          <ModalCloseButton />
           <ModalBody pb={6}>
             <Stack spacing={5}>
               <Box border="1px solid" borderColor="#B9D7C8" bg="#F0FFF6" borderRadius="8px" p={5}>

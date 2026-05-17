@@ -11,7 +11,6 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -692,13 +691,20 @@ export default function SpineWellnessIntakeForm() {
         </Box>
       ) : null}
 
-      <Modal isOpen={isFollowUpOpen} onClose={() => !isSubmitting && setIsFollowUpOpen(false)} size="xl" isCentered scrollBehavior="inside">
+      <Modal
+        isOpen={isFollowUpOpen}
+        onClose={() => undefined}
+        size="xl"
+        isCentered
+        scrollBehavior="inside"
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+      >
         <ModalOverlay bg="rgba(255, 247, 236, 0.72)" backdropFilter="blur(2px)" />
         <ModalContent borderRadius="8px" mx={4} bg="white">
           <ModalHeader color={NAVY} pb={2}>
             A few quick follow-up questions
           </ModalHeader>
-          <ModalCloseButton isDisabled={isSubmitting} />
           <ModalBody ref={followUpBodyRef}>
             <Stack spacing={5} minH={{ base: "360px", md: "390px" }}>
               <Box>
