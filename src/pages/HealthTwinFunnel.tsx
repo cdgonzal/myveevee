@@ -11,7 +11,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type KeyboardEvent } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { trackEvent } from "../analytics/trackEvent";
@@ -1305,6 +1305,27 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
     trackEvent("health_twin_funnel_step_advance", { from_step: step + 1, to_step: nextStep + 1 });
   };
 
+  const handleConversionClick = () => {
+    trackCtaClick({
+      ctaName: "health_twin_funnel_create_from_step_4_visual",
+      ctaText: "Create My Health Twin",
+      placement: "health_twin_step_4_visual",
+      destinationType: "external",
+      destinationUrl: APP_LINKS.external.authenticatedConsole,
+      pagePath: conversionOnly ? APP_LINKS.internal.healthTwinCreate : APP_LINKS.internal.healthTwin,
+    });
+    window.location.href = APP_LINKS.external.authenticatedConsole;
+  };
+
+  const handleConversionKeyDown = (event: KeyboardEvent) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+    handleConversionClick();
+  };
+
   const handleBack = () => {
     if (step === 0) {
       return;
@@ -1319,7 +1340,15 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
       <Box position="absolute" inset={0} bg="linear-gradient(160deg, rgba(239,251,255,0.98), rgba(255,255,255,0.96) 52%, rgba(54,197,255,0.18))" />
       <Stack spacing={{ base: 5, md: 7 }} position="relative" maxW="1160px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 4, md: 10 }}>
         {showConversion ? (
-          <>
+          <Box
+            role="link"
+            tabIndex={0}
+            aria-label="Continue to VeeVee"
+            cursor="pointer"
+            onClick={handleConversionClick}
+            onKeyDown={handleConversionKeyDown}
+            _hover={{ textDecoration: "none" }}
+          >
             <Flex align="center" gap={{ base: 3, md: 4 }} mb={{ base: 1, md: 2 }}>
               <Image src="/brand/2026/icon.svg" alt="VeeVee icon" h={{ base: "44px", md: "58px" }} w="auto" objectFit="contain" />
               <Stack spacing={0}>
@@ -1379,18 +1408,6 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
                 </Stack>
 
                 <Button
-                  as="a"
-                  href={APP_LINKS.external.authenticatedConsole}
-                  onClick={() =>
-                    trackCtaClick({
-                      ctaName: "health_twin_funnel_create_from_step_4_visual",
-                      ctaText: "Create My Health Twin",
-                      placement: "health_twin_step_4_visual",
-                      destinationType: "external",
-                      destinationUrl: APP_LINKS.external.authenticatedConsole,
-                      pagePath: conversionOnly ? APP_LINKS.internal.healthTwinCreate : APP_LINKS.internal.healthTwin,
-                    })
-                  }
                   bg={VEEVEE_BLUE}
                   color="white"
                   borderRadius="full"
@@ -1416,7 +1433,7 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
                 <HealthTwinHeroVisual />
               </Box>
             </Flex>
-          </>
+          </Box>
         ) : (
           <Box
             borderWidth="1px"
