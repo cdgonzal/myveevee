@@ -19,11 +19,11 @@ const CREAM = "#FFF9F0";
 const SOFT_GRAY = "#687184";
 
 const FEATURE_CARDS = [
-  { label: "Profile", mobileLabel: "Profile", copy: "Your health at a glance", symbol: "P", color: "#F97316" },
-  { label: "Symptoms", mobileLabel: "Signs", copy: "Understand what's going on", symbol: "S", color: "#F59E0B" },
-  { label: "Goals", mobileLabel: "Goals", copy: "Set goals that matter to you", symbol: "G", color: "#22A06B" },
-  { label: "Benefits", mobileLabel: "Benefits", copy: "See what you can gain", symbol: "B", color: "#0EA5E9" },
-  { label: "Care Plan", mobileLabel: "Plan", copy: "Personalized next steps", symbol: "Plan", color: "#7C3AED" },
+  { label: "Profile", mobileLabel: "Profile", copy: "At a glance", symbol: "P", color: "#F97316" },
+  { label: "Signs", mobileLabel: "Signs", copy: "What matters", symbol: "S", color: "#F59E0B" },
+  { label: "Goals", mobileLabel: "Goals", copy: "Your priorities", symbol: "G", color: "#22A06B" },
+  { label: "Benefits", mobileLabel: "Benefits", copy: "What you gain", symbol: "B", color: "#0EA5E9" },
+  { label: "Plan", mobileLabel: "Plan", copy: "Next steps", symbol: "Plan", color: "#7C3AED" },
 ];
 
 export default function SwcaProfileFunnelVisual() {
@@ -72,7 +72,7 @@ export default function SwcaProfileFunnelVisual() {
           gap={{ base: 4, md: 7, lg: 12 }}
         >
           <Stack
-            spacing={{ base: 3, md: 7, lg: 8 }}
+            spacing={{ base: 3, md: 7, lg: 6 }}
             align={{ base: "center", lg: "flex-start" }}
             textAlign={{ base: "center", lg: "left" }}
             flex="1"
@@ -94,10 +94,10 @@ export default function SwcaProfileFunnelVisual() {
               <Heading
                 as="h1"
                 fontFamily="Georgia, 'Times New Roman', serif"
-                fontSize={{ base: "50px", md: "8xl", lg: "7xl", xl: "8xl" }}
-                lineHeight={{ base: "0.86", md: "0.84" }}
+                fontSize={{ base: "50px", md: "8xl", lg: "6xl", xl: "7xl" }}
+                lineHeight={{ base: "0.86", md: "0.84", lg: "0.9" }}
                 letterSpacing="0"
-                maxW={{ base: "390px", md: "780px", lg: "540px" }}
+                maxW={{ base: "390px", md: "780px", lg: "500px" }}
               >
                 Create your digital twin.
               </Heading>
@@ -105,7 +105,7 @@ export default function SwcaProfileFunnelVisual() {
                 fontSize={{ base: "xl", md: "2xl" }}
                 lineHeight="1.18"
                 color={NAVY}
-                maxW={{ base: "360px", md: "620px", lg: "500px" }}
+                maxW={{ base: "360px", md: "620px", lg: "460px" }}
                 fontWeight="800"
               >
                 Answer a few quick questions and VeeVee builds your personalized health profile.
@@ -242,13 +242,13 @@ function FeatureCard({
       bg="rgba(255,255,255,0.92)"
       borderRadius={{ base: "12px", md: "14px" }}
       p={{ base: 1.5, md: 4 }}
-      w={{ base: "96px", md: "190px" }}
-      minH={{ base: "46px", md: "88px" }}
+      w={{ base: "96px", md: "150px" }}
+      minH={{ base: "46px", md: "68px" }}
       boxShadow={{ base: "0 10px 22px rgba(7,26,58,0.1)", md: "0 14px 34px rgba(7,26,58,0.12)" }}
       border="1px solid rgba(7,26,58,0.06)"
     >
       <Flex
-        boxSize={{ base: "30px", md: "54px" }}
+        boxSize={{ base: "30px", md: "46px" }}
         borderRadius="full"
         bg={`${color}1F`}
         color={color}
@@ -256,7 +256,7 @@ function FeatureCard({
         justify="center"
         flex="0 0 auto"
       >
-        <Text fontSize={{ base: "13px", md: "28px" }} lineHeight="1" fontWeight="900">
+        <Text fontSize={{ base: "13px", md: "22px" }} lineHeight="1" fontWeight="900">
           {symbol}
         </Text>
       </Flex>
@@ -267,7 +267,7 @@ function FeatureCard({
         <Text display={{ base: "none", md: "block" }} fontSize="md" lineHeight="1.05" fontWeight="900">
           {label}
         </Text>
-        <Text display={{ base: "none", md: "block" }} fontSize="sm" lineHeight="1.1" color="#35405A" fontWeight="700">
+        <Text display="none" fontSize="sm" lineHeight="1.1" color="#35405A" fontWeight="700">
           {copy}
         </Text>
       </Stack>
