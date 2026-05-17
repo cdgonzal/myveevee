@@ -274,8 +274,8 @@ const ROUTES = [
           Reach out if you are covering VeeVee, exploring a partnership, looking for investor information, or need help getting to the right team.
         </p>
         <ul style="line-height:1.8;padding-left:20px;">
-          <li>Press: press@veevee.io</li>
-          <li>Partnerships: press@veevee.io</li>
+          <li>Press: info@veevee.io</li>
+          <li>Partnerships: info@veevee.io</li>
           <li>Investors: investveevee.com</li>
         </ul>
       </main>

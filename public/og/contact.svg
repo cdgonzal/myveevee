@@ -8,7 +8,7 @@
   <rect x="760" y="160" width="290" height="90" rx="22" fill="#FFFFFF" fill-opacity="0.12"/>
   <rect x="760" y="286" width="290" height="90" rx="22" fill="#9CE7FF" fill-opacity="0.18"/>
   <rect x="760" y="412" width="290" height="90" rx="22" fill="#53D769" fill-opacity="0.18"/>
-  <text x="96" y="520" fill="#53D769" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">press@veevee.io</text>
+  <text x="96" y="520" fill="#53D769" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">info@veevee.io</text>
   <defs>
     <linearGradient id="bg" x1="96" y1="72" x2="1080" y2="558" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0C2A52"/>

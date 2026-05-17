@@ -48,8 +48,8 @@ export default function Contact() {
                 <Text color={muted} fontSize="sm">
                   For interviews, coverage, speaking, or company background.
                 </Text>
-                <CLink href="mailto:press@veevee.io" color="accent.soft" fontWeight="700">
-                  press@veevee.io
+                <CLink href="mailto:info@veevee.io" color="accent.soft" fontWeight="700">
+                  info@veevee.io
                 </CLink>
               </Stack>
             </CardBody>
@@ -67,8 +67,8 @@ export default function Contact() {
                 <Text color={muted} fontSize="sm">
                   For connected-care partnerships, operational use cases, and product discussions.
                 </Text>
-                <CLink href="mailto:press@veevee.io" color="accent.soft" fontWeight="700">
-                  press@veevee.io
+                <CLink href="mailto:info@veevee.io" color="accent.soft" fontWeight="700">
+                  info@veevee.io
                 </CLink>
               </Stack>
             </CardBody>
