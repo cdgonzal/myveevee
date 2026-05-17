@@ -348,7 +348,7 @@ export default function SpineWellnessIntakeForm() {
   };
 
   return (
-    <Box minH="100vh" bg="#FFFFFF" color={NAVY} px={{ base: 4, md: 8 }} py={{ base: 5, md: 10 }} pb={{ base: showMobileAction ? 28 : 8, md: 10 }}>
+    <Box minH="100vh" bg="#FFFFFF" color={NAVY} px={{ base: 4, md: 8 }} py={{ base: 6, md: 10 }} pb={{ base: showMobileAction ? 28 : 8, md: 10 }}>
       <Box maxW="980px" mx="auto">
         <Flex
           align={{ base: "center", md: "flex-start" }}
@@ -360,8 +360,9 @@ export default function SpineWellnessIntakeForm() {
           <Image
             src="/swca/spine-wellness-logo.png"
             alt="Spine and Wellness Centers of America"
-            boxSize={{ base: "92px", md: "210px" }}
+            boxSize={{ base: "74px", md: "150px" }}
             objectFit="contain"
+            flexShrink={0}
           />
           <Stack spacing={{ base: 2, md: 3 }} textAlign="center" flex="1" pt={{ base: 0, md: 4 }}>
             <Text fontSize={{ base: "lg", md: "4xl" }} letterSpacing="0.16em" textTransform="uppercase" lineHeight="1">

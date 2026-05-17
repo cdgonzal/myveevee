@@ -39,8 +39,8 @@
     {
       "id": "weight-gain-metabolic-dysfunction",
       "number": 2,
-      "title": "Weight or Metabolism",
-      "description": "Weight gain, slow metabolism, or blood sugar concerns.",
+      "title": "Weight Loss / Metabolism",
+      "description": "Weight loss, weight gain, slow metabolism, or blood sugar concerns.",
       "followUpQuestions": [
         {
           "id": "weight_goal",
@@ -74,7 +74,7 @@
       "id": "hormonal-imbalance",
       "number": 3,
       "title": "Hormones",
-      "description": "Mood, libido, hot flashes, PMS, or testosterone concerns.",
+      "description": "Thyroid, mood, libido, hot flashes, PMS, or testosterone concerns.",
       "followUpQuestions": [
         {
           "id": "hormone_primary_concern",
@@ -83,7 +83,7 @@
           "required": true,
           "reportLabel": "Hormone concern",
           "options": [
-            { "id": "mood_energy", "label": "Mood or energy changes" },
+            { "id": "mood_energy", "label": "Thyroid, mood, or energy changes" },
             { "id": "libido", "label": "Low libido or sexual wellness" },
             { "id": "hot_flashes", "label": "Hot flashes or temperature changes" },
             { "id": "testosterone", "label": "Low testosterone concerns" }
