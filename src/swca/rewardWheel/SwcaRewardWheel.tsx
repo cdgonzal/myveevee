@@ -467,51 +467,9 @@ export default function SwcaRewardWheel() {
                 </Flex>
               </Box>
 
-              <Button
-                onClick={handleSpin}
-                isDisabled={!canSpin}
-                isLoading={isSpinning}
-                loadingText="Spinning"
-                boxSize={{ base: "132px", md: "150px" }}
-                borderRadius="full"
-                bg="#D7263D"
-                color="white"
-                border="8px solid"
-                borderColor="#FFFFFF"
-                boxShadow="0 16px 34px rgba(215, 38, 61, 0.32), inset 0 -12px 0 rgba(0, 0, 0, 0.18)"
-                fontSize={{ base: "lg", md: "xl" }}
-                fontWeight="900"
-                letterSpacing="0.08em"
-                textTransform="uppercase"
-                _hover={{ bg: "#C91F35", transform: canSpin ? "translateY(-2px)" : "none" }}
-                _active={{ transform: canSpin ? "translateY(2px)" : "none", boxShadow: "0 8px 18px rgba(215, 38, 61, 0.28), inset 0 -6px 0 rgba(0, 0, 0, 0.18)" }}
-                _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
-              >
-                Spin
-              </Button>
             </Stack>
 
             <Stack spacing={5}>
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={3}>
-                {SWCA_REWARDS.map((item) => (
-                  <Flex
-                    key={item.id}
-                    align="center"
-                    gap={3}
-                    border="1px solid"
-                    borderColor={LINE}
-                    borderRadius="8px"
-                    bg={CREAM}
-                    p={3}
-                  >
-                    <Box boxSize="14px" borderRadius="full" bg={item.color} flex="0 0 auto" />
-                    <Text fontWeight="800" lineHeight="1.15">
-                      {item.shortLabel}
-                    </Text>
-                  </Flex>
-                ))}
-              </SimpleGrid>
-
               <Box border="1px solid" borderColor={reward ? "#B9D7C8" : LINE} bg={reward ? "#F0FFF6" : CREAM} borderRadius="8px" p={{ base: 5, md: 6 }}>
                 {reward ? (
                   renderRewardSummary()

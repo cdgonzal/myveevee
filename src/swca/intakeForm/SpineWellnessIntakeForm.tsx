@@ -390,7 +390,7 @@ export default function SpineWellnessIntakeForm() {
           </Stack>
         </Flex>
 
-        <Stack spacing={1} textAlign="center" mb={{ base: 4, md: 6 }}>
+        <Stack spacing={1} textAlign="center" mb={{ base: 4, md: 6 }} display={{ base: mobileStep === "select" ? "flex" : "none", md: "flex" }}>
           <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="900">
             Select all that apply.
           </Text>
@@ -475,8 +475,24 @@ export default function SpineWellnessIntakeForm() {
             })}
           </Stack>
 
-          <Box
+          <Stack
+            spacing={1}
+            textAlign="center"
             mt={{ base: 0, md: 8 }}
+            mb={{ base: 4, md: 4 }}
+            display={{ base: mobileStep === "rank" ? "flex" : "none", md: "flex" }}
+          >
+            <Heading as="h2" fontFamily="Georgia, 'Times New Roman', serif" size={{ base: "sm", md: "md" }} fontWeight="500">
+              Rank Your Priorities
+            </Heading>
+            <Text fontStyle="italic" color="#5B6681">
+              {selectedConcerns.length > 0
+                ? `${selectedConcerns.length} selected. Drag to reorder, or use the buttons.`
+                : "Choose your areas above, then put the most important item first."}
+            </Text>
+          </Stack>
+
+          <Box
             border="1px solid"
             borderColor="#F3D9B4"
             bg="#FFF7EC"
@@ -485,30 +501,6 @@ export default function SpineWellnessIntakeForm() {
             display={{ base: mobileStep === "rank" ? "block" : "none", md: "block" }}
           >
             <Stack spacing={4}>
-              <Stack spacing={1} textAlign="center">
-                <Box
-                  boxSize="22px"
-                  borderLeft="3px solid"
-                  borderBottom="3px solid"
-                  borderColor={ORANGE}
-                  transform="rotate(-45deg)"
-                  alignSelf="center"
-                />
-                <Heading as="h2" fontFamily="Georgia, 'Times New Roman', serif" size={{ base: "sm", md: "md" }} fontWeight="500">
-                  <Box as="span" display={{ base: "none", md: "inline" }}>
-                    Rank your selected priorities.
-                  </Box>
-                  <Box as="span" display={{ base: "inline", md: "none" }}>
-                    Rank your priorities
-                  </Box>
-                </Heading>
-                <Text fontStyle="italic">
-                  {selectedConcerns.length > 0
-                    ? `${selectedConcerns.length} selected. Drag to reorder, or use the buttons.`
-                    : "Tap any concern above, then put the most important item first."}
-                </Text>
-              </Stack>
-
               {selectedConcerns.length > 0 ? (
                 <Stack spacing={3}>
                   {selectedConcerns.map((concern, index) => (
@@ -585,8 +577,37 @@ export default function SpineWellnessIntakeForm() {
                 </Text>
               )}
 
+              {submitState === "success" ? (
+                <Text textAlign="center" fontWeight="700">
+                  Thank you for helping us understand you better.
+                </Text>
+              ) : null}
+            </Stack>
+          </Box>
+
+          <Box maxW="720px" mx="auto" w="100%" mt={{ base: 0, md: 8 }} display={{ base: "none", md: "block" }}>
+            <Stack spacing={4}>
+              <Stack spacing={1} textAlign="center">
+                <Heading as="h2" fontFamily="Georgia, 'Times New Roman', serif" size="sm" fontWeight="500">
+                  Consent to receive your reward
+                </Heading>
+                <Text fontStyle="italic" color="#5B6681">
+                  Review the consent card below, then continue to the reward questions.
+                </Text>
+              </Stack>
+
+              <ConsentAgreement
+                consentId="swca-reward-consent-desktop"
+                hasCommunicationConsent={hasCommunicationConsent}
+                onConsentChange={(checked) => {
+                  setSubmitState("idle");
+                  setHasCommunicationConsent(checked);
+                }}
+                isConsentExpanded={isConsentExpanded}
+                onToggleConsentDetails={() => setIsConsentExpanded((current) => !current)}
+              />
+
               <Button
-                display={{ base: "none", md: "inline-flex" }}
                 type="button"
                 onClick={handleSubmit}
                 isDisabled={!canSubmit || isSubmitting}
@@ -601,25 +622,6 @@ export default function SpineWellnessIntakeForm() {
               >
                 Continue
               </Button>
-
-              <Box maxW="720px" mx="auto" w="100%" display={{ base: "none", md: "block" }}>
-                <ConsentAgreement
-                  consentId="swca-reward-consent-desktop"
-                  hasCommunicationConsent={hasCommunicationConsent}
-                  onConsentChange={(checked) => {
-                    setSubmitState("idle");
-                    setHasCommunicationConsent(checked);
-                  }}
-                  isConsentExpanded={isConsentExpanded}
-                  onToggleConsentDetails={() => setIsConsentExpanded((current) => !current)}
-                />
-              </Box>
-
-              {submitState === "success" ? (
-                <Text textAlign="center" fontWeight="700">
-                  Thank you for helping us understand you better.
-                </Text>
-              ) : null}
             </Stack>
           </Box>
 
