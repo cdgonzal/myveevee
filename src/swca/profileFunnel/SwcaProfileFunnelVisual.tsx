@@ -19,11 +19,11 @@ const CREAM = "#FFF9F0";
 const SOFT_GRAY = "#687184";
 
 const FEATURE_CARDS = [
-  { label: "Profile", copy: "Your health at a glance", icon: "person", color: "#F97316" },
-  { label: "Symptoms", copy: "Understand what's going on", icon: "heart", color: "#F59E0B" },
-  { label: "Goals", copy: "Set goals that matter to you", icon: "target", color: "#22A06B" },
-  { label: "Benefits", copy: "See what you can gain", icon: "shield", color: "#0EA5E9" },
-  { label: "Care Plan", copy: "Personalized next steps", icon: "list", color: "#7C3AED" },
+  { label: "Profile", mobileLabel: "Profile", copy: "Your health at a glance", symbol: "P", color: "#F97316" },
+  { label: "Symptoms", mobileLabel: "Signs", copy: "Understand what's going on", symbol: "S", color: "#F59E0B" },
+  { label: "Goals", mobileLabel: "Goals", copy: "Set goals that matter to you", symbol: "G", color: "#22A06B" },
+  { label: "Benefits", mobileLabel: "Benefits", copy: "See what you can gain", symbol: "B", color: "#0EA5E9" },
+  { label: "Care Plan", mobileLabel: "Plan", copy: "Personalized next steps", symbol: "Plan", color: "#7C3AED" },
 ];
 
 export default function SwcaProfileFunnelVisual() {
@@ -47,8 +47,8 @@ export default function SwcaProfileFunnelVisual() {
   return (
     <Box minH="100vh" bg={CREAM} color={NAVY} overflow="hidden">
       <Box position="absolute" inset={0} bg="linear-gradient(160deg, rgba(255,249,240,0.98), rgba(255,255,255,0.96) 52%, rgba(249,115,22,0.12))" />
-      <Box position="relative" maxW="1160px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 5, md: 10 }}>
-        <Flex align="center" gap={{ base: 3, md: 4 }} mb={{ base: 5, md: 9 }}>
+      <Box position="relative" maxW="1160px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 4, md: 10 }}>
+        <Flex align="center" gap={{ base: 3, md: 4 }} mb={{ base: 4, md: 9 }}>
           <Image
             src="/swca/spine-wellness-logo.png"
             alt="Spine and Wellness Centers of America"
@@ -72,7 +72,7 @@ export default function SwcaProfileFunnelVisual() {
           gap={{ base: 4, md: 7, lg: 12 }}
         >
           <Stack
-            spacing={{ base: 4, md: 7, lg: 8 }}
+            spacing={{ base: 3, md: 7, lg: 8 }}
             align={{ base: "center", lg: "flex-start" }}
             textAlign={{ base: "center", lg: "left" }}
             flex="1"
@@ -132,7 +132,7 @@ export default function SwcaProfileFunnelVisual() {
               Create My Health Twin
             </Button>
 
-            <Text fontSize={{ base: "md", md: "lg" }} color={SOFT_GRAY} fontWeight="900">
+            <Text fontSize={{ base: "sm", md: "lg" }} color={SOFT_GRAY} fontWeight="900">
               Free to start. Takes less than a minute.
             </Text>
           </Stack>
@@ -148,15 +148,15 @@ export default function SwcaProfileFunnelVisual() {
 
 function HealthTwinPhoneVisual() {
   return (
-    <Box w="100%" maxW={{ base: "360px", md: "760px", lg: "600px" }} mx="auto" position="relative" minH={{ base: "316px", md: "520px", lg: "500px" }}>
+    <Box w="100%" maxW={{ base: "330px", md: "760px", lg: "600px" }} mx="auto" position="relative" minH={{ base: "292px", md: "520px", lg: "500px" }}>
       <FeatureOrbit />
       <Box
         position="absolute"
         left="50%"
         top={{ base: "6px", md: "4px" }}
         transform="translateX(-50%)"
-        w={{ base: "172px", md: "270px", lg: "250px", xl: "270px" }}
-        h={{ base: "306px", md: "480px", lg: "444px", xl: "480px" }}
+        w={{ base: "160px", md: "270px", lg: "250px", xl: "270px" }}
+        h={{ base: "284px", md: "480px", lg: "444px", xl: "480px" }}
         borderRadius={{ base: "28px", md: "34px" }}
         bg="#151922"
         p={{ base: "8px", md: "10px" }}
@@ -169,14 +169,14 @@ function HealthTwinPhoneVisual() {
             src="/images/marketing/hero-avatar-b.png"
             alt=""
             position="absolute"
-            top={{ base: "38px", md: "62px" }}
+            top={{ base: "34px", md: "62px" }}
             left="50%"
             transform="translateX(-50%)"
-            h={{ base: "198px", md: "310px" }}
+            h={{ base: "184px", md: "310px" }}
             w="auto"
             objectFit="contain"
           />
-          <Box position="absolute" inset={{ base: "58px 24px auto", md: "88px 34px auto" }} h={{ base: "116px", md: "190px" }} border="2px solid rgba(255,255,255,0.86)" borderRadius="full" />
+          <Box position="absolute" inset={{ base: "54px 22px auto", md: "88px 34px auto" }} h={{ base: "104px", md: "190px" }} border="2px solid rgba(255,255,255,0.86)" borderRadius="full" />
           <Stack position="absolute" left={{ base: 4, md: 6 }} right={{ base: 4, md: 6 }} bottom={{ base: 4, md: 6 }} spacing={{ base: 2, md: 2.5 }}>
             <Box bg="rgba(255,255,255,0.92)" borderRadius="12px" p={{ base: 2, md: 3 }} boxShadow="0 8px 24px rgba(7,26,58,0.12)">
               <Flex align="center" justify="space-between">
@@ -207,13 +207,13 @@ function HealthTwinPhoneVisual() {
 
 function FeatureOrbit() {
   return (
-    <SimpleGrid columns={2} spacing={{ base: 4, md: 6 }} position="absolute" inset={0} alignItems="center">
-      <Stack spacing={{ base: 5, md: 7 }} align="flex-start" justify="center">
+    <SimpleGrid columns={2} spacing={{ base: 3, md: 6 }} position="absolute" inset={0} alignItems="center">
+      <Stack spacing={{ base: 4, md: 7 }} align="flex-start" justify="center">
         {FEATURE_CARDS.slice(0, 3).map((card) => (
           <FeatureCard key={card.label} {...card} />
         ))}
       </Stack>
-      <Stack spacing={{ base: 9, md: 12 }} align="flex-end" justify="center" pt={{ base: 12, md: 16 }}>
+      <Stack spacing={{ base: 7, md: 12 }} align="flex-end" justify="center" pt={{ base: 11, md: 16 }}>
         {FEATURE_CARDS.slice(3).map((card) => (
           <FeatureCard key={card.label} {...card} />
         ))}
@@ -224,29 +224,31 @@ function FeatureOrbit() {
 
 function FeatureCard({
   label,
+  mobileLabel,
   copy,
-  icon,
+  symbol,
   color,
 }: {
   label: string;
+  mobileLabel: string;
   copy: string;
-  icon: string;
+  symbol: string;
   color: string;
 }) {
   return (
     <Flex
       align="center"
-      gap={{ base: 2.5, md: 3 }}
+      gap={{ base: 2, md: 3 }}
       bg="rgba(255,255,255,0.92)"
-      borderRadius="14px"
-      p={{ base: 2, md: 4 }}
-      w={{ base: "116px", md: "190px" }}
-      minH={{ base: "60px", md: "88px" }}
-      boxShadow="0 14px 34px rgba(7,26,58,0.12)"
+      borderRadius={{ base: "12px", md: "14px" }}
+      p={{ base: 1.5, md: 4 }}
+      w={{ base: "96px", md: "190px" }}
+      minH={{ base: "46px", md: "88px" }}
+      boxShadow={{ base: "0 10px 22px rgba(7,26,58,0.1)", md: "0 14px 34px rgba(7,26,58,0.12)" }}
       border="1px solid rgba(7,26,58,0.06)"
     >
       <Flex
-        boxSize={{ base: "32px", md: "54px" }}
+        boxSize={{ base: "30px", md: "54px" }}
         borderRadius="full"
         bg={`${color}1F`}
         color={color}
@@ -254,35 +256,21 @@ function FeatureCard({
         justify="center"
         flex="0 0 auto"
       >
-        <Text fontSize={{ base: "16px", md: "28px" }} lineHeight="1" fontWeight="900">
-          {renderIcon(icon)}
+        <Text fontSize={{ base: "13px", md: "28px" }} lineHeight="1" fontWeight="900">
+          {symbol}
         </Text>
       </Flex>
       <Stack spacing={0} align="flex-start" textAlign="left">
-        <Text fontSize={{ base: "xs", md: "md" }} lineHeight="1.05" fontWeight="900">
+        <Text display={{ base: "block", md: "none" }} fontSize="11px" lineHeight="1.05" fontWeight="900">
+          {mobileLabel}
+        </Text>
+        <Text display={{ base: "none", md: "block" }} fontSize="md" lineHeight="1.05" fontWeight="900">
           {label}
         </Text>
-        <Text fontSize={{ base: "9px", md: "sm" }} lineHeight="1.1" color="#35405A" fontWeight="700">
+        <Text display={{ base: "none", md: "block" }} fontSize="sm" lineHeight="1.1" color="#35405A" fontWeight="700">
           {copy}
         </Text>
       </Stack>
     </Flex>
   );
-}
-
-function renderIcon(icon: string) {
-  switch (icon) {
-    case "person":
-      return "P";
-    case "heart":
-      return "H";
-    case "target":
-      return "G";
-    case "shield":
-      return "B";
-    case "list":
-      return "C";
-    default:
-      return "+";
-  }
 }
