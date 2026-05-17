@@ -1374,7 +1374,7 @@ export default function HealthTwinFunnel({ conversionOnly = false }: HealthTwinF
                     maxW={{ base: "360px", md: "620px", lg: "460px" }}
                     fontWeight="800"
                   >
-                    Turn this preview into a free personalized Health Twin inside VeeVee.
+                    Get a warm, personal experience that shapes itself around your health story.
                   </Text>
                 </Stack>
 
