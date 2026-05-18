@@ -1040,35 +1040,33 @@ function HealthTwinHeroVisual() {
           <Flex
             position="absolute"
             left={{ base: 3, md: 4 }}
-            right={{ base: 3, md: 4 }}
-            top={{ base: "38px", md: "54px" }}
+            top={{ base: "56px", md: "74px" }}
             align="center"
-            justify="space-between"
-            gap={2}
-            bg="rgba(255,255,255,0.78)"
-            border="1px solid rgba(255,255,255,0.78)"
-            borderRadius="14px"
-            px={{ base: 2.5, md: 3 }}
-            py={{ base: 2, md: 2.5 }}
-            boxShadow="0 12px 28px rgba(6,37,76,0.12)"
+            gap={{ base: 1.5, md: 2 }}
+            bg="rgba(255,255,255,0.70)"
+            border="1px solid rgba(255,255,255,0.70)"
+            borderRadius="12px"
+            px={{ base: 2, md: 2.5 }}
+            py={{ base: 1.5, md: 2 }}
+            boxShadow="0 10px 22px rgba(6,37,76,0.10)"
             backdropFilter="blur(10px)"
+            maxW={{ base: "104px", md: "148px" }}
           >
             <Stack spacing={0} align="flex-start">
-              <Text fontSize="xs" color={VEEVEE_MUTED} fontWeight="900">Health Twin</Text>
-              <Text fontSize={{ base: "lg", md: "2xl" }} lineHeight="1" fontWeight="900" color={VEEVEE_NAVY}>85<Text as="span" fontSize="xs" color={VEEVEE_MUTED}>/100</Text></Text>
+              <Text fontSize={{ base: "9px", md: "11px" }} color={VEEVEE_MUTED} fontWeight="900">Health Twin</Text>
+              <Text fontSize={{ base: "md", md: "xl" }} lineHeight="1" fontWeight="900" color={VEEVEE_NAVY}>85<Text as="span" fontSize={{ base: "9px", md: "11px" }} color={VEEVEE_MUTED}>/100</Text></Text>
             </Stack>
-            <Text fontSize="xs" color="#168A52" fontWeight="900">Strong</Text>
           </Flex>
 
           <Flex
             position="absolute"
             left={{ base: 3, md: 4 }}
             right={{ base: 3, md: 4 }}
-            bottom={{ base: 4, md: 5 }}
+            bottom={{ base: 3, md: 4 }}
             align="center"
             gap={{ base: 2, md: 3 }}
-            bg="rgba(255,255,255,0.76)"
-            border="1px solid rgba(255,255,255,0.78)"
+            bg="rgba(255,255,255,0.72)"
+            border="1px solid rgba(255,255,255,0.72)"
             borderRadius="14px"
             px={{ base: 2.5, md: 3 }}
             py={{ base: 2, md: 2.5 }}
