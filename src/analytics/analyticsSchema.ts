@@ -120,6 +120,18 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "partner_admin",
     primary_goal: "review_swca_campaign_performance",
   },
+  [APP_LINKS.internal.twinCard]: {
+    page_name: "twin_card",
+    page_section: "expo_activation",
+    page_type: "lead_capture",
+    primary_goal: "create_twin_card",
+  },
+  [APP_LINKS.internal.twinCardAdmin]: {
+    page_name: "twin_card_admin",
+    page_section: "expo_activation",
+    page_type: "staff_admin",
+    primary_goal: "print_twin_cards",
+  },
 };
 
 export function getRouteAnalytics(pathname: string): RouteAnalyticsMetadata {

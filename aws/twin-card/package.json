@@ -1,0 +1,17 @@
+{
+  "name": "twin-card-lambda",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AWS Lambda handler for the VeeVee Twin Card expo activation.",
+  "scripts": {
+    "check": "node --check handler.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1047.0",
+    "@aws-sdk/client-dynamodb": "^3.808.0",
+    "@aws-sdk/client-s3": "^3.808.0",
+    "@aws-sdk/lib-dynamodb": "^3.808.0",
+    "@aws-sdk/s3-request-presigner": "^3.808.0"
+  }
+}

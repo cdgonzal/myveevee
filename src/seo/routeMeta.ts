@@ -284,4 +284,23 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.twinCard]: {
+    title: "Create Your VeeVee Twin Card",
+    description:
+      "Create a VeeVee Twin Card for the SWCA Medical Summit with a quick photo, wellness focus, and print-ready card.",
+    canonicalPath: APP_LINKS.internal.twinCard,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
+  [APP_LINKS.internal.twinCardAdmin]: {
+    title: "Twin Card Staff View",
+    description: "Private staff view for recent VeeVee Twin Cards.",
+    canonicalPath: APP_LINKS.internal.twinCardAdmin,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
 };

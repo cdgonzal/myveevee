@@ -23,6 +23,7 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - Secrets Manager secret lookups for the shared admin passcode and token signing key
 - SNS topic and CloudWatch alarms for Lambda errors, API 5xx responses, and unusual API volume
 - frontend environment variable for the spin endpoint
+- Twin Card expo activation backend using API Gateway, Lambda, private S3, DynamoDB, optional Bedrock image generation, and operational alarms
 
 ## Live SWCA Intake Resources
 
@@ -72,6 +73,21 @@ The report endpoint returns abbreviated names and contact method only. It does n
 
 The SNS email subscription for `info@veevee.io` is confirmed.
 
+## Twin Card Expo Activation Resources
+
+The Twin Card backend is managed in the same stack as a sibling construct:
+
+- Lambda function: `myveevee-twin-card-handler`
+- HTTP API route: `/twin-card/cards`
+- Admin list route: `/twin-card/admin/cards`
+- Result lookup route: `/twin-card/cards/{cardId}`
+- Private S3 bucket: `myveevee-twin-card-<account>-<region>`
+- DynamoDB table: `myveevee-twin-card-cards`
+- Frontend route: `https://myveevee.com/twin-card`
+- Frontend environment variable: `VITE_TWIN_CARD_API_URL`
+
+`TwinCardBedrockImageModelId` is optional. Leave it blank to deploy reliable fallback mode, where Lambda stores the uploaded photo and returns a printable card without invoking Bedrock. Set it to an approved Bedrock image model ID when model access is confirmed.
+
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 
 ```text
@@ -120,6 +136,12 @@ Include the allowed origins parameter when deploying SWCA stack changes. In Powe
 
 ```powershell
 --parameters "SwcaAllowedOrigins=https://myveevee.com,https://www.myveevee.com,https://main.dc8zya6af7720.amplifyapp.com"
+```
+
+Optional Twin Card Bedrock model override:
+
+```powershell
+--parameters TwinCardBedrockImageModelId=<approved-bedrock-image-model-id>
 ```
 
 Optional admin secret-name overrides:

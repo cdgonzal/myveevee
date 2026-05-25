@@ -26,6 +26,9 @@ export const APP_LINKS = {
     swcaFunnel: "/swca/funnel",
     swcaFunnelVisual: "/swca/funnel-visual",
     swcaAdmin: "/swca/admin",
+    twinCard: "/twin-card",
+    twinCardResult: "/twin-card/result/:cardId",
+    twinCardAdmin: "/twin-card/admin",
   },
   cta: {
     getStarted: "/",

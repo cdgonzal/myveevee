@@ -83,6 +83,9 @@ const SwcaRewardCertificate = lazyWithRetry(() => import("./swca/certificate/Swc
 const SwcaProfileFunnel = lazyWithRetry(() => import("./swca/profileFunnel/SwcaProfileFunnel"));
 const SwcaProfileFunnelVisual = lazyWithRetry(() => import("./swca/profileFunnel/SwcaProfileFunnelVisual"));
 const SwcaAdminDashboard = lazyWithRetry(() => import("./swca/admin/SwcaAdminDashboard"));
+const TwinCardPage = lazyWithRetry(() => import("./pages/TwinCardPage"));
+const TwinCardResultPage = lazyWithRetry(() => import("./pages/TwinCardResultPage"));
+const TwinCardAdminPage = lazyWithRetry(() => import("./pages/TwinCardAdminPage"));
 
 type FooterNavLink = {
   label: string;
@@ -163,7 +166,17 @@ function AnalyticsLifecycle() {
   usePageEngagement(pathname);
 
   useEffect(() => {
-    const routeSeo = ROUTE_SEO[pathname] ?? (pathname === "/" ? DEFAULT_ROUTE_SEO : NOT_FOUND_ROUTE_SEO);
+    const routeSeo = pathname.startsWith("/twin-card/result/")
+      ? {
+          title: "Your VeeVee Twin Card",
+          description: "View your VeeVee Twin Card and continue to VeeVee beta access.",
+          canonicalPath: pathname,
+          robots: "noindex, nofollow, noarchive, nosnippet",
+          ogType: "website" as const,
+          ogImage: "https://myveevee.com/og/home.svg",
+          twitterImage: "https://myveevee.com/og/home.svg",
+        }
+      : ROUTE_SEO[pathname] ?? (pathname === "/" ? DEFAULT_ROUTE_SEO : NOT_FOUND_ROUTE_SEO);
     applyRouteSeo(routeSeo);
 
     const frameId = window.requestAnimationFrame(() => {
@@ -210,7 +223,10 @@ export default function App() {
     pathname === APP_LINKS.internal.swcaCertificate ||
     pathname === APP_LINKS.internal.swcaFunnel ||
     pathname === APP_LINKS.internal.swcaFunnelVisual ||
-    pathname === APP_LINKS.internal.swcaAdmin;
+    pathname === APP_LINKS.internal.swcaAdmin ||
+    pathname === APP_LINKS.internal.twinCard ||
+    pathname.startsWith("/twin-card/result/") ||
+    pathname === APP_LINKS.internal.twinCardAdmin;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -239,6 +255,9 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
                 <Route path={APP_LINKS.internal.swcaFunnelVisual} element={<SwcaProfileFunnelVisual />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
+                <Route path={APP_LINKS.internal.twinCard} element={<TwinCardPage />} />
+                <Route path={APP_LINKS.internal.twinCardResult} element={<TwinCardResultPage />} />
+                <Route path={APP_LINKS.internal.twinCardAdmin} element={<TwinCardAdminPage />} />
               </Routes>
             </Suspense>
           </>
@@ -272,6 +291,9 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaFunnel} element={<SwcaProfileFunnel />} />
                 <Route path={APP_LINKS.internal.swcaFunnelVisual} element={<SwcaProfileFunnelVisual />} />
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
+                <Route path={APP_LINKS.internal.twinCard} element={<TwinCardPage />} />
+                <Route path={APP_LINKS.internal.twinCardResult} element={<TwinCardResultPage />} />
+                <Route path={APP_LINKS.internal.twinCardAdmin} element={<TwinCardAdminPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>

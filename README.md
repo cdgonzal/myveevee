@@ -63,6 +63,17 @@ Campaign/direct-link route:
   - secure reward certificate page linked from customer reward email
   - intended for direct customer access only, not site navigation
   - `noindex`
+- `/twin-card`
+  - SWCA Medical Summit expo activation flow for lead capture, photo capture, Twin Card generation, and booth printing
+  - backed by native AWS API Gateway, Lambda, S3, DynamoDB, and optional Bedrock image generation
+  - `noindex`
+- `/twin-card/result/:cardId`
+  - public Twin Card result page with card preview and beta CTA
+  - `noindex`
+- `/twin-card/admin`
+  - staff view for recent Twin Cards and quick printing
+  - hidden direct-access route
+  - `noindex`
 
 ## Scripts
 
@@ -100,4 +111,5 @@ Campaign/direct-link route:
 - The SWCA SMS delivery plan lives at [SMS_IMPLEMENTATION_PLAN.md](/C:/w/myveevee/codex/swca/SMS_IMPLEMENTATION_PLAN.md:1).
 - The AWS toll-free registration runbook lives at [SMS_REGISTRATION_RUNBOOK.md](/C:/w/myveevee/codex/swca/SMS_REGISTRATION_RUNBOOK.md:1).
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
+- Twin Card backend source lives under `aws/twin-card/`; CDK outputs `TwinCardActivationTwinCardApiEndpoint...` for `VITE_TWIN_CARD_API_URL`.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

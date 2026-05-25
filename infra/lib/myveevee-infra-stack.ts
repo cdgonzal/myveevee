@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { PartnerIntakeForm, repoPath } from "./partner-intake-form";
+import { TwinCardActivation } from "./twin-card-activation";
 
 export class MyVeeVeeInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -65,6 +66,13 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       description: "Optional AWS End User Messaging SMS configuration set for SWCA reward SMS.",
     });
 
+    const twinCardBedrockImageModelId = new cdk.CfnParameter(this, "TwinCardBedrockImageModelId", {
+      type: "String",
+      default: "",
+      description:
+        "Optional Bedrock image model ID for Twin Card avatar generation. Leave blank to deploy photo-card fallback mode.",
+    });
+
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
       partnerKey: "swca",
       formId: "swca-wellness-priority-intake",
@@ -89,6 +97,13 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       smsDeliveryEnabled: smsDeliveryEnabled.valueAsString,
       smsOriginationIdentity: smsOriginationIdentity.valueAsString,
       smsConfigurationSetName: smsConfigurationSetName.valueAsString,
+    });
+
+    new TwinCardActivation(this, "TwinCardActivation", {
+      allowedOrigins: allowedOrigins.valueAsList,
+      publicBaseUrl: publicBaseUrl.valueAsString,
+      alertEmail: alertEmail.valueAsString,
+      bedrockImageModelId: twinCardBedrockImageModelId.valueAsString,
     });
   }
 }
