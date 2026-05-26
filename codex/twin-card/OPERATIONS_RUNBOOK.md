@@ -297,6 +297,31 @@ If a record is stuck at `completed` with `renderStatus=not_started`, check wheth
 8. Confirm DynamoDB has the same `cardId` and final statuses.
 9. Confirm all Twin Card alarms are `OK`.
 
+## Avatar Recipe Replay
+
+Use replay when marketing wants to compare avatar recipes without repeating the whole iPad/mobile funnel. The replay tool takes the latest existing `source/normalized.jpg` images from DynamoDB/S3, invokes the current avatar recipe, and writes outputs under `twin-card-replay/` so it does not trigger print composition or alter participant runs.
+
+```powershell
+$env:AWS_CONFIG_FILE="$env:USERPROFILE\.aws\config"
+$env:AWS_SHARED_CREDENTIALS_FILE="$env:USERPROFILE\.aws\credentials"
+$env:AWS_PROFILE="glue-admin"
+$env:AWS_REGION="us-east-1"
+node aws/twin-card/replay-avatar-recipe.mjs --limit=3
+```
+
+Output locations:
+
+- Local comparison files: `_sandbox/twin-card-avatar-replays/{timestamp}/`
+- Local side-by-side report: `_sandbox/twin-card-avatar-replays/{timestamp}/index.html`
+- S3 replay files: `s3://myveevee-twin-card-767828748348-us-east-1/twin-card-replay/{avatarRecipeVersion}/{timestamp}/`
+- `manifest.json` includes source keys, generated replay keys, provider id, and recipe version.
+
+For a wiring-only dry run that does not call Bedrock:
+
+```powershell
+node aws/twin-card/replay-avatar-recipe.mjs --limit=3 --mock --no-write-s3
+```
+
 ## Print Artifact Contract
 
 The print composer intentionally writes two print-stage artifacts:

@@ -5,7 +5,8 @@
   "type": "module",
   "description": "AWS Lambda handler for the VeeVee Twin Card expo activation.",
   "scripts": {
-    "check": "node --check handler.mjs && node --check avatar-generator.mjs && node --check print-composer.mjs"
+    "check": "node --check handler.mjs && node --check avatar-generator.mjs && node --check print-composer.mjs && node --check replay-avatar-recipe.mjs",
+    "replay:avatar": "node replay-avatar-recipe.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1047.0",

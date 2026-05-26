@@ -192,6 +192,7 @@ The recipe now optimizes for likeness before style:
 - Explicitly reject changed identity, changed face, changed hairstyle, removed/added glasses, and overly glam beauty-filter output.
 - Keep marketing copy out of the avatar prompt; final text belongs in the print-composer frame.
 - Record `avatarRecipeId` and `avatarRecipeVersion` in the DynamoDB row and run JSON for traceability.
+- Use `aws/twin-card/replay-avatar-recipe.mjs` to replay the latest existing source photos through the current recipe without submitting the full expo funnel again.
 
 Prompt shape:
 
