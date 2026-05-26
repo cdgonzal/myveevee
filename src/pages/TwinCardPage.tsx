@@ -86,7 +86,6 @@ const copy = {
       "Your photo and responses are used to create a visual Twin Card experience for educational, promotional, and informational purposes only. VeeVee does not diagnose, treat, prevent, or monitor any medical condition from your photo or answers. Your Twin Card is not medical advice, not a medical record, and does not replace care from a licensed clinician. By continuing, you give VeeVee permission to process your photo, create and display your Twin Card, email you about your card and VeeVee, and release VeeVee and its partners from claims related to this non-medical experience.",
     cameraTitle: "Get ready for your Health Twin photo",
     cameraBody: "Look at the camera. Smile. Your Twin Card is almost ready.",
-    countdownButton: "Start Countdown",
     openCamera: "Open Camera",
     generating: "Creating your Twin Card...",
     successPill: "Success",
@@ -137,7 +136,6 @@ const copy = {
       "Tu foto y respuestas se usan para crear una experiencia visual de Twin Card con fines educativos, promocionales e informativos solamente. VeeVee no diagnostica, trata, previene ni monitorea ninguna condicion medica usando tu foto o respuestas. Tu Twin Card no es consejo medico, no es un record medico y no reemplaza la atencion de un profesional de salud autorizado. Al continuar, das permiso a VeeVee para procesar tu foto, crear y mostrar tu Twin Card, enviarte emails sobre tu tarjeta y VeeVee, y liberas a VeeVee y sus socios de reclamos relacionados con esta experiencia no medica.",
     cameraTitle: "Preparate para la foto de tu Health Twin",
     cameraBody: "Mira la camara. Sonrie. Tu Twin Card casi esta lista.",
-    countdownButton: "Iniciar cuenta regresiva",
     openCamera: "Abrir camara",
     generating: "Creando tu Twin Card...",
     successPill: "Exito",
@@ -163,11 +161,9 @@ export default function TwinCardPage() {
   const [language, setLanguage] = useState<FlowLanguage>("en");
   const [form, setForm] = useState<TwinCardFormValues>(initialForm);
   const [showConsentDetails, setShowConsentDetails] = useState(false);
-  const [countdown, setCountdown] = useState<number | null>(null);
   const [confirmationCountdown, setConfirmationCountdown] = useState(CONFIRMATION_REDIRECT_SECONDS);
   const [confirmationMode, setConfirmationMode] = useState<ConfirmationMode>("redirect");
   const [captureConfirmation, setCaptureConfirmation] = useState<CaptureConfirmation | null>(null);
-  const [cameraReady, setCameraReady] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
@@ -229,22 +225,9 @@ export default function TwinCardPage() {
     setStep("camera");
   };
 
-  const startCountdown = () => {
+  const openCamera = () => {
     setError("");
-    setCameraReady(false);
-    setCountdown(4);
-    let next = 4;
-    const timer = window.setInterval(() => {
-      next -= 1;
-      if (next <= 0) {
-        window.clearInterval(timer);
-        setCountdown(null);
-        setCameraReady(true);
-        cameraInputRef.current?.click();
-        return;
-      }
-      setCountdown(next);
-    }, 650);
+    cameraInputRef.current?.click();
   };
 
   const handlePhoto = async (file: File | undefined) => {
@@ -316,8 +299,6 @@ export default function TwinCardPage() {
     setStep("language");
     setForm(initialForm);
     setShowConsentDetails(false);
-    setCountdown(null);
-    setCameraReady(false);
     setIsGenerating(false);
     setConfirmationCountdown(CONFIRMATION_REDIRECT_SECONDS);
     setConfirmationMode("redirect");
@@ -440,7 +421,43 @@ export default function TwinCardPage() {
             {step === "consent" ? (
               <Stack spacing={5}>
                 <StepHeader title={t.consentTitle} eyebrow={t.event} />
-                <Checkbox size="lg" isChecked={form.consentAccepted} onChange={acceptConsent}>
+                <Checkbox
+                  size="lg"
+                  isChecked={form.consentAccepted}
+                  onChange={acceptConsent}
+                  onClick={acceptConsent}
+                  w="100%"
+                  alignItems="center"
+                  p={{ base: 5, md: 6 }}
+                  border="2px solid"
+                  borderColor={form.consentAccepted ? "#168047" : "#b7d6e8"}
+                  borderRadius="18px"
+                  bg={form.consentAccepted ? "#e8fbef" : "#f7fbff"}
+                  boxShadow="0 14px 34px rgba(17, 119, 186, 0.12)"
+                  cursor="pointer"
+                  transition="border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease"
+                  _hover={{
+                    borderColor: "#1177BA",
+                    boxShadow: "0 18px 42px rgba(17, 119, 186, 0.18)",
+                    transform: "translateY(-1px)",
+                  }}
+                  sx={{
+                    ".chakra-checkbox__control": {
+                      width: "34px",
+                      height: "34px",
+                      borderRadius: "10px",
+                      borderWidth: "3px",
+                      flex: "0 0 34px",
+                    },
+                    ".chakra-checkbox__label": {
+                      marginInlineStart: "16px",
+                      fontSize: "1.05rem",
+                      fontWeight: "800",
+                      lineHeight: "1.45",
+                      color: "#172033",
+                    },
+                  }}
+                >
                   {t.consent}
                 </Checkbox>
                 <Button
@@ -468,15 +485,9 @@ export default function TwinCardPage() {
                 <Text fontSize="lg" color="#35445d">
                   {isGenerating ? t.generating : t.cameraBody}
                 </Text>
-                {countdown ? (
-                  <Text fontSize="90px" lineHeight="1" fontWeight="900" color="#1177BA">
-                    {countdown}
-                  </Text>
-                ) : !cameraReady ? (
-                  <Button minH="72px" fontSize="xl" onClick={startCountdown} isLoading={isGenerating}>
-                    {t.countdownButton}
-                  </Button>
-                ) : null}
+                <Button minH="72px" fontSize="xl" onClick={openCamera} isLoading={isGenerating} isDisabled={isGenerating}>
+                  {t.openCamera}
+                </Button>
                 <Input
                   ref={cameraInputRef}
                   type="file"
@@ -485,11 +496,6 @@ export default function TwinCardPage() {
                   display="none"
                   onChange={(event) => handlePhoto(event.target.files?.[0])}
                 />
-                {cameraReady ? (
-                  <Button variant="outline" onClick={() => cameraInputRef.current?.click()} isDisabled={isGenerating}>
-                    {t.openCamera}
-                  </Button>
-                ) : null}
                 {error ? <Text color="#8a3b3b">{error}</Text> : null}
               </Stack>
             ) : null}
