@@ -99,6 +99,7 @@ Twin Card run visibility:
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
 - Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means Bedrock succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
 - S3 source-image object creation triggers Nova Canvas generation. S3 generated-image object creation triggers print composition. The current print composer writes a deterministic SVG frame; PNG/JPEG output remains the next hardening pass.
+- Twin Card Lambda logs, CDK output checks, S3/DynamoDB inspection commands, alarm checks, and live smoke-test steps live in `codex/twin-card/OPERATIONS_RUNBOOK.md`.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 
@@ -180,6 +181,7 @@ After a future stack change deploys:
 6. Redeploy Amplify `main` if any frontend env var changed.
 7. Submit one live test from `https://myveevee.com/swca/intake`.
 8. Confirm one S3 object, one SES email, one DynamoDB eligibility record, one reward claim after spinning, contact fields after the winner form is submitted, one campaign event row, and one redacted admin report row.
+9. For Twin Card stack changes, follow `codex/twin-card/OPERATIONS_RUNBOOK.md`: confirm `VITE_TWIN_CARD_API_URL`, submit one live funnel run, check `/twin-dashboard`, verify S3 objects, verify the DynamoDB row, and check worker Lambda logs plus alarms.
 
 ## Current Verification
 
