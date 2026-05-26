@@ -22,6 +22,8 @@ export type TwinCardApiCard = {
   generationStatus: TwinCardGenerationStatus;
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
+  avatarRecipeId?: string;
+  avatarRecipeVersion?: string;
   renderStatus?: TwinCardLead["renderStatus"];
   fulfillmentStatus?: TwinCardLead["fulfillmentStatus"];
   eventName: string;
@@ -176,6 +178,8 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     generationStatus: card.generationStatus,
     generationProvider: card.generationProvider,
     generationMessage: card.generationMessage,
+    avatarRecipeId: card.avatarRecipeId ?? fallback?.avatarRecipeId,
+    avatarRecipeVersion: card.avatarRecipeVersion ?? fallback?.avatarRecipeVersion,
     renderStatus: card.renderStatus ?? fallback?.renderStatus,
     fulfillmentStatus: card.fulfillmentStatus ?? fallback?.fulfillmentStatus,
     eventName: card.eventName,

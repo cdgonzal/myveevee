@@ -183,6 +183,8 @@ export function buildRunArtifact(record) {
       bedrockModelId: record.bedrockModelId || null,
       bedrockProviderPriority: record.bedrockProviderPriority || null,
       bedrockProviderAttempts: record.bedrockProviderAttempts || null,
+      avatarRecipeId: record.avatarRecipeId || null,
+      avatarRecipeVersion: record.avatarRecipeVersion || null,
     },
     render: {
       status: record.renderStatus,

@@ -317,6 +317,7 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
           <Field label="Provider" value={card.generationProvider} />
+          <Field label="Recipe" value={card.avatarRecipeVersion ?? card.avatarRecipeId ?? "-"} />
           <Field label="Print" value={getTwinCardRenderStatusLabel(card.renderStatus)} />
           <Field label="Updated" value={formatDate(card.updatedAt)} />
         </SimpleGrid>
@@ -426,6 +427,8 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     generationStatus: lead.generationStatus,
     generationProvider: lead.generationProvider,
     generationMessage: lead.generationMessage,
+    avatarRecipeId: lead.avatarRecipeId,
+    avatarRecipeVersion: lead.avatarRecipeVersion,
     renderStatus: lead.renderStatus,
     fulfillmentStatus: lead.fulfillmentStatus,
     eventName: lead.eventName,

@@ -350,6 +350,8 @@ Known baseline issue:
   - AWS toll-free registration id, required business fields, and enablement guardrails
 - `codex/twin-card/BEDROCK_ASYNC_PIPELINE_PLAN.md`
   - S3-triggered Stability avatar generation, deterministic print layout, and Canon SELPHY-ready print raster pipeline for Twin Card
+- `src/twinCard/avatarRecipeContract.json`
+  - source-of-truth avatar recipe for identity-preserving 2D Health Twin generation
 - `codex/twin-card/OPERATIONS_RUNBOOK.md`
   - Twin Card AWS operations runbook for Lambda logs, CDK outputs, S3/DynamoDB checks, alarms, and live smoke tests
 - `aws/swca-intake/README.md`

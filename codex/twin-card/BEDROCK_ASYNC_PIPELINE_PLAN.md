@@ -30,6 +30,7 @@ Use "generated image" or "model output image" for the Bedrock image result. Rese
 Use active Stability AI Image Services inference profiles through Amazon Bedrock Runtime `InvokeModel`.
 
 Provider priority source of truth: `src/twinCard/avatarProviderContract.json`.
+Avatar recipe source of truth: `src/twinCard/avatarRecipeContract.json`.
 
 Default priority:
 
@@ -182,21 +183,31 @@ Recommended print composition:
 
 Bedrock avatar prompts should be generated server-side from controlled templates, not raw user text.
 
-Example prompt shape:
+Current recipe: `twin-card-avatar-recipe-v2` / `identity-preserving-v2`.
+
+The recipe now optimizes for likeness before style:
+
+- Say "same person shown in the reference photo," not merely "inspired by the reference photo."
+- Preserve face shape, hair color/style, skin tone, age impression, eyewear, facial hair, head angle, pose, framing, and expression.
+- Explicitly reject changed identity, changed face, changed hairstyle, removed/added glasses, and overly glam beauty-filter output.
+- Keep marketing copy out of the avatar prompt; final text belongs in the print-composer frame.
+- Record `avatarRecipeId` and `avatarRecipeVersion` in the DynamoDB row and run JSON for traceability.
+
+Prompt shape:
 
 ```text
-Create a polished, optimistic 2D wellness avatar inspired by the reference photo.
-Friendly expression, clean healthcare-friendly style, warm lighting, modern blue
-and white palette, premium event card look, no text, no logos, no diagnosis, no
-medical equipment, no exaggerated features. The image should feel aspirational
-and positive for a pain management and whole-body wellness experience.
+Create a polished 2D wellness avatar of the same person shown in the reference photo.
+Preserve recognizable identity and likeness: face shape, hair color, hair style,
+skin tone, age impression, eyewear, facial hair if present, head angle, pose,
+framing, and natural expression. Do not invent a new person.
 ```
 
 Negative prompt themes:
 
 ```text
-text, logo, watermark, medical diagnosis, hospital equipment, injury, illness,
-scary, distorted face, extra limbs, low resolution, harsh shadows
+different person, changed identity, changed face, changed hairstyle,
+different hair color, removed glasses, added glasses, different age,
+beauty filter, overly glam, text, logo, watermark, distorted face
 ```
 
 ## Status Alignment

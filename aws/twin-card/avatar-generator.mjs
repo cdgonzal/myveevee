@@ -13,6 +13,7 @@ import {
   keyForGenerated,
   parseCardKey,
 } from "./common.mjs";
+import avatarRecipeContract from "../../src/twinCard/avatarRecipeContract.json";
 
 const s3 = new S3Client({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
@@ -59,6 +60,8 @@ async function processSourceImage(sourceImageS3Key) {
     generationProvider: "bedrock",
     generationMessage: "Creating your VeeVee Twin Card image.",
     bedrockProviderPriority: PROVIDER_PRIORITY,
+    avatarRecipeId: avatarRecipeContract.id,
+    avatarRecipeVersion: avatarRecipeContract.version,
     updatedAt: new Date().toISOString(),
   });
 
@@ -112,6 +115,8 @@ async function processSourceImage(sourceImageS3Key) {
     bedrockModelId: generated.providerId,
     bedrockProviderPriority: PROVIDER_PRIORITY,
     bedrockProviderAttempts: attempts,
+    avatarRecipeId: avatarRecipeContract.id,
+    avatarRecipeVersion: avatarRecipeContract.version,
     generatedAvatarS3Key,
     generatedAvatarBytes: generated.buffer.length,
     generatedAvatarContentType: generated.contentType,
@@ -207,41 +212,51 @@ async function buildStabilityPayload(providerId, card, sourceImage) {
   const base64Image = sourceImage.buffer.toString("base64");
   const prompt = buildPrompt(card);
   const negativePrompt = buildNegativePrompt();
+  const settings = avatarRecipeContract.providerSettings ?? {};
 
   if (providerId === "us.stability.stable-image-control-structure-v1:0") {
-    return {
+    const controlSettings = settings.stabilityControlStructure ?? {};
+    const payload = {
       image: base64Image,
       prompt,
       negative_prompt: negativePrompt,
-      control_strength: 0.72,
-      output_format: "png",
-      style_preset: "digital-art",
+      control_strength: controlSettings.controlStrength ?? 0.9,
+      output_format: controlSettings.outputFormat ?? "png",
     };
+    if (controlSettings.stylePreset) {
+      payload.style_preset = controlSettings.stylePreset;
+    }
+    return payload;
   }
 
   if (providerId === "us.stability.stable-style-transfer-v1:0") {
     const styleImage = await readObject(AVATAR_STYLE_REFERENCE_S3_KEY);
+    const transferSettings = settings.stabilityStyleTransfer ?? {};
     return {
       init_image: base64Image,
       style_image: styleImage.buffer.toString("base64"),
       prompt,
       negative_prompt: negativePrompt,
-      output_format: "png",
-      composition_fidelity: 0.75,
-      style_strength: 0.65,
-      change_strength: 0.55,
+      output_format: transferSettings.outputFormat ?? "png",
+      composition_fidelity: transferSettings.compositionFidelity ?? 0.86,
+      style_strength: transferSettings.styleStrength ?? 0.42,
+      change_strength: transferSettings.changeStrength ?? 0.38,
     };
   }
 
   if (providerId === "us.stability.stable-image-style-guide-v1:0") {
-    return {
+    const guideSettings = settings.stabilityStyleGuide ?? {};
+    const payload = {
       image: base64Image,
       prompt,
       negative_prompt: negativePrompt,
-      output_format: "png",
-      fidelity: 0.7,
-      style_preset: "digital-art",
+      output_format: guideSettings.outputFormat ?? "png",
+      fidelity: guideSettings.fidelity ?? 0.82,
     };
+    if (guideSettings.stylePreset) {
+      payload.style_preset = guideSettings.stylePreset;
+    }
+    return payload;
   }
 
   throw new Error(`No Stability payload builder for ${providerId}`);
@@ -294,31 +309,14 @@ function buildPrompt(card) {
   const interest = card.wellnessInterest ?? "just_exploring";
   const focus = INTEREST_LABELS[interest] ?? INTEREST_LABELS.just_exploring;
   const aspiration = GOAL_ASPIRATIONS[interest] ?? GOAL_ASPIRATIONS.just_exploring;
-  return [
-    "Create a polished, optimistic 2D wellness avatar inspired by the reference photo.",
-    "Friendly expression, clean healthcare-friendly style, warm lighting, modern blue and white palette.",
-    "Premium event card look, no text, no logos, no diagnosis, no medical equipment, no exaggerated features.",
-    `Wellness focus: ${focus}.`,
-    `Aspirational tone: ${aspiration}`,
-    "The image should feel positive for a 3-6 month wellness journey.",
-  ].join(" ");
+  return (avatarRecipeContract.promptTemplate ?? [])
+    .join(" ")
+    .replaceAll("{{focus}}", focus)
+    .replaceAll("{{aspiration}}", aspiration);
 }
 
 function buildNegativePrompt() {
-  return [
-    "text",
-    "logo",
-    "watermark",
-    "medical diagnosis",
-    "hospital equipment",
-    "injury",
-    "illness",
-    "scary",
-    "distorted face",
-    "extra limbs",
-    "low resolution",
-    "harsh shadows",
-  ].join(", ");
+  return (avatarRecipeContract.negativePromptTerms ?? []).join(", ");
 }
 
 function parseProviderPriority(value, legacyModelOverride) {

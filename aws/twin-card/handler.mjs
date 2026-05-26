@@ -191,6 +191,8 @@ async function serializeCard(card, options = {}) {
     generationStatus: card.generationStatus,
     generationProvider: card.generationProvider,
     generationMessage: card.generationMessage,
+    avatarRecipeId: card.avatarRecipeId,
+    avatarRecipeVersion: card.avatarRecipeVersion,
     renderStatus: card.renderStatus,
     fulfillmentStatus: card.fulfillmentStatus,
     eventName: card.eventName,

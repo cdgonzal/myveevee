@@ -104,6 +104,8 @@ Style Transfer requires `TwinCardAvatarStyleReferenceS3Key` to point to a VeeVee
 
 The avatar-generator Lambda role includes `bedrock:InvokeModel` plus `aws-marketplace:ViewSubscriptions`, `aws-marketplace:Subscribe`, and `aws-marketplace:Unsubscribe`. Bedrock requires those Marketplace actions when first enabling access to some Stability inference profiles, including Control Structure.
 
+Twin Card avatar prompt/recipe behavior is contracted in `src/twinCard/avatarRecipeContract.json`. The current `identity-preserving-v2` recipe prioritizes resemblance to the uploaded photo before style: same person, same face structure, hair, skin tone, eyewear, facial hair, pose, framing, and expression. The avatar-generator records `avatarRecipeId` and `avatarRecipeVersion` in DDB/run JSON so dashboard review can tie output quality back to a concrete recipe.
+
 Current production Twin Card API endpoint for Amplify `main`: `https://kt51f0edy2.execute-api.us-east-1.amazonaws.com/twin-card/cards`
 
 Twin Card run visibility:

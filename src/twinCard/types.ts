@@ -59,6 +59,8 @@ export type TwinCardLead = {
   generationStatus: TwinCardGenerationStatus;
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
+  avatarRecipeId?: string;
+  avatarRecipeVersion?: string;
   renderStatus?: TwinCardRenderStatus;
   fulfillmentStatus?: TwinCardFulfillmentStatus;
   eventName: string;

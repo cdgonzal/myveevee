@@ -1,6 +1,7 @@
 {
   "id": "twin-card-avatar-provider-priority-v1",
   "description": "Bedrock image-provider priority for SWCA Twin Card avatar generation. Use active inference profile IDs before falling back to the normalized uploaded photo.",
+  "recipeContractPath": "src/twinCard/avatarRecipeContract.json",
   "avatarProviderPriority": [
     "us.stability.stable-image-control-structure-v1:0",
     "us.stability.stable-style-transfer-v1:0",

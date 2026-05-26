@@ -214,6 +214,7 @@ Use `/twin-dashboard` first during booth operations. Use DynamoDB directly only 
 ## Avatar Provider Contract
 
 Source of truth: `src/twinCard/avatarProviderContract.json`.
+Avatar recipe source of truth: `src/twinCard/avatarRecipeContract.json`.
 
 Default provider priority:
 
@@ -245,6 +246,13 @@ aws-marketplace:Unsubscribe
 ```
 
 If Control Structure returns a Marketplace subscription or authorization error, confirm the deployed Lambda role still has the Marketplace actions and retry after a short propagation delay.
+
+Current avatar recipe:
+
+- `avatarRecipeId`: `twin-card-avatar-recipe-v2`
+- `avatarRecipeVersion`: `identity-preserving-v2`
+
+The recipe prioritizes likeness over heavy restyling. It tells the model to preserve the same person's face shape, hair, skin tone, eyewear, facial hair, pose, framing, and expression. Control Structure uses higher structure control and no aggressive style preset. If marketing reports that avatars still do not resemble the uploaded photo, first inspect `bedrockProviderAttempts`, `avatarRecipeVersion`, and the source/generated image pair in `/twin-dashboard`, then tune the recipe contract before changing the print frame.
 
 ## Expected Status Flow
 

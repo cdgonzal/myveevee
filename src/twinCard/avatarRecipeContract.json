@@ -1,0 +1,67 @@
+{
+  "id": "twin-card-avatar-recipe-v2",
+  "version": "identity-preserving-v2",
+  "purpose": "Generate a polished 2D wellness avatar while preserving the uploaded person's recognizable likeness as much as the image model allows.",
+  "promptTemplate": [
+    "Create a polished 2D wellness avatar of the same person shown in the reference photo.",
+    "Preserve recognizable identity and likeness: face shape, hair color, hair style, skin tone, age impression, eyewear, facial hair if present, head angle, pose, framing, and natural expression.",
+    "Do not invent a new person. Do not beautify into a different face. Do not change hairstyle, hair length, glasses, facial proportions, or defining visible features.",
+    "Use the uploaded photo as the source of truth for structure, composition, and personal features.",
+    "Render as a clean healthcare-friendly 2D avatar with soft lighting, healthy skin texture, natural smile or neutral friendly expression, and premium event-card polish.",
+    "Keep the background simple and card-friendly. No text, no logos, no diagnosis, no medical equipment.",
+    "Wellness focus: {{focus}}.",
+    "Aspirational tone: {{aspiration}}."
+  ],
+  "negativePromptTerms": [
+    "different person",
+    "changed identity",
+    "changed face",
+    "changed hairstyle",
+    "different hair color",
+    "removed glasses",
+    "added glasses",
+    "different age",
+    "different gender presentation",
+    "beauty filter",
+    "overly glam",
+    "plastic skin",
+    "text",
+    "logo",
+    "watermark",
+    "medical diagnosis",
+    "hospital equipment",
+    "injury",
+    "illness",
+    "scary",
+    "distorted face",
+    "extra limbs",
+    "low resolution",
+    "harsh shadows"
+  ],
+  "providerSettings": {
+    "stabilityControlStructure": {
+      "controlStrength": 0.9,
+      "outputFormat": "png",
+      "stylePreset": null,
+      "reason": "Higher structure control and no aggressive style preset should reduce identity drift for expo selfies."
+    },
+    "stabilityStyleTransfer": {
+      "compositionFidelity": 0.86,
+      "styleStrength": 0.42,
+      "changeStrength": 0.38,
+      "outputFormat": "png",
+      "reason": "Keep the user's composition and likeness stronger than the reference style."
+    },
+    "stabilityStyleGuide": {
+      "fidelity": 0.82,
+      "outputFormat": "png",
+      "stylePreset": null,
+      "reason": "Use Style Guide as a conservative fallback, not as a heavy restyle."
+    }
+  },
+  "operatorNotes": [
+    "If outputs still do not resemble the uploaded person, lower style influence before changing providers.",
+    "Do not add marketing copy to the avatar prompt; final text belongs in the print-composer frame.",
+    "For maximum likeness, the booth photo should be front-facing, well-lit, and include one person only."
+  ]
+}
