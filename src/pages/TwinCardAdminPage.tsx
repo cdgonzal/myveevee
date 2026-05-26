@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, Heading, HStack, Image, Link, Stack, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { apiCardToLead, fetchRecentTwinCards, type TwinCardApiCard } from "../twinCard/api";
+import { buildTwinCardPrintCss } from "../twinCard/printContract";
 import { listTwinCardLeads } from "../twinCard/storage";
 import { TwinCardPrintView } from "../twinCard/TwinCardPrintView";
 import type { TwinCardLead } from "../twinCard/types";
@@ -87,18 +88,4 @@ export default function TwinCardAdminPage() {
   );
 }
 
-const printCss = `
-@media print {
-  body * { visibility: hidden !important; }
-  .twin-card-print-area, .twin-card-print-area * { visibility: visible !important; }
-  .twin-card-print-area {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 5in !important;
-    height: 7in !important;
-    box-shadow: none !important;
-  }
-  @page { size: 5in 7in; margin: 0; }
-}
-`;
+const printCss = buildTwinCardPrintCss();

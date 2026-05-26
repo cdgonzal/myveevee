@@ -4,6 +4,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { apiCardToLead, fetchTwinCard } from "../twinCard/api";
 import { TWIN_CARD_EVENT_NAME } from "../twinCard/constants";
 import { trackTwinCardEvent } from "../twinCard/events";
+import { buildTwinCardPrintCss } from "../twinCard/printContract";
 import { getTwinCardLead } from "../twinCard/storage";
 import { TwinCardPrintView } from "../twinCard/TwinCardPrintView";
 import type { TwinCardLead } from "../twinCard/types";
@@ -91,18 +92,4 @@ export default function TwinCardResultPage() {
   );
 }
 
-const printCss = `
-@media print {
-  body * { visibility: hidden !important; }
-  .twin-card-print-area, .twin-card-print-area * { visibility: visible !important; }
-  .twin-card-print-area {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 5in !important;
-    height: 7in !important;
-    box-shadow: none !important;
-  }
-  @page { size: 5in 7in; margin: 0; }
-}
-`;
+const printCss = buildTwinCardPrintCss();

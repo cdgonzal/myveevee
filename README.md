@@ -65,6 +65,7 @@ Campaign/direct-link route:
   - `noindex`
 - `/twin-card`
   - SWCA Medical Summit expo activation flow for lead capture, photo capture, Twin Card generation, and booth printing
+  - print output is governed by [printContract.json](/C:/w/myveevee/src/twinCard/printContract.json:1) for Canon SELPHY CP1500 4x6 postcard output
   - backed by native AWS API Gateway, Lambda, S3, DynamoDB, and optional Bedrock image generation
   - `noindex`
 - `/twin-card/result/:cardId`
@@ -112,4 +113,5 @@ Campaign/direct-link route:
 - The AWS toll-free registration runbook lives at [SMS_REGISTRATION_RUNBOOK.md](/C:/w/myveevee/codex/swca/SMS_REGISTRATION_RUNBOOK.md:1).
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - Twin Card backend source lives under `aws/twin-card/`; CDK outputs `TwinCardActivationTwinCardApiEndpoint...` for `VITE_TWIN_CARD_API_URL`.
+- Twin Card print sizing is contracted in [printContract.json](/C:/w/myveevee/src/twinCard/printContract.json:1): Canon SELPHY CP1500, 4x6/Postcard portrait, 300 DPI, 1200x1800 px, sRGB, borderless, 60 px safe margin.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

@@ -1,6 +1,11 @@
 import { Box, Image, Stack, Text } from "@chakra-ui/react";
 import { QRCodeSVG } from "qrcode.react";
 import { TWIN_CARD_EVENT_DATE, TWIN_CARD_EVENT_NAME } from "./constants";
+import {
+  TWIN_CARD_PREVIEW_HEIGHT_PX,
+  TWIN_CARD_PREVIEW_WIDTH_PX,
+  TWIN_CARD_PRINT_CONTRACT,
+} from "./printContract";
 import type { TwinCardLead } from "./types";
 
 type TwinCardPrintViewProps = {
@@ -14,8 +19,8 @@ export function TwinCardPrintView({ lead, resultUrl = lead.cardResultUrl }: Twin
   return (
     <Box
       className="twin-card-print-area"
-      w={{ base: "min(100%, 360px)", md: "360px" }}
-      h={{ base: "504px", md: "504px" }}
+      w={{ base: `min(100%, ${TWIN_CARD_PREVIEW_WIDTH_PX}px)`, md: `${TWIN_CARD_PREVIEW_WIDTH_PX}px` }}
+      h={{ base: `${TWIN_CARD_PREVIEW_HEIGHT_PX}px`, md: `${TWIN_CARD_PREVIEW_HEIGHT_PX}px` }}
       bg="#ffffff"
       color="#061b38"
       border="1px solid rgba(6, 37, 76, 0.14)"
@@ -40,8 +45,8 @@ export function TwinCardPrintView({ lead, resultUrl = lead.cardResultUrl }: Twin
 
       <Stack spacing={4} px={5} py={5} align="center">
         <Box
-          w="230px"
-          h="230px"
+          w="252px"
+          h="252px"
           borderRadius="8px"
           bg="linear-gradient(135deg, #e9fbff, #f8fbff)"
           border="1px solid rgba(17, 119, 186, 0.18)"
@@ -72,17 +77,20 @@ export function TwinCardPrintView({ lead, resultUrl = lead.cardResultUrl }: Twin
 
         <Stack direction="row" spacing={3} align="center" w="100%" justify="center">
           <Box bg="white" p={2} border="1px solid rgba(6, 37, 76, 0.12)" borderRadius="6px">
-            <QRCodeSVG value={resultUrl} size={76} level="M" includeMargin={false} />
+            <QRCodeSVG value={resultUrl} size={86} level="M" includeMargin={false} />
           </Box>
           <Stack spacing={0} maxW="140px">
             <Text fontSize="13px" fontWeight="900">
               Continue your journey
             </Text>
             <Text fontSize="10px" color="#5d6880" lineHeight="1.35">
-              Scan for your card page and VeeVee beta access.
+              Scan for your card page and beta access.
             </Text>
           </Stack>
         </Stack>
+        <Text fontSize="8px" color="#7b879a" textAlign="center">
+          Optimized for {TWIN_CARD_PRINT_CONTRACT.printer.model} {TWIN_CARD_PRINT_CONTRACT.paper.name} printing.
+        </Text>
       </Stack>
     </Box>
   );

@@ -1,0 +1,40 @@
+{
+  "id": "canon-selphy-cp1500-postcard-v1",
+  "printer": {
+    "manufacturer": "Canon",
+    "model": "SELPHY CP1500",
+    "method": "dye-sublimation thermal transfer"
+  },
+  "paper": {
+    "name": "Postcard",
+    "orientation": "portrait",
+    "printMode": "borderless",
+    "widthIn": 4,
+    "heightIn": 6,
+    "finishedWidthMm": 100,
+    "finishedHeightMm": 148
+  },
+  "artwork": {
+    "dpi": 300,
+    "widthPx": 1200,
+    "heightPx": 1800,
+    "colorSpace": "sRGB",
+    "exportFormats": ["png", "jpeg"],
+    "jpegQuality": 0.92,
+    "safeMarginPx": 60,
+    "qrMinSizePx": 260
+  },
+  "printerSettings": {
+    "paperSize": "4x6 / Postcard",
+    "finish": "Glossy",
+    "fitToPage": false,
+    "borderless": true,
+    "colorMode": "Color"
+  },
+  "notes": [
+    "Keep all critical text, logo, name, and QR content inside the safe margin.",
+    "Let background art bleed to the edge for borderless printing.",
+    "Use strong contrast; avoid tiny light-blue text on white.",
+    "The Twin Card is a wellness identity card, not a medical record."
+  ]
+}
