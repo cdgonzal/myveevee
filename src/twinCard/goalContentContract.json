@@ -1,0 +1,75 @@
+{
+  "id": "swca-twin-card-goal-content-v1",
+  "purpose": "Source-of-truth copy for Twin Card findings and recommendations tied to the selected aspirational goal.",
+  "tone": [
+    "positive",
+    "aspirational",
+    "simple",
+    "appointment-oriented",
+    "wellness-only"
+  ],
+  "medicalGuardrails": [
+    "Do not diagnose, predict, or imply a medical condition.",
+    "Frame findings as wellness-focus observations based on the user's selected goal.",
+    "Recommendations should encourage a conversation with an SWCA clinician.",
+    "Keep the printed card fun and motivational, not clinical."
+  ],
+  "cardSections": {
+    "findingLabel": "Your Health Twin Finding",
+    "recommendationsLabel": "Next Best Steps",
+    "askDoctorLabel": "Ask your SWCA doctor"
+  },
+  "goals": {
+    "track_goals": {
+      "goalTitle": "Move With Less Pain",
+      "cardHeadline": "Comfort + Mobility Focus",
+      "finding": "Your Health Twin is focused on helping you move through the day with more comfort, confidence, and ease.",
+      "recommendations": [
+        "Talk with SWCA about where pain limits your daily routine.",
+        "Ask which care options may support mobility and stiffness.",
+        "Book a visit to build a plan that fits your life."
+      ],
+      "doctorQuestions": [
+        "What can help me move with less pain?",
+        "What should I try first for stiffness or limited mobility?"
+      ],
+      "cta": "Schedule a pain and mobility conversation with SWCA."
+    },
+    "prepare_for_care": {
+      "goalTitle": "Get Back To Life",
+      "cardHeadline": "Daily Life Comeback Focus",
+      "finding": "Your Health Twin is focused on helping you return to the people, routines, and activities that make life feel like yours again.",
+      "recommendations": [
+        "Share what pain is keeping you from doing.",
+        "Ask SWCA about a realistic comeback plan.",
+        "Choose one daily activity you want back first."
+      ],
+      "doctorQuestions": [
+        "What is a realistic plan to get back to my normal activities?",
+        "How can I track progress between visits?"
+      ],
+      "cta": "Ask SWCA about your get-back-to-life plan."
+    },
+    "support_loved_one": {
+      "goalTitle": "Explore Advanced Care",
+      "cardHeadline": "Advanced Wellness Options",
+      "finding": "Your Health Twin is focused on exploring advanced options that may support whole-body wellness, recovery, and feeling your best.",
+      "recommendations": [
+        "Ask about functional medicine options.",
+        "Explore bracing, support, or specialty treatments.",
+        "Book a consult to see what fits your goals."
+      ],
+      "doctorQuestions": [
+        "Which advanced care options fit my goals?",
+        "Could functional medicine, bracing, or specialty treatments help me?"
+      ],
+      "cta": "Explore advanced care options with SWCA."
+    }
+  },
+  "printNotes": [
+    "Use one finding and two or three recommendations on the printed card.",
+    "Use doctorQuestions when space allows or on the email/result page.",
+    "Keep all copy inside the Canon SELPHY safe area from printContract.json.",
+    "Add a small wellness-only disclaimer if the final frame has room."
+  ]
+}
