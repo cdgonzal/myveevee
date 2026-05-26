@@ -348,6 +348,8 @@ Known baseline issue:
   - disabled-by-default SWCA SMS reward delivery plan and AWS setup checklist
 - `codex/swca/SMS_REGISTRATION_RUNBOOK.md`
   - AWS toll-free registration id, required business fields, and enablement guardrails
+- `codex/twin-card/BEDROCK_ASYNC_PIPELINE_PLAN.md`
+  - planned S3-triggered Nova Canvas avatar generation and print-composition pipeline for Twin Card
 - `aws/swca-intake/README.md`
   - SWCA intake Lambda contract, S3 object shape, and SES notification details
 - `infra/README.md`
