@@ -3,7 +3,7 @@ import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import {
   DEFAULT_CARDS_PREFIX,
-  GOAL_ASPIRATIONS,
+  GOAL_CONTENT,
   buildRunArtifact,
   keyForFailure,
   keyForPrint,
@@ -94,9 +94,28 @@ async function processGeneratedImage(generatedAvatarS3Key) {
 function buildPrintSvg(card, image) {
   const firstName = escapeXml(card.firstName || "VeeVee Guest");
   const focus = escapeXml(card.wellnessInterestLabel || "Wellness journey");
-  const aspiration = escapeXml(GOAL_ASPIRATIONS[card.wellnessInterest] ?? GOAL_ASPIRATIONS.just_exploring);
+  const goalContent = GOAL_CONTENT[card.wellnessInterest] ?? GOAL_CONTENT.just_exploring;
+  const headline = escapeXml(goalContent.cardHeadline);
+  const findingLines = wrapText(goalContent.finding, 68)
+    .slice(0, 2)
+    .map(escapeXml);
+  const recommendations = goalContent.recommendations.slice(0, 3).map(escapeXml);
+  const cta = escapeXml(goalContent.cta);
   const eventName = escapeXml(card.eventName || "4th SWCA Medical Summit");
   const imageDataUri = `data:${image.contentType};base64,${image.buffer.toString("base64")}`;
+  const findingText = findingLines
+    .map(
+      (line, index) => `
+  <text x="180" y="${1574 + index * 34}" fill="#35445D" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700">${line}</text>`
+    )
+    .join("");
+  const recommendationItems = recommendations
+    .map(
+      (recommendation, index) => `
+  <circle cx="${202 + index * 292}" cy="1662" r="7" fill="#62B879"/>
+  <text x="${222 + index * 292}" y="1671" fill="#26364F" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">${recommendation}</text>`
+    )
+    .join("");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800">
@@ -126,11 +145,35 @@ function buildPrintSvg(card, image) {
   <text x="600" y="1274" text-anchor="middle" fill="#061B38" font-family="Inter, Arial, sans-serif" font-size="92" font-weight="900">${firstName}</text>
   <text x="600" y="1342" text-anchor="middle" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">Health Twin Activated</text>
   <text x="600" y="1406" text-anchor="middle" fill="#35445D" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700">Focus: ${focus}</text>
-  <rect x="150" y="1462" width="900" height="126" rx="34" fill="#E9FBFF"/>
-  <text x="600" y="1539" text-anchor="middle" fill="#061B38" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="800">${aspiration}</text>
-  <text x="600" y="1650" text-anchor="middle" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900">Visit myveevee.com</text>
-  <text x="600" y="1698" text-anchor="middle" fill="#6B7890" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Wellness identity card. Not a medical record.</text>
+  <rect x="140" y="1440" width="920" height="246" rx="34" fill="#E9FBFF"/>
+  <text x="180" y="1488" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" letter-spacing="2">YOUR HEALTH TWIN FINDING</text>
+  <text x="180" y="1530" fill="#061B38" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">${headline}</text>${findingText}
+  <text x="180" y="1640" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="900" letter-spacing="2">NEXT BEST STEPS</text>${recommendationItems}
+  <text x="600" y="1718" text-anchor="middle" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">${cta}</text>
+  <text x="600" y="1742" text-anchor="middle" fill="#6B7890" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600">Wellness identity card. Educational only. Not medical advice or a medical record.</text>
 </svg>`;
+}
+
+function wrapText(text, maxChars) {
+  const words = String(text || "").split(/\s+/).filter(Boolean);
+  const lines = [];
+  let current = "";
+
+  words.forEach((word) => {
+    const next = current ? `${current} ${word}` : word;
+    if (next.length > maxChars && current) {
+      lines.push(current);
+      current = word;
+      return;
+    }
+    current = next;
+  });
+
+  if (current) {
+    lines.push(current);
+  }
+
+  return lines;
 }
 
 async function loadCard(cardId) {

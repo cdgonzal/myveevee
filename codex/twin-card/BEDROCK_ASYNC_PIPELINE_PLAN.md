@@ -156,7 +156,7 @@ Recommended print composition:
 - VeeVee logo.
 - SWCA brand/event line.
 - Event text: `4th SWCA Medical Summit`.
-- Positive, non-clinical aspiration line selected from the wellness goal.
+- Findings, recommendations, doctor questions, and CTA selected from `src/twinCard/goalContentContract.json`.
 - CTA: `Visit myveevee.com`.
 - Optional QR code to `https://myveevee.com/swca/funnel` or the participant result page.
 - No diagnosis, risk score, medical claim, or clinical interpretation.
@@ -172,7 +172,7 @@ Create a polished, optimistic 2D wellness avatar inspired by the reference photo
 Friendly expression, clean healthcare-friendly style, warm lighting, modern blue
 and white palette, premium event card look, no text, no logos, no diagnosis, no
 medical equipment, no exaggerated features. The image should feel aspirational
-and positive for a 3-6 month wellness journey.
+and positive for a pain management and whole-body wellness experience.
 ```
 
 Negative prompt themes:
@@ -254,7 +254,7 @@ Operational badge rule:
 3. Done: change API Lambda to source-write plus accepted response; remove inline Bedrock call.
 4. Done: add avatar-generator Lambda and S3 trigger.
 5. Done: add print-composer Lambda and S3 trigger.
-6. Partial: deterministic SVG frame is implemented in `aws/twin-card/print-composer.mjs`; a standalone frame/mask JSON contract is still recommended.
+6. Partial: deterministic SVG frame is implemented in `aws/twin-card/print-composer.mjs`; source-of-truth goal content is now in `src/twinCard/goalContentContract.json`; a standalone visual frame/mask JSON contract is still recommended.
 7. Done: add dashboard links/statuses for generated and print assets.
 8. Deploy CDK.
 9. Run one live booth test and verify:

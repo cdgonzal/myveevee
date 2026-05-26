@@ -1,24 +1,39 @@
+import goalContentContract from "../../src/twinCard/goalContentContract.json";
+
 export const DEFAULT_CARDS_PREFIX = "twin-card";
 export const DEFAULT_BEDROCK_IMAGE_MODEL_ID = "amazon.nova-canvas-v1:0";
 
+const CONTRACT_GOALS = goalContentContract.goals ?? {};
+
 export const INTEREST_LABELS = {
-  prepare_for_care: "Prepare for a doctor visit",
+  prepare_for_care: CONTRACT_GOALS.prepare_for_care?.goalTitle ?? "Get Back To Life",
   understand_symptoms: "Understand symptoms",
   organize_records: "Organize health records",
-  track_goals: "Track wellness goals",
+  track_goals: CONTRACT_GOALS.track_goals?.goalTitle ?? "Move With Less Pain",
   understand_benefits: "Understand benefits",
-  support_loved_one: "Support a loved one",
+  support_loved_one: CONTRACT_GOALS.support_loved_one?.goalTitle ?? "Explore Advanced Care",
   just_exploring: "Just exploring",
 };
 
 export const GOAL_ASPIRATIONS = {
-  prepare_for_care: "Feel ready for your next visit.",
+  prepare_for_care: CONTRACT_GOALS.prepare_for_care?.cardHeadline ?? "Daily Life Comeback Focus",
   understand_symptoms: "Turn questions into calm next steps.",
   organize_records: "Keep your health story close at hand.",
-  track_goals: "Feel stronger every week.",
+  track_goals: CONTRACT_GOALS.track_goals?.cardHeadline ?? "Comfort + Mobility Focus",
   understand_benefits: "Move forward with more confidence.",
-  support_loved_one: "Support your family wellness journey.",
+  support_loved_one: CONTRACT_GOALS.support_loved_one?.cardHeadline ?? "Advanced Wellness Options",
   just_exploring: "Start your wellness journey with confidence.",
+};
+
+export const GOAL_CONTENT = {
+  ...CONTRACT_GOALS,
+  just_exploring: {
+    goalTitle: "Wellness Journey",
+    cardHeadline: "Personal Wellness Focus",
+    finding: "Your Health Twin is focused on helping you take the next positive step in your wellness journey.",
+    recommendations: ["Ask clear questions", "Explore your options", "Choose one next step"],
+    cta: "Start a wellness conversation with SWCA.",
+  },
 };
 
 export function buildRunPrefix({ cardsPrefix = DEFAULT_CARDS_PREFIX, cardId, createdAt = new Date().toISOString() }) {
