@@ -113,6 +113,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - private Twin Card operations dashboard
   - direct-access PIN is `5353`
   - shows recent runs, responses, S3 artifact links, DDB-backed fields, generation state, and image upload-normalization metadata
+  - generation status labels come from `src/twinCard/statusContract.json`; `Photo fallback` maps to stored status `fallback_used` and is printable
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
 

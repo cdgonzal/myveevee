@@ -4,6 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { apiCardToLead, fetchRecentTwinCards, type TwinCardApiCard } from "../twinCard/api";
 import { buildTwinCardPrintCss } from "../twinCard/printContract";
 import { listTwinCardLeads } from "../twinCard/storage";
+import { getTwinCardGenerationStatusLabel } from "../twinCard/statusContract";
 import { TwinCardPrintView } from "../twinCard/TwinCardPrintView";
 import type { TwinCardLead } from "../twinCard/types";
 import { APP_LINKS } from "../config/links";
@@ -71,7 +72,7 @@ export default function TwinCardAdminPage() {
                     <Td>{new Date(card.createdAt).toLocaleString()}</Td>
                     <Td>{card.firstName}</Td>
                     <Td>{card.wellnessInterestLabel}</Td>
-                    <Td>{card.generationStatus}</Td>
+                    <Td>{getTwinCardGenerationStatusLabel(card.generationStatus)}</Td>
                     <Td>
                       <Link as={RouterLink} to={`/twin-card/result/${card.cardId}`} color="#1177BA">
                         Result

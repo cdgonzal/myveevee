@@ -23,6 +23,11 @@ import {
 } from "@chakra-ui/react";
 import { apiCardToLead, fetchRecentTwinCards, type TwinCardApiCard } from "../twinCard/api";
 import { listTwinCardLeads } from "../twinCard/storage";
+import {
+  getTwinCardGenerationStatusColorScheme,
+  getTwinCardGenerationStatusLabel,
+  isTwinCardGenerationStatusPrintable,
+} from "../twinCard/statusContract";
 import { APP_LINKS } from "../config/links";
 import type { TwinCardLead } from "../twinCard/types";
 
@@ -101,8 +106,9 @@ export default function TwinDashboardPage() {
             <>
               <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4}>
                 <StatBox label="Runs" value={String(stats.total)} />
-                <StatBox label="Completed" value={String(stats.completed)} />
-                <StatBox label="Fallback" value={String(stats.fallback)} />
+                <StatBox label="Printable" value={String(stats.printable)} />
+                <StatBox label="AI Complete" value={String(stats.completed)} />
+                <StatBox label="Photo Fallback" value={String(stats.fallback)} />
                 <StatBox label="Consented" value={String(stats.consented)} />
               </SimpleGrid>
 
@@ -240,8 +246,11 @@ function StorageLine({ label, s3Key, url }: { label: string; s3Key?: string; url
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const scheme = status === "completed" ? "green" : status === "fallback_used" ? "orange" : "blue";
-  return <Badge colorScheme={scheme}>{status}</Badge>;
+  return (
+    <Badge colorScheme={getTwinCardGenerationStatusColorScheme(status)}>
+      {getTwinCardGenerationStatusLabel(status)}
+    </Badge>
+  );
 }
 
 function buildStats(cards: TwinCardApiCard[]) {
@@ -249,6 +258,7 @@ function buildStats(cards: TwinCardApiCard[]) {
     total: cards.length,
     completed: cards.filter((card) => card.generationStatus === "completed").length,
     fallback: cards.filter((card) => card.generationStatus === "fallback_used").length,
+    printable: cards.filter((card) => isTwinCardGenerationStatusPrintable(card.generationStatus)).length,
     consented: cards.filter((card) => card.consentAccepted).length,
   };
 }

@@ -122,5 +122,6 @@ Campaign/direct-link route:
 - Twin Card backend source lives under `aws/twin-card/`; CDK outputs `TwinCardActivationTwinCardApiEndpoint...` for `VITE_TWIN_CARD_API_URL`.
 - Twin Card print sizing is contracted in [printContract.json](/C:/w/myveevee/src/twinCard/printContract.json:1): Canon SELPHY CP1500, 4x6/Postcard portrait, 300 DPI, 1200x1800 px, sRGB, borderless, 60 px safe margin.
 - Twin Card upload sizing is contracted in [uploadContract.json](/C:/w/myveevee/src/twinCard/uploadContract.json:1): max original upload 25 MB, normalized AI input 1024x1024 JPEG, normalized payload max 7.5 MB.
+- Twin Card run status semantics are contracted in [statusContract.json](/C:/w/myveevee/src/twinCard/statusContract.json:1). `completed` means Bedrock returned an AI avatar. `fallback_used` means the card is still complete and printable, but uses the normalized uploaded photo because Bedrock was not configured or failed. Staff views label this as `Photo fallback`.
 - Each live Twin Card run writes private S3 image objects under `twin-card/source/` and `twin-card/generated/`, a private JSON run artifact under `twin-card/runs/{cardId}.json`, and a DynamoDB row in `myveevee-twin-card-cards` containing the full run details.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

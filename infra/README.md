@@ -95,6 +95,7 @@ Twin Card run visibility:
 - S3 stores normalized source images under `twin-card/source/`, generated/fallback avatars under `twin-card/generated/`, and full private run JSON artifacts under `twin-card/runs/{cardId}.json`.
 - DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, and the upload-normalization metadata.
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
+- Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means Bedrock succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 

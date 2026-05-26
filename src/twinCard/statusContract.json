@@ -1,0 +1,76 @@
+{
+  "id": "twin-card-run-status-v1",
+  "generationStatusField": "generationStatus",
+  "generationStatuses": {
+    "not_started": {
+      "dashboardLabel": "Not started",
+      "meaning": "A local lead/card object exists before image generation has started.",
+      "printable": false,
+      "terminal": false,
+      "currentUsage": "Local/client fallback state only."
+    },
+    "generating": {
+      "dashboardLabel": "Processing",
+      "meaning": "The card request has been accepted and avatar generation is in progress.",
+      "printable": false,
+      "terminal": false,
+      "currentUsage": "Set while constructing the backend record before generation finishes."
+    },
+    "completed": {
+      "dashboardLabel": "AI complete",
+      "meaning": "Bedrock returned a generated avatar image and the card is ready.",
+      "printable": true,
+      "terminal": true,
+      "currentUsage": "Set when Bedrock image generation succeeds."
+    },
+    "fallback_used": {
+      "dashboardLabel": "Photo fallback",
+      "meaning": "The card is complete and printable, but the final card image uses the normalized uploaded photo because Bedrock was not configured or generation failed.",
+      "printable": true,
+      "terminal": true,
+      "currentUsage": "Set when BEDROCK_IMAGE_MODEL_ID is blank or Bedrock invocation fails."
+    },
+    "failed": {
+      "dashboardLabel": "Failed",
+      "meaning": "No usable card was produced.",
+      "printable": false,
+      "terminal": true,
+      "currentUsage": "Reserved for a hard failure path where no fallback card can be returned."
+    }
+  },
+  "generationMappings": {
+    "bedrockSuccess": "completed",
+    "bedrockModelMissing": "fallback_used",
+    "bedrockInvocationFailed": "fallback_used",
+    "noUsableCardProduced": "failed"
+  },
+  "fulfillmentStatusField": "fulfillmentStatus",
+  "fulfillmentStatuses": {
+    "not_printed": {
+      "dashboardLabel": "Not printed",
+      "meaning": "No staff print action has been recorded.",
+      "currentUsage": "Future field."
+    },
+    "printed": {
+      "dashboardLabel": "Printed",
+      "meaning": "Staff marked the card as printed at the booth.",
+      "currentUsage": "Future field."
+    },
+    "email_pending": {
+      "dashboardLabel": "Email pending",
+      "meaning": "A confirmation email is queued or expected.",
+      "currentUsage": "Future field."
+    },
+    "emailed": {
+      "dashboardLabel": "Emailed",
+      "meaning": "A confirmation email was sent.",
+      "currentUsage": "Future field."
+    },
+    "email_failed": {
+      "dashboardLabel": "Email failed",
+      "meaning": "Confirmation email delivery failed or was not accepted by the provider.",
+      "currentUsage": "Future field."
+    }
+  },
+  "operatorRule": "completed and fallback_used are both printable. failed is not printable. Do not treat fallback_used as a failed run."
+}

@@ -1,5 +1,6 @@
 export type TwinCardContactType = "email" | "phone" | "unknown";
 
+// Keep this union aligned with src/twinCard/statusContract.json.
 export type TwinCardGenerationStatus = "not_started" | "generating" | "completed" | "failed" | "fallback_used";
 
 export type TwinCardGenerationProvider = "bedrock" | "fallback" | "manual";
