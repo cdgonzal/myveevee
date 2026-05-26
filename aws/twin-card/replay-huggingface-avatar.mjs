@@ -25,6 +25,7 @@ const LIMIT = Number(args.limit ?? 3);
 const MODEL_ID = args.model ?? process.env.HF_IMAGE_MODEL_ID ?? CONTRACT.candidateModels?.[0]?.modelId;
 const HF_PROVIDER = args.hfProvider ?? process.env.HF_PROVIDER ?? CONTRACT.defaultProvider ?? "auto";
 const HF_TOKEN = process.env.HF_TOKEN;
+const HF_TIMEOUT_MS = Number(args.hfTimeoutMs ?? process.env.HF_TIMEOUT_MS ?? 180_000);
 const WRITE_S3 = args.writeS3 !== false;
 const MOCK = Boolean(args.mock);
 const RUN_ID = args.runId ?? new Date().toISOString().replace(/[:.]/g, "-");
@@ -200,16 +201,20 @@ async function replayCard(card, ordinal) {
 
 async function invokeHuggingFaceImageToImage(sourceBuffer, prompt, negativePrompt) {
   const client = new InferenceClient(HF_TOKEN);
-  const blob = await client.imageToImage({
-    provider: HF_PROVIDER,
-    model: MODEL_ID,
-    inputs: sourceBuffer,
-    parameters: {
-      prompt,
-      negative_prompt: negativePrompt,
-      target_size: CONTRACT.defaultTargetSize,
-    },
-  });
+  const blob = await withTimeout(
+    client.imageToImage({
+      provider: HF_PROVIDER,
+      model: MODEL_ID,
+      inputs: bufferToArrayBuffer(sourceBuffer),
+      parameters: {
+        prompt,
+        negative_prompt: negativePrompt,
+        target_size: CONTRACT.defaultTargetSize,
+      },
+    }),
+    HF_TIMEOUT_MS,
+    `Hugging Face image-to-image request timed out after ${HF_TIMEOUT_MS} ms.`
+  );
   const arrayBuffer = await blob.arrayBuffer();
   return {
     buffer: Buffer.from(arrayBuffer),
@@ -220,6 +225,18 @@ async function invokeHuggingFaceImageToImage(sourceBuffer, prompt, negativePromp
       size: blob.size || null,
     },
   };
+}
+
+function bufferToArrayBuffer(buffer) {
+  return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+}
+
+function withTimeout(promise, timeoutMs, message) {
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timeoutId));
 }
 
 async function fetchRecentCards(limit) {

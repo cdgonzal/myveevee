@@ -80,10 +80,10 @@ const copy = {
     },
     consentTitle: "One quick consent",
     consent:
-      "I agree that VeeVee may use my photo to create my Twin Card and may email me about my card, VeeVee updates, or beta access.",
+      "I agree that VeeVee may use my photo and responses to create my Twin Card, including with AI service providers, and may email me about my card, VeeVee updates, or beta access.",
     consentDetails: "Consent details",
     consentBody:
-      "Your photo and responses are used to create a visual Twin Card experience for educational, promotional, and informational purposes only. VeeVee does not diagnose, treat, prevent, or monitor any medical condition from your photo or answers. Your Twin Card is not medical advice, not a medical record, and does not replace care from a licensed clinician. By continuing, you give VeeVee permission to process your photo, create and display your Twin Card, email you about your card and VeeVee, and release VeeVee and its partners from claims related to this non-medical experience.",
+      "Your photo, first name, email, selected wellness focus, and responses may be collected, stored, processed, transformed, analyzed, and used by VeeVee and service providers acting on VeeVee's behalf, including cloud hosting, storage, email, printing, AI, image-generation, image-editing, model-evaluation, quality-review, replay, testing, and operations providers. These services may process your information to create, improve, evaluate, display, print, email, and support your Twin Card experience. Your Twin Card is for educational, promotional, entertainment, and informational purposes only. VeeVee does not diagnose, treat, prevent, monitor, or predict any medical condition from your photo or answers. Your Twin Card is not medical advice, not a medical record, not a clinical assessment, not a medical device, and does not replace care from a licensed clinician. By continuing, you give VeeVee permission to process and share your information as described, create and display your Twin Card, contact you about your card and VeeVee, and release VeeVee, SWCA, their affiliates, vendors, service providers, and partners from claims related to this voluntary, non-medical experience to the fullest extent permitted by law.",
     cameraTitle: "Get ready for your Health Twin photo",
     cameraBody: "Look at the camera. Smile. Your Twin Card is almost ready.",
     openCamera: "Open Camera",
@@ -130,10 +130,10 @@ const copy = {
     },
     consentTitle: "Un consentimiento rapido",
     consent:
-      "Acepto que VeeVee use mi foto para crear mi Twin Card y me envie emails sobre mi tarjeta, novedades de VeeVee o acceso beta.",
+      "Acepto que VeeVee use mi foto y respuestas para crear mi Twin Card, incluso con proveedores de servicios de AI, y me envie emails sobre mi tarjeta, novedades de VeeVee o acceso beta.",
     consentDetails: "Detalles del consentimiento",
     consentBody:
-      "Tu foto y respuestas se usan para crear una experiencia visual de Twin Card con fines educativos, promocionales e informativos solamente. VeeVee no diagnostica, trata, previene ni monitorea ninguna condicion medica usando tu foto o respuestas. Tu Twin Card no es consejo medico, no es un record medico y no reemplaza la atencion de un profesional de salud autorizado. Al continuar, das permiso a VeeVee para procesar tu foto, crear y mostrar tu Twin Card, enviarte emails sobre tu tarjeta y VeeVee, y liberas a VeeVee y sus socios de reclamos relacionados con esta experiencia no medica.",
+      "Tu foto, nombre, email, enfoque de bienestar seleccionado y respuestas pueden ser recopilados, almacenados, procesados, transformados, analizados y usados por VeeVee y proveedores de servicios que actuan en nombre de VeeVee, incluyendo proveedores de nube, almacenamiento, email, impresion, AI, generacion de imagenes, edicion de imagenes, evaluacion de modelos, revision de calidad, replay, pruebas y operaciones. Estos servicios pueden procesar tu informacion para crear, mejorar, evaluar, mostrar, imprimir, enviar por email y apoyar tu experiencia de Twin Card. Tu Twin Card es solo para fines educativos, promocionales, de entretenimiento e informativos. VeeVee no diagnostica, trata, previene, monitorea ni predice ninguna condicion medica usando tu foto o respuestas. Tu Twin Card no es consejo medico, no es un record medico, no es una evaluacion clinica, no es un dispositivo medico y no reemplaza la atencion de un profesional de salud autorizado. Al continuar, das permiso a VeeVee para procesar y compartir tu informacion como se describe, crear y mostrar tu Twin Card, contactarte sobre tu tarjeta y VeeVee, y liberas a VeeVee, SWCA, sus afiliados, vendedores, proveedores de servicios y socios de reclamos relacionados con esta experiencia voluntaria y no medica en la maxima medida permitida por la ley.",
     cameraTitle: "Preparate para la foto de tu Health Twin",
     cameraBody: "Mira la camara. Sonrie. Tu Twin Card casi esta lista.",
     openCamera: "Abrir camara",

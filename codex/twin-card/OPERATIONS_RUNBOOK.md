@@ -378,6 +378,8 @@ Use Hugging Face replay only for model exploration. It is not part of the produc
 
 Source of truth: `src/twinCard/huggingFaceImageProviderContract.json`.
 
+The Twin Card funnel consent copy in `src/pages/TwinCardPage.tsx` explicitly covers AI, image-generation, image-editing, model-evaluation, quality-review, replay, testing, cloud hosting, storage, email, printing, and operations providers. Keep that consent language aligned before any external model provider is used beyond approved replay/test images.
+
 The Hugging Face contract currently targets image-to-image candidates such as:
 
 - `black-forest-labs/FLUX.1-Kontext-dev`
