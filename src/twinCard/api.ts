@@ -23,6 +23,7 @@ export type TwinCardApiCard = {
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
   bedrockUsage?: TwinCardLead["bedrockUsage"];
+  bedrockProviderAttempts?: TwinCardLead["bedrockProviderAttempts"];
   avatarRecipeId?: string;
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardLead["renderStatus"];
@@ -180,6 +181,7 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     generationProvider: card.generationProvider,
     generationMessage: card.generationMessage,
     bedrockUsage: card.bedrockUsage ?? fallback?.bedrockUsage,
+    bedrockProviderAttempts: card.bedrockProviderAttempts ?? fallback?.bedrockProviderAttempts,
     avatarRecipeId: card.avatarRecipeId ?? fallback?.avatarRecipeId,
     avatarRecipeVersion: card.avatarRecipeVersion ?? fallback?.avatarRecipeVersion,
     renderStatus: card.renderStatus ?? fallback?.renderStatus,

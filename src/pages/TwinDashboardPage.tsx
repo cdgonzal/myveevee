@@ -239,11 +239,7 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
             <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
               <ImageComparePanel title="Raw Capture" imageUrl={card.sourceImageUrl} s3Key={card.sourceImageS3Key} />
               <ImageComparePanel title="Generated Avatar" imageUrl={card.generatedAvatarUrl} s3Key={card.generatedAvatarS3Key} />
-              <ImageComparePanel
-                title={isCanonPrintPng(card) ? "Canon Print PNG" : "Print Asset"}
-                imageUrl={card.printImageUrl}
-                s3Key={card.printImageS3Key}
-              />
+              <ModelEvaluationPanel card={card} />
             </SimpleGrid>
           </Stack>
         </Box>
@@ -263,7 +259,7 @@ function ImageComparePanel({ title, imageUrl, s3Key }: { title: string; imageUrl
           </Link>
         ) : null}
       </Flex>
-      <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="8px" overflow="hidden" h={{ base: "320px", md: "420px" }}>
+      <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="8px" overflow="hidden" h={{ base: "260px", md: "260px" }}>
         {imageUrl ? (
           <Image src={imageUrl} alt={title} w="100%" h="100%" objectFit="contain" bg="#f8fbfd" />
         ) : (
@@ -273,6 +269,55 @@ function ImageComparePanel({ title, imageUrl, s3Key }: { title: string; imageUrl
         )}
       </Box>
       <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{s3Key ?? "-"}</Text>
+    </Stack>
+  );
+}
+
+function ModelEvaluationPanel({ card }: { card: TwinCardApiCard }) {
+  const winningAttempt = getWinningAttempt(card);
+  const attempts = card.bedrockProviderAttempts ?? [];
+
+  return (
+    <Stack spacing={3}>
+      <Box bg="#f3faff" border="1px solid #b7d6e8" borderRadius="8px" p={3}>
+        <Stack spacing={1}>
+          <Text color="#0a6ea8" fontSize="xs" fontWeight="900" textTransform="uppercase">Winning model</Text>
+          <Text fontWeight="900" wordBreak="break-word">{winningAttempt?.providerId ?? getBedrockModelId(card)}</Text>
+          <Text color="#516176" fontSize="sm">{winningAttempt?.provider ?? card.generationProvider}</Text>
+          <Text color="#516176" fontSize="sm">{formatBedrockUsage(card)}</Text>
+        </Stack>
+      </Box>
+
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={3}>
+        <Stack spacing={2}>
+          <Heading as="h3" size="sm">Attempt Details</Heading>
+          {attempts.length ? (
+            attempts.map((attempt, index) => (
+              <Box key={`${attempt.providerId}-${index}`} borderTop={index ? "1px solid #e5f0f7" : "0"} pt={index ? 2 : 0}>
+                <HStack spacing={2} flexWrap="wrap">
+                  <Badge colorScheme={attempt.status === "completed" ? "green" : attempt.status === "skipped" ? "yellow" : "red"}>
+                    {attempt.status}
+                  </Badge>
+                  <Text fontWeight="800" fontSize="sm" wordBreak="break-word">{attempt.providerId}</Text>
+                </HStack>
+                <Text color="#516176" fontSize="sm">{attempt.provider ?? "-"}</Text>
+                <Text color="#516176" fontSize="sm">
+                  {formatUsageUnits(attempt.usage)} / {formatCurrency(attempt.usage?.estimatedCostUsd)}
+                </Text>
+                {attempt.message ? <Text color="#8a5a00" fontSize="sm">{attempt.message}</Text> : null}
+              </Box>
+            ))
+          ) : (
+            <Text color="#516176" fontSize="sm">No provider attempts stored yet.</Text>
+          )}
+        </Stack>
+      </Box>
+
+      <StorageLine
+        label={isCanonPrintPng(card) ? "Canon Print PNG" : "Print Asset"}
+        s3Key={card.printImageS3Key}
+        url={card.printImageUrl}
+      />
     </Stack>
   );
 }
@@ -434,6 +479,7 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     generationProvider: lead.generationProvider,
     generationMessage: lead.generationMessage,
     bedrockUsage: lead.bedrockUsage,
+    bedrockProviderAttempts: lead.bedrockProviderAttempts,
     avatarRecipeId: lead.avatarRecipeId,
     avatarRecipeVersion: lead.avatarRecipeVersion,
     renderStatus: lead.renderStatus,
@@ -467,9 +513,15 @@ function formatImageSize(card: TwinCardApiCard) {
 function formatBedrockUsage(card: TwinCardApiCard) {
   const usage = card.bedrockUsage;
   if (!usage) return "-";
-  const units = usage.totalBillableUnits;
+  return `${formatUsageUnits(usage)} / ${formatCurrency(usage.totalEstimatedCostUsd)}`;
+}
+
+function formatUsageUnits(usage?: { totalBillableUnits?: number; billableUnits?: number; billingUnit?: string } | null) {
+  if (!usage) return "-";
+  const units = Number(usage.totalBillableUnits ?? usage.billableUnits);
   const unit = usage.billingUnit || "generation";
-  return `${units} ${unit}${units === 1 ? "" : "s"} / ${formatCurrency(usage.totalEstimatedCostUsd)}`;
+  if (!Number.isFinite(units)) return "-";
+  return `${units} ${unit}${units === 1 ? "" : "s"}`;
 }
 
 function formatCurrency(value?: number | null) {
@@ -480,6 +532,14 @@ function formatCurrency(value?: number | null) {
 
 function isCanonPrintPng(card: TwinCardApiCard) {
   return card.printImageContentType === "image/png" || (card.printImageS3Key ?? "").endsWith(".png");
+}
+
+function getWinningAttempt(card: TwinCardApiCard) {
+  return card.bedrockProviderAttempts?.find((attempt) => attempt.status === "completed") ?? null;
+}
+
+function getBedrockModelId(card: TwinCardApiCard) {
+  return card.bedrockUsage?.lineItems?.find((item) => item.billableUnits > 0)?.modelId ?? card.generationProvider;
 }
 
 function formatDevice(card: TwinCardApiCard) {

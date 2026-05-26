@@ -63,6 +63,15 @@ export type TwinCardBedrockUsage = {
   note?: string;
 };
 
+export type TwinCardBedrockProviderAttempt = {
+  providerId: string;
+  provider?: TwinCardGenerationProvider | string;
+  status: "completed" | "failed" | "skipped" | string;
+  message?: string;
+  attemptedAt?: string;
+  usage?: TwinCardBedrockUsageLineItem;
+};
+
 export type TwinCardInterestId =
   | "prepare_for_care"
   | "understand_symptoms"
@@ -91,6 +100,7 @@ export type TwinCardLead = {
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
   bedrockUsage?: TwinCardBedrockUsage;
+  bedrockProviderAttempts?: TwinCardBedrockProviderAttempt[];
   avatarRecipeId?: string;
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardRenderStatus;

@@ -220,6 +220,7 @@ async function serializeCard(card, options = {}) {
     generatedAvatarS3Key: card.generatedAvatarS3Key,
     printLayoutS3Key: card.printLayoutS3Key,
     printImageS3Key: card.printImageS3Key,
+    bedrockProviderAttempts: card.bedrockProviderAttempts,
     sourceImageBytes: card.sourceImageBytes,
     generatedAvatarBytes: card.generatedAvatarBytes,
     printLayoutBytes: card.printLayoutBytes,
