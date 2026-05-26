@@ -14,6 +14,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { createTwinCard } from "../twinCard/api";
 import {
@@ -33,7 +34,15 @@ type FlowStep = "language" | "lead" | "goals" | "consent" | "camera" | "success"
 type FlowLanguage = "en" | "es";
 
 const CONFIRMATION_REDIRECT_MS = 12_000;
+const CONFIRMATION_REDIRECT_SECONDS = Math.ceil(CONFIRMATION_REDIRECT_MS / 1000);
 const CONFIRMATION_REDIRECT_URL = "https://myveevee.com/swca/funnel";
+
+type ConfirmationMode = "restart" | "redirect";
+
+type CaptureConfirmation = {
+  fileName: string;
+  timestamp: string;
+};
 
 const initialForm: TwinCardFormValues = {
   firstName: "",
@@ -51,28 +60,49 @@ const copy = {
     firstName: "First name",
     email: "Email",
     continue: "Continue",
-    goalsTitle: "Choose your 3-6 month wellness goal",
+    goalsTitle: "Choose your wellness focus",
     goals: {
-      track_goals: "Feel stronger every week",
-      prepare_for_care: "Feel ready for my next visit",
-      support_loved_one: "Support my family wellness",
+      track_goals: {
+        title: "Feel Stronger",
+        subtitle: "Build steady energy and confidence.",
+        bullets: ["Move with more ease", "Celebrate small wins", "Stay encouraged week by week"],
+      },
+      prepare_for_care: {
+        title: "Feel Prepared",
+        subtitle: "Walk into your next visit ready.",
+        bullets: ["Know what to ask", "Bring your goals into focus", "Leave with clear next steps"],
+      },
+      support_loved_one: {
+        title: "Support My Family",
+        subtitle: "Help the people I care about feel supported.",
+        bullets: ["Share simple reminders", "Stay organized together", "Make wellness feel easier"],
+      },
     },
     consentTitle: "One quick consent",
     consent:
       "I agree that VeeVee may use my photo to create my Twin Card and may email me about my card, VeeVee updates, or beta access.",
     consentDetails: "Consent details",
     consentBody:
-      "Your photo is used for visual personalization only. VeeVee does not diagnose medical conditions from your photo. Your Twin Card is not a medical record.",
+      "Your photo and responses are used to create a visual Twin Card experience for educational, promotional, and informational purposes only. VeeVee does not diagnose, treat, prevent, or monitor any medical condition from your photo or answers. Your Twin Card is not medical advice, not a medical record, and does not replace care from a licensed clinician. By continuing, you give VeeVee permission to process your photo, create and display your Twin Card, email you about your card and VeeVee, and release VeeVee and its partners from claims related to this non-medical experience.",
     cameraTitle: "Get ready for your Health Twin photo",
     cameraBody: "Look at the camera. Smile. Your Twin Card is almost ready.",
     countdownButton: "Start Countdown",
     openCamera: "Open Camera",
     generating: "Creating your Twin Card...",
-    successTitle: "You're done.",
-    successBody: "Go to the booth to print your Health Twin, or watch your email for confirmation.",
+    successPill: "Success",
+    successTitle: "Your Health Twin is captured.",
+    successInstructions: {
+      print: "Go to the booth to obtain your printed Health Twin Card.",
+      email: "Receive your email confirmation with your Health Twin.",
+    },
+    successRestarting: "This booth will restart in",
+    successRedirecting: "You will be redirected in",
+    seconds: "seconds",
     restart: "Restart",
     photoError: "That photo could not be loaded. Please try again.",
     requiredError: "First name and email are required.",
+    toastTitle: "Health Twin capture confirmed",
+    toastDescription: "File saved",
   },
   es: {
     start: "Comenzar",
@@ -81,37 +111,62 @@ const copy = {
     firstName: "Nombre",
     email: "Email",
     continue: "Continuar",
-    goalsTitle: "Elige tu meta de bienestar para 3-6 meses",
+    goalsTitle: "Elige tu enfoque de bienestar",
     goals: {
-      track_goals: "Sentirme mas fuerte cada semana",
-      prepare_for_care: "Sentirme listo para mi proxima visita",
-      support_loved_one: "Apoyar el bienestar de mi familia",
+      track_goals: {
+        title: "Sentirme mas fuerte",
+        subtitle: "Crear energia y confianza poco a poco.",
+        bullets: ["Moverme con mas facilidad", "Celebrar avances pequenos", "Mantenerme motivado cada semana"],
+      },
+      prepare_for_care: {
+        title: "Sentirme preparado",
+        subtitle: "Llegar listo a mi proxima visita.",
+        bullets: ["Saber que preguntar", "Tener mis metas mas claras", "Salir con proximos pasos"],
+      },
+      support_loved_one: {
+        title: "Apoyar a mi familia",
+        subtitle: "Ayudar a quienes quiero a sentirse acompanados.",
+        bullets: ["Compartir recordatorios simples", "Organizarnos juntos", "Hacer el bienestar mas facil"],
+      },
     },
     consentTitle: "Un consentimiento rapido",
     consent:
       "Acepto que VeeVee use mi foto para crear mi Twin Card y me envie emails sobre mi tarjeta, novedades de VeeVee o acceso beta.",
     consentDetails: "Detalles del consentimiento",
     consentBody:
-      "Tu foto se usa solo para personalizacion visual. VeeVee no diagnostica condiciones medicas usando tu foto. Tu Twin Card no es un record medico.",
+      "Tu foto y respuestas se usan para crear una experiencia visual de Twin Card con fines educativos, promocionales e informativos solamente. VeeVee no diagnostica, trata, previene ni monitorea ninguna condicion medica usando tu foto o respuestas. Tu Twin Card no es consejo medico, no es un record medico y no reemplaza la atencion de un profesional de salud autorizado. Al continuar, das permiso a VeeVee para procesar tu foto, crear y mostrar tu Twin Card, enviarte emails sobre tu tarjeta y VeeVee, y liberas a VeeVee y sus socios de reclamos relacionados con esta experiencia no medica.",
     cameraTitle: "Preparate para la foto de tu Health Twin",
     cameraBody: "Mira la camara. Sonrie. Tu Twin Card casi esta lista.",
     countdownButton: "Iniciar cuenta regresiva",
     openCamera: "Abrir camara",
     generating: "Creando tu Twin Card...",
-    successTitle: "Listo.",
-    successBody: "Ve al booth para imprimir tu Health Twin, o espera la confirmacion por email.",
+    successPill: "Exito",
+    successTitle: "Tu Health Twin fue capturado.",
+    successInstructions: {
+      print: "Ve al booth para obtener tu Health Twin Card impresa.",
+      email: "Recibe tu confirmacion por email con tu Health Twin.",
+    },
+    successRestarting: "Este booth se reiniciara en",
+    successRedirecting: "Seras redirigido en",
+    seconds: "segundos",
     restart: "Reiniciar",
     photoError: "No pudimos cargar esa foto. Intenta otra vez.",
     requiredError: "Nombre y email son requeridos.",
+    toastTitle: "Captura de Health Twin confirmada",
+    toastDescription: "Archivo guardado",
   },
 } satisfies Record<FlowLanguage, any>;
 
 export default function TwinCardPage() {
+  const toast = useToast();
   const [step, setStep] = useState<FlowStep>("language");
   const [language, setLanguage] = useState<FlowLanguage>("en");
   const [form, setForm] = useState<TwinCardFormValues>(initialForm);
   const [showConsentDetails, setShowConsentDetails] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [confirmationCountdown, setConfirmationCountdown] = useState(CONFIRMATION_REDIRECT_SECONDS);
+  const [confirmationMode, setConfirmationMode] = useState<ConfirmationMode>("redirect");
+  const [captureConfirmation, setCaptureConfirmation] = useState<CaptureConfirmation | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
@@ -125,14 +180,24 @@ export default function TwinCardPage() {
   useEffect(() => {
     if (step !== "success") return undefined;
 
+    setConfirmationCountdown(CONFIRMATION_REDIRECT_SECONDS);
+    const interval = window.setInterval(() => {
+      setConfirmationCountdown((current) => Math.max(current - 1, 0));
+    }, 1000);
+
     const timer = window.setTimeout(() => {
+      if (confirmationMode === "restart") {
+        restart();
+        return;
+      }
       window.location.assign(CONFIRMATION_REDIRECT_URL);
     }, CONFIRMATION_REDIRECT_MS);
 
     return () => {
+      window.clearInterval(interval);
       window.clearTimeout(timer);
     };
-  }, [step]);
+  }, [confirmationMode, step]);
 
   const updateForm = <K extends keyof TwinCardFormValues>(key: K, value: TwinCardFormValues[K]) => {
     setForm((current) => ({ ...current, [key]: value }));
@@ -191,6 +256,9 @@ export default function TwinCardPage() {
       const preparedImage = await fileToTwinCardPreparedImage(file);
       trackTwinCardEvent("public.twin_card.photo_selected");
       const generatedLead = await createTwinCard(buildLead(preparedImage.dataUrl, preparedImage.upload));
+      const confirmation = buildCaptureConfirmation(preparedImage.upload.originalFileName);
+      setCaptureConfirmation(confirmation);
+      setConfirmationMode(getConfirmationMode());
       saveTwinCardLead(generatedLead);
       trackTwinCardEvent(
         generatedLead.generationStatus === "fallback_used"
@@ -198,6 +266,14 @@ export default function TwinCardPage() {
           : "public.twin_card.generation_completed",
         generatedLead
       );
+      toast({
+        title: t.toastTitle,
+        description: `${t.toastDescription}: ${confirmation.fileName} · ${confirmation.timestamp}`,
+        status: "success",
+        duration: 7000,
+        isClosable: true,
+        position: "top",
+      });
       setStep("success");
     } catch {
       setError(t.photoError);
@@ -242,6 +318,9 @@ export default function TwinCardPage() {
     setCountdown(null);
     setCameraReady(false);
     setIsGenerating(false);
+    setConfirmationCountdown(CONFIRMATION_REDIRECT_SECONDS);
+    setConfirmationMode("redirect");
+    setCaptureConfirmation(null);
     setError("");
   };
 
@@ -296,18 +375,64 @@ export default function TwinCardPage() {
             {step === "goals" ? (
               <Stack spacing={5}>
                 <StepHeader title={t.goalsTitle} eyebrow={t.event} />
-                <Stack spacing={3}>
+                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
                   {TWIN_CARD_INTERESTS.map((goal) => (
-                    <Button
+                    <Box
                       key={goal.id}
-                      minH={{ base: "70px", md: "82px" }}
-                      whiteSpace="normal"
+                      as="button"
+                      type="button"
+                      textAlign="left"
+                      minH={{ base: "176px", md: "248px" }}
+                      h="100%"
+                      p={{ base: 5, md: 6 }}
+                      border="1px solid"
+                      borderColor="rgba(12, 35, 64, 0.14)"
+                      borderRadius="20px"
+                      bg="linear-gradient(180deg, #ffffff 0%, #f7fbff 100%)"
+                      boxShadow="0 16px 40px rgba(20, 43, 72, 0.11)"
+                      transition="transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease"
+                      _hover={{
+                        transform: "translateY(-3px)",
+                        borderColor: "#2f74d0",
+                        boxShadow: "0 22px 48px rgba(28, 78, 138, 0.18)",
+                      }}
+                      _focusVisible={{
+                        outline: "3px solid rgba(47, 116, 208, 0.32)",
+                        outlineOffset: "3px",
+                      }}
                       onClick={() => chooseGoal(goal.id)}
                     >
-                      {t.goals[goal.id as keyof typeof t.goals]}
-                    </Button>
+                      <Stack spacing={4} h="100%">
+                        <Box w="44px" h="5px" borderRadius="999px" bg="#2f74d0" />
+                        <Stack spacing={2}>
+                          <Heading as="h3" size="md" color="#172033">
+                            {t.goals[goal.id as keyof typeof t.goals].title}
+                          </Heading>
+                          <Text color="#516176" fontSize={{ base: "md", md: "sm" }} lineHeight="1.45">
+                            {t.goals[goal.id as keyof typeof t.goals].subtitle}
+                          </Text>
+                        </Stack>
+                        <Stack spacing={2} pt={1}>
+                          {t.goals[goal.id as keyof typeof t.goals].bullets.map((bullet: string) => (
+                            <HStack key={bullet} align="flex-start" spacing={2}>
+                              <Box
+                                flex="0 0 auto"
+                                mt="0.45em"
+                                w="7px"
+                                h="7px"
+                                borderRadius="999px"
+                                bg="#62b879"
+                              />
+                              <Text color="#26364f" fontSize="sm" lineHeight="1.35">
+                                {bullet}
+                              </Text>
+                            </HStack>
+                          ))}
+                        </Stack>
+                      </Stack>
+                    </Box>
                   ))}
-                </Stack>
+                </SimpleGrid>
               </Stack>
             ) : null}
 
@@ -371,26 +496,68 @@ export default function TwinCardPage() {
             {step === "success" ? (
               <Stack spacing={7} textAlign="center" align="center">
                 <Box
+                  px={4}
+                  py={2}
+                  borderRadius="999px"
+                  bg="#d9fbe6"
+                  color="#146c3a"
+                  fontSize="sm"
+                  fontWeight="900"
+                  letterSpacing="0"
+                  textTransform="uppercase"
+                >
+                  {t.successPill}
+                </Box>
+                <Box
                   w="132px"
                   h="132px"
                   borderRadius="full"
-                  bg="#e9fbff"
-                  color="#1177BA"
+                  bg="#e8fbef"
+                  color="#168047"
                   display="grid"
                   placeItems="center"
-                  fontSize="76px"
+                  fontSize="70px"
                   fontWeight="900"
                 >
-                  OK
+                  ✓
                 </Box>
                 <Stack spacing={3}>
                   <Heading as="h1" fontSize={{ base: "42px", md: "58px" }} lineHeight="1">
                     {t.successTitle}
                   </Heading>
-                  <Text fontSize="xl" color="#35445d">
-                    {t.successBody}
-                  </Text>
                 </Stack>
+                {captureConfirmation ? (
+                  <Box bg="#f1fbf5" border="1px solid #c8efd6" borderRadius="12px" px={4} py={3} color="#1d613c">
+                    <Text fontWeight="800">{captureConfirmation.fileName}</Text>
+                    <Text fontSize="sm">{captureConfirmation.timestamp}</Text>
+                  </Box>
+                ) : null}
+                <Stack spacing={3} textAlign="left" w="100%" maxW="560px">
+                  <HStack align="flex-start" spacing={3}>
+                    <Box mt="2px" color="#168047" fontWeight="900">
+                      1
+                    </Box>
+                    <Text fontSize="lg" color="#26364f">
+                      {t.successInstructions.print}
+                    </Text>
+                  </HStack>
+                  <HStack align="flex-start" spacing={3}>
+                    <Box mt="2px" color="#168047" fontWeight="900">
+                      2
+                    </Box>
+                    <Text fontSize="lg" color="#26364f">
+                      {t.successInstructions.email}
+                    </Text>
+                  </HStack>
+                </Stack>
+                <Box bg="#f7fbff" border="1px solid #dbeaf5" borderRadius="12px" px={5} py={4} w="100%" maxW="520px">
+                  <Text color="#516176" fontSize="sm" fontWeight="700">
+                    {confirmationMode === "restart" ? t.successRestarting : t.successRedirecting}
+                  </Text>
+                  <Text color="#061b38" fontSize="34px" lineHeight="1.1" fontWeight="900">
+                    {confirmationCountdown} {t.seconds}
+                  </Text>
+                </Box>
                 <Button variant="outline" onClick={restart}>
                   {t.restart}
                 </Button>
@@ -401,6 +568,30 @@ export default function TwinCardPage() {
       </Box>
     </Box>
   );
+}
+
+function buildCaptureConfirmation(fileName: string): CaptureConfirmation {
+  return {
+    fileName: fileName || "camera-capture.jpg",
+    timestamp: new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "medium",
+    }).format(new Date()),
+  };
+}
+
+function getConfirmationMode(): ConfirmationMode {
+  const userAgent = window.navigator.userAgent;
+  const isIpad =
+    /iPad/i.test(userAgent) ||
+    (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+  const isPhone = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(userAgent) || window.innerWidth < 768;
+
+  if (isPhone && !isIpad) {
+    return "redirect";
+  }
+
+  return "restart";
 }
 
 function StepHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
