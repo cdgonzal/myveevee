@@ -316,6 +316,14 @@ Output locations:
 - S3 replay files: `s3://myveevee-twin-card-767828748348-us-east-1/twin-card-replay/{avatarRecipeVersion}/{timestamp}/`
 - `manifest.json` includes source keys, generated replay keys, provider id, and recipe version.
 
+The HTML report shows the visual flow per replayed card:
+
+```text
+raw source image -> model attempt(s) -> replay generated output
+```
+
+Each model step includes the model id, provider name, attempt status, latency, request id, HTTP status, prompt/negative-prompt character counts, request bytes, output bytes, and model settings. Bedrock Stability image responses do not return token usage, so token fields are recorded as unavailable rather than estimated.
+
 For a wiring-only dry run that does not call Bedrock:
 
 ```powershell
