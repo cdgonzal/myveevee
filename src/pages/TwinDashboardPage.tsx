@@ -13,6 +13,11 @@ import {
   Link,
   SimpleGrid,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Table,
   Tbody,
   Td,
@@ -46,6 +51,7 @@ export default function TwinDashboardPage() {
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
   const stats = useMemo(() => buildStats(cards), [cards]);
+  const latestImageReviewCards = useMemo(() => cards.slice(0, 5), [cards]);
 
   const unlockDashboard = async () => {
     if (pin !== DASHBOARD_PIN) {
@@ -54,7 +60,7 @@ export default function TwinDashboardPage() {
     }
 
     setState("loading");
-    const apiCards = await fetchRecentTwinCards(DASHBOARD_PIN);
+    const apiCards = await withTimeout(fetchRecentTwinCards(DASHBOARD_PIN), 6000).catch(() => null);
     const nextCards = apiCards ?? listTwinCardLeads().map(localLeadToApiCard);
     setCards(nextCards);
     setSelectedCardId(nextCards[0]?.cardId ?? "");
@@ -115,51 +121,167 @@ export default function TwinDashboardPage() {
                 <StatBox label="Consented" value={String(stats.consented)} />
               </SimpleGrid>
 
-              <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.55fr) minmax(360px, 0.95fr)" }} gap={5} alignItems="start">
-                <Box overflowX="auto" bg="white" border="1px solid #dbeaf5" borderRadius="8px">
-                  <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Created</Th>
-                        <Th>Name</Th>
-                        <Th>Email</Th>
-                        <Th>Goal</Th>
-                        <Th>Avatar</Th>
-                        <Th>Print</Th>
-                        <Th>AI Input</Th>
-                        <Th>S3</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {cards.map((card) => (
-                        <Tr
-                          key={card.cardId}
-                          bg={card.cardId === selectedCard?.cardId ? "#eefaff" : undefined}
-                          onClick={() => setSelectedCardId(card.cardId)}
-                          cursor="pointer"
-                        >
-                          <Td whiteSpace="nowrap">{formatDate(card.createdAt)}</Td>
-                          <Td fontWeight="700">{card.firstName}</Td>
-                          <Td>{card.contact ?? "-"}</Td>
-                          <Td>{card.wellnessInterestLabel}</Td>
-                          <Td><StatusBadge status={card.generationStatus} /></Td>
-                          <Td><RenderStatusBadge status={card.renderStatus} /></Td>
-                          <Td whiteSpace="nowrap">{formatImageSize(card)}</Td>
-                          <Td>{card.runS3Key ? "Run JSON" : "Local only"}</Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </Box>
+              <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
+                <TabList gap={2} flexWrap="wrap">
+                  <Tab>Runs</Tab>
+                  <Tab>Image Review</Tab>
+                </TabList>
+                <TabPanels pt={5}>
+                  <TabPanel p={0}>
+                    <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.55fr) minmax(360px, 0.95fr)" }} gap={5} alignItems="start">
+                      <Box overflowX="auto" bg="white" border="1px solid #dbeaf5" borderRadius="8px">
+                        <Table size="sm">
+                          <Thead>
+                            <Tr>
+                              <Th>Created</Th>
+                              <Th>Name</Th>
+                              <Th>Email</Th>
+                              <Th>Goal</Th>
+                              <Th>Avatar</Th>
+                              <Th>Print</Th>
+                              <Th>AI Input</Th>
+                              <Th>S3 Files</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {cards.map((card) => (
+                              <Tr
+                                key={card.cardId}
+                                bg={card.cardId === selectedCard?.cardId ? "#eefaff" : undefined}
+                                onClick={() => setSelectedCardId(card.cardId)}
+                                cursor="pointer"
+                              >
+                                <Td whiteSpace="nowrap">{formatDate(card.createdAt)}</Td>
+                                <Td fontWeight="700">{card.firstName}</Td>
+                                <Td>{card.contact ?? "-"}</Td>
+                                <Td>{card.wellnessInterestLabel}</Td>
+                                <Td><StatusBadge status={card.generationStatus} /></Td>
+                                <Td><RenderStatusBadge status={card.renderStatus} /></Td>
+                                <Td whiteSpace="nowrap">{formatImageSize(card)}</Td>
+                                <Td minW="220px">
+                                  <ArtifactLinks card={card} />
+                                </Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      </Box>
 
-                <RunDetails card={selectedCard} />
-              </Grid>
+                      <RunDetails card={selectedCard} />
+                    </Grid>
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    <ImageReview cards={latestImageReviewCards} />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
             </>
           )}
         </Stack>
       </Box>
     </Box>
   );
+}
+
+function ArtifactLinks({ card }: { card: TwinCardApiCard }) {
+  const links = [
+    { label: "Run", url: card.runJsonUrl },
+    { label: "Source", url: card.sourceImageUrl },
+    { label: "Avatar", url: card.generatedAvatarUrl },
+    { label: "Print", url: card.printImageUrl },
+  ].filter((link) => Boolean(link.url));
+
+  if (!links.length) return <Text color="#6b7890">Local only</Text>;
+
+  return (
+    <HStack spacing={2} flexWrap="wrap" onClick={(event) => event.stopPropagation()}>
+      {links.map((link) => (
+        <Link key={link.label} href={link.url} isExternal color="#1177BA" fontWeight="700">
+          {link.label}
+        </Link>
+      ))}
+    </HStack>
+  );
+}
+
+function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
+  if (!cards.length) {
+    return (
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
+        <Text color="#516176">No runs yet.</Text>
+      </Box>
+    );
+  }
+
+  return (
+    <Stack spacing={4}>
+      {cards.map((card) => (
+        <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+          <Stack spacing={4}>
+            <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+              <Stack spacing={1}>
+                <HStack spacing={2} flexWrap="wrap">
+                  <Heading as="h2" size="sm">{card.firstName}</Heading>
+                  <StatusBadge status={card.generationStatus} />
+                  <RenderStatusBadge status={card.renderStatus} />
+                </HStack>
+                <Text color="#516176" fontSize="sm">
+                  {formatDate(card.createdAt)} | {formatDevice(card)} | {card.generationProvider}
+                </Text>
+              </Stack>
+              <ArtifactLinks card={card} />
+            </Flex>
+
+            <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={4}>
+              <ImageComparePanel title="Raw Capture" imageUrl={card.sourceImageUrl} s3Key={card.sourceImageS3Key} />
+              <ImageComparePanel title="Generated Avatar" imageUrl={card.generatedAvatarUrl} s3Key={card.generatedAvatarS3Key} />
+            </SimpleGrid>
+          </Stack>
+        </Box>
+      ))}
+    </Stack>
+  );
+}
+
+function ImageComparePanel({ title, imageUrl, s3Key }: { title: string; imageUrl?: string; s3Key?: string }) {
+  return (
+    <Stack spacing={2}>
+      <Flex justify="space-between" gap={3} align="center">
+        <Text fontWeight="900">{title}</Text>
+        {imageUrl ? (
+          <Link href={imageUrl} isExternal color="#1177BA" fontSize="sm" fontWeight="700">
+            Open
+          </Link>
+        ) : null}
+      </Flex>
+      <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="8px" overflow="hidden" h={{ base: "320px", md: "420px" }}>
+        {imageUrl ? (
+          <Image src={imageUrl} alt={title} w="100%" h="100%" objectFit="contain" bg="#f8fbfd" />
+        ) : (
+          <Flex h="100%" align="center" justify="center" px={4} textAlign="center">
+            <Text color="#6b7890">No image URL available.</Text>
+          </Flex>
+        )}
+      </Box>
+      <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{s3Key ?? "-"}</Text>
+    </Stack>
+  );
+}
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error("Twin Card dashboard request timed out.")), timeoutMs);
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
 }
 
 function RunDetails({ card }: { card: TwinCardApiCard | null }) {
