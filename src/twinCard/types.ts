@@ -79,6 +79,10 @@ export type TwinCardLead = {
   };
   runS3Key?: string;
   runJsonUrl?: string;
+  printLayoutS3Key?: string;
+  printLayoutUrl?: string;
+  printLayoutContentType?: string;
+  printImageContentType?: string;
   printImageS3Key?: string;
   printImageUrl?: string;
   createdAt: string;

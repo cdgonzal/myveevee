@@ -34,13 +34,18 @@ export type TwinCardApiCard = {
   runS3Key?: string;
   sourceImageS3Key?: string;
   generatedAvatarS3Key?: string;
+  printLayoutS3Key?: string;
   printImageS3Key?: string;
   sourceImageBytes?: number;
   generatedAvatarBytes?: number;
+  printLayoutBytes?: number;
   printImageBytes?: number;
+  printLayoutContentType?: string;
+  printImageContentType?: string;
   runJsonUrl?: string;
   sourceImageUrl?: string;
   generatedAvatarUrl?: string;
+  printLayoutUrl?: string;
   printImageUrl?: string;
 };
 
@@ -180,6 +185,10 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     imageUpload: card.imageUpload ?? fallback?.imageUpload,
     runS3Key: card.runS3Key ?? fallback?.runS3Key,
     runJsonUrl: card.runJsonUrl ?? fallback?.runJsonUrl,
+    printLayoutS3Key: card.printLayoutS3Key ?? fallback?.printLayoutS3Key,
+    printLayoutUrl: card.printLayoutUrl ?? fallback?.printLayoutUrl,
+    printLayoutContentType: card.printLayoutContentType ?? fallback?.printLayoutContentType,
+    printImageContentType: card.printImageContentType ?? fallback?.printImageContentType,
     printImageS3Key: card.printImageS3Key ?? fallback?.printImageS3Key,
     printImageUrl: card.printImageUrl ?? fallback?.printImageUrl,
     createdAt: card.createdAt,

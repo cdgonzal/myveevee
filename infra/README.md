@@ -109,11 +109,12 @@ Current production Twin Card API endpoint for Amplify `main`: `https://kt51f0edy
 Twin Card run visibility:
 
 - Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
-- S3 stores each run under `twin-card/{yyyy}/{mm}/{dd}/{cardId}/` with `run.json`, `source/normalized.jpg`, `generated/avatar.*`, `print/selphy-cp1500-4x6.svg`, and optional `failures/{stage}.json`.
+- S3 stores each run under `twin-card/{yyyy}/{mm}/{dd}/{cardId}/` with `run.json`, `source/normalized.jpg`, `generated/avatar.*`, `print/selphy-cp1500-4x6.svg`, `print/selphy-cp1500-4x6.png`, and optional `failures/{stage}.json`.
 - DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, and the upload-normalization metadata.
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
 - Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means Bedrock succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
-- S3 source-image object creation triggers Nova Canvas generation. S3 generated-image object creation triggers print composition. The current print composer writes a deterministic SVG frame; PNG/JPEG output remains the next hardening pass.
+- S3 source-image object creation triggers the Stability provider-priority avatar-generation worker. S3 generated-image object creation triggers print composition. The print composer preserves the deterministic SVG layout artifact and adds a Canon SELPHY-ready PNG raster artifact as the final print file.
+- The print-composer Lambda depends on `sharp` for SVG-to-PNG rendering. CDK bundling intentionally installs the Linux ARM64 `sharp` package into the Lambda asset; do not remove that bundling hook unless the Lambda architecture or renderer changes.
 - Twin Card Lambda logs, CDK output checks, S3/DynamoDB inspection commands, alarm checks, and live smoke-test steps live in `codex/twin-card/OPERATIONS_RUNBOOK.md`.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:

@@ -24,6 +24,12 @@
     "safeMarginPx": 60,
     "qrMinSizePx": 260
   },
+  "artifacts": {
+    "layoutSvgPath": "twin-card/{yyyy}/{mm}/{dd}/{cardId}/print/selphy-cp1500-4x6.svg",
+    "finalPrintPngPath": "twin-card/{yyyy}/{mm}/{dd}/{cardId}/print/selphy-cp1500-4x6.png",
+    "layoutPurpose": "Deterministic frame/layout source used for audit, dashboard review, and raster rendering.",
+    "finalPrintPurpose": "Canon SELPHY-ready 4x6 raster image used for booth printing."
+  },
   "printerSettings": {
     "paperSize": "4x6 / Postcard",
     "finish": "Glossy",

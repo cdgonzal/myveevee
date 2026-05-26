@@ -188,7 +188,8 @@ function ArtifactLinks({ card }: { card: TwinCardApiCard }) {
     { label: "Run", url: card.runJsonUrl },
     { label: "Source", url: card.sourceImageUrl },
     { label: "Avatar", url: card.generatedAvatarUrl },
-    { label: "Print", url: card.printImageUrl },
+    { label: "Layout", url: card.printLayoutUrl },
+    { label: isCanonPrintPng(card) ? "Print PNG" : "Print", url: card.printImageUrl },
   ].filter((link) => Boolean(link.url));
 
   if (!links.length) return <Text color="#6b7890">Local only</Text>;
@@ -232,9 +233,14 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
               <ArtifactLinks card={card} />
             </Flex>
 
-            <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={4}>
+            <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
               <ImageComparePanel title="Raw Capture" imageUrl={card.sourceImageUrl} s3Key={card.sourceImageS3Key} />
               <ImageComparePanel title="Generated Avatar" imageUrl={card.generatedAvatarUrl} s3Key={card.generatedAvatarS3Key} />
+              <ImageComparePanel
+                title={isCanonPrintPng(card) ? "Canon Print PNG" : "Print Asset"}
+                imageUrl={card.printImageUrl}
+                s3Key={card.printImageS3Key}
+              />
             </SimpleGrid>
           </Stack>
         </Box>
@@ -334,7 +340,8 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <StorageLine label="Run JSON" s3Key={card.runS3Key} url={card.runJsonUrl} />
           <StorageLine label="Source Image" s3Key={card.sourceImageS3Key} url={card.sourceImageUrl} />
           <StorageLine label="Generated Avatar" s3Key={card.generatedAvatarS3Key} url={card.generatedAvatarUrl} />
-          <StorageLine label="Print Asset" s3Key={card.printImageS3Key} url={card.printImageUrl} />
+          <StorageLine label="Print Layout SVG" s3Key={card.printLayoutS3Key} url={card.printLayoutUrl} />
+          <StorageLine label="Canon Print PNG" s3Key={card.printImageS3Key} url={card.printImageUrl} />
           <StorageLine label="Result Page" s3Key={card.cardResultUrl} url={card.cardResultUrl} />
         </Stack>
       </Stack>
@@ -430,6 +437,10 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     generatedAvatarUrl: lead.generatedAvatarUrl,
     runS3Key: lead.runS3Key,
     runJsonUrl: lead.runJsonUrl,
+    printLayoutS3Key: lead.printLayoutS3Key,
+    printLayoutUrl: lead.printLayoutUrl,
+    printLayoutContentType: lead.printLayoutContentType,
+    printImageContentType: lead.printImageContentType,
     printImageS3Key: lead.printImageS3Key,
     printImageUrl: lead.printImageUrl,
     createdAt: lead.createdAt,
@@ -441,6 +452,10 @@ function formatImageSize(card: TwinCardApiCard) {
   const upload = card.imageUpload;
   if (!upload) return "-";
   return `${upload.normalizedWidthPx}x${upload.normalizedHeightPx}`;
+}
+
+function isCanonPrintPng(card: TwinCardApiCard) {
+  return card.printImageContentType === "image/png" || (card.printImageS3Key ?? "").endsWith(".png");
 }
 
 function formatDevice(card: TwinCardApiCard) {

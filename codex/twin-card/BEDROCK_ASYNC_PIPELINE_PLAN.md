@@ -8,10 +8,10 @@ Initial implementation is in place:
 - S3 source-image events invoke `aws/twin-card/avatar-generator.mjs`.
 - Avatar generator invokes the active Bedrock Stability provider-priority chain and writes a generated image, or writes a normalized-photo fallback image.
 - S3 generated-image events invoke `aws/twin-card/print-composer.mjs`.
-- Print composer writes a deterministic SVG print-frame artifact today.
+- Print composer writes a deterministic SVG print-frame artifact and a Canon SELPHY-ready PNG raster artifact.
 - CDK wires both worker Lambdas, S3 event notifications, permissions, and CloudWatch alarms.
 
-Current hardening gap: final Canon-native PNG/JPEG rendering is still a follow-up. The current compositor writes `selphy-cp1500-4x6.svg` so the print frame is deterministic without native Lambda image-rendering dependencies. Move to `sharp` or another Lambda-safe renderer when we need direct PNG/JPEG output from the worker.
+Current artifact split: `generated/avatar.*` is the Bedrock/Stability avatar-generation output; `print/selphy-cp1500-4x6.svg` is the deterministic print-layout source; `print/selphy-cp1500-4x6.png` is the Canon SELPHY-ready 4x6 raster output. Keep these stages decoupled so avatar tuning does not require print-layout changes, and print-layout tuning does not require rerunning Bedrock.
 
 ## Decision
 
@@ -21,7 +21,7 @@ Move Twin Card image generation from the current synchronous API Lambda path to 
 2. S3 `ObjectCreated` on the source image prefix invokes an avatar-generation Lambda.
 3. The avatar-generation Lambda calls Amazon Bedrock with the configured Stability inference-profile provider priority and writes the generated image output back to S3.
 4. S3 `ObjectCreated` on the generated-image prefix invokes a print-composition Lambda.
-5. The print-composition Lambda frames/masks the generated image into the Canon SELPHY CP1500 print contract and writes the final print asset back to S3.
+5. The print-composition Lambda frames/masks the generated image into the Canon SELPHY CP1500 print contract, saves the deterministic layout SVG, then renders the final 1200x1800 sRGB PNG for booth printing.
 
 Use "generated image" or "model output image" for the Bedrock image result. Reserve "completion" for text/LLM-style responses.
 
@@ -139,11 +139,13 @@ Responsibilities:
 
 - Load generated image output.
 - Apply the print frame/mask contract.
-- Export the final card to:
-  - current MVP: `twin-card/{yyyy}/{mm}/{dd}/{cardId}/print/selphy-cp1500-4x6.svg`
-  - next hardening pass: PNG/JPEG siblings for workflows that require raster files
+- Export the print artifacts to:
+  - `twin-card/{yyyy}/{mm}/{dd}/{cardId}/print/selphy-cp1500-4x6.svg` as the deterministic layout/review source
+  - `twin-card/{yyyy}/{mm}/{dd}/{cardId}/print/selphy-cp1500-4x6.png` as the Canon SELPHY-ready raster print output
 - Update DDB:
   - `renderStatus = "rendered"`
+  - `printLayoutS3Key`
+  - `printLayoutBytes`
   - `printImageS3Key`
   - `printImageBytes`
   - `renderedAt`
@@ -161,6 +163,8 @@ The final print asset must remain aligned with `src/twinCard/printContract.json`
 - 60 px safe margin
 
 Frame composition should be deterministic and not model-generated. The AI model should generate only the avatar/image. The renderer owns all print-safe text, branding, QR, and layout.
+
+Current renderer note: `aws/twin-card/print-composer.mjs` uses `sharp` to render the SVG layout into the 1200x1800 PNG. The CDK construct installs the Linux ARM64 `sharp` package during bundling so local Windows synth output does not accidentally ship a Windows-native `sharp` binary to Lambda.
 
 Recommended print composition:
 
@@ -203,7 +207,7 @@ Recommended additions before implementation:
 
 - Add `submitted` to `generationStatus` for API-accepted source images waiting on the S3 trigger.
 - Keep `generating` for the avatar-generation Lambda while Bedrock is running.
-- Keep `completed` for Bedrock/Nova Canvas success.
+- Keep `completed` for Bedrock/Stability success.
 - Keep `fallback_used` for printable normalized-photo fallback.
 - Keep `failed` for no usable card.
 - Add `renderStatus` as a separate field:
@@ -251,7 +255,8 @@ The dashboard should show each stage separately:
 - Fulfillment status
 - Source image link
 - Generated image link
-- Final print image link
+- Print layout SVG link
+- Final Canon print PNG link
 - Run JSON link
 - Failure artifact link, if present
 
@@ -267,7 +272,7 @@ Operational badge rule:
 3. Done: change API Lambda to source-write plus accepted response; remove inline Bedrock call.
 4. Done: add avatar-generator Lambda and S3 trigger.
 5. Done: add print-composer Lambda and S3 trigger.
-6. Partial: deterministic SVG frame is implemented in `aws/twin-card/print-composer.mjs`; source-of-truth goal content is now in `src/twinCard/goalContentContract.json`; a standalone visual frame/mask JSON contract is still recommended.
+6. Done: deterministic SVG frame and Canon-ready PNG raster output are implemented in `aws/twin-card/print-composer.mjs`; source-of-truth goal content is in `src/twinCard/goalContentContract.json`; the printer artifact contract is in `src/twinCard/printContract.json`.
 7. Done: add dashboard links/statuses for generated and print assets.
 8. Deploy CDK.
 9. Run one live booth test and verify:
@@ -281,6 +286,5 @@ Operational badge rule:
 
 - Whether the final print QR points to the participant result page or `https://myveevee.com/swca/funnel`.
 - Whether fallback should always proceed to print composition, or whether staff should explicitly approve fallback prints.
-- Whether to render with `sharp` inside Lambda or a pure SVG/canvas renderer. Current MVP uses pure SVG output. Recommendation for final Canon-native files: use `sharp` in the print-composer Lambda for reliable 1200x1800 PNG/JPEG output.
 - Whether to include an SWCA logo asset. If yes, store it as a static repo asset and package it with the print-composer Lambda.
 - Whether to use direct S3 notifications only, or S3 notifications into SQS for better retry/backlog visibility. Recommendation for expo reliability: S3 -> SQS -> Lambda if time allows; direct S3 -> Lambda is acceptable for MVP.

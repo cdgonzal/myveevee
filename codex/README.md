@@ -112,7 +112,7 @@ This repository is the public-facing marketing site for `myveevee.com`.
 - `/twin-dashboard`
   - private Twin Card operations dashboard
   - direct-access PIN is `5353`
-  - shows recent runs, responses, S3 artifact links, DDB-backed fields, generation state, and image upload-normalization metadata
+  - shows recent runs, responses, S3 artifact links, DDB-backed fields, generation state, image upload-normalization metadata, and raw/avatar/print image review
   - generation status labels come from `src/twinCard/statusContract.json`; `Photo fallback` maps to stored status `fallback_used` and is printable
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
@@ -349,7 +349,7 @@ Known baseline issue:
 - `codex/swca/SMS_REGISTRATION_RUNBOOK.md`
   - AWS toll-free registration id, required business fields, and enablement guardrails
 - `codex/twin-card/BEDROCK_ASYNC_PIPELINE_PLAN.md`
-  - S3-triggered Nova Canvas avatar generation and print-composition pipeline for Twin Card
+  - S3-triggered Stability avatar generation, deterministic print layout, and Canon SELPHY-ready print raster pipeline for Twin Card
 - `codex/twin-card/OPERATIONS_RUNBOOK.md`
   - Twin Card AWS operations runbook for Lambda logs, CDK outputs, S3/DynamoDB checks, alarms, and live smoke tests
 - `aws/swca-intake/README.md`

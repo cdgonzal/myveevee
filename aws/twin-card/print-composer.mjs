@@ -1,6 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import sharp from "sharp";
 import {
   DEFAULT_CARDS_PREFIX,
   GOAL_CONTENT,
@@ -9,6 +10,7 @@ import {
   keyForPrint,
   parseCardKey,
 } from "./common.mjs";
+import printContract from "../../src/twinCard/printContract.json";
 
 const s3 = new S3Client({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
@@ -49,15 +51,27 @@ async function processGeneratedImage(generatedAvatarS3Key) {
   try {
     const image = await readObject(generatedAvatarS3Key);
     const printSvg = buildPrintSvg(card, image);
-    const printImageS3Key = keyForPrint(parsedKey.runPrefix, "svg");
-    const body = Buffer.from(printSvg, "utf8");
+    const printLayoutS3Key = keyForPrint(parsedKey.runPrefix, "svg");
+    const printLayoutBody = Buffer.from(printSvg, "utf8");
+    const printImageS3Key = keyForPrint(parsedKey.runPrefix, "png");
+    const printImageBody = await renderCanonReadyPng(printLayoutBody);
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: CARDS_BUCKET,
+        Key: printLayoutS3Key,
+        Body: printLayoutBody,
+        ContentType: "image/svg+xml",
+        ServerSideEncryption: "AES256",
+      })
+    );
 
     await s3.send(
       new PutObjectCommand({
         Bucket: CARDS_BUCKET,
         Key: printImageS3Key,
-        Body: body,
-        ContentType: "image/svg+xml",
+        Body: printImageBody,
+        ContentType: "image/png",
         ServerSideEncryption: "AES256",
       })
     );
@@ -65,9 +79,12 @@ async function processGeneratedImage(generatedAvatarS3Key) {
     const now = new Date().toISOString();
     const updatedCard = await updateCard(parsedKey.cardId, {
       renderStatus: "rendered",
+      printLayoutS3Key,
+      printLayoutBytes: printLayoutBody.length,
+      printLayoutContentType: "image/svg+xml",
       printImageS3Key,
-      printImageBytes: body.length,
-      printImageContentType: "image/svg+xml",
+      printImageBytes: printImageBody.length,
+      printImageContentType: "image/png",
       renderedAt: now,
       updatedAt: now,
     });
@@ -89,6 +106,17 @@ async function processGeneratedImage(generatedAvatarS3Key) {
     });
     await writeRunArtifact(updatedCard);
   }
+}
+
+async function renderCanonReadyPng(svgBody) {
+  const width = printContract.artwork?.widthPx ?? 1200;
+  const height = printContract.artwork?.heightPx ?? 1800;
+
+  return sharp(svgBody, { density: printContract.artwork?.dpi ?? 300 })
+    .resize(width, height, { fit: "fill" })
+    .toColorspace("srgb")
+    .png({ compressionLevel: 9, adaptiveFiltering: true })
+    .toBuffer();
 }
 
 function buildPrintSvg(card, image) {

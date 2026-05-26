@@ -87,6 +87,19 @@ export class TwinCardActivation extends Construct {
       memorySize: 1024,
       logGroup,
       bundling: {
+        commandHooks: {
+          beforeBundling() {
+            return [];
+          },
+          beforeInstall() {
+            return [];
+          },
+          afterBundling(_inputDir, outputDir) {
+            return [
+              `npm install --prefix "${outputDir}" --os=linux --cpu=arm64 --libc=glibc sharp@0.34.5`,
+            ];
+          },
+        },
         format: nodejs.OutputFormat.ESM,
         mainFields: ["module", "main"],
         minify: true,
@@ -152,14 +165,16 @@ export class TwinCardActivation extends Construct {
       handler: "handler",
       runtime: lambda.Runtime.NODEJS_20_X,
       architecture: lambda.Architecture.ARM_64,
+      depsLockFilePath: repoPath("aws", "twin-card", "package-lock.json"),
       projectRoot: repoPath(),
       timeout: cdk.Duration.seconds(30),
-      memorySize: 512,
+      memorySize: 1024,
       logGroup: printComposerLogGroup,
       bundling: {
         format: nodejs.OutputFormat.ESM,
         mainFields: ["module", "main"],
         minify: true,
+        nodeModules: ["sharp"],
         sourceMap: true,
         target: "node20",
       },

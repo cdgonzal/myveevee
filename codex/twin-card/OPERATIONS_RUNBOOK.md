@@ -137,6 +137,7 @@ Expected objects:
 - `source/normalized.jpg`
 - `generated/avatar.png` or `generated/avatar.jpg`
 - `print/selphy-cp1500-4x6.svg`
+- `print/selphy-cp1500-4x6.png`
 - `failures/{stage}.json`, only when a stage fails
 
 The DynamoDB table is:
@@ -204,7 +205,7 @@ aws dynamodb scan `
   --limit 20 `
   --profile glue-admin `
   --region us-east-1 `
-  --query "Items[].{cardId:cardId.S,createdAt:createdAt.S,firstName:firstName.S,email:email.S,generation:generationStatus.S,render:renderStatus.S,fulfillment:fulfillmentStatus.S,source:sourceImageS3Key.S,avatar:generatedImageS3Key.S,print:printImageS3Key.S}" `
+  --query "Items[].{cardId:cardId.S,createdAt:createdAt.S,firstName:firstName.S,email:email.S,generation:generationStatus.S,render:renderStatus.S,fulfillment:fulfillmentStatus.S,source:sourceImageS3Key.S,avatar:generatedAvatarS3Key.S,layout:printLayoutS3Key.S,print:printImageS3Key.S}" `
   --output table
 ```
 
@@ -283,11 +284,16 @@ If a record is stuck at `completed` with `renderStatus=not_started`, check wheth
 3. Open `https://myveevee.com/twin-dashboard`.
 4. Enter PIN `5353`.
 5. Confirm the new row appears.
-6. Confirm source image, generated avatar, run JSON, and print asset links populate.
+6. Confirm source image, generated avatar, run JSON, print layout SVG, and Canon print PNG links populate.
 7. Confirm S3 contains the expected prefix and objects.
 8. Confirm DynamoDB has the same `cardId` and final statuses.
 9. Confirm all Twin Card alarms are `OK`.
 
-## Known Current Gap
+## Print Artifact Contract
 
-The current print composer writes `print/selphy-cp1500-4x6.svg`. The printer contract targets Canon SELPHY CP1500 4x6/Postcard portrait output at 300 DPI, 1200x1800 px, sRGB. The next hardening pass should render a Canon-ready PNG or JPEG from the print-composer Lambda, likely with `sharp`.
+The print composer intentionally writes two print-stage artifacts:
+
+- `print/selphy-cp1500-4x6.svg`: deterministic layout source for audit, dashboard review, and rerendering.
+- `print/selphy-cp1500-4x6.png`: Canon SELPHY CP1500-ready 4x6/Postcard portrait raster at 1200x1800 px, sRGB.
+
+The generated avatar remains separate under `generated/avatar.*`. Do not overwrite or collapse these stages: the generated avatar is the AI output, the SVG is the print recipe/layout, and the PNG is the booth-ready print file.

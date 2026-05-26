@@ -62,13 +62,13 @@
     },
     "rendering": {
       "dashboardLabel": "Rendering",
-      "meaning": "The print-composition Lambda is framing the generated image for printing.",
+      "meaning": "The print-composition Lambda is framing the generated avatar and exporting the Canon-ready raster print image.",
       "printReady": false,
       "terminal": false
     },
     "rendered": {
       "dashboardLabel": "Print ready",
-      "meaning": "The final framed print asset has been written to S3.",
+      "meaning": "The deterministic print-layout SVG and final Canon SELPHY-ready PNG have been written to S3.",
       "printReady": true,
       "terminal": true
     },
