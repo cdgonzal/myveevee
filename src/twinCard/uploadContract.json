@@ -1,0 +1,20 @@
+{
+  "id": "twin-card-ai-avatar-upload-v1",
+  "sourceUpload": {
+    "acceptedMimeTypes": ["image/jpeg", "image/png", "image/webp"],
+    "maxOriginalFileBytes": 25000000
+  },
+  "normalizedImage": {
+    "widthPx": 1024,
+    "heightPx": 1024,
+    "fit": "cover-center",
+    "mimeType": "image/jpeg",
+    "jpegQuality": 0.88,
+    "maxDataUrlBytes": 7500000
+  },
+  "notes": [
+    "Large camera images are accepted by the browser, then normalized before upload.",
+    "The Lambda only receives the normalized image payload.",
+    "The normalized 1024x1024 JPEG is the source image used for AI avatar generation and fallback card rendering."
+  ]
+}

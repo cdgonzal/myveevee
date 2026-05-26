@@ -12,9 +12,11 @@ type GenerateTwinCardResponse = {
 export type TwinCardApiCard = {
   cardId: string;
   firstName: string;
+  contact?: string;
   contactType: "email" | "phone" | "unknown";
   wellnessInterest: TwinCardLead["wellnessInterest"];
   wellnessInterestLabel: string;
+  consentAccepted?: boolean;
   betaInterest: boolean;
   cardResultUrl: string;
   generationStatus: TwinCardGenerationStatus;
@@ -23,6 +25,15 @@ export type TwinCardApiCard = {
   eventName: string;
   createdAt: string;
   updatedAt: string;
+  boothDeviceId?: string;
+  language?: TwinCardLead["language"];
+  imageUpload?: TwinCardLead["imageUpload"];
+  runS3Key?: string;
+  sourceImageS3Key?: string;
+  generatedAvatarS3Key?: string;
+  sourceImageBytes?: number;
+  generatedAvatarBytes?: number;
+  runJsonUrl?: string;
   sourceImageUrl?: string;
   generatedAvatarUrl?: string;
 };
@@ -59,6 +70,8 @@ export async function generateTwinCardAvatar(lead: TwinCardLead): Promise<TwinCa
         betaInterest: lead.betaInterest,
         eventName: lead.eventName,
         boothDeviceId: lead.boothDeviceId,
+        language: lead.language,
+        imageUpload: lead.imageUpload,
         sourceImageDataUrl: lead.sourceImageDataUrl,
       }),
     });
@@ -109,12 +122,14 @@ export async function fetchTwinCard(cardId: string): Promise<TwinCardApiCard | n
   return payload.card;
 }
 
-export async function fetchRecentTwinCards(): Promise<TwinCardApiCard[] | null> {
+export async function fetchRecentTwinCards(dashboardPin?: string): Promise<TwinCardApiCard[] | null> {
   const endpoint = TWIN_CARD_API_URL?.trim();
   if (!endpoint) return null;
 
   const adminEndpoint = endpoint.replace(/\/twin-card\/cards\/?$/, "/twin-card/admin/cards");
-  const response = await fetch(adminEndpoint);
+  const response = await fetch(adminEndpoint, {
+    headers: dashboardPin ? { "x-twin-dashboard-pin": dashboardPin } : undefined,
+  });
   const payload = (await response.json().catch(() => ({}))) as { cards?: TwinCardApiCard[] };
 
   if (!response.ok || !Array.isArray(payload.cards)) {
@@ -129,11 +144,11 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     id: fallback?.id ?? card.cardId,
     cardId: card.cardId,
     firstName: card.firstName,
-    contact: fallback?.contact ?? "",
+    contact: card.contact ?? fallback?.contact ?? "",
     contactType: card.contactType,
     wellnessInterest: card.wellnessInterest,
     wellnessInterestLabel: card.wellnessInterestLabel,
-    consentAccepted: fallback?.consentAccepted ?? true,
+    consentAccepted: card.consentAccepted ?? fallback?.consentAccepted ?? true,
     betaInterest: card.betaInterest,
     sourceImageDataUrl: fallback?.sourceImageDataUrl,
     generatedAvatarDataUrl: fallback?.generatedAvatarDataUrl,
@@ -144,7 +159,11 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     generationProvider: card.generationProvider,
     generationMessage: card.generationMessage,
     eventName: card.eventName,
-    boothDeviceId: fallback?.boothDeviceId,
+    boothDeviceId: card.boothDeviceId ?? fallback?.boothDeviceId,
+    language: card.language ?? fallback?.language,
+    imageUpload: card.imageUpload ?? fallback?.imageUpload,
+    runS3Key: card.runS3Key ?? fallback?.runS3Key,
+    runJsonUrl: card.runJsonUrl ?? fallback?.runJsonUrl,
     createdAt: card.createdAt,
     updatedAt: card.updatedAt,
   };

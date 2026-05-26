@@ -104,6 +104,17 @@ This repository is the public-facing marketing site for `myveevee.com`.
   - not linked from the header, footer, sitemap, or primary marketing pages
   - `noindex`
   - shows redacted reporting only: abbreviated names and contact method, not raw email or phone
+- `/twin-card`
+  - SWCA Medical Summit expo Twin Card funnel
+  - English/Spanish start, first name and email capture, three wellness goals, consent, camera capture, and success reset flow
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
+- `/twin-dashboard`
+  - private Twin Card operations dashboard
+  - direct-access PIN is `5353`
+  - shows recent runs, responses, S3 artifact links, DDB-backed fields, generation state, and image upload-normalization metadata
+  - not linked from the header, footer, sitemap, or primary marketing pages
+  - `noindex`
 
 ## Page Inventory
 

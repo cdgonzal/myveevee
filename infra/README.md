@@ -79,14 +79,22 @@ The Twin Card backend is managed in the same stack as a sibling construct:
 
 - Lambda function: `myveevee-twin-card-handler`
 - HTTP API route: `/twin-card/cards`
-- Admin list route: `/twin-card/admin/cards`
+- PIN-gated dashboard/admin list route: `/twin-card/admin/cards`
 - Result lookup route: `/twin-card/cards/{cardId}`
 - Private S3 bucket: `myveevee-twin-card-<account>-<region>`
 - DynamoDB table: `myveevee-twin-card-cards`
 - Frontend route: `https://myveevee.com/twin-card`
+- Dashboard route: `https://myveevee.com/twin-dashboard`
 - Frontend environment variable: `VITE_TWIN_CARD_API_URL`
 
 `TwinCardBedrockImageModelId` is optional. Leave it blank to deploy reliable fallback mode, where Lambda stores the uploaded photo and returns a printable card without invoking Bedrock. Set it to an approved Bedrock image model ID when model access is confirmed.
+
+Twin Card run visibility:
+
+- Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
+- S3 stores normalized source images under `twin-card/source/`, generated/fallback avatars under `twin-card/generated/`, and full private run JSON artifacts under `twin-card/runs/{cardId}.json`.
+- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, and the upload-normalization metadata.
+- Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 

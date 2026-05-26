@@ -66,6 +66,7 @@ Campaign/direct-link route:
 - `/twin-card`
   - SWCA Medical Summit expo activation flow for lead capture, photo capture, Twin Card generation, and booth printing
   - print output is governed by [printContract.json](/C:/w/myveevee/src/twinCard/printContract.json:1) for Canon SELPHY CP1500 4x6 postcard output
+  - photo upload normalization is governed by [uploadContract.json](/C:/w/myveevee/src/twinCard/uploadContract.json:1): accept large camera files up to 25 MB, immediately center-crop to a 1024x1024 JPEG at quality 0.88, then send that normalized image to the backend and AI avatar model
   - backed by native AWS API Gateway, Lambda, S3, DynamoDB, and optional Bedrock image generation
   - `noindex`
 - `/twin-card/result/:cardId`
@@ -73,6 +74,12 @@ Campaign/direct-link route:
   - `noindex`
 - `/twin-card/admin`
   - staff view for recent Twin Cards and quick printing
+  - hidden direct-access route
+  - `noindex`
+- `/twin-dashboard`
+  - PIN-gated Twin Card run dashboard for expo operations
+  - PIN: `5353`
+  - shows all recent runs, responses, consent, contact, image normalization metadata, DDB-backed fields, and S3/presigned artifact links
   - hidden direct-access route
   - `noindex`
 
@@ -114,4 +121,6 @@ Campaign/direct-link route:
 - CDK infrastructure lives under `infra/`; the SWCA Lambda source lives under `aws/swca-intake/`.
 - Twin Card backend source lives under `aws/twin-card/`; CDK outputs `TwinCardActivationTwinCardApiEndpoint...` for `VITE_TWIN_CARD_API_URL`.
 - Twin Card print sizing is contracted in [printContract.json](/C:/w/myveevee/src/twinCard/printContract.json:1): Canon SELPHY CP1500, 4x6/Postcard portrait, 300 DPI, 1200x1800 px, sRGB, borderless, 60 px safe margin.
+- Twin Card upload sizing is contracted in [uploadContract.json](/C:/w/myveevee/src/twinCard/uploadContract.json:1): max original upload 25 MB, normalized AI input 1024x1024 JPEG, normalized payload max 7.5 MB.
+- Each live Twin Card run writes private S3 image objects under `twin-card/source/` and `twin-card/generated/`, a private JSON run artifact under `twin-card/runs/{cardId}.json`, and a DynamoDB row in `myveevee-twin-card-cards` containing the full run details.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

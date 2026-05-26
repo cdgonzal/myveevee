@@ -86,6 +86,7 @@ const SwcaAdminDashboard = lazyWithRetry(() => import("./swca/admin/SwcaAdminDas
 const TwinCardPage = lazyWithRetry(() => import("./pages/TwinCardPage"));
 const TwinCardResultPage = lazyWithRetry(() => import("./pages/TwinCardResultPage"));
 const TwinCardAdminPage = lazyWithRetry(() => import("./pages/TwinCardAdminPage"));
+const TwinDashboardPage = lazyWithRetry(() => import("./pages/TwinDashboardPage"));
 
 type FooterNavLink = {
   label: string;
@@ -226,7 +227,8 @@ export default function App() {
     pathname === APP_LINKS.internal.swcaAdmin ||
     pathname === APP_LINKS.internal.twinCard ||
     pathname.startsWith("/twin-card/result/") ||
-    pathname === APP_LINKS.internal.twinCardAdmin;
+    pathname === APP_LINKS.internal.twinCardAdmin ||
+    pathname === APP_LINKS.internal.twinDashboard;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "linear(to-b, surface.900, surface.800)"
@@ -258,6 +260,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.twinCard} element={<TwinCardPage />} />
                 <Route path={APP_LINKS.internal.twinCardResult} element={<TwinCardResultPage />} />
                 <Route path={APP_LINKS.internal.twinCardAdmin} element={<TwinCardAdminPage />} />
+                <Route path={APP_LINKS.internal.twinDashboard} element={<TwinDashboardPage />} />
               </Routes>
             </Suspense>
           </>
@@ -294,6 +297,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.twinCard} element={<TwinCardPage />} />
                 <Route path={APP_LINKS.internal.twinCardResult} element={<TwinCardResultPage />} />
                 <Route path={APP_LINKS.internal.twinCardAdmin} element={<TwinCardAdminPage />} />
+                <Route path={APP_LINKS.internal.twinDashboard} element={<TwinDashboardPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>

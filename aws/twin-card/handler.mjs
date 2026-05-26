@@ -16,6 +16,7 @@ const {
   ALLOWED_ORIGINS = "",
   PUBLIC_BASE_URL = "https://myveevee.com",
   BEDROCK_IMAGE_MODEL_ID = "",
+  DASHBOARD_PIN = "5353",
 } = process.env;
 
 const INTEREST_LABELS = {
@@ -44,7 +45,7 @@ export async function handler(event) {
     }
 
     if (route.endsWith("GET /twin-card/admin/cards")) {
-      return await listCards(origin);
+      return await listCards(event, origin);
     }
 
     return response(404, { message: "Not found." }, origin);
@@ -66,6 +67,8 @@ async function createCard(event, origin) {
   const consentAccepted = payload.consentAccepted === true;
   const betaInterest = payload.betaInterest === true;
   const sourceImage = parseDataUrl(payload.sourceImageDataUrl);
+  const language = sanitizeString(payload.language, 8) || "en";
+  const imageUpload = normalizeImageUpload(payload.imageUpload, sourceImage);
 
   if (!firstName || !contact || !consentAccepted || !sourceImage) {
     return response(400, { message: "First name, contact, consent, and photo are required." }, origin);
@@ -92,11 +95,15 @@ async function createCard(event, origin) {
     consentAccepted,
     betaInterest,
     sourceImageS3Key,
+    sourceImageBytes: sourceImage.buffer.length,
+    sourceImageContentType: sourceImage.contentType,
+    imageUpload,
     cardResultUrl: `${PUBLIC_BASE_URL.replace(/\/+$/, "")}/twin-card/result/${cardId}`,
     generationStatus: "generating",
     generationProvider: "bedrock",
     eventName: "4th SWCA Medical Summit",
     boothDeviceId: sanitizeString(payload.boothDeviceId, 80),
+    language,
     createdAt: now,
     updatedAt: now,
   };
@@ -113,9 +120,13 @@ async function createCard(event, origin) {
     })
   );
 
+  const runS3Key = `${CARDS_PREFIX}/runs/${cardId}.json`;
   const record = {
     ...baseRecord,
     generatedAvatarS3Key,
+    generatedAvatarBytes: generated.buffer.length,
+    generatedAvatarContentType: generated.contentType,
+    runS3Key,
     generationStatus: generated.usedFallback ? "fallback_used" : "completed",
     generationProvider: generated.usedFallback ? "fallback" : "bedrock",
     generationMessage: generated.usedFallback
@@ -123,6 +134,16 @@ async function createCard(event, origin) {
       : "Your VeeVee Twin Card is ready.",
     updatedAt: new Date().toISOString(),
   };
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: CARDS_BUCKET,
+      Key: runS3Key,
+      Body: JSON.stringify(buildRunArtifact(record, payload), null, 2),
+      ContentType: "application/json",
+      ServerSideEncryption: "AES256",
+    })
+  );
 
   await dynamo.send(
     new PutCommand({
@@ -145,7 +166,11 @@ async function getCard(event, origin) {
   return response(200, { ok: true, card: await serializeCard(card) }, origin);
 }
 
-async function listCards(origin) {
+async function listCards(event, origin) {
+  if (!isDashboardAuthorized(event)) {
+    return response(403, { message: "Dashboard PIN required." }, origin);
+  }
+
   const result = await dynamo.send(
     new ScanCommand({
       TableName: CARDS_TABLE,
@@ -154,7 +179,7 @@ async function listCards(origin) {
   );
   const cards = [...(result.Items ?? [])].sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt));
 
-  return response(200, { ok: true, cards: await Promise.all(cards.map(serializeCard)) }, origin);
+  return response(200, { ok: true, cards: await Promise.all(cards.map((card) => serializeCard(card, { includePrivateFields: true }))) }, origin);
 }
 
 async function loadCard(cardId) {
@@ -168,8 +193,8 @@ async function loadCard(cardId) {
   return result.Item ?? null;
 }
 
-async function serializeCard(card) {
-  return {
+async function serializeCard(card, options = {}) {
+  const publicCard = {
     cardId: card.cardId,
     firstName: card.firstName,
     contactType: card.contactType,
@@ -185,6 +210,25 @@ async function serializeCard(card) {
     updatedAt: card.updatedAt,
     sourceImageUrl: await presign(card.sourceImageS3Key),
     generatedAvatarUrl: await presign(card.generatedAvatarS3Key),
+  };
+
+  if (!options.includePrivateFields) {
+    return publicCard;
+  }
+
+  return {
+    ...publicCard,
+    contact: card.contact,
+    consentAccepted: Boolean(card.consentAccepted),
+    boothDeviceId: card.boothDeviceId,
+    language: card.language,
+    imageUpload: card.imageUpload,
+    runS3Key: card.runS3Key,
+    sourceImageS3Key: card.sourceImageS3Key,
+    generatedAvatarS3Key: card.generatedAvatarS3Key,
+    sourceImageBytes: card.sourceImageBytes,
+    generatedAvatarBytes: card.generatedAvatarBytes,
+    runJsonUrl: await presign(card.runS3Key),
   };
 }
 
@@ -286,6 +330,74 @@ function parseDataUrl(value) {
   };
 }
 
+function normalizeImageUpload(value, sourceImage) {
+  const upload = typeof value === "object" && value ? value : {};
+  return {
+    originalFileName: sanitizeString(upload.originalFileName, 180),
+    originalFileType: sanitizeString(upload.originalFileType, 80),
+    originalFileBytes: safeNumber(upload.originalFileBytes),
+    originalWidthPx: safeNumber(upload.originalWidthPx),
+    originalHeightPx: safeNumber(upload.originalHeightPx),
+    normalizedWidthPx: safeNumber(upload.normalizedWidthPx) || 1024,
+    normalizedHeightPx: safeNumber(upload.normalizedHeightPx) || 1024,
+    normalizedMimeType: sanitizeString(upload.normalizedMimeType, 80) || sourceImage?.contentType || "image/jpeg",
+    normalizedBytesEstimate: safeNumber(upload.normalizedBytesEstimate) || sourceImage?.buffer.length || 0,
+    contractId: sanitizeString(upload.contractId, 80) || "twin-card-ai-avatar-upload-v1",
+  };
+}
+
+function buildRunArtifact(record, payload) {
+  return {
+    schema: "twin-card-run-v1",
+    cardId: record.cardId,
+    capturedAt: record.updatedAt,
+    lead: {
+      firstName: record.firstName,
+      contact: record.contact,
+      contactType: record.contactType,
+      language: record.language,
+      wellnessInterest: record.wellnessInterest,
+      wellnessInterestLabel: record.wellnessInterestLabel,
+      consentAccepted: record.consentAccepted,
+      betaInterest: record.betaInterest,
+    },
+    event: {
+      eventName: record.eventName,
+      boothDeviceId: record.boothDeviceId,
+      cardResultUrl: record.cardResultUrl,
+    },
+    image: {
+      upload: record.imageUpload,
+      sourceImageS3Key: record.sourceImageS3Key,
+      sourceImageBytes: record.sourceImageBytes,
+      sourceImageContentType: record.sourceImageContentType,
+      generatedAvatarS3Key: record.generatedAvatarS3Key,
+      generatedAvatarBytes: record.generatedAvatarBytes,
+      generatedAvatarContentType: record.generatedAvatarContentType,
+    },
+    generation: {
+      status: record.generationStatus,
+      provider: record.generationProvider,
+      message: record.generationMessage,
+      bedrockModelId: BEDROCK_IMAGE_MODEL_ID || null,
+    },
+    request: {
+      userAgent: sanitizeString(payload.boothDeviceId, 80),
+      imageUpload: record.imageUpload,
+    },
+  };
+}
+
+function isDashboardAuthorized(event) {
+  const suppliedPin = event.headers?.["x-twin-dashboard-pin"] ?? event.headers?.["X-Twin-Dashboard-Pin"] ?? "";
+  return suppliedPin === DASHBOARD_PIN;
+}
+
+function safeNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : 0;
+}
+
 function readInterest(value) {
   return Object.hasOwn(INTEREST_LABELS, value) ? value : "just_exploring";
 }
@@ -319,7 +431,7 @@ function corsHeaders(origin) {
     "content-type": "application/json",
     "access-control-allow-origin": allowOrigin,
     "access-control-allow-methods": "GET,POST,OPTIONS",
-    "access-control-allow-headers": "content-type,authorization",
+    "access-control-allow-headers": "content-type,authorization,x-twin-dashboard-pin",
     "vary": "Origin",
   };
 }

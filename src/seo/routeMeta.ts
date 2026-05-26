@@ -303,4 +303,13 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: DEFAULT_OG_IMAGE,
     twitterImage: DEFAULT_OG_IMAGE,
   },
+  [APP_LINKS.internal.twinDashboard]: {
+    title: "Twin Dashboard",
+    description: "Private Twin Card run dashboard.",
+    canonicalPath: APP_LINKS.internal.twinDashboard,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
 };

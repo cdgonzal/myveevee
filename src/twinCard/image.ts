@@ -1,21 +1,64 @@
+import { TWIN_CARD_UPLOAD_CONTRACT, type TwinCardImageUpload } from "./uploadContract";
+
+export type TwinCardPreparedImage = {
+  dataUrl: string;
+  upload: TwinCardImageUpload;
+};
+
 export async function fileToTwinCardImageDataUrl(file: File) {
+  const prepared = await fileToTwinCardPreparedImage(file);
+  return prepared.dataUrl;
+}
+
+export async function fileToTwinCardPreparedImage(file: File): Promise<TwinCardPreparedImage> {
+  if (file.size > TWIN_CARD_UPLOAD_CONTRACT.sourceUpload.maxOriginalFileBytes) {
+    throw new Error("Image file is too large.");
+  }
+
   const rawDataUrl = await readFileAsDataUrl(file);
   const image = await loadImage(rawDataUrl);
-  const maxSide = 1200;
-  const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
-  const width = Math.max(1, Math.round(image.naturalWidth * scale));
-  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const width = TWIN_CARD_UPLOAD_CONTRACT.normalizedImage.widthPx;
+  const height = TWIN_CARD_UPLOAD_CONTRACT.normalizedImage.heightPx;
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const context = canvas.getContext("2d");
 
   if (!context) {
-    return rawDataUrl;
+    throw new Error("Image canvas could not be created.");
   }
 
-  context.drawImage(image, 0, 0, width, height);
-  return canvas.toDataURL("image/jpeg", 0.86);
+  const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+  const drawWidth = image.naturalWidth * scale;
+  const drawHeight = image.naturalHeight * scale;
+  const drawX = (width - drawWidth) / 2;
+  const drawY = (height - drawHeight) / 2;
+
+  context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+  const dataUrl = canvas.toDataURL(
+    TWIN_CARD_UPLOAD_CONTRACT.normalizedImage.mimeType,
+    TWIN_CARD_UPLOAD_CONTRACT.normalizedImage.jpegQuality
+  );
+
+  if (dataUrl.length > TWIN_CARD_UPLOAD_CONTRACT.normalizedImage.maxDataUrlBytes) {
+    throw new Error("Normalized image payload is too large.");
+  }
+
+  return {
+    dataUrl,
+    upload: {
+      originalFileName: file.name,
+      originalFileType: file.type,
+      originalFileBytes: file.size,
+      originalWidthPx: image.naturalWidth,
+      originalHeightPx: image.naturalHeight,
+      normalizedWidthPx: width,
+      normalizedHeightPx: height,
+      normalizedMimeType: TWIN_CARD_UPLOAD_CONTRACT.normalizedImage.mimeType,
+      normalizedBytesEstimate: Math.ceil((dataUrl.length * 3) / 4),
+      contractId: TWIN_CARD_UPLOAD_CONTRACT.id,
+    },
+  };
 }
 
 function readFileAsDataUrl(file: File) {

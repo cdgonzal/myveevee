@@ -132,6 +132,12 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_type: "staff_admin",
     primary_goal: "print_twin_cards",
   },
+  [APP_LINKS.internal.twinDashboard]: {
+    page_name: "twin_dashboard",
+    page_section: "expo_activation",
+    page_type: "ops_dashboard",
+    primary_goal: "review_twin_card_runs",
+  },
 };
 
 export function getRouteAnalytics(pathname: string): RouteAnalyticsMetadata {

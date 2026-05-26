@@ -14,7 +14,7 @@ export default function TwinCardAdminPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchRecentTwinCards().then((apiCards) => {
+    fetchRecentTwinCards("5353").then((apiCards) => {
       if (!cancelled && apiCards) {
         const nextCards = apiCards.map((card: TwinCardApiCard) => apiCardToLead(card));
         setCards(nextCards);

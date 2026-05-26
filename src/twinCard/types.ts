@@ -4,6 +4,8 @@ export type TwinCardGenerationStatus = "not_started" | "generating" | "completed
 
 export type TwinCardGenerationProvider = "bedrock" | "fallback" | "manual";
 
+export type TwinCardLanguage = "en" | "es";
+
 export type TwinCardInterestId =
   | "prepare_for_care"
   | "understand_symptoms"
@@ -33,6 +35,21 @@ export type TwinCardLead = {
   generationMessage?: string;
   eventName: string;
   boothDeviceId?: string;
+  language?: TwinCardLanguage;
+  imageUpload?: {
+    originalFileName: string;
+    originalFileType: string;
+    originalFileBytes: number;
+    originalWidthPx: number;
+    originalHeightPx: number;
+    normalizedWidthPx: number;
+    normalizedHeightPx: number;
+    normalizedMimeType: string;
+    normalizedBytesEstimate: number;
+    contractId: string;
+  };
+  runS3Key?: string;
+  runJsonUrl?: string;
   createdAt: string;
   updatedAt: string;
 };

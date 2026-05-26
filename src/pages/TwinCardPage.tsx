@@ -23,10 +23,11 @@ import {
   getTwinCardInterestLabel,
 } from "../twinCard/constants";
 import { trackTwinCardEvent } from "../twinCard/events";
-import { fileToTwinCardImageDataUrl } from "../twinCard/image";
+import { fileToTwinCardPreparedImage } from "../twinCard/image";
 import { buildTwinCardPrintCss } from "../twinCard/printContract";
 import { saveTwinCardLead } from "../twinCard/storage";
 import type { TwinCardFormValues, TwinCardInterestId, TwinCardLead } from "../twinCard/types";
+import type { TwinCardImageUpload } from "../twinCard/uploadContract";
 
 type FlowStep = "language" | "lead" | "goals" | "consent" | "camera" | "success";
 type FlowLanguage = "en" | "es";
@@ -172,9 +173,9 @@ export default function TwinCardPage() {
     setIsGenerating(true);
 
     try {
-      const photoDataUrl = await fileToTwinCardImageDataUrl(file);
+      const preparedImage = await fileToTwinCardPreparedImage(file);
       trackTwinCardEvent("public.twin_card.photo_selected");
-      const generatedLead = await createTwinCard(buildLead(photoDataUrl));
+      const generatedLead = await createTwinCard(buildLead(preparedImage.dataUrl, preparedImage.upload));
       saveTwinCardLead(generatedLead);
       trackTwinCardEvent(
         generatedLead.generationStatus === "fallback_used"
@@ -190,7 +191,7 @@ export default function TwinCardPage() {
     }
   };
 
-  const buildLead = (photoDataUrl: string): TwinCardLead => {
+  const buildLead = (photoDataUrl: string, imageUpload: TwinCardImageUpload): TwinCardLead => {
     const now = new Date().toISOString();
     const cardId = crypto.randomUUID();
 
@@ -210,6 +211,8 @@ export default function TwinCardPage() {
       generationProvider: "bedrock",
       eventName: TWIN_CARD_EVENT_NAME,
       boothDeviceId: window.navigator.userAgent.slice(0, 80),
+      language,
+      imageUpload,
       createdAt: now,
       updatedAt: now,
     };

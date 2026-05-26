@@ -93,6 +93,7 @@ export class TwinCardActivation extends Construct {
         PUBLIC_BASE_URL: props.publicBaseUrl,
         ALLOWED_ORIGINS: cdk.Fn.join(",", props.allowedOrigins),
         BEDROCK_IMAGE_MODEL_ID: props.bedrockImageModelId,
+        DASHBOARD_PIN: "5353",
       },
     });
 
@@ -108,7 +109,7 @@ export class TwinCardActivation extends Construct {
     this.api = new apigatewayv2.HttpApi(this, "HttpApi", {
       apiName: `${resourcePrefix}-api`,
       corsPreflight: {
-        allowHeaders: ["authorization", "content-type"],
+        allowHeaders: ["authorization", "content-type", "x-twin-dashboard-pin"],
         allowMethods: [
           apigatewayv2.CorsHttpMethod.GET,
           apigatewayv2.CorsHttpMethod.POST,
