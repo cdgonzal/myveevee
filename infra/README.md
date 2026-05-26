@@ -78,6 +78,8 @@ The SNS email subscription for `info@veevee.io` is confirmed.
 The Twin Card backend is managed in the same stack as a sibling construct:
 
 - Lambda function: `myveevee-twin-card-handler`
+- Avatar generator Lambda function: `myveevee-twin-card-avatar-generator`
+- Print composer Lambda function: `myveevee-twin-card-print-composer`
 - HTTP API route: `/twin-card/cards`
 - PIN-gated dashboard/admin list route: `/twin-card/admin/cards`
 - Result lookup route: `/twin-card/cards/{cardId}`
@@ -87,15 +89,16 @@ The Twin Card backend is managed in the same stack as a sibling construct:
 - Dashboard route: `https://myveevee.com/twin-dashboard`
 - Frontend environment variable: `VITE_TWIN_CARD_API_URL`
 
-`TwinCardBedrockImageModelId` is optional. Leave it blank to deploy reliable fallback mode, where Lambda stores the uploaded photo and returns a printable card without invoking Bedrock. Set it to an approved Bedrock image model ID when model access is confirmed.
+`TwinCardBedrockImageModelId` is optional. Leave it blank to use the avatar-generator Lambda default of `amazon.nova-canvas-v1:0`. Set it only when overriding to a different approved Bedrock image model ID.
 
 Twin Card run visibility:
 
 - Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
-- S3 stores normalized source images under `twin-card/source/`, generated/fallback avatars under `twin-card/generated/`, and full private run JSON artifacts under `twin-card/runs/{cardId}.json`.
+- S3 stores each run under `twin-card/{yyyy}/{mm}/{dd}/{cardId}/` with `run.json`, `source/normalized.jpg`, `generated/avatar.*`, `print/selphy-cp1500-4x6.svg`, and optional `failures/{stage}.json`.
 - DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, and the upload-normalization metadata.
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
 - Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means Bedrock succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
+- S3 source-image object creation triggers Nova Canvas generation. S3 generated-image object creation triggers print composition. The current print composer writes a deterministic SVG frame; PNG/JPEG output remains the next hardening pass.
 
 The frontend route remains `/swca/intake`. The deployed CDK output endpoint is configured in Amplify as:
 

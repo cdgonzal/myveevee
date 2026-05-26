@@ -22,6 +22,8 @@ export type TwinCardApiCard = {
   generationStatus: TwinCardGenerationStatus;
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
+  renderStatus?: TwinCardLead["renderStatus"];
+  fulfillmentStatus?: TwinCardLead["fulfillmentStatus"];
   eventName: string;
   createdAt: string;
   updatedAt: string;
@@ -31,11 +33,14 @@ export type TwinCardApiCard = {
   runS3Key?: string;
   sourceImageS3Key?: string;
   generatedAvatarS3Key?: string;
+  printImageS3Key?: string;
   sourceImageBytes?: number;
   generatedAvatarBytes?: number;
+  printImageBytes?: number;
   runJsonUrl?: string;
   sourceImageUrl?: string;
   generatedAvatarUrl?: string;
+  printImageUrl?: string;
 };
 
 const TWIN_CARD_API_URL = import.meta.env.VITE_TWIN_CARD_API_URL as string | undefined;
@@ -51,6 +56,8 @@ export async function generateTwinCardAvatar(lead: TwinCardLead): Promise<TwinCa
       generationStatus: "fallback_used",
       generationProvider: "fallback",
       generationMessage: "We created your Twin Card using your uploaded photo.",
+      renderStatus: "rendered",
+      fulfillmentStatus: lead.fulfillmentStatus ?? "not_printed",
       updatedAt: now,
     };
   }
@@ -90,6 +97,8 @@ export async function generateTwinCardAvatar(lead: TwinCardLead): Promise<TwinCa
         generationStatus: payload.generationStatus ?? "completed",
         generationProvider: payload.generationProvider ?? "bedrock",
         generationMessage: payload.generationMessage,
+        renderStatus: lead.renderStatus,
+        fulfillmentStatus: lead.fulfillmentStatus,
         updatedAt: now,
       };
   } catch {
@@ -99,6 +108,8 @@ export async function generateTwinCardAvatar(lead: TwinCardLead): Promise<TwinCa
       generationStatus: "fallback_used",
       generationProvider: "fallback",
       generationMessage: "We created your Twin Card using your uploaded photo.",
+      renderStatus: "rendered",
+      fulfillmentStatus: lead.fulfillmentStatus ?? "not_printed",
       updatedAt: now,
     };
   }
@@ -158,12 +169,16 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     generationStatus: card.generationStatus,
     generationProvider: card.generationProvider,
     generationMessage: card.generationMessage,
+    renderStatus: card.renderStatus ?? fallback?.renderStatus,
+    fulfillmentStatus: card.fulfillmentStatus ?? fallback?.fulfillmentStatus,
     eventName: card.eventName,
     boothDeviceId: card.boothDeviceId ?? fallback?.boothDeviceId,
     language: card.language ?? fallback?.language,
     imageUpload: card.imageUpload ?? fallback?.imageUpload,
     runS3Key: card.runS3Key ?? fallback?.runS3Key,
     runJsonUrl: card.runJsonUrl ?? fallback?.runJsonUrl,
+    printImageS3Key: card.printImageS3Key ?? fallback?.printImageS3Key,
+    printImageUrl: card.printImageUrl ?? fallback?.printImageUrl,
     createdAt: card.createdAt,
     updatedAt: card.updatedAt,
   };

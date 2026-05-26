@@ -9,6 +9,13 @@
       "terminal": false,
       "currentUsage": "Local/client fallback state only."
     },
+    "submitted": {
+      "dashboardLabel": "Submitted",
+      "meaning": "The API accepted the run and stored the normalized source image. Avatar generation is waiting for the S3 source-image trigger.",
+      "printable": false,
+      "terminal": false,
+      "currentUsage": "Set by the API Lambda after source image storage succeeds."
+    },
     "generating": {
       "dashboardLabel": "Processing",
       "meaning": "The card request has been accepted and avatar generation is in progress.",
@@ -39,10 +46,38 @@
     }
   },
   "generationMappings": {
+    "apiAccepted": "submitted",
     "bedrockSuccess": "completed",
     "bedrockModelMissing": "fallback_used",
     "bedrockInvocationFailed": "fallback_used",
     "noUsableCardProduced": "failed"
+  },
+  "renderStatusField": "renderStatus",
+  "renderStatuses": {
+    "not_started": {
+      "dashboardLabel": "Not rendered",
+      "meaning": "No print-frame render has started.",
+      "printReady": false,
+      "terminal": false
+    },
+    "rendering": {
+      "dashboardLabel": "Rendering",
+      "meaning": "The print-composition Lambda is framing the generated image for printing.",
+      "printReady": false,
+      "terminal": false
+    },
+    "rendered": {
+      "dashboardLabel": "Print ready",
+      "meaning": "The final framed print asset has been written to S3.",
+      "printReady": true,
+      "terminal": true
+    },
+    "render_failed": {
+      "dashboardLabel": "Render failed",
+      "meaning": "The final framed print asset could not be produced.",
+      "printReady": false,
+      "terminal": true
+    }
   },
   "fulfillmentStatusField": "fulfillmentStatus",
   "fulfillmentStatuses": {
@@ -72,5 +107,5 @@
       "currentUsage": "Future field."
     }
   },
-  "operatorRule": "completed and fallback_used are both printable. failed is not printable. Do not treat fallback_used as a failed run."
+  "operatorRule": "completed and fallback_used mean the generated/avatar stage has a usable image. A card is print-ready only when renderStatus is rendered. failed and render_failed require staff attention."
 }

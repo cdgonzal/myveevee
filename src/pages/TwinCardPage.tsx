@@ -224,6 +224,8 @@ export default function TwinCardPage() {
       cardResultUrl: `${window.location.origin}/twin-card/result/${cardId}`,
       generationStatus: "generating",
       generationProvider: "bedrock",
+      renderStatus: "not_started",
+      fulfillmentStatus: "not_printed",
       eventName: TWIN_CARD_EVENT_NAME,
       boothDeviceId: window.navigator.userAgent.slice(0, 80),
       language,

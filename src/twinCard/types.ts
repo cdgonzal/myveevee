@@ -1,9 +1,13 @@
 export type TwinCardContactType = "email" | "phone" | "unknown";
 
 // Keep this union aligned with src/twinCard/statusContract.json.
-export type TwinCardGenerationStatus = "not_started" | "generating" | "completed" | "failed" | "fallback_used";
+export type TwinCardGenerationStatus = "not_started" | "submitted" | "generating" | "completed" | "failed" | "fallback_used";
 
-export type TwinCardGenerationProvider = "bedrock" | "fallback" | "manual";
+export type TwinCardGenerationProvider = "bedrock" | "nova_canvas" | "fallback" | "manual";
+
+export type TwinCardRenderStatus = "not_started" | "rendering" | "rendered" | "render_failed";
+
+export type TwinCardFulfillmentStatus = "not_printed" | "printed" | "email_pending" | "emailed" | "email_failed";
 
 export type TwinCardLanguage = "en" | "es";
 
@@ -34,6 +38,8 @@ export type TwinCardLead = {
   generationStatus: TwinCardGenerationStatus;
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
+  renderStatus?: TwinCardRenderStatus;
+  fulfillmentStatus?: TwinCardFulfillmentStatus;
   eventName: string;
   boothDeviceId?: string;
   language?: TwinCardLanguage;
@@ -51,6 +57,8 @@ export type TwinCardLead = {
   };
   runS3Key?: string;
   runJsonUrl?: string;
+  printImageS3Key?: string;
+  printImageUrl?: string;
   createdAt: string;
   updatedAt: string;
 };

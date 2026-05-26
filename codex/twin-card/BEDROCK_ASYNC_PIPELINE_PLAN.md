@@ -1,5 +1,18 @@
 # Twin Card Async Bedrock Pipeline Plan
 
+## Implementation State
+
+Initial implementation is in place:
+
+- API Lambda stores the run row and run JSON, then writes the source image to trigger the worker pipeline.
+- S3 source-image events invoke `aws/twin-card/avatar-generator.mjs`.
+- Avatar generator invokes Bedrock Nova Canvas and writes a generated image, or writes a source-photo fallback image.
+- S3 generated-image events invoke `aws/twin-card/print-composer.mjs`.
+- Print composer writes a deterministic SVG print-frame artifact today.
+- CDK wires both worker Lambdas, S3 event notifications, permissions, and CloudWatch alarms.
+
+Current hardening gap: final Canon-native PNG/JPEG rendering is still a follow-up. The current compositor writes `selphy-cp1500-4x6.svg` so the print frame is deterministic without native Lambda image-rendering dependencies. Move to `sharp` or another Lambda-safe renderer when we need direct PNG/JPEG output from the worker.
+
 ## Decision
 
 Move Twin Card image generation from the current synchronous API Lambda path to an event-driven AWS pipeline:
@@ -34,22 +47,24 @@ All objects stay under the existing private Twin Card bucket and `twin-card/` pr
 
 ```text
 twin-card/
-  runs/
-    {yyyy}/{mm}/{dd}/{cardId}/run.json
-  source/
-    {yyyy}/{mm}/{dd}/{cardId}/normalized.jpg
-  generated/
-    {yyyy}/{mm}/{dd}/{cardId}/avatar.png
-  print/
-    {yyyy}/{mm}/{dd}/{cardId}/selphy-cp1500-4x6.png
-    {yyyy}/{mm}/{dd}/{cardId}/selphy-cp1500-4x6.jpg
-  failures/
-    {yyyy}/{mm}/{dd}/{cardId}/{stage}.json
+  {yyyy}/{mm}/{dd}/{cardId}/
+    run.json
+    source/
+      normalized.jpg
+    generated/
+      avatar.png
+      avatar.jpg
+    print/
+      selphy-cp1500-4x6.svg
+      selphy-cp1500-4x6.png
+      selphy-cp1500-4x6.jpg
+    failures/
+      {stage}.json
 ```
 
 Use date partitions for booth operations and future lifecycle policies. Keep each card run in a stable `{cardId}` folder so dashboard links, support review, and cleanup are simple.
 
-Important trigger rule: S3 triggers must use non-overlapping prefixes. The source trigger watches only `twin-card/source/`; the print composer watches only `twin-card/generated/`. Neither Lambda writes back into the prefix that triggered it.
+Important trigger rule: S3 triggers must avoid recursion. The source trigger watches `twin-card/` with suffix `/source/normalized.jpg`; the print composer watches `twin-card/` with suffix `/generated/avatar.png` and `/generated/avatar.jpg`. Neither Lambda writes back into the suffix that triggered it.
 
 ## Lambda Responsibilities
 
@@ -60,8 +75,8 @@ Current file: `aws/twin-card/handler.mjs`.
 Future behavior:
 
 - Validate lead, consent, source image payload, and upload contract.
-- Write source image to `twin-card/source/{yyyy}/{mm}/{dd}/{cardId}/normalized.jpg`.
-- Write run JSON to `twin-card/runs/{yyyy}/{mm}/{dd}/{cardId}/run.json`.
+- Write source image to `twin-card/{yyyy}/{mm}/{dd}/{cardId}/source/normalized.jpg`.
+- Write run JSON to `twin-card/{yyyy}/{mm}/{dd}/{cardId}/run.json`.
 - Create/update DynamoDB row:
   - `generationStatus = "submitted"`
   - `renderStatus = "not_started"`
@@ -85,7 +100,7 @@ Responsibilities:
 - Load DDB row and source object.
 - Update DDB `generationStatus = "generating"`.
 - Call Bedrock Runtime `InvokeModel` with Nova Canvas.
-- Save generated image output to `twin-card/generated/{yyyy}/{mm}/{dd}/{cardId}/avatar.png`.
+- Save generated image output to `twin-card/{yyyy}/{mm}/{dd}/{cardId}/generated/avatar.png`.
 - Update DDB:
   - `generationStatus = "completed"` on Bedrock success
   - `generationProvider = "nova_canvas"`
@@ -112,14 +127,14 @@ Responsibilities:
 - Load generated image output.
 - Apply the print frame/mask contract.
 - Export the final card to:
-  - `twin-card/print/{yyyy}/{mm}/{dd}/{cardId}/selphy-cp1500-4x6.png`
-  - optional JPEG sibling for workflows that prefer JPEG
+  - current MVP: `twin-card/{yyyy}/{mm}/{dd}/{cardId}/print/selphy-cp1500-4x6.svg`
+  - next hardening pass: PNG/JPEG siblings for workflows that require raster files
 - Update DDB:
   - `renderStatus = "rendered"`
   - `printImageS3Key`
   - `printImageBytes`
   - `renderedAt`
-- On render failure, write `twin-card/failures/{yyyy}/{mm}/{dd}/{cardId}/render.json` and set `renderStatus = "render_failed"`.
+- On render failure, write `twin-card/{yyyy}/{mm}/{dd}/{cardId}/failures/render.json` and set `renderStatus = "render_failed"`.
 
 ## Print Frame Contract
 
@@ -234,13 +249,13 @@ Operational badge rule:
 
 ## Implementation Order
 
-1. Update `statusContract.json` with `submitted` and `renderStatus`.
-2. Update DDB/API serialization and dashboard to show generation, render, and fulfillment separately.
-3. Change API Lambda to source-write plus accepted response; remove inline Bedrock call.
-4. Add avatar-generator Lambda and S3 trigger.
-5. Add print-composer Lambda and S3 trigger.
-6. Add frame/mask JSON contract for deterministic print layout.
-7. Add dashboard links/statuses for generated and print assets.
+1. Done: update `statusContract.json` with `submitted` and `renderStatus`.
+2. Done: update DDB/API serialization and dashboard to show generation, render, and fulfillment separately.
+3. Done: change API Lambda to source-write plus accepted response; remove inline Bedrock call.
+4. Done: add avatar-generator Lambda and S3 trigger.
+5. Done: add print-composer Lambda and S3 trigger.
+6. Partial: deterministic SVG frame is implemented in `aws/twin-card/print-composer.mjs`; a standalone frame/mask JSON contract is still recommended.
+7. Done: add dashboard links/statuses for generated and print assets.
 8. Deploy CDK.
 9. Run one live booth test and verify:
    - DDB row moves through expected statuses
@@ -253,6 +268,6 @@ Operational badge rule:
 
 - Whether the final print QR points to the participant result page or `https://myveevee.com/swca/funnel`.
 - Whether fallback should always proceed to print composition, or whether staff should explicitly approve fallback prints.
-- Whether to render with `sharp` inside Lambda or a pure SVG/canvas renderer. Recommendation: use `sharp` in the print-composer Lambda for reliable 1200x1800 PNG/JPEG output.
+- Whether to render with `sharp` inside Lambda or a pure SVG/canvas renderer. Current MVP uses pure SVG output. Recommendation for final Canon-native files: use `sharp` in the print-composer Lambda for reliable 1200x1800 PNG/JPEG output.
 - Whether to include an SWCA logo asset. If yes, store it as a static repo asset and package it with the print-composer Lambda.
 - Whether to use direct S3 notifications only, or S3 notifications into SQS for better retry/backlog visibility. Recommendation for expo reliability: S3 -> SQS -> Lambda if time allows; direct S3 -> Lambda is acceptable for MVP.

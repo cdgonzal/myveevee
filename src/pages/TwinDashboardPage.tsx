@@ -26,7 +26,10 @@ import { listTwinCardLeads } from "../twinCard/storage";
 import {
   getTwinCardGenerationStatusColorScheme,
   getTwinCardGenerationStatusLabel,
+  getTwinCardRenderStatusColorScheme,
+  getTwinCardRenderStatusLabel,
   isTwinCardGenerationStatusPrintable,
+  isTwinCardRenderStatusPrintReady,
 } from "../twinCard/statusContract";
 import { APP_LINKS } from "../config/links";
 import type { TwinCardLead } from "../twinCard/types";
@@ -106,7 +109,7 @@ export default function TwinDashboardPage() {
             <>
               <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4}>
                 <StatBox label="Runs" value={String(stats.total)} />
-                <StatBox label="Printable" value={String(stats.printable)} />
+                <StatBox label="Print Ready" value={String(stats.printReady)} />
                 <StatBox label="AI Complete" value={String(stats.completed)} />
                 <StatBox label="Photo Fallback" value={String(stats.fallback)} />
                 <StatBox label="Consented" value={String(stats.consented)} />
@@ -121,7 +124,8 @@ export default function TwinDashboardPage() {
                         <Th>Name</Th>
                         <Th>Email</Th>
                         <Th>Goal</Th>
-                        <Th>Status</Th>
+                        <Th>Avatar</Th>
+                        <Th>Print</Th>
                         <Th>AI Input</Th>
                         <Th>S3</Th>
                       </Tr>
@@ -139,6 +143,7 @@ export default function TwinDashboardPage() {
                           <Td>{card.contact ?? "-"}</Td>
                           <Td>{card.wellnessInterestLabel}</Td>
                           <Td><StatusBadge status={card.generationStatus} /></Td>
+                          <Td><RenderStatusBadge status={card.renderStatus} /></Td>
                           <Td whiteSpace="nowrap">{formatImageSize(card)}</Td>
                           <Td>{card.runS3Key ? "Run JSON" : "Local only"}</Td>
                         </Tr>
@@ -183,6 +188,7 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
           <Field label="Provider" value={card.generationProvider} />
+          <Field label="Print" value={getTwinCardRenderStatusLabel(card.renderStatus)} />
           <Field label="Updated" value={formatDate(card.updatedAt)} />
         </SimpleGrid>
 
@@ -205,6 +211,7 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <StorageLine label="Run JSON" s3Key={card.runS3Key} url={card.runJsonUrl} />
           <StorageLine label="Source Image" s3Key={card.sourceImageS3Key} url={card.sourceImageUrl} />
           <StorageLine label="Generated Avatar" s3Key={card.generatedAvatarS3Key} url={card.generatedAvatarUrl} />
+          <StorageLine label="Print Asset" s3Key={card.printImageS3Key} url={card.printImageUrl} />
           <StorageLine label="Result Page" s3Key={card.cardResultUrl} url={card.cardResultUrl} />
         </Stack>
       </Stack>
@@ -253,12 +260,24 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+function RenderStatusBadge({ status }: { status?: string }) {
+  return (
+    <Badge colorScheme={getTwinCardRenderStatusColorScheme(status)}>
+      {getTwinCardRenderStatusLabel(status)}
+    </Badge>
+  );
+}
+
 function buildStats(cards: TwinCardApiCard[]) {
   return {
     total: cards.length,
     completed: cards.filter((card) => card.generationStatus === "completed").length,
     fallback: cards.filter((card) => card.generationStatus === "fallback_used").length,
-    printable: cards.filter((card) => isTwinCardGenerationStatusPrintable(card.generationStatus)).length,
+    printReady: cards.filter(
+      (card) =>
+        isTwinCardGenerationStatusPrintable(card.generationStatus) &&
+        isTwinCardRenderStatusPrintReady(card.renderStatus)
+    ).length,
     consented: cards.filter((card) => card.consentAccepted).length,
   };
 }
@@ -277,6 +296,8 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     generationStatus: lead.generationStatus,
     generationProvider: lead.generationProvider,
     generationMessage: lead.generationMessage,
+    renderStatus: lead.renderStatus,
+    fulfillmentStatus: lead.fulfillmentStatus,
     eventName: lead.eventName,
     boothDeviceId: lead.boothDeviceId,
     language: lead.language,
@@ -285,6 +306,8 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     generatedAvatarUrl: lead.generatedAvatarUrl,
     runS3Key: lead.runS3Key,
     runJsonUrl: lead.runJsonUrl,
+    printImageS3Key: lead.printImageS3Key,
+    printImageUrl: lead.printImageUrl,
     createdAt: lead.createdAt,
     updatedAt: lead.updatedAt,
   };

@@ -70,7 +70,7 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       type: "String",
       default: "",
       description:
-        "Optional Bedrock image model ID for Twin Card avatar generation. Leave blank to deploy photo-card fallback mode.",
+        "Optional Bedrock image model ID for Twin Card avatar generation. Leave blank to use the Nova Canvas default in the worker Lambda.",
     });
 
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
