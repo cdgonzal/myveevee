@@ -234,6 +234,17 @@ Provider behavior:
 
 Do not default back to `amazon.nova-canvas-v1:0`; Bedrock denied it in production because it is legacy for this account. Do not move to `amazon.titan-image-generator-v2:0` as the next default; it is also legacy in the production model list.
 
+The avatar-generator Lambda role must keep these permissions:
+
+```text
+bedrock:InvokeModel
+aws-marketplace:ViewSubscriptions
+aws-marketplace:Subscribe
+aws-marketplace:Unsubscribe
+```
+
+If Control Structure returns a Marketplace subscription or authorization error, confirm the deployed Lambda role still has the Marketplace actions and retry after a short propagation delay.
+
 ## Expected Status Flow
 
 Normal async path:

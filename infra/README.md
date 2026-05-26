@@ -102,6 +102,8 @@ The Stability entries are active Bedrock inference profile IDs in account `76782
 
 Style Transfer requires `TwinCardAvatarStyleReferenceS3Key` to point to a VeeVee reference-style image inside the Twin Card bucket. Until that key is configured, the Lambda skips Style Transfer and continues to Style Guide.
 
+The avatar-generator Lambda role includes `bedrock:InvokeModel` plus `aws-marketplace:ViewSubscriptions`, `aws-marketplace:Subscribe`, and `aws-marketplace:Unsubscribe`. Bedrock requires those Marketplace actions when first enabling access to some Stability inference profiles, including Control Structure.
+
 Current production Twin Card API endpoint for Amplify `main`: `https://kt51f0edy2.execute-api.us-east-1.amazonaws.com/twin-card/cards`
 
 Twin Card run visibility:

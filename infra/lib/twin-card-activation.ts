@@ -180,6 +180,12 @@ export class TwinCardActivation extends Construct {
         resources: ["*"],
       })
     );
+    this.avatarGeneratorFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["aws-marketplace:ViewSubscriptions", "aws-marketplace:Subscribe", "aws-marketplace:Unsubscribe"],
+        resources: ["*"],
+      })
+    );
 
     this.bucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
