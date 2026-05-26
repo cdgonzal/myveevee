@@ -32,6 +32,9 @@ import type { TwinCardImageUpload } from "../twinCard/uploadContract";
 type FlowStep = "language" | "lead" | "goals" | "consent" | "camera" | "success";
 type FlowLanguage = "en" | "es";
 
+const CONFIRMATION_REDIRECT_MS = 12_000;
+const CONFIRMATION_REDIRECT_URL = "https://myveevee.com/swca/funnel";
+
 const initialForm: TwinCardFormValues = {
   firstName: "",
   contact: "",
@@ -118,6 +121,18 @@ export default function TwinCardPage() {
   useEffect(() => {
     trackTwinCardEvent("public.twin_card.viewed");
   }, []);
+
+  useEffect(() => {
+    if (step !== "success") return undefined;
+
+    const timer = window.setTimeout(() => {
+      window.location.assign(CONFIRMATION_REDIRECT_URL);
+    }, CONFIRMATION_REDIRECT_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [step]);
 
   const updateForm = <K extends keyof TwinCardFormValues>(key: K, value: TwinCardFormValues[K]) => {
     setForm((current) => ({ ...current, [key]: value }));
