@@ -112,7 +112,7 @@ Twin Card run visibility:
 
 - Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
 - S3 stores each run under `twin-card/{yyyy}/{mm}/{dd}/{cardId}/` with `run.json`, `source/normalized.jpg`, `generated/avatar.*`, `print/selphy-cp1500-4x6.svg`, `print/selphy-cp1500-4x6.png`, and optional `failures/{stage}.json`.
-- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, and the upload-normalization metadata.
+- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, upload-normalization metadata, Bedrock provider attempts, and estimated Bedrock model usage/cost.
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
 - Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means Bedrock succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
 - S3 source-image object creation triggers the Stability provider-priority avatar-generation worker. S3 generated-image object creation triggers print composition. The print composer preserves the deterministic SVG layout artifact and adds a Canon SELPHY-ready PNG raster artifact as the final print file.

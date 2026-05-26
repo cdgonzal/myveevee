@@ -215,6 +215,7 @@ Use `/twin-dashboard` first during booth operations. Use DynamoDB directly only 
 
 Source of truth: `src/twinCard/avatarProviderContract.json`.
 Avatar recipe source of truth: `src/twinCard/avatarRecipeContract.json`.
+Bedrock usage/cost source of truth: `src/twinCard/bedrockUsageContract.json`.
 
 Default provider priority:
 
@@ -226,6 +227,26 @@ fallback_original_photo_card
 ```
 
 These `us.*` Stability IDs are active Bedrock inference profile IDs. The Lambda must call the inference profile ID, not the raw `stability.*` model ID.
+
+## Bedrock Usage And Cost Contract
+
+Stability Image Services do not return token counts for these image calls. AWS bills the models by `generation`, so Twin Card records estimate Bedrock model usage with that unit instead of tokens.
+
+Current standard on-demand prices verified from the AWS Bedrock pricing page on 2026-05-26:
+
+- Stable Image Control Structure: `$0.07` per generation.
+- Stable Image Style Guide: `$0.07` per generation.
+- Stable Image Style Transfer: `$0.08` per generation.
+- `fallback_original_photo_card`: `$0.00` Bedrock model cost because no Bedrock call is made.
+
+Production stores this on each completed run:
+
+- `bedrockProviderAttempts[].usage`: per-attempt model id, billing unit, billable units, unit price, estimated cost, pricing source, and verification date.
+- `bedrockUsage`: run-level total billable generations and estimated Bedrock model cost.
+
+This is an estimate for Bedrock model inference only. It intentionally excludes Lambda, S3, DynamoDB, API Gateway, CloudWatch, and data-transfer charges.
+
+Use `/twin-dashboard` to see per-run Bedrock usage and cost. Use the DDB row or `run.json` when auditing exact stored values.
 
 Provider behavior:
 
@@ -316,7 +337,12 @@ Output locations:
 - S3 replay files: `s3://myveevee-twin-card-767828748348-us-east-1/twin-card-replay/{avatarRecipeVersion}/{timestamp}/`
 - `manifest.json` includes source keys, generated replay keys, provider id, and recipe version.
 
-The HTML report shows the visual flow per replayed card:
+The HTML report has two tabs:
+
+- `Flow Review`: compact source/generated thumbnails, the winning model ID, provider name, billable generation count, estimated cost, and attempt details for each card.
+- `Recipe / Instructions`: the active recipe contract, rendered prompt/negative prompt, provider priority, provider settings, and a Bedrock docs-alignment table that maps AWS Stability Image Services request fields to our current payloads.
+
+The flow tab is designed for model bakeoffs. The winning model ID is shown above each source/output pair so reviewers can quickly decide whether a provider is worth tuning or should be abandoned.
 
 ```text
 raw source image -> model attempt(s) -> replay generated output
@@ -324,11 +350,27 @@ raw source image -> model attempt(s) -> replay generated output
 
 Each model step includes the model id, provider name, attempt status, latency, request id, HTTP status, prompt/negative-prompt character counts, request bytes, output bytes, and model settings. Bedrock Stability image responses do not return token usage, so token fields are recorded as unavailable rather than estimated.
 
+Use the recipe tab before tuning likeness. The current expected alignment is:
+
+- Control Structure sends `image`, `prompt`, `negative_prompt`, `control_strength`, and `output_format`.
+- Style Transfer sends `init_image`, `style_image`, `prompt`, `negative_prompt`, `composition_fidelity`, `style_strength`, `change_strength`, and `output_format`; it is skipped unless `AVATAR_STYLE_REFERENCE_S3_KEY` is configured.
+- Style Guide sends `image`, `prompt`, `negative_prompt`, `fidelity`, and `output_format`.
+
+These field names intentionally match the AWS Bedrock Stability Image Services docs. If a provider starts failing with validation errors, compare the request JSON in the replay folder against the recipe tab first.
+
 For a wiring-only dry run that does not call Bedrock:
 
 ```powershell
 node aws/twin-card/replay-avatar-recipe.mjs --limit=3 --mock --no-write-s3
 ```
+
+To force a single provider during model evaluation:
+
+```powershell
+node aws/twin-card/replay-avatar-recipe.mjs --limit=3 --provider us.stability.stable-image-control-structure-v1:0
+```
+
+Use single-provider replays when comparing candidates. Do not keep fighting a model that repeatedly loses identity/likeness after the request payload has been verified against the recipe tab.
 
 ## Print Artifact Contract
 

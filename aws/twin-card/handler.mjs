@@ -191,6 +191,7 @@ async function serializeCard(card, options = {}) {
     generationStatus: card.generationStatus,
     generationProvider: card.generationProvider,
     generationMessage: card.generationMessage,
+    bedrockUsage: card.bedrockUsage,
     avatarRecipeId: card.avatarRecipeId,
     avatarRecipeVersion: card.avatarRecipeVersion,
     renderStatus: card.renderStatus,

@@ -8,10 +8,12 @@ import {
   FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
   GOAL_ASPIRATIONS,
   INTEREST_LABELS,
+  buildBedrockUsage,
   buildRunArtifact,
   keyForFailure,
   keyForGenerated,
   parseCardKey,
+  summarizeBedrockUsage,
 } from "./common.mjs";
 import avatarRecipeContract from "../../src/twinCard/avatarRecipeContract.json";
 
@@ -120,6 +122,7 @@ async function processSourceImage(sourceImageS3Key) {
     generatedAvatarS3Key,
     generatedAvatarBytes: generated.buffer.length,
     generatedAvatarContentType: generated.contentType,
+    bedrockUsage: summarizeBedrockUsage(attempts),
     generatedAt: now,
     updatedAt: now,
   };
@@ -142,6 +145,7 @@ async function generateAvatar(card, sourceImage, attempts) {
         providerId,
         status: "skipped",
         message: "Style Transfer requires AVATAR_STYLE_REFERENCE_S3_KEY.",
+        usage: buildBedrockUsage(providerId, "skipped"),
         attemptedAt: new Date().toISOString(),
       });
       continue;
@@ -153,6 +157,7 @@ async function generateAvatar(card, sourceImage, attempts) {
         providerId,
         provider: result.provider,
         status: "completed",
+        usage: buildBedrockUsage(providerId, "completed"),
         attemptedAt: new Date().toISOString(),
       });
       return result;
@@ -163,6 +168,7 @@ async function generateAvatar(card, sourceImage, attempts) {
         provider: providerNameFor(providerId),
         status: "failed",
         message,
+        usage: buildBedrockUsage(providerId, "failed"),
         attemptedAt: new Date().toISOString(),
       });
       errors.push(`${providerId}: ${message}`);

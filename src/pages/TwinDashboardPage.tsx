@@ -113,11 +113,12 @@ export default function TwinDashboardPage() {
             </Box>
           ) : (
             <>
-              <SimpleGrid columns={{ base: 1, md: 4 }} spacing={4}>
+              <SimpleGrid columns={{ base: 1, md: 5 }} spacing={4}>
                 <StatBox label="Runs" value={String(stats.total)} />
                 <StatBox label="Print Ready" value={String(stats.printReady)} />
                 <StatBox label="AI Complete" value={String(stats.completed)} />
                 <StatBox label="Photo Fallback" value={String(stats.fallback)} />
+                <StatBox label="Bedrock Cost" value={formatCurrency(stats.estimatedBedrockCost)} />
                 <StatBox label="Consented" value={String(stats.consented)} />
               </SimpleGrid>
 
@@ -139,6 +140,7 @@ export default function TwinDashboardPage() {
                               <Th>Goal</Th>
                               <Th>Avatar</Th>
                               <Th>Print</Th>
+                              <Th>Bedrock</Th>
                               <Th>AI Input</Th>
                               <Th>S3 Files</Th>
                             </Tr>
@@ -157,6 +159,7 @@ export default function TwinDashboardPage() {
                                 <Td>{card.wellnessInterestLabel}</Td>
                                 <Td><StatusBadge status={card.generationStatus} /></Td>
                                 <Td><RenderStatusBadge status={card.renderStatus} /></Td>
+                                <Td whiteSpace="nowrap">{formatBedrockUsage(card)}</Td>
                                 <Td whiteSpace="nowrap">{formatImageSize(card)}</Td>
                                 <Td minW="220px">
                                   <ArtifactLinks card={card} />
@@ -317,6 +320,8 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
           <Field label="Provider" value={card.generationProvider} />
+          <Field label="Bedrock Usage" value={formatBedrockUsage(card)} />
+          <Field label="Bedrock Cost" value={formatCurrency(card.bedrockUsage?.totalEstimatedCostUsd)} />
           <Field label="Recipe" value={card.avatarRecipeVersion ?? card.avatarRecipeId ?? "-"} />
           <Field label="Print" value={getTwinCardRenderStatusLabel(card.renderStatus)} />
           <Field label="Updated" value={formatDate(card.updatedAt)} />
@@ -410,6 +415,7 @@ function buildStats(cards: TwinCardApiCard[]) {
         isTwinCardRenderStatusPrintReady(card.renderStatus)
     ).length,
     consented: cards.filter((card) => card.consentAccepted).length,
+    estimatedBedrockCost: cards.reduce((sum, card) => sum + Number(card.bedrockUsage?.totalEstimatedCostUsd ?? 0), 0),
   };
 }
 
@@ -427,6 +433,7 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     generationStatus: lead.generationStatus,
     generationProvider: lead.generationProvider,
     generationMessage: lead.generationMessage,
+    bedrockUsage: lead.bedrockUsage,
     avatarRecipeId: lead.avatarRecipeId,
     avatarRecipeVersion: lead.avatarRecipeVersion,
     renderStatus: lead.renderStatus,
@@ -455,6 +462,20 @@ function formatImageSize(card: TwinCardApiCard) {
   const upload = card.imageUpload;
   if (!upload) return "-";
   return `${upload.normalizedWidthPx}x${upload.normalizedHeightPx}`;
+}
+
+function formatBedrockUsage(card: TwinCardApiCard) {
+  const usage = card.bedrockUsage;
+  if (!usage) return "-";
+  const units = usage.totalBillableUnits;
+  const unit = usage.billingUnit || "generation";
+  return `${units} ${unit}${units === 1 ? "" : "s"} / ${formatCurrency(usage.totalEstimatedCostUsd)}`;
+}
+
+function formatCurrency(value?: number | null) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "-";
+  return `$${number.toFixed(4)}`;
 }
 
 function isCanonPrintPng(card: TwinCardApiCard) {

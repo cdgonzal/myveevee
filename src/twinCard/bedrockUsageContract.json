@@ -1,0 +1,24 @@
+{
+  "id": "twin-card-bedrock-usage-v1",
+  "version": "2026-05-26",
+  "purpose": "Estimate Twin Card Bedrock image-generation usage and cost using the same unit AWS bills for Stability Image Services.",
+  "currency": "USD",
+  "serviceTier": "standard",
+  "pricingRegion": "US East (N. Virginia), US East (Ohio), US West (Oregon)",
+  "pricingSource": "https://aws.amazon.com/bedrock/pricing/",
+  "pricingLastVerified": "2026-05-26",
+  "billingUnit": "generation",
+  "unitPricesUsd": {
+    "us.stability.stable-image-control-structure-v1:0": 0.07,
+    "us.stability.stable-image-style-guide-v1:0": 0.07,
+    "us.stability.stable-style-transfer-v1:0": 0.08,
+    "fallback_original_photo_card": 0
+  },
+  "rules": [
+    "AWS prices Stability AI Image Services per generation, not by token count.",
+    "Count one billable generation only when a Bedrock image provider completes and returns an image.",
+    "Skipped providers and internal fallback_original_photo_card have zero Bedrock model cost.",
+    "Failed InvokeModel attempts are recorded with zero estimated generations unless a generated image was returned.",
+    "This tracks Bedrock model inference cost only; it does not include S3, Lambda, DynamoDB, API Gateway, CloudWatch, or data-transfer charges."
+  ]
+}

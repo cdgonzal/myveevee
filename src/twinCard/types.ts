@@ -32,6 +32,37 @@ export type TwinCardDeviceMetadata = {
   devicePixelRatio: number;
 };
 
+export type TwinCardBedrockUsageLineItem = {
+  contractId: string;
+  contractVersion: string;
+  billingProvider: "aws_bedrock";
+  serviceTier: string;
+  pricingRegion: string;
+  modelId: string;
+  billingUnit: string;
+  billableUnits: number;
+  unitPriceUsd: number | null;
+  estimatedCostUsd: number | null;
+  currency: string;
+  pricingSource: string;
+  pricingLastVerified: string;
+  note?: string;
+};
+
+export type TwinCardBedrockUsage = {
+  contractId: string;
+  contractVersion: string;
+  billingProvider: "aws_bedrock";
+  billingUnit: string;
+  currency: string;
+  totalBillableUnits: number;
+  totalEstimatedCostUsd: number;
+  pricingSource: string;
+  pricingLastVerified: string;
+  lineItems: TwinCardBedrockUsageLineItem[];
+  note?: string;
+};
+
 export type TwinCardInterestId =
   | "prepare_for_care"
   | "understand_symptoms"
@@ -59,6 +90,7 @@ export type TwinCardLead = {
   generationStatus: TwinCardGenerationStatus;
   generationProvider: TwinCardGenerationProvider;
   generationMessage?: string;
+  bedrockUsage?: TwinCardBedrockUsage;
   avatarRecipeId?: string;
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardRenderStatus;

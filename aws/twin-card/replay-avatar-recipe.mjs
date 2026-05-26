@@ -28,6 +28,9 @@ const avatarRecipeContract = JSON.parse(
 const avatarProviderContract = JSON.parse(
   await readFile(new URL("../../src/twinCard/avatarProviderContract.json", import.meta.url), "utf8")
 );
+const bedrockUsageContract = JSON.parse(
+  await readFile(new URL("../../src/twinCard/bedrockUsageContract.json", import.meta.url), "utf8")
+);
 
 const s3 = new S3Client({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
@@ -70,7 +73,8 @@ async function main() {
     providerPriority: MOCK ? ["mock_copy_source"] : PROVIDER_PRIORITY,
     avatarRecipeId: avatarRecipeContract.id,
     avatarRecipeVersion: avatarRecipeContract.version,
-    usageMetricsNote: "Bedrock Stability image InvokeModel responses do not include token usage. Replay captures request/response metadata, latency, bytes, dimensions, and model settings instead.",
+    usageMetricsNote: "Bedrock Stability image InvokeModel responses do not include token usage. AWS prices these Stability Image Services per generation; replay captures estimated billable generations, estimated model cost, request/response metadata, latency, bytes, dimensions, and model settings.",
+    bedrockUsageContract,
     createdAt: new Date().toISOString(),
     items: [],
   };
@@ -124,9 +128,15 @@ async function replayCard(card, ordinal) {
           tokenMetrics: unavailableTokenMetrics(),
         },
       ],
+      usage: summarizeBedrockUsage([
+        {
+          usage: buildBedrockUsage("mock_copy_source", "mock"),
+        },
+      ]),
     }
     : await invokeProviderChain(source, prompt, negativePrompt);
   const generatedMetrics = await imageMetrics(generated.buffer, generated.contentType);
+  const bedrockUsage = generated.usage ?? summarizeBedrockUsage(generated.attempts);
 
   const safeCardId = String(card.cardId).replace(/[^A-Za-z0-9-]/g, "");
   const localStem = `${String(ordinal).padStart(2, "0")}-${safeCardId}`;
@@ -149,6 +159,7 @@ async function replayCard(card, ordinal) {
     negativePrompt,
     providerPriority: MOCK ? ["mock_copy_source"] : PROVIDER_PRIORITY,
     providerAttempts: generated.attempts,
+    bedrockUsage,
   }, null, 2));
 
   const item = {
@@ -161,6 +172,9 @@ async function replayCard(card, ordinal) {
     sourceImageS3Key: card.sourceImageS3Key,
     providerId: generated.providerId,
     providerAttempts: generated.attempts,
+    bedrockUsage,
+    prompt,
+    negativePrompt,
     flowSteps: [
       {
         type: "raw_source",
@@ -233,6 +247,7 @@ async function invokeProviderChain(source, prompt, negativePrompt) {
         endedAt: new Date().toISOString(),
         durationMs: 0,
         message: "Provider chain reached fallback; replay copied the source image.",
+        usage: buildBedrockUsage(providerId, "completed"),
         tokenMetrics: unavailableTokenMetrics(),
       };
       attempts.push(attempt);
@@ -241,6 +256,7 @@ async function invokeProviderChain(source, prompt, negativePrompt) {
         contentType: source.contentType,
         providerId,
         attempts,
+        usage: summarizeBedrockUsage(attempts),
       };
     }
 
@@ -254,6 +270,7 @@ async function invokeProviderChain(source, prompt, negativePrompt) {
         endedAt: new Date().toISOString(),
         durationMs: 0,
         message: "Style Transfer requires AVATAR_STYLE_REFERENCE_S3_KEY.",
+        usage: buildBedrockUsage(providerId, "skipped"),
         tokenMetrics: unavailableTokenMetrics(),
       });
       continue;
@@ -267,6 +284,7 @@ async function invokeProviderChain(source, prompt, negativePrompt) {
         contentType: result.contentType,
         providerId,
         attempts,
+        usage: summarizeBedrockUsage(attempts),
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -280,6 +298,7 @@ async function invokeProviderChain(source, prompt, negativePrompt) {
         endedAt: new Date().toISOString(),
         durationMs: 0,
         message,
+        usage: buildBedrockUsage(providerId, "failed"),
         tokenMetrics: unavailableTokenMetrics(),
       });
     }
@@ -327,6 +346,7 @@ async function invokeStabilityProvider(providerId, source, prompt, negativePromp
     requestBytes,
     outputBytes: buffer.length,
     outputContentType: contentType,
+    usage: buildBedrockUsage(providerId, "completed"),
     responseMetadata: {
       requestId: result.$metadata?.requestId ?? null,
       httpStatusCode: result.$metadata?.httpStatusCode ?? null,
@@ -453,6 +473,49 @@ function unavailableTokenMetrics() {
   };
 }
 
+function buildBedrockUsage(providerId, status = "completed") {
+  const unitPriceUsd = bedrockUsageContract.unitPricesUsd?.[providerId] ?? null;
+  const billableUnits = status === "completed" && Number.isFinite(unitPriceUsd) && unitPriceUsd > 0 ? 1 : 0;
+  const estimatedCostUsd = Number.isFinite(unitPriceUsd) ? Number((billableUnits * unitPriceUsd).toFixed(4)) : null;
+
+  return {
+    contractId: bedrockUsageContract.id,
+    contractVersion: bedrockUsageContract.version,
+    billingProvider: "aws_bedrock",
+    serviceTier: bedrockUsageContract.serviceTier,
+    pricingRegion: bedrockUsageContract.pricingRegion,
+    modelId: providerId,
+    billingUnit: bedrockUsageContract.billingUnit,
+    billableUnits,
+    unitPriceUsd,
+    estimatedCostUsd,
+    currency: bedrockUsageContract.currency,
+    pricingSource: bedrockUsageContract.pricingSource,
+    pricingLastVerified: bedrockUsageContract.pricingLastVerified,
+    note: "Estimated Bedrock Stability image model cost only.",
+  };
+}
+
+function summarizeBedrockUsage(attempts = []) {
+  const lineItems = attempts.map((attempt) => attempt.usage).filter(Boolean);
+  const totalBillableUnits = lineItems.reduce((sum, usage) => sum + Number(usage.billableUnits ?? 0), 0);
+  const totalEstimatedCostUsd = lineItems.reduce((sum, usage) => sum + Number(usage.estimatedCostUsd ?? 0), 0);
+
+  return {
+    contractId: bedrockUsageContract.id,
+    contractVersion: bedrockUsageContract.version,
+    billingProvider: "aws_bedrock",
+    billingUnit: bedrockUsageContract.billingUnit,
+    currency: bedrockUsageContract.currency,
+    totalBillableUnits,
+    totalEstimatedCostUsd: Number(totalEstimatedCostUsd.toFixed(4)),
+    pricingSource: bedrockUsageContract.pricingSource,
+    pricingLastVerified: bedrockUsageContract.pricingLastVerified,
+    lineItems,
+    note: "Estimated Bedrock model inference cost only. Excludes S3, Lambda, DynamoDB, API Gateway, CloudWatch, and data-transfer charges.",
+  };
+}
+
 async function fetchRecentCards(limit) {
   const result = await dynamo.send(
     new ScanCommand({
@@ -525,12 +588,21 @@ function buildHtmlReport(manifest, options = {}) {
       const source = useS3Urls ? item.replaySourceUrl : path.basename(item.localSourcePath);
       const generated = useS3Urls ? item.replayGeneratedUrl : path.basename(item.localGeneratedPath);
       const flowSteps = buildFlowStepsHtml(item);
+      const winningAttempt = getWinningAttempt(item);
       return `
         <section class="item">
-          <div class="meta">
-            <strong>${escapeHtml(item.firstName ?? "Guest")}</strong>
-            <span>${escapeHtml(item.cardId)}</span>
-            <span>${escapeHtml(item.wellnessInterestLabel ?? "")}</span>
+          <div class="item-header">
+            <div class="meta">
+              <strong>${escapeHtml(item.firstName ?? "Guest")}</strong>
+              <span>${escapeHtml(item.cardId)}</span>
+              <span>${escapeHtml(item.wellnessInterestLabel ?? "")}</span>
+            </div>
+            <div class="model-banner">
+              <span class="model-label">Winning model</span>
+              <strong>${escapeHtml(winningAttempt?.providerId ?? item.providerId ?? "-")}</strong>
+              <span>${escapeHtml(winningAttempt?.provider ?? "-")}</span>
+              <span>${formatUsageUnits(item.bedrockUsage)} / ${formatCost(item.bedrockUsage?.totalEstimatedCostUsd)}</span>
+            </div>
           </div>
           <div class="grid">
             <figure>
@@ -539,16 +611,17 @@ function buildHtmlReport(manifest, options = {}) {
             </figure>
             <figure>
               <img src="${escapeHtml(generated)}" alt="Generated avatar">
-              <figcaption>Replay Generated | ${escapeHtml(path.basename(item.localGeneratedPath))} | ${formatImageMetric(item.generatedMetrics)}</figcaption>
+              <figcaption>Generated | ${escapeHtml(winningAttempt?.providerId ?? item.providerId ?? "-")} | ${formatImageMetric(item.generatedMetrics)}</figcaption>
             </figure>
-          </div>
-          <div class="flow">
-            <h2>Generation Flow</h2>
-            ${flowSteps}
+            <div class="flow">
+              <h2>Attempt Details</h2>
+              ${flowSteps}
+            </div>
           </div>
         </section>`;
     })
     .join("");
+  const recipePanel = buildRecipePanelHtml(manifest);
 
   return `<!doctype html>
 <html lang="en">
@@ -561,14 +634,23 @@ function buildHtmlReport(manifest, options = {}) {
     main { max-width: 1240px; margin: 0 auto; padding: 28px; }
     h1 { margin: 0 0 8px; font-size: 28px; }
     .summary { color: #516176; margin-bottom: 24px; }
-    .item { background: white; border: 1px solid #dbeaf5; border-radius: 8px; padding: 18px; margin-bottom: 18px; }
-    .meta { display: flex; gap: 14px; flex-wrap: wrap; color: #516176; margin-bottom: 14px; }
+    .tabs { display: flex; gap: 8px; margin: 0 0 18px; border-bottom: 1px solid #dbeaf5; }
+    .tabs button { appearance: none; border: 1px solid #c9ddeb; border-bottom: 0; border-radius: 8px 8px 0 0; background: #edf5fb; color: #26445f; padding: 10px 14px; font-weight: 800; cursor: pointer; }
+    .tabs button.active { background: white; color: #061b38; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .item { background: white; border: 1px solid #dbeaf5; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+    .item-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 0.95fr); gap: 12px; align-items: start; margin-bottom: 12px; }
+    .meta { display: flex; gap: 10px; flex-wrap: wrap; color: #516176; }
     .meta strong { color: #061b38; }
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .model-banner { border: 1px solid #b7d6e8; border-radius: 8px; background: #f3faff; padding: 10px 12px; display: grid; gap: 3px; font-size: 13px; color: #516176; }
+    .model-banner strong { color: #061b38; font-size: 15px; word-break: break-word; }
+    .model-label { color: #0a6ea8; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(220px, 320px)) minmax(0, 1fr); gap: 12px; align-items: start; }
     figure { margin: 0; background: #eef4f8; border: 1px solid #d5e5f0; border-radius: 8px; overflow: hidden; }
-    img { display: block; width: 100%; height: 520px; object-fit: contain; background: #f8fbfd; }
+    img { display: block; width: 100%; height: 260px; object-fit: contain; background: #f8fbfd; }
     figcaption { padding: 10px 12px; font-size: 13px; font-weight: 700; color: #516176; }
-    .flow { margin-top: 16px; border-top: 1px solid #dbeaf5; padding-top: 14px; }
+    .flow { grid-column: 3; grid-row: 1; border-left: 1px solid #dbeaf5; padding-left: 12px; }
     .flow h2 { margin: 0 0 12px; font-size: 18px; }
     .steps { display: grid; gap: 10px; }
     .step { border: 1px solid #dbeaf5; border-radius: 8px; padding: 12px; background: #fbfdff; }
@@ -579,7 +661,20 @@ function buildHtmlReport(manifest, options = {}) {
     .kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 14px; font-size: 13px; color: #516176; }
     .kv div { word-break: break-word; }
     .kv strong { color: #061b38; display: block; font-size: 11px; text-transform: uppercase; margin-bottom: 2px; }
-    @media (max-width: 760px) { main { padding: 16px; } .grid { grid-template-columns: 1fr; } img { height: 360px; } }
+    .panel-card { background: white; border: 1px solid #dbeaf5; border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+    .panel-card h2 { margin: 0 0 12px; font-size: 20px; }
+    .panel-card h3 { margin: 18px 0 10px; font-size: 16px; }
+    .note { color: #516176; line-height: 1.45; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f8fbfd; border: 1px solid #dbeaf5; border-radius: 8px; padding: 12px; color: #17324d; font-size: 13px; line-height: 1.45; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
+    th, td { border: 1px solid #dbeaf5; padding: 9px 10px; text-align: left; vertical-align: top; }
+    th { background: #edf5fb; color: #17324d; }
+    td { color: #516176; }
+    td strong { color: #061b38; }
+    .source-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .source-links a { color: #0a6ea8; font-weight: 800; }
+    @media (max-width: 980px) { .item-header { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr 1fr; } .flow { grid-column: 1 / -1; grid-row: auto; border-left: 0; border-top: 1px solid #dbeaf5; padding: 12px 0 0; } }
+    @media (max-width: 760px) { main { padding: 16px; } .grid { grid-template-columns: 1fr; } img { height: 260px; } }
     @media (max-width: 900px) { .kv { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -590,14 +685,40 @@ function buildHtmlReport(manifest, options = {}) {
       Recipe ${escapeHtml(manifest.avatarRecipeVersion)} | Provider priority ${escapeHtml((manifest.providerPriority ?? []).join(" -> "))} | ${escapeHtml(manifest.createdAt)}
       <br>${escapeHtml(manifest.usageMetricsNote)}
     </div>
-    ${rows}
+    <div class="tabs" role="tablist" aria-label="Replay report sections">
+      <button class="active" type="button" data-tab="flow" role="tab" aria-selected="true">Flow Review</button>
+      <button type="button" data-tab="recipe" role="tab" aria-selected="false">Recipe / Instructions</button>
+    </div>
+    <section id="tab-flow" class="tab-panel active" role="tabpanel">
+      ${rows}
+    </section>
+    <section id="tab-recipe" class="tab-panel" role="tabpanel">
+      ${recipePanel}
+    </section>
   </main>
+  <script>
+    for (const button of document.querySelectorAll("[data-tab]")) {
+      button.addEventListener("click", () => {
+        const tab = button.getAttribute("data-tab");
+        for (const tabButton of document.querySelectorAll("[data-tab]")) {
+          const active = tabButton === button;
+          tabButton.classList.toggle("active", active);
+          tabButton.setAttribute("aria-selected", String(active));
+        }
+        for (const panel of document.querySelectorAll(".tab-panel")) {
+          panel.classList.toggle("active", panel.id === "tab-" + tab);
+        }
+      });
+    }
+  </script>
 </body>
 </html>`;
 }
 
 function buildFlowStepsHtml(item) {
-  const html = (item.flowSteps ?? []).map((step, index) => {
+  const html = (item.flowSteps ?? [])
+    .filter((step) => step.type === "model_attempt")
+    .map((step, index) => {
     if (step.type === "raw_source" || step.type === "generated_output") {
       return `
         <div class="step">
@@ -633,6 +754,8 @@ function buildFlowStepsHtml(item) {
           <div><strong>Negative Chars</strong>${escapeHtml(step.negativePromptChars ?? "-")}</div>
           <div><strong>Request Bytes</strong>${formatBytes(step.requestBytes)}</div>
           <div><strong>Output Bytes</strong>${formatBytes(step.outputBytes)}</div>
+          <div><strong>Billable Units</strong>${formatUsageUnits(step.usage)}</div>
+          <div><strong>Estimated Cost</strong>${formatCost(step.usage?.estimatedCostUsd)}</div>
           <div><strong>Tokens</strong>${escapeHtml(step.tokenMetrics?.note ?? "Unavailable")}</div>
           <div><strong>Settings</strong>${escapeHtml(JSON.stringify(step.modelSettings ?? {}))}</div>
           <div><strong>Message</strong>${escapeHtml(step.message ?? "-")}</div>
@@ -640,7 +763,156 @@ function buildFlowStepsHtml(item) {
       </div>`;
   }).join("");
 
-  return `<div class="steps">${html}</div>`;
+  return html ? `<div class="steps">${html}</div>` : `<p class="note">No model attempts recorded.</p>`;
+}
+
+function getWinningAttempt(item) {
+  return (item.providerAttempts ?? []).find((attempt) => attempt.status === "completed") ?? null;
+}
+
+function buildRecipePanelHtml(manifest) {
+  const sampleItem = manifest.items?.[0] ?? {};
+  const promptTemplate = (avatarRecipeContract.promptTemplate ?? []).join("\n");
+  const negativePromptTerms = (avatarRecipeContract.negativePromptTerms ?? []).join(", ");
+  const providerRows = buildProviderDocsRows(manifest);
+  const perCardRows = (manifest.items ?? []).map((item) => `
+    <tr>
+      <td><strong>${escapeHtml(item.firstName ?? "Guest")}</strong><br>${escapeHtml(item.cardId)}</td>
+      <td>${escapeHtml(item.wellnessInterestLabel ?? item.wellnessInterest ?? "-")}</td>
+      <td>${escapeHtml(item.providerId ?? "-")}</td>
+      <td>${formatUsageUnits(item.bedrockUsage)}</td>
+      <td>${formatCost(item.bedrockUsage?.totalEstimatedCostUsd)}</td>
+      <td>${escapeHtml(item.localRequestPath ? path.basename(item.localRequestPath) : "-")}</td>
+    </tr>`).join("");
+
+  return `
+    <section class="panel-card">
+      <h2>Recipe Contract</h2>
+      <p class="note">${escapeHtml(avatarRecipeContract.purpose ?? "")}</p>
+      <div class="kv">
+        <div><strong>Recipe ID</strong>${escapeHtml(avatarRecipeContract.id)}</div>
+        <div><strong>Version</strong>${escapeHtml(avatarRecipeContract.version)}</div>
+        <div><strong>Provider Priority</strong>${escapeHtml((manifest.providerPriority ?? []).join(" -> "))}</div>
+        <div><strong>Billing Unit</strong>${escapeHtml(bedrockUsageContract.billingUnit)}</div>
+        <div><strong>Pricing Source</strong>${escapeHtml(bedrockUsageContract.pricingSource)}</div>
+        <div><strong>Pricing Verified</strong>${escapeHtml(bedrockUsageContract.pricingLastVerified)}</div>
+      </div>
+      <h3>Prompt Template</h3>
+      <pre>${escapeHtml(promptTemplate)}</pre>
+      <h3>Negative Prompt Terms</h3>
+      <pre>${escapeHtml(negativePromptTerms)}</pre>
+      <h3>Sample Rendered Prompt</h3>
+      <pre>${escapeHtml(sampleItem.prompt ?? "No prompt captured.")}</pre>
+      <h3>Sample Rendered Negative Prompt</h3>
+      <pre>${escapeHtml(sampleItem.negativePrompt ?? "No negative prompt captured.")}</pre>
+    </section>
+    <section class="panel-card">
+      <h2>Bedrock Docs Alignment</h2>
+      <p class="note">This section maps the Stability Image Services fields documented by AWS to the request fields used by this replay tool and the production avatar worker contract.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Documented Pattern</th>
+            <th>Our Current Request</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>${providerRows}</tbody>
+      </table>
+      <div class="source-links">
+        <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/stable-image-services.html" target="_blank" rel="noreferrer">AWS Bedrock Stability Image Services</a>
+      </div>
+    </section>
+    <section class="panel-card">
+      <h2>Replay Requests</h2>
+      <p class="note">Each row has a matching request JSON file beside the replay images. That file contains the exact rendered prompt, negative prompt, provider priority, and provider attempts for that card.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Card</th>
+            <th>Goal</th>
+            <th>Winning Provider</th>
+            <th>Usage</th>
+            <th>Estimated Cost</th>
+            <th>Request JSON</th>
+          </tr>
+        </thead>
+        <tbody>${perCardRows}</tbody>
+      </table>
+    </section>
+    <section class="panel-card">
+      <h2>Operator Notes</h2>
+      <pre>${escapeHtml((avatarRecipeContract.operatorNotes ?? []).join("\n"))}</pre>
+    </section>`;
+}
+
+function buildProviderDocsRows(manifest) {
+  const priority = manifest.providerPriority ?? [];
+  const rows = [
+    {
+      provider: "Control Structure",
+      modelId: "us.stability.stable-image-control-structure-v1:0",
+      documented: "Required: image, prompt. Optional: control_strength, negative_prompt, seed, output_format, style_preset.",
+      current: JSON.stringify({
+        image: "source/normalized.jpg as base64",
+        prompt: "rendered from avatarRecipeContract.promptTemplate",
+        negative_prompt: "avatarRecipeContract.negativePromptTerms",
+        control_strength: avatarRecipeContract.providerSettings?.stabilityControlStructure?.controlStrength ?? 0.9,
+        output_format: avatarRecipeContract.providerSettings?.stabilityControlStructure?.outputFormat ?? "png",
+        style_preset: avatarRecipeContract.providerSettings?.stabilityControlStructure?.stylePreset ?? null,
+      }, null, 2),
+      notes: "Primary engine. High control_strength is intentional because the booth problem is identity drift, not pure style exploration.",
+    },
+    {
+      provider: "Style Transfer",
+      modelId: "us.stability.stable-style-transfer-v1:0",
+      documented: "Required: init_image, style_image. Optional: prompt, negative_prompt, seed, output_format, composition_fidelity, style_strength, change_strength.",
+      current: JSON.stringify({
+        init_image: "source/normalized.jpg as base64",
+        style_image: "AVATAR_STYLE_REFERENCE_S3_KEY as base64",
+        prompt: "rendered from avatarRecipeContract.promptTemplate",
+        negative_prompt: "avatarRecipeContract.negativePromptTerms",
+        composition_fidelity: avatarRecipeContract.providerSettings?.stabilityStyleTransfer?.compositionFidelity ?? 0.86,
+        style_strength: avatarRecipeContract.providerSettings?.stabilityStyleTransfer?.styleStrength ?? 0.42,
+        change_strength: avatarRecipeContract.providerSettings?.stabilityStyleTransfer?.changeStrength ?? 0.38,
+        output_format: avatarRecipeContract.providerSettings?.stabilityStyleTransfer?.outputFormat ?? "png",
+      }, null, 2),
+      notes: "Skipped unless a VeeVee style reference image is configured. Useful once identity quality is acceptable and we want consistent brand styling.",
+    },
+    {
+      provider: "Style Guide",
+      modelId: "us.stability.stable-image-style-guide-v1:0",
+      documented: "Required: image, prompt. Optional: negative_prompt, seed, output_format, fidelity, style_preset.",
+      current: JSON.stringify({
+        image: "source/normalized.jpg as base64",
+        prompt: "rendered from avatarRecipeContract.promptTemplate",
+        negative_prompt: "avatarRecipeContract.negativePromptTerms",
+        fidelity: avatarRecipeContract.providerSettings?.stabilityStyleGuide?.fidelity ?? 0.82,
+        output_format: avatarRecipeContract.providerSettings?.stabilityStyleGuide?.outputFormat ?? "png",
+        style_preset: avatarRecipeContract.providerSettings?.stabilityStyleGuide?.stylePreset ?? null,
+      }, null, 2),
+      notes: "Tertiary fallback. AWS positions it around style guidance, so it should not be the first choice for likeness preservation.",
+    },
+    {
+      provider: "Fallback Original Photo Card",
+      modelId: "fallback_original_photo_card",
+      documented: "Internal fallback, not a Bedrock model.",
+      current: "Copies the normalized source photo into the generated-image slot when every Bedrock provider fails or is unavailable.",
+      notes: "Keeps the booth flow from blocking, but dashboard/status must show fallback_used so operators know it was not a generated avatar.",
+    },
+  ];
+
+  return rows.map((row) => {
+    const configured = priority.includes(row.modelId) ? "Configured in current priority" : "Not in current priority";
+    return `
+      <tr>
+        <td><strong>${escapeHtml(row.provider)}</strong><br>${escapeHtml(row.modelId)}<br>${escapeHtml(configured)}</td>
+        <td>${escapeHtml(row.documented)}</td>
+        <td><pre>${escapeHtml(row.current)}</pre></td>
+        <td>${escapeHtml(row.notes)}</td>
+      </tr>`;
+  }).join("");
 }
 
 function formatImageMetric(metrics = {}) {
@@ -661,6 +933,19 @@ function formatMs(value) {
   const number = Number(value);
   if (!Number.isFinite(number)) return "-";
   return `${number} ms`;
+}
+
+function formatUsageUnits(usage = {}) {
+  const units = Number(usage.totalBillableUnits ?? usage.billableUnits);
+  const unit = usage.billingUnit ?? bedrockUsageContract.billingUnit ?? "generation";
+  if (!Number.isFinite(units)) return "-";
+  return `${units} ${unit}${units === 1 ? "" : "s"}`;
+}
+
+function formatCost(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "-";
+  return `$${number.toFixed(4)}`;
 }
 
 function escapeHtml(value) {

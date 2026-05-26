@@ -1,5 +1,6 @@
 import goalContentContract from "../../src/twinCard/goalContentContract.json";
 import avatarProviderContract from "../../src/twinCard/avatarProviderContract.json";
+import bedrockUsageContract from "../../src/twinCard/bedrockUsageContract.json";
 
 export const DEFAULT_CARDS_PREFIX = "twin-card";
 export const FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID = "fallback_original_photo_card";
@@ -10,6 +11,7 @@ export const DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY = avatarProviderContract.av
   FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
 ];
 export const DEFAULT_BEDROCK_IMAGE_MODEL_ID = DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY[0];
+export const BEDROCK_USAGE_CONTRACT = bedrockUsageContract;
 
 const CONTRACT_GOALS = goalContentContract.goals ?? {};
 
@@ -70,6 +72,51 @@ export function keyForPrint(prefix, extension = "svg") {
 
 export function keyForFailure(prefix, stage) {
   return `${prefix}/failures/${stage}.json`;
+}
+
+export function buildBedrockUsage(providerId, status = "completed") {
+  const unitPriceUsd = bedrockUsageContract.unitPricesUsd?.[providerId] ?? null;
+  const billableUnits = status === "completed" && Number.isFinite(unitPriceUsd) && unitPriceUsd > 0 ? 1 : 0;
+  const estimatedCostUsd = Number.isFinite(unitPriceUsd) ? Number((billableUnits * unitPriceUsd).toFixed(4)) : null;
+
+  return {
+    contractId: bedrockUsageContract.id,
+    contractVersion: bedrockUsageContract.version,
+    billingProvider: "aws_bedrock",
+    serviceTier: bedrockUsageContract.serviceTier,
+    pricingRegion: bedrockUsageContract.pricingRegion,
+    modelId: providerId,
+    billingUnit: bedrockUsageContract.billingUnit,
+    billableUnits,
+    unitPriceUsd,
+    estimatedCostUsd,
+    currency: bedrockUsageContract.currency,
+    pricingSource: bedrockUsageContract.pricingSource,
+    pricingLastVerified: bedrockUsageContract.pricingLastVerified,
+    note: "Estimated Bedrock Stability image model cost only.",
+  };
+}
+
+export function summarizeBedrockUsage(attempts = []) {
+  const usageItems = attempts
+    .map((attempt) => attempt.usage)
+    .filter(Boolean);
+  const totalBillableUnits = usageItems.reduce((sum, usage) => sum + Number(usage.billableUnits ?? 0), 0);
+  const totalEstimatedCostUsd = usageItems.reduce((sum, usage) => sum + Number(usage.estimatedCostUsd ?? 0), 0);
+
+  return {
+    contractId: bedrockUsageContract.id,
+    contractVersion: bedrockUsageContract.version,
+    billingProvider: "aws_bedrock",
+    billingUnit: bedrockUsageContract.billingUnit,
+    currency: bedrockUsageContract.currency,
+    totalBillableUnits,
+    totalEstimatedCostUsd: Number(totalEstimatedCostUsd.toFixed(4)),
+    pricingSource: bedrockUsageContract.pricingSource,
+    pricingLastVerified: bedrockUsageContract.pricingLastVerified,
+    lineItems: usageItems,
+    note: "Estimated Bedrock model inference cost only. Excludes S3, Lambda, DynamoDB, API Gateway, CloudWatch, and data-transfer charges.",
+  };
 }
 
 export function parseCardKey(key) {
@@ -183,6 +230,7 @@ export function buildRunArtifact(record) {
       bedrockModelId: record.bedrockModelId || null,
       bedrockProviderPriority: record.bedrockProviderPriority || null,
       bedrockProviderAttempts: record.bedrockProviderAttempts || null,
+      bedrockUsage: record.bedrockUsage || null,
       avatarRecipeId: record.avatarRecipeId || null,
       avatarRecipeVersion: record.avatarRecipeVersion || null,
     },
