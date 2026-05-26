@@ -28,6 +28,7 @@ export type TwinCardApiCard = {
   createdAt: string;
   updatedAt: string;
   boothDeviceId?: string;
+  deviceMetadata?: TwinCardLead["deviceMetadata"];
   language?: TwinCardLead["language"];
   imageUpload?: TwinCardLead["imageUpload"];
   runS3Key?: string;
@@ -77,6 +78,7 @@ export async function generateTwinCardAvatar(lead: TwinCardLead): Promise<TwinCa
         betaInterest: lead.betaInterest,
         eventName: lead.eventName,
         boothDeviceId: lead.boothDeviceId,
+        deviceMetadata: lead.deviceMetadata,
         language: lead.language,
         imageUpload: lead.imageUpload,
         sourceImageDataUrl: lead.sourceImageDataUrl,
@@ -173,6 +175,7 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     fulfillmentStatus: card.fulfillmentStatus ?? fallback?.fulfillmentStatus,
     eventName: card.eventName,
     boothDeviceId: card.boothDeviceId ?? fallback?.boothDeviceId,
+    deviceMetadata: card.deviceMetadata ?? fallback?.deviceMetadata,
     language: card.language ?? fallback?.language,
     imageUpload: card.imageUpload ?? fallback?.imageUpload,
     runS3Key: card.runS3Key ?? fallback?.runS3Key,

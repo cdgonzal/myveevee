@@ -91,6 +91,8 @@ The Twin Card backend is managed in the same stack as a sibling construct:
 
 `TwinCardBedrockImageModelId` is optional. Leave it blank to use the avatar-generator Lambda default of `amazon.nova-canvas-v1:0`. Set it only when overriding to a different approved Bedrock image model ID.
 
+Current production Twin Card API endpoint for Amplify `main`: `https://kt51f0edy2.execute-api.us-east-1.amazonaws.com/twin-card/cards`
+
 Twin Card run visibility:
 
 - Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
@@ -128,13 +130,25 @@ Use the repo AWS query baseline before AWS commands:
 ```powershell
 $env:AWS_CONFIG_FILE="$env:USERPROFILE\.aws\config"
 $env:AWS_SHARED_CREDENTIALS_FILE="$env:USERPROFILE\.aws\credentials"
+$env:AWS_PROFILE="glue-admin"
+$env:AWS_REGION="us-east-1"
+$env:MYVEEVEE_AWS_ACCOUNT="767828748348"
+$env:MYVEEVEE_AWS_REGION="us-east-1"
 ```
+
+Before any CDK diff, synth, or deploy, verify the target account:
+
+```powershell
+aws sts get-caller-identity --profile glue-admin --region us-east-1
+```
+
+Expected production account: `767828748348`. Do not use default AWS credentials for this stack. The CDK app intentionally refuses to synth/deploy `MyVeeVeeInfraStack` for a different account unless `MYVEEVEE_AWS_ACCOUNT` is explicitly overridden.
 
 ## Validate
 
 ```powershell
 npm run build
-npx cdk synth --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=sender@example.com --parameters SwcaSesToEmails=recipient@example.com --parameters SwcaAlertEmail=alerts@example.com --parameters SwcaPublicBaseUrl=https://myveevee.com
+npx cdk synth MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=sender@example.com --parameters SwcaSesToEmails=recipient@example.com --parameters SwcaAlertEmail=alerts@example.com --parameters SwcaPublicBaseUrl=https://myveevee.com
 ```
 
 ## Deploy
@@ -142,7 +156,9 @@ npx cdk synth --profile glue-admin --region us-east-1 --parameters SwcaSesFromEm
 Use real, verified SES identities. The current deployed values are `info@veevee.io` for both sender and recipient:
 
 ```powershell
-npx cdk deploy MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io --parameters SwcaAlertEmail=info@veevee.io --parameters SwcaPublicBaseUrl=https://myveevee.com
+aws sts get-caller-identity --profile glue-admin --region us-east-1
+npx cdk diff MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io --parameters SwcaAlertEmail=info@veevee.io --parameters SwcaPublicBaseUrl=https://myveevee.com --parameters "SwcaAllowedOrigins=https://myveevee.com,https://www.myveevee.com,https://main.dc8zya6af7720.amplifyapp.com"
+npx cdk deploy MyVeeVeeInfraStack --profile glue-admin --region us-east-1 --parameters SwcaSesFromEmail=info@veevee.io --parameters SwcaSesToEmails=info@veevee.io --parameters SwcaAlertEmail=info@veevee.io --parameters SwcaPublicBaseUrl=https://myveevee.com --parameters "SwcaAllowedOrigins=https://myveevee.com,https://www.myveevee.com,https://main.dc8zya6af7720.amplifyapp.com"
 ```
 
 Include the allowed origins parameter when deploying SWCA stack changes. In PowerShell, keep the comma-separated value in quotes so CloudFormation receives separate origins instead of one malformed space-joined origin:
@@ -188,6 +204,8 @@ After a future stack change deploys:
 - CDK stack is deployed.
 - Intake, reward wheel, reward contact, reward certificate, admin/event, and alarm resources are live.
 - Amplify `main` has the required SWCA environment variables.
+- Twin Card API, dashboard API, S3 bucket, DynamoDB table, worker Lambdas, S3 triggers, and alarms are deployed in account `767828748348`.
+- Amplify `main` has `VITE_TWIN_CARD_API_URL=https://kt51f0edy2.execute-api.us-east-1.amazonaws.com/twin-card/cards`.
 - Live smoke tests confirmed S3 storage, internal SES notification, reward claim, contact save, redacted admin report, and alarm subscription.
 - Reward email, certificate fields, and `swca_reward_email_sent` event were verified with smoke-test submission `731a0f54-9537-4715-a658-7c49ded7029d`.
 - Latest end-to-end verification on 2026-05-15 confirmed intake, wheel, email, certificate, and certificate-view tracking for submission `7db059ef-eca9-439b-a398-e0ebd413b15d`.

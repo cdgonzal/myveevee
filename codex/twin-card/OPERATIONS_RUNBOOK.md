@@ -28,6 +28,8 @@ aws sts get-caller-identity --profile glue-admin --region us-east-1
 
 Expected production account: `767828748348`.
 
+Do not use default AWS credentials for CDK. The local default account has previously resolved to `449164402570`, which is not the production Twin Card target. `infra/bin/myveevee-infra.ts` now refuses to synth/deploy this stack for any account other than `767828748348` unless `MYVEEVEE_AWS_ACCOUNT` is intentionally overridden.
+
 ## CDK Outputs
 
 The stack is `MyVeeVeeInfraStack`.
@@ -49,6 +51,12 @@ Important outputs:
 - `TwinCardActivationTwinCardAdminApiEndpoint...`: backend admin-list endpoint used by `/twin-dashboard`.
 - `TwinCardActivationTwinCardCardsBucketName...`: private S3 image bucket.
 - `TwinCardActivationTwinCardCardsTableName...`: DynamoDB run table.
+
+Current production endpoint:
+
+```text
+VITE_TWIN_CARD_API_URL=https://kt51f0edy2.execute-api.us-east-1.amazonaws.com/twin-card/cards
+```
 
 If `TwinCardApiEndpoint` changes, update `VITE_TWIN_CARD_API_URL` in Amplify `main`, then redeploy Amplify.
 

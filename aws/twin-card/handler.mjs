@@ -101,6 +101,7 @@ async function createCard(event, origin) {
     fulfillmentStatus: "not_printed",
     eventName: "4th SWCA Medical Summit",
     boothDeviceId: sanitizeString(payload.boothDeviceId, 80),
+    deviceMetadata: normalizeDeviceMetadata(payload.deviceMetadata),
     language,
     createdAt: now,
     updatedAt: now,
@@ -208,6 +209,7 @@ async function serializeCard(card, options = {}) {
     contact: card.contact,
     consentAccepted: Boolean(card.consentAccepted),
     boothDeviceId: card.boothDeviceId,
+    deviceMetadata: card.deviceMetadata,
     language: card.language,
     imageUpload: card.imageUpload,
     runS3Key: card.runS3Key,
@@ -220,6 +222,26 @@ async function serializeCard(card, options = {}) {
     runJsonUrl: await presign(card.runS3Key),
     printImageUrl: await presign(card.printImageS3Key),
   };
+}
+
+function normalizeDeviceMetadata(value) {
+  const device = typeof value === "object" && value ? value : {};
+  return {
+    deviceType: sanitizeString(device.deviceType, 40) || "unknown",
+    deviceFamily: sanitizeString(device.deviceFamily, 40) || "unknown",
+    platform: sanitizeString(device.platform, 80),
+    userAgent: sanitizeString(device.userAgent, 512),
+    maxTouchPoints: safeFiniteNumber(device.maxTouchPoints, 20),
+    viewportWidth: safeFiniteNumber(device.viewportWidth, 10000),
+    viewportHeight: safeFiniteNumber(device.viewportHeight, 10000),
+    devicePixelRatio: safeFiniteNumber(device.devicePixelRatio, 10) || 1,
+  };
+}
+
+function safeFiniteNumber(value, maxValue) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < 0) return 0;
+  return Math.min(number, maxValue);
 }
 
 async function presign(key) {

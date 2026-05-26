@@ -150,6 +150,7 @@ export function buildRunArtifact(record) {
     event: {
       eventName: record.eventName,
       boothDeviceId: record.boothDeviceId,
+      deviceMetadata: record.deviceMetadata,
       cardResultUrl: record.cardResultUrl,
     },
     image: {

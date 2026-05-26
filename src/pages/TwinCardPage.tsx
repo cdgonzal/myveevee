@@ -303,7 +303,8 @@ export default function TwinCardPage() {
       renderStatus: "not_started",
       fulfillmentStatus: "not_printed",
       eventName: TWIN_CARD_EVENT_NAME,
-      boothDeviceId: window.navigator.userAgent.slice(0, 80),
+      boothDeviceId: buildBoothDeviceId(),
+      deviceMetadata: buildDeviceMetadata(),
       language,
       imageUpload,
       createdAt: now,
@@ -581,17 +582,61 @@ function buildCaptureConfirmation(fileName: string): CaptureConfirmation {
 }
 
 function getConfirmationMode(): ConfirmationMode {
-  const userAgent = window.navigator.userAgent;
-  const isIpad =
-    /iPad/i.test(userAgent) ||
-    (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
-  const isPhone = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(userAgent) || window.innerWidth < 768;
+  const device = buildDeviceMetadata();
 
-  if (isPhone && !isIpad) {
+  if (device.deviceFamily === "mobile_phone") {
     return "redirect";
   }
 
   return "restart";
+}
+
+function buildBoothDeviceId() {
+  const device = buildDeviceMetadata();
+  return `${device.deviceType}:${device.platform}:${device.viewportWidth}x${device.viewportHeight}`.slice(0, 80);
+}
+
+function buildDeviceMetadata() {
+  const userAgent = window.navigator.userAgent;
+  const platform = window.navigator.platform || "unknown";
+  const maxTouchPoints = window.navigator.maxTouchPoints || 0;
+  const isIpad = /iPad/i.test(userAgent) || (platform === "MacIntel" && maxTouchPoints > 1);
+  const isIphone = /iPhone|iPod/i.test(userAgent);
+  const isAndroidPhone = /Android.*Mobile/i.test(userAgent);
+  const isTablet = /Tablet|Android(?!.*Mobile)/i.test(userAgent);
+  const isSmallTouchViewport = window.innerWidth < 768 && maxTouchPoints > 0;
+  const deviceType = isIpad
+    ? "ipad"
+    : isIphone
+      ? "iphone"
+      : isAndroidPhone
+        ? "android_phone"
+        : isTablet
+          ? "tablet"
+          : maxTouchPoints > 0 && !isSmallTouchViewport
+            ? "tablet"
+            : maxTouchPoints > 0 && isSmallTouchViewport
+              ? "unknown"
+              : "desktop";
+  const deviceFamily =
+    deviceType === "ipad" || deviceType === "tablet"
+      ? "booth_tablet"
+      : deviceType === "iphone" || deviceType === "android_phone"
+        ? "mobile_phone"
+        : deviceType === "desktop"
+          ? "desktop"
+          : "unknown";
+
+  return {
+    deviceType,
+    deviceFamily,
+    platform,
+    userAgent,
+    maxTouchPoints,
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+    devicePixelRatio: window.devicePixelRatio || 1,
+  } as const;
 }
 
 function StepHeader({ eyebrow, title }: { eyebrow: string; title: string }) {

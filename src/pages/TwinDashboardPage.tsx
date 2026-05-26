@@ -185,6 +185,7 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
         <SimpleGrid columns={2} spacing={3}>
           <Field label="Contact" value={card.contact ?? "-"} />
           <Field label="Language" value={(card.language ?? "-").toUpperCase()} />
+          <Field label="Device" value={formatDevice(card)} />
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
           <Field label="Provider" value={card.generationProvider} />
@@ -300,6 +301,7 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     fulfillmentStatus: lead.fulfillmentStatus,
     eventName: lead.eventName,
     boothDeviceId: lead.boothDeviceId,
+    deviceMetadata: lead.deviceMetadata,
     language: lead.language,
     imageUpload: lead.imageUpload,
     sourceImageUrl: lead.sourceImageUrl,
@@ -317,6 +319,12 @@ function formatImageSize(card: TwinCardApiCard) {
   const upload = card.imageUpload;
   if (!upload) return "-";
   return `${upload.normalizedWidthPx}x${upload.normalizedHeightPx}`;
+}
+
+function formatDevice(card: TwinCardApiCard) {
+  const device = card.deviceMetadata;
+  if (!device) return card.boothDeviceId ?? "-";
+  return `${device.deviceType} / ${device.deviceFamily}`;
 }
 
 function formatOriginal(card: TwinCardApiCard) {

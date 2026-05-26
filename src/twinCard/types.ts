@@ -11,6 +11,19 @@ export type TwinCardFulfillmentStatus = "not_printed" | "printed" | "email_pendi
 
 export type TwinCardLanguage = "en" | "es";
 
+export type TwinCardDeviceType = "ipad" | "iphone" | "android_phone" | "tablet" | "desktop" | "unknown";
+
+export type TwinCardDeviceMetadata = {
+  deviceType: TwinCardDeviceType;
+  deviceFamily: "booth_tablet" | "mobile_phone" | "desktop" | "unknown";
+  platform: string;
+  userAgent: string;
+  maxTouchPoints: number;
+  viewportWidth: number;
+  viewportHeight: number;
+  devicePixelRatio: number;
+};
+
 export type TwinCardInterestId =
   | "prepare_for_care"
   | "understand_symptoms"
@@ -42,6 +55,7 @@ export type TwinCardLead = {
   fulfillmentStatus?: TwinCardFulfillmentStatus;
   eventName: string;
   boothDeviceId?: string;
+  deviceMetadata?: TwinCardDeviceMetadata;
   language?: TwinCardLanguage;
   imageUpload?: {
     originalFileName: string;
