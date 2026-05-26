@@ -372,6 +372,50 @@ node aws/twin-card/replay-avatar-recipe.mjs --limit=3 --provider us.stability.st
 
 Use single-provider replays when comparing candidates. Do not keep fighting a model that repeatedly loses identity/likeness after the request payload has been verified against the recipe tab.
 
+## Hugging Face Image-To-Image Replay
+
+Use Hugging Face replay only for model exploration. It is not part of the production funnel and must not be used with live participant photos unless consent, privacy, retention, commercial rights, and model license review explicitly allow it.
+
+Source of truth: `src/twinCard/huggingFaceImageProviderContract.json`.
+
+The Hugging Face contract currently targets image-to-image candidates such as:
+
+- `black-forest-labs/FLUX.1-Kontext-dev`
+- `Qwen/Qwen-Image-Edit`
+- `Qwen/Qwen-Image-Edit-2509`
+- `black-forest-labs/FLUX.2-dev`
+
+Hugging Face Inference Providers are a unified proxy/client layer across providers such as fal.ai and Replicate. The image-to-image API accepts an input image plus prompt parameters and returns image bytes. The script uses the official `@huggingface/inference` client.
+
+Required environment:
+
+```powershell
+$env:HF_TOKEN="<hugging-face-token-with-inference-providers-permission>"
+```
+
+Wiring-only dry run that does not call Hugging Face:
+
+```powershell
+node aws/twin-card/replay-huggingface-avatar.mjs --limit=3 --mock --no-write-s3
+```
+
+Real replay example:
+
+```powershell
+node aws/twin-card/replay-huggingface-avatar.mjs `
+  --limit=3 `
+  --model black-forest-labs/FLUX.1-Kontext-dev `
+  --hfProvider fal-ai
+```
+
+Output locations:
+
+- Local comparison files: `_sandbox/twin-card-huggingface-replays/{timestamp}/`
+- Local report: `_sandbox/twin-card-huggingface-replays/{timestamp}/index.html`
+- S3 replay files: `s3://myveevee-twin-card-767828748348-us-east-1/twin-card-replay/huggingface/{model}/{timestamp}/`
+
+Do not put Hugging Face results under `generated/avatar.*` or `print/*` for real participant runs during exploration.
+
 ## Print Artifact Contract
 
 The print composer intentionally writes two print-stage artifacts:

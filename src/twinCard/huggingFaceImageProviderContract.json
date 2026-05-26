@@ -1,0 +1,56 @@
+{
+  "id": "twin-card-huggingface-image-provider-replay-v1",
+  "version": "2026-05-26",
+  "purpose": "Replay-only contract for testing external Hugging Face image-to-image models against Twin Card source images before any production integration.",
+  "mode": "replay_only",
+  "requiredEnvironment": [
+    "HF_TOKEN"
+  ],
+  "safetyRules": [
+    "Do not use live participant photos with external providers unless consent and legal/commercial review explicitly allow it.",
+    "Do not add this provider to the production funnel until model license, privacy posture, retention behavior, and commercial rights are approved.",
+    "Use the same three replay source images for every candidate so marketing can compare model quality objectively.",
+    "Store external-provider outputs under twin-card-replay only; never overwrite participant generated/avatar or print artifacts."
+  ],
+  "defaultProvider": "auto",
+  "defaultTargetSize": {
+    "width": 1024,
+    "height": 1024
+  },
+  "defaultPromptSuffix": "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face shape, hair, skin tone, eyewear, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.",
+  "defaultNegativePrompt": "different person, changed identity, changed face, changed hairstyle, different hair color, removed glasses, added glasses, different age, glam beauty filter, plastic skin, text, logo, watermark, distorted face, extra limbs",
+  "candidateModels": [
+    {
+      "rank": 1,
+      "modelId": "black-forest-labs/FLUX.1-Kontext-dev",
+      "task": "image-to-image",
+      "reason": "Best first FLUX-family image-editing candidate from Hugging Face for preserving a source image while applying a new visual direction.",
+      "licenseReviewRequired": true
+    },
+    {
+      "rank": 2,
+      "modelId": "Qwen/Qwen-Image-Edit",
+      "task": "image-to-image",
+      "reason": "Strong image-edit candidate for turning a source photo into a stylized avatar while retaining visible structure.",
+      "licenseReviewRequired": true
+    },
+    {
+      "rank": 3,
+      "modelId": "Qwen/Qwen-Image-Edit-2509",
+      "task": "image-to-image",
+      "reason": "Newer Qwen image-edit variant worth comparing if hosted inference is available.",
+      "licenseReviewRequired": true
+    },
+    {
+      "rank": 4,
+      "modelId": "black-forest-labs/FLUX.2-dev",
+      "task": "image-to-image",
+      "reason": "FLUX-family image-to-image candidate to compare against FLUX.1 Kontext if available.",
+      "licenseReviewRequired": true
+    }
+  ],
+  "docs": [
+    "https://huggingface.co/docs/inference-providers/tasks/image-to-image",
+    "https://huggingface.co/docs/inference-providers/en/index"
+  ]
+}
