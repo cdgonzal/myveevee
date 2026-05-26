@@ -20,6 +20,8 @@ export type TwinCardActivationProps = {
   publicBaseUrl: string;
   alertEmail: string;
   bedrockImageModelId: string;
+  bedrockImageProviderPriority: string;
+  avatarStyleReferenceS3Key: string;
 };
 
 export class TwinCardActivation extends Construct {
@@ -133,6 +135,8 @@ export class TwinCardActivation extends Construct {
         CARDS_TABLE: this.cardsTable.tableName,
         CARDS_PREFIX: "twin-card",
         BEDROCK_IMAGE_MODEL_ID: props.bedrockImageModelId,
+        BEDROCK_IMAGE_PROVIDER_PRIORITY: props.bedrockImageProviderPriority,
+        AVATAR_STYLE_REFERENCE_S3_KEY: props.avatarStyleReferenceS3Key,
       },
     });
 

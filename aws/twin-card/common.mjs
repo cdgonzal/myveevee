@@ -1,7 +1,15 @@
 import goalContentContract from "../../src/twinCard/goalContentContract.json";
+import avatarProviderContract from "../../src/twinCard/avatarProviderContract.json";
 
 export const DEFAULT_CARDS_PREFIX = "twin-card";
-export const DEFAULT_BEDROCK_IMAGE_MODEL_ID = "amazon.nova-canvas-v1:0";
+export const FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID = "fallback_original_photo_card";
+export const DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY = avatarProviderContract.avatarProviderPriority ?? [
+  "us.stability.stable-image-control-structure-v1:0",
+  "us.stability.stable-style-transfer-v1:0",
+  "us.stability.stable-image-style-guide-v1:0",
+  FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
+];
+export const DEFAULT_BEDROCK_IMAGE_MODEL_ID = DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY[0];
 
 const CONTRACT_GOALS = goalContentContract.goals ?? {};
 
@@ -170,6 +178,8 @@ export function buildRunArtifact(record) {
       provider: record.generationProvider,
       message: record.generationMessage,
       bedrockModelId: record.bedrockModelId || null,
+      bedrockProviderPriority: record.bedrockProviderPriority || null,
+      bedrockProviderAttempts: record.bedrockProviderAttempts || null,
     },
     render: {
       status: record.renderStatus,

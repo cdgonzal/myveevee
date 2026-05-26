@@ -89,7 +89,18 @@ The Twin Card backend is managed in the same stack as a sibling construct:
 - Dashboard route: `https://myveevee.com/twin-dashboard`
 - Frontend environment variable: `VITE_TWIN_CARD_API_URL`
 
-`TwinCardBedrockImageModelId` is optional. Leave it blank to use the avatar-generator Lambda default of `amazon.nova-canvas-v1:0`. Set it only when overriding to a different approved Bedrock image model ID.
+Twin Card avatar provider priority is contracted in `src/twinCard/avatarProviderContract.json`. Leave `TwinCardBedrockImageProviderPriority` blank to use the repo default:
+
+```text
+us.stability.stable-image-control-structure-v1:0,
+us.stability.stable-style-transfer-v1:0,
+us.stability.stable-image-style-guide-v1:0,
+fallback_original_photo_card
+```
+
+The Stability entries are active Bedrock inference profile IDs in account `767828748348`. Do not use the raw `stability.*` model IDs. Do not use `amazon.nova-canvas-v1:0` or `amazon.titan-image-generator-v2:0` as the default expo provider; both are legacy in the current Bedrock model list, and Nova Canvas was denied during live testing.
+
+Style Transfer requires `TwinCardAvatarStyleReferenceS3Key` to point to a VeeVee reference-style image inside the Twin Card bucket. Until that key is configured, the Lambda skips Style Transfer and continues to Style Guide.
 
 Current production Twin Card API endpoint for Amplify `main`: `https://kt51f0edy2.execute-api.us-east-1.amazonaws.com/twin-card/cards`
 
@@ -167,10 +178,22 @@ Include the allowed origins parameter when deploying SWCA stack changes. In Powe
 --parameters "SwcaAllowedOrigins=https://myveevee.com,https://www.myveevee.com,https://main.dc8zya6af7720.amplifyapp.com"
 ```
 
-Optional Twin Card Bedrock model override:
+Optional Twin Card Bedrock provider-priority override:
 
 ```powershell
---parameters TwinCardBedrockImageModelId=<approved-bedrock-image-model-id>
+--parameters "TwinCardBedrockImageProviderPriority=us.stability.stable-image-control-structure-v1:0,us.stability.stable-image-style-guide-v1:0,fallback_original_photo_card"
+```
+
+Optional legacy single-model override, retained for emergency testing only:
+
+```powershell
+--parameters TwinCardBedrockImageModelId=<approved-bedrock-image-model-id-or-inference-profile-id>
+```
+
+Optional Style Transfer reference image key:
+
+```powershell
+--parameters TwinCardAvatarStyleReferenceS3Key=twin-card/style/veevee-avatar-reference.png
 ```
 
 Optional admin secret-name overrides:

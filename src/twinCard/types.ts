@@ -3,7 +3,15 @@ export type TwinCardContactType = "email" | "phone" | "unknown";
 // Keep this union aligned with src/twinCard/statusContract.json.
 export type TwinCardGenerationStatus = "not_started" | "submitted" | "generating" | "completed" | "failed" | "fallback_used";
 
-export type TwinCardGenerationProvider = "bedrock" | "nova_canvas" | "fallback" | "manual";
+export type TwinCardGenerationProvider =
+  | "bedrock"
+  | "nova_canvas"
+  | "stability_control_structure"
+  | "stability_style_transfer"
+  | "stability_style_guide"
+  | "fallback"
+  | "fallback_original_photo_card"
+  | "manual";
 
 export type TwinCardRenderStatus = "not_started" | "rendering" | "rendered" | "render_failed";
 

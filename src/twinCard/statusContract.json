@@ -32,10 +32,10 @@
     },
     "fallback_used": {
       "dashboardLabel": "Photo fallback",
-      "meaning": "The card is complete and printable, but the final card image uses the normalized uploaded photo because Bedrock was not configured or generation failed.",
+      "meaning": "The card is complete and printable, but the final card image uses the normalized uploaded photo because all configured Bedrock avatar providers failed or were skipped.",
       "printable": true,
       "terminal": true,
-      "currentUsage": "Set when BEDROCK_IMAGE_MODEL_ID is blank or Bedrock invocation fails."
+      "currentUsage": "Set when the provider priority reaches fallback_original_photo_card."
     },
     "failed": {
       "dashboardLabel": "Failed",
@@ -47,8 +47,8 @@
   },
   "generationMappings": {
     "apiAccepted": "submitted",
-    "bedrockSuccess": "completed",
-    "bedrockModelMissing": "fallback_used",
+    "bedrockProviderSuccess": "completed",
+    "bedrockProviderPriorityExhausted": "fallback_used",
     "bedrockInvocationFailed": "fallback_used",
     "noUsableCardProduced": "failed"
   },

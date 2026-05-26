@@ -3,8 +3,9 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import {
-  DEFAULT_BEDROCK_IMAGE_MODEL_ID,
+  DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY,
   DEFAULT_CARDS_PREFIX,
+  FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
   GOAL_ASPIRATIONS,
   INTEREST_LABELS,
   buildRunArtifact,
@@ -21,8 +22,11 @@ const {
   CARDS_BUCKET,
   CARDS_TABLE,
   CARDS_PREFIX = DEFAULT_CARDS_PREFIX,
+  BEDROCK_IMAGE_PROVIDER_PRIORITY,
+  AVATAR_STYLE_REFERENCE_S3_KEY,
 } = process.env;
-const BEDROCK_IMAGE_MODEL_ID = process.env.BEDROCK_IMAGE_MODEL_ID || DEFAULT_BEDROCK_IMAGE_MODEL_ID;
+const BEDROCK_IMAGE_MODEL_ID_OVERRIDE = process.env.BEDROCK_IMAGE_MODEL_ID?.trim();
+const PROVIDER_PRIORITY = parseProviderPriority(BEDROCK_IMAGE_PROVIDER_PRIORITY, BEDROCK_IMAGE_MODEL_ID_OVERRIDE);
 
 export async function handler(event) {
   validateConfig();
@@ -52,25 +56,28 @@ async function processSourceImage(sourceImageS3Key) {
 
   await updateCard(parsedKey.cardId, {
     generationStatus: "generating",
-    generationProvider: "nova_canvas",
+    generationProvider: "bedrock",
     generationMessage: "Creating your VeeVee Twin Card image.",
+    bedrockProviderPriority: PROVIDER_PRIORITY,
     updatedAt: new Date().toISOString(),
   });
 
   const sourceImage = await readObject(sourceImageS3Key);
   let generated;
+  const attempts = [];
 
   try {
-    generated = await invokeNovaCanvas(card, sourceImage);
+    generated = await generateAvatar(card, sourceImage, attempts);
   } catch (error) {
-    console.error("Twin Card Nova Canvas generation failed; using source-photo fallback", {
+    console.error("Twin Card Bedrock avatar generation failed; using original-photo fallback", {
       cardId: parsedKey.cardId,
-      modelId: BEDROCK_IMAGE_MODEL_ID,
+      providerPriority: PROVIDER_PRIORITY,
       message: error instanceof Error ? error.message : String(error),
     });
     await writeFailure(parsedKey.runPrefix, "avatar-generation", {
       cardId: parsedKey.cardId,
-      modelId: BEDROCK_IMAGE_MODEL_ID,
+      providerPriority: PROVIDER_PRIORITY,
+      attempts,
       message: error instanceof Error ? error.message : String(error),
       failedAt: new Date().toISOString(),
     });
@@ -79,6 +86,8 @@ async function processSourceImage(sourceImageS3Key) {
       contentType: sourceImage.contentType,
       extension: sourceImage.contentType === "image/png" ? "png" : "jpg",
       usedFallback: true,
+      providerId: FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
+      provider: FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
     };
   }
 
@@ -96,11 +105,13 @@ async function processSourceImage(sourceImageS3Key) {
   const now = new Date().toISOString();
   const updates = {
     generationStatus: generated.usedFallback ? "fallback_used" : "completed",
-    generationProvider: generated.usedFallback ? "fallback" : "nova_canvas",
+    generationProvider: generated.provider,
     generationMessage: generated.usedFallback
       ? "We created your Twin Card using your uploaded photo."
       : "Your VeeVee Twin Card image is ready.",
-    bedrockModelId: BEDROCK_IMAGE_MODEL_ID,
+    bedrockModelId: generated.providerId,
+    bedrockProviderPriority: PROVIDER_PRIORITY,
+    bedrockProviderAttempts: attempts,
     generatedAvatarS3Key,
     generatedAvatarBytes: generated.buffer.length,
     generatedAvatarContentType: generated.contentType,
@@ -112,7 +123,131 @@ async function processSourceImage(sourceImageS3Key) {
   await writeRunArtifact(updatedCard);
 }
 
-async function invokeNovaCanvas(card, sourceImage) {
+async function generateAvatar(card, sourceImage, attempts) {
+  const providers = PROVIDER_PRIORITY.length ? PROVIDER_PRIORITY : DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY;
+  const errors = [];
+
+  for (const providerId of providers) {
+    if (providerId === FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID) {
+      throw new Error(`Reached ${FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID} after provider failures: ${errors.join(" | ")}`);
+    }
+
+    if (providerId === "us.stability.stable-style-transfer-v1:0" && !AVATAR_STYLE_REFERENCE_S3_KEY) {
+      attempts.push({
+        providerId,
+        status: "skipped",
+        message: "Style Transfer requires AVATAR_STYLE_REFERENCE_S3_KEY.",
+        attemptedAt: new Date().toISOString(),
+      });
+      continue;
+    }
+
+    try {
+      const result = await invokeStabilityProvider(providerId, card, sourceImage);
+      attempts.push({
+        providerId,
+        provider: result.provider,
+        status: "completed",
+        attemptedAt: new Date().toISOString(),
+      });
+      return result;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      attempts.push({
+        providerId,
+        provider: providerNameFor(providerId),
+        status: "failed",
+        message,
+        attemptedAt: new Date().toISOString(),
+      });
+      errors.push(`${providerId}: ${message}`);
+    }
+  }
+
+  throw new Error(errors.length ? errors.join(" | ") : "No Bedrock avatar provider was attempted.");
+}
+
+async function invokeStabilityProvider(providerId, card, sourceImage) {
+  if (providerId === "amazon.nova-canvas-v1:0") {
+    return invokeNovaCanvas(providerId, card, sourceImage);
+  }
+
+  if (!providerId.startsWith("us.stability.")) {
+    throw new Error(`Unsupported Twin Card avatar provider: ${providerId}`);
+  }
+
+  const payload = await buildStabilityPayload(providerId, card, sourceImage);
+  const result = await bedrock.send(
+    new InvokeModelCommand({
+      modelId: providerId,
+      contentType: "application/json",
+      accept: "application/json",
+      body: JSON.stringify(payload),
+    })
+  );
+  const parsed = JSON.parse(new TextDecoder().decode(result.body));
+  const imageBase64 = parsed.images?.[0] ?? parsed.image;
+
+  if (!imageBase64) {
+    const finishReason = parsed.finish_reasons?.[0] ?? parsed.finishReason ?? "unknown";
+    throw new Error(`Stability response did not include an image. finishReason=${finishReason}`);
+  }
+
+  return {
+    buffer: Buffer.from(imageBase64, "base64"),
+    contentType: "image/png",
+    extension: "png",
+    usedFallback: false,
+    providerId,
+    provider: providerNameFor(providerId),
+  };
+}
+
+async function buildStabilityPayload(providerId, card, sourceImage) {
+  const base64Image = sourceImage.buffer.toString("base64");
+  const prompt = buildPrompt(card);
+  const negativePrompt = buildNegativePrompt();
+
+  if (providerId === "us.stability.stable-image-control-structure-v1:0") {
+    return {
+      image: base64Image,
+      prompt,
+      negative_prompt: negativePrompt,
+      control_strength: 0.72,
+      output_format: "png",
+      style_preset: "digital-art",
+    };
+  }
+
+  if (providerId === "us.stability.stable-style-transfer-v1:0") {
+    const styleImage = await readObject(AVATAR_STYLE_REFERENCE_S3_KEY);
+    return {
+      init_image: base64Image,
+      style_image: styleImage.buffer.toString("base64"),
+      prompt,
+      negative_prompt: negativePrompt,
+      output_format: "png",
+      composition_fidelity: 0.75,
+      style_strength: 0.65,
+      change_strength: 0.55,
+    };
+  }
+
+  if (providerId === "us.stability.stable-image-style-guide-v1:0") {
+    return {
+      image: base64Image,
+      prompt,
+      negative_prompt: negativePrompt,
+      output_format: "png",
+      fidelity: 0.7,
+      style_preset: "digital-art",
+    };
+  }
+
+  throw new Error(`No Stability payload builder for ${providerId}`);
+}
+
+async function invokeNovaCanvas(providerId, card, sourceImage) {
   const prompt = buildPrompt(card);
   const payload = {
     taskType: "IMAGE_VARIATION",
@@ -132,7 +267,7 @@ async function invokeNovaCanvas(card, sourceImage) {
 
   const result = await bedrock.send(
     new InvokeModelCommand({
-      modelId: BEDROCK_IMAGE_MODEL_ID,
+      modelId: providerId,
       contentType: "application/json",
       accept: "application/json",
       body: JSON.stringify(payload),
@@ -150,6 +285,8 @@ async function invokeNovaCanvas(card, sourceImage) {
     contentType: "image/png",
     extension: "png",
     usedFallback: false,
+    providerId,
+    provider: "nova_canvas",
   };
 }
 
@@ -165,6 +302,44 @@ function buildPrompt(card) {
     `Aspirational tone: ${aspiration}`,
     "The image should feel positive for a 3-6 month wellness journey.",
   ].join(" ");
+}
+
+function buildNegativePrompt() {
+  return [
+    "text",
+    "logo",
+    "watermark",
+    "medical diagnosis",
+    "hospital equipment",
+    "injury",
+    "illness",
+    "scary",
+    "distorted face",
+    "extra limbs",
+    "low resolution",
+    "harsh shadows",
+  ].join(", ");
+}
+
+function parseProviderPriority(value, legacyModelOverride) {
+  const raw = typeof value === "string" ? value : "";
+  const providers = raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  if (!providers.length && legacyModelOverride) {
+    providers.push(legacyModelOverride);
+  }
+  return providers.length ? providers : DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY;
+}
+
+function providerNameFor(providerId) {
+  if (providerId === "us.stability.stable-image-control-structure-v1:0") return "stability_control_structure";
+  if (providerId === "us.stability.stable-style-transfer-v1:0") return "stability_style_transfer";
+  if (providerId === "us.stability.stable-image-style-guide-v1:0") return "stability_style_guide";
+  if (providerId === "amazon.nova-canvas-v1:0") return "nova_canvas";
+  if (providerId === FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID) return FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID;
+  return "bedrock";
 }
 
 async function loadCard(cardId) {

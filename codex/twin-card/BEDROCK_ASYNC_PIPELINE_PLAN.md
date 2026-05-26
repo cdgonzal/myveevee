@@ -6,7 +6,7 @@ Initial implementation is in place:
 
 - API Lambda stores the run row and run JSON, then writes the source image to trigger the worker pipeline.
 - S3 source-image events invoke `aws/twin-card/avatar-generator.mjs`.
-- Avatar generator invokes Bedrock Nova Canvas and writes a generated image, or writes a source-photo fallback image.
+- Avatar generator invokes the active Bedrock Stability provider-priority chain and writes a generated image, or writes a normalized-photo fallback image.
 - S3 generated-image events invoke `aws/twin-card/print-composer.mjs`.
 - Print composer writes a deterministic SVG print-frame artifact today.
 - CDK wires both worker Lambdas, S3 event notifications, permissions, and CloudWatch alarms.
@@ -19,7 +19,7 @@ Move Twin Card image generation from the current synchronous API Lambda path to 
 
 1. API Lambda validates the lead, stores the normalized source image, creates the DynamoDB run row, writes the run JSON, and returns quickly.
 2. S3 `ObjectCreated` on the source image prefix invokes an avatar-generation Lambda.
-3. The avatar-generation Lambda calls Amazon Bedrock with Amazon Nova Canvas and writes the generated image output back to S3.
+3. The avatar-generation Lambda calls Amazon Bedrock with the configured Stability inference-profile provider priority and writes the generated image output back to S3.
 4. S3 `ObjectCreated` on the generated-image prefix invokes a print-composition Lambda.
 5. The print-composition Lambda frames/masks the generated image into the Canon SELPHY CP1500 print contract and writes the final print asset back to S3.
 
@@ -27,19 +27,30 @@ Use "generated image" or "model output image" for the Bedrock image result. Rese
 
 ## AWS Model Baseline
 
-Use Amazon Nova Canvas through Amazon Bedrock Runtime `InvokeModel`.
+Use active Stability AI Image Services inference profiles through Amazon Bedrock Runtime `InvokeModel`.
 
-- Model ID: `amazon.nova-canvas-v1:0`
-- Current AWS docs describe Nova Canvas as supporting text and image inputs with image output.
-- Current AWS docs list PNG and JPEG as supported input image types.
-- Current AWS JavaScript examples parse the response `images` array as base64-encoded image data.
-- Nova Canvas prompts are English-only in the current AWS docs, so Spanish user flow should still map to English generation prompts.
+Provider priority source of truth: `src/twinCard/avatarProviderContract.json`.
 
-References:
+Default priority:
 
-- https://docs.aws.amazon.com/nova/latest/userguide/image-generation.html
-- https://docs.aws.amazon.com/nova/latest/userguide/image-gen-access.html
-- https://docs.aws.amazon.com/nova/latest/userguide/code-examples-image.html
+```text
+us.stability.stable-image-control-structure-v1:0
+us.stability.stable-style-transfer-v1:0
+us.stability.stable-image-style-guide-v1:0
+fallback_original_photo_card
+```
+
+Implementation notes:
+
+- Use the `us.*` inference profile IDs. Do not call raw `stability.*` model IDs for this stack.
+- Control Structure is the V1 primary avatar engine because it preserves source-photo structure while restyling the image.
+- Style Transfer requires a configured VeeVee style reference image in S3.
+- Style Guide is tertiary for brand consistency.
+- `amazon.nova-canvas-v1:0` and `amazon.titan-image-generator-v2:0` are legacy in the production model list; Nova Canvas was denied during live testing.
+
+Reference:
+
+- https://docs.aws.amazon.com/bedrock/latest/userguide/stable-image-services.html
 
 ## Proposed S3 Partition Contract
 
@@ -99,17 +110,19 @@ Responsibilities:
 - Parse `{cardId}` from the S3 key or load the run JSON by convention.
 - Load DDB row and source object.
 - Update DDB `generationStatus = "generating"`.
-- Call Bedrock Runtime `InvokeModel` with Nova Canvas.
+- Call Bedrock Runtime `InvokeModel` with the provider priority chain.
 - Save generated image output to `twin-card/{yyyy}/{mm}/{dd}/{cardId}/generated/avatar.png`.
 - Update DDB:
   - `generationStatus = "completed"` on Bedrock success
-  - `generationProvider = "nova_canvas"`
-  - `bedrockModelId = "amazon.nova-canvas-v1:0"`
+  - `generationProvider = "stability_control_structure"` or the successful provider
+  - `bedrockModelId = "<successful-provider-inference-profile-id>"`
+  - `bedrockProviderPriority`
+  - `bedrockProviderAttempts`
   - `generatedAvatarS3Key`
   - `generatedAvatarBytes`
   - `generatedAt`
 - On recoverable Bedrock failure, write a failure artifact and either:
-  - set `generationStatus = "fallback_used"` and copy the normalized photo to the generated prefix so print composition can continue, or
+  - set `generationStatus = "fallback_used"`, `generationProvider = "fallback_original_photo_card"`, and copy the normalized photo to the generated prefix so print composition can continue, or
   - set `generationStatus = "failed"` if no usable image should be printed.
 
 Expo recommendation: preserve the current resilient behavior and use `fallback_used` so booth printing continues when Bedrock fails.
@@ -163,7 +176,7 @@ Recommended print composition:
 
 ## Prompt Contract
 
-Nova Canvas prompts should be generated server-side from controlled templates, not raw user text.
+Bedrock avatar prompts should be generated server-side from controlled templates, not raw user text.
 
 Example prompt shape:
 

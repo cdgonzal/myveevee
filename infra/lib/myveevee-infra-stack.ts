@@ -70,7 +70,21 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       type: "String",
       default: "",
       description:
-        "Optional Bedrock image model ID for Twin Card avatar generation. Leave blank to use the Nova Canvas default in the worker Lambda.",
+        "Legacy optional Bedrock image model ID override for Twin Card avatar generation. Leave blank to use the provider-priority contract.",
+    });
+
+    const twinCardBedrockImageProviderPriority = new cdk.CfnParameter(this, "TwinCardBedrockImageProviderPriority", {
+      type: "String",
+      default: "",
+      description:
+        "Optional comma-separated Twin Card avatar provider priority. Leave blank to use src/twinCard/avatarProviderContract.json.",
+    });
+
+    const twinCardAvatarStyleReferenceS3Key = new cdk.CfnParameter(this, "TwinCardAvatarStyleReferenceS3Key", {
+      type: "String",
+      default: "",
+      description:
+        "Optional S3 key in the Twin Card bucket for a VeeVee style reference image used by Stable Style Transfer.",
     });
 
     new PartnerIntakeForm(this, "SwcaIntakeForm", {
@@ -104,6 +118,8 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       publicBaseUrl: publicBaseUrl.valueAsString,
       alertEmail: alertEmail.valueAsString,
       bedrockImageModelId: twinCardBedrockImageModelId.valueAsString,
+      bedrockImageProviderPriority: twinCardBedrockImageProviderPriority.valueAsString,
+      avatarStyleReferenceS3Key: twinCardAvatarStyleReferenceS3Key.valueAsString,
     });
   }
 }

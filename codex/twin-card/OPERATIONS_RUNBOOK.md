@@ -210,6 +210,30 @@ aws dynamodb scan `
 
 Use `/twin-dashboard` first during booth operations. Use DynamoDB directly only when the dashboard looks stale or incomplete.
 
+## Avatar Provider Contract
+
+Source of truth: `src/twinCard/avatarProviderContract.json`.
+
+Default provider priority:
+
+```text
+us.stability.stable-image-control-structure-v1:0
+us.stability.stable-style-transfer-v1:0
+us.stability.stable-image-style-guide-v1:0
+fallback_original_photo_card
+```
+
+These `us.*` Stability IDs are active Bedrock inference profile IDs. The Lambda must call the inference profile ID, not the raw `stability.*` model ID.
+
+Provider behavior:
+
+- Control Structure is the V1 primary avatar engine.
+- Style Transfer is skipped unless `AVATAR_STYLE_REFERENCE_S3_KEY` is configured by CDK parameter `TwinCardAvatarStyleReferenceS3Key`.
+- Style Guide is the tertiary Bedrock provider.
+- `fallback_original_photo_card` copies the normalized uploaded photo into the generated-image prefix and sets `generationStatus=fallback_used`.
+
+Do not default back to `amazon.nova-canvas-v1:0`; Bedrock denied it in production because it is legacy for this account. Do not move to `amazon.titan-image-generator-v2:0` as the next default; it is also legacy in the production model list.
+
 ## Expected Status Flow
 
 Normal async path:
@@ -226,6 +250,8 @@ Fallback path:
 fallback_used
 renderStatus: rendered
 ```
+
+For `fallback_used`, check the DDB fields `bedrockProviderPriority`, `bedrockProviderAttempts`, and the S3 artifact `failures/avatar-generation.json` to see which providers failed or were skipped.
 
 Failure path:
 

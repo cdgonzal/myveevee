@@ -1,0 +1,52 @@
+{
+  "id": "twin-card-avatar-provider-priority-v1",
+  "description": "Bedrock image-provider priority for SWCA Twin Card avatar generation. Use active inference profile IDs before falling back to the normalized uploaded photo.",
+  "avatarProviderPriority": [
+    "us.stability.stable-image-control-structure-v1:0",
+    "us.stability.stable-style-transfer-v1:0",
+    "us.stability.stable-image-style-guide-v1:0",
+    "fallback_original_photo_card"
+  ],
+  "providers": {
+    "us.stability.stable-image-control-structure-v1:0": {
+      "provider": "stability_control_structure",
+      "status": "primary",
+      "purpose": "Preserve the selfie structure while generating a clean 2D wellness avatar.",
+      "requiresStyleReference": false,
+      "bedrockInvocation": "InvokeModel through the active US inference profile ID."
+    },
+    "us.stability.stable-style-transfer-v1:0": {
+      "provider": "stability_style_transfer",
+      "status": "secondary",
+      "purpose": "Apply a VeeVee reference avatar style to the uploaded selfie after a style reference image is configured.",
+      "requiresStyleReference": true,
+      "bedrockInvocation": "InvokeModel through the active US inference profile ID."
+    },
+    "us.stability.stable-image-style-guide-v1:0": {
+      "provider": "stability_style_guide",
+      "status": "tertiary",
+      "purpose": "Keep avatar outputs aligned to a brand look when direct structure generation is unavailable.",
+      "requiresStyleReference": false,
+      "bedrockInvocation": "InvokeModel through the active US inference profile ID."
+    },
+    "fallback_original_photo_card": {
+      "provider": "fallback_original_photo_card",
+      "status": "resilient_fallback",
+      "purpose": "Use the normalized uploaded photo inside the premium card frame when AI generation cannot produce a usable image.",
+      "requiresStyleReference": false,
+      "bedrockInvocation": "None."
+    }
+  },
+  "outputContract": {
+    "successGenerationStatus": "completed",
+    "fallbackGenerationStatus": "fallback_used",
+    "fallbackGenerationProvider": "fallback_original_photo_card",
+    "generatedImagePath": "twin-card/{yyyy}/{mm}/{dd}/{cardId}/generated/avatar.{png|jpg}",
+    "failureArtifactPath": "twin-card/{yyyy}/{mm}/{dd}/{cardId}/failures/avatar-generation.json"
+  },
+  "notes": [
+    "Do not use amazon.nova-canvas-v1:0 for expo V1; it is legacy in the production account and was denied by Bedrock.",
+    "Do not move to amazon.titan-image-generator-v2:0 as the next default; it is also legacy.",
+    "Style Transfer should become the preferred branded option only after a strong VeeVee avatar style reference image is configured."
+  ]
+}
