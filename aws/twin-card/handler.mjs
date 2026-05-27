@@ -251,6 +251,35 @@ async function loadCard(cardId) {
   return result.Item ?? null;
 }
 
+async function updateCard(cardId, attributes) {
+  const names = {};
+  const values = {};
+  const assignments = [];
+
+  Object.entries(attributes).forEach(([key, value]) => {
+    if (typeof value === "undefined") return;
+    const nameKey = `#${key}`;
+    const valueKey = `:${key}`;
+    names[nameKey] = key;
+    values[valueKey] = value;
+    assignments.push(`${nameKey} = ${valueKey}`);
+  });
+
+  if (!assignments.length) return loadCard(cardId);
+
+  const result = await dynamo.send(
+    new UpdateCommand({
+      TableName: CARDS_TABLE,
+      Key: { cardId },
+      UpdateExpression: `SET ${assignments.join(", ")}`,
+      ExpressionAttributeNames: names,
+      ExpressionAttributeValues: values,
+      ReturnValues: "ALL_NEW",
+    })
+  );
+  return result.Attributes;
+}
+
 async function serializeCard(card, options = {}) {
   const publicCard = {
     cardId: card.cardId,
