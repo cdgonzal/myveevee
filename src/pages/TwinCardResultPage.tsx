@@ -34,7 +34,7 @@ export default function TwinCardResultPage() {
   const printCard = () => {
     if (lead) trackTwinCardEvent("public.twin_card.print_clicked", lead);
     if (lead?.printImageUrl) {
-      void openPrintCardWindow(lead);
+      openPrintCardWindow(lead);
       return;
     }
     window.print();
@@ -133,7 +133,7 @@ export default function TwinCardResultPage() {
 
 const printCss = buildTwinCardPrintCss();
 
-async function openPrintCardWindow(lead: TwinCardLead) {
+function openPrintCardWindow(lead: TwinCardLead) {
   if (!lead.printImageUrl) return;
   const printWindow = window.open("", "_blank", "width=900,height=1100");
   if (!printWindow) {
@@ -144,38 +144,17 @@ async function openPrintCardWindow(lead: TwinCardLead) {
   printWindow.opener = null;
   writePrintDocument(printWindow, {
     title: buildTwinCardFileName(lead),
-    body: `<div class="status">Loading print-ready card...</div>`,
+    imageUrl: lead.printImageUrl,
+    alt: `${lead.firstName} Twin Card`,
   });
-
-  try {
-    const response = await fetch(lead.printImageUrl, { mode: "cors" });
-    if (!response.ok) throw new Error(`Print image request failed with ${response.status}.`);
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    writePrintDocument(printWindow, {
-      title: buildTwinCardFileName(lead),
-      body: `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(lead.firstName)} Twin Card" />`,
-      autoPrint: true,
-    });
-  } catch {
-    writePrintDocument(printWindow, {
-      title: buildTwinCardFileName(lead),
-      body: `
-        <div class="status">
-          <strong>Print image could not load in the popup.</strong>
-          <a href="${escapeHtml(lead.printImageUrl)}" download="${escapeHtml(buildTwinCardFileName(lead))}" target="_blank" rel="noreferrer">Open Twin Card PNG directly</a>
-        </div>
-      `,
-    });
-  }
 }
 
 function writePrintDocument(
   printWindow: Window,
   options: {
     title: string;
-    body: string;
-    autoPrint?: boolean;
+    imageUrl: string;
+    alt: string;
   }
 ) {
   printWindow.document.open();
@@ -185,16 +164,31 @@ function writePrintDocument(
   <title>${escapeHtml(options.title)}</title>
   <style>
     @page { size: 4in 6in; margin: 0; }
-    html, body { margin: 0; width: 100%; min-height: 100%; background: #fff; }
-    body { display: grid; place-items: center; }
-    img { width: 4in; height: 6in; object-fit: contain; display: block; }
+    html, body { margin: 0; padding: 0; width: 4in; min-height: 6in; background: #fff; }
+    body { overflow: hidden; }
+    img { width: 4in; height: 6in; object-fit: fill; display: block; margin: 0; padding: 0; }
     .status { font: 16px Arial, sans-serif; color: #061b38; padding: 24px; text-align: center; }
-    .status a { color: #1177BA; display: block; font-weight: 700; margin-top: 12px; }
+    @media screen {
+      html, body { width: 100%; min-height: 100%; }
+      body { display: grid; place-items: center; overflow: auto; }
+      img { box-shadow: 0 18px 50px rgba(6,27,56,0.22); }
+    }
   </style>
 </head>
 <body>
-  ${options.body}
-  ${options.autoPrint ? "<script>window.addEventListener('load', function(){ window.focus(); window.print(); });</script>" : ""}
+  <img id="twin-card-print-image" src="${escapeHtml(options.imageUrl)}" alt="${escapeHtml(options.alt)}" />
+  <script>
+    const image = document.getElementById("twin-card-print-image");
+    function printWhenReady() {
+      window.focus();
+      setTimeout(function(){ window.print(); }, 250);
+    }
+    image.addEventListener("load", printWhenReady, { once: true });
+    image.addEventListener("error", function(){
+      document.body.innerHTML = '<div class="status">Print image did not load. Close this window and click Print Card again.</div>';
+    }, { once: true });
+    if (image.complete && image.naturalWidth > 0) printWhenReady();
+  </script>
 </body>
 </html>`);
   printWindow.document.close();
