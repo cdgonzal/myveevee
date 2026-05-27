@@ -198,8 +198,8 @@ export function buildPrintSvg(card, image) {
   <rect x="65" y="1225" width="575" height="155" rx="18" fill="url(#avatarFade)" clip-path="url(#avatarClip)"/>
   <text x="95" y="1340" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800">${firstName}</text>
 
-  <image x="238" y="1412" width="190" height="120" href="${VEEVEE_ICON_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
-  <image x="130" y="1530" width="405" height="105" href="${VEEVEE_WORDMARK_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
+  <image x="272" y="1398" width="150" height="78" href="${VEEVEE_ICON_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
+  <image x="188" y="1468" width="315" height="74" href="${VEEVEE_WORDMARK_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
 
   <line x1="690" y1="790" x2="690" y2="1600" stroke="#D98A00" stroke-width="2"/>
   <text x="750" y="845" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="800">GOAL</text>
@@ -211,7 +211,8 @@ export function buildPrintSvg(card, image) {
   <line x1="970" y1="1292" x2="1130" y2="1292" stroke="#D98A00" stroke-width="2"/>
   ${nextSteps}
 
-  <text x="600" y="1635" text-anchor="middle" fill="#061B38" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800">Visit myveevee.com to learn more</text>
+  <rect x="205" y="1572" width="790" height="68" fill="#FFFDF8"/>
+  <text x="600" y="1618" text-anchor="middle" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-style="italic" font-weight="700">Visit myveevee.com to learn more</text>
   <line x1="80" y1="1668" x2="1135" y2="1668" stroke="#D98A00" stroke-width="2"/>
   <g transform="translate(620 1695)">
     <image x="0" y="-8" width="84" height="84" href="${SWCA_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
