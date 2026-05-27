@@ -5,6 +5,8 @@ import bedrockUsageContract from "../../src/twinCard/bedrockUsageContract.json";
 export const DEFAULT_CARDS_PREFIX = "twin-card";
 export const FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID = "fallback_original_photo_card";
 export const DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY = avatarProviderContract.avatarProviderPriority ?? [
+  "fal-ai/nano-banana-2/edit",
+  "openai/gpt-image-2/edit",
   "us.stability.stable-image-control-structure-v1:0",
   "us.stability.stable-style-transfer-v1:0",
   "us.stability.stable-image-style-guide-v1:0",
@@ -103,19 +105,22 @@ export function summarizeBedrockUsage(attempts = []) {
     .filter(Boolean);
   const totalBillableUnits = usageItems.reduce((sum, usage) => sum + Number(usage.billableUnits ?? 0), 0);
   const totalEstimatedCostUsd = usageItems.reduce((sum, usage) => sum + Number(usage.estimatedCostUsd ?? 0), 0);
+  const billingProviders = [...new Set(usageItems.map((usage) => usage.billingProvider).filter(Boolean))];
+  const billingUnits = [...new Set(usageItems.map((usage) => usage.billingUnit).filter(Boolean))];
+  const primaryUsage = usageItems[0];
 
   return {
-    contractId: bedrockUsageContract.id,
-    contractVersion: bedrockUsageContract.version,
-    billingProvider: "aws_bedrock",
-    billingUnit: bedrockUsageContract.billingUnit,
+    contractId: primaryUsage?.contractId ?? bedrockUsageContract.id,
+    contractVersion: primaryUsage?.contractVersion ?? bedrockUsageContract.version,
+    billingProvider: billingProviders.length === 1 ? billingProviders[0] : billingProviders.length > 1 ? "mixed" : "aws_bedrock",
+    billingUnit: billingUnits.length === 1 ? billingUnits[0] : billingUnits.length > 1 ? "mixed" : bedrockUsageContract.billingUnit,
     currency: bedrockUsageContract.currency,
     totalBillableUnits,
     totalEstimatedCostUsd: Number(totalEstimatedCostUsd.toFixed(4)),
-    pricingSource: bedrockUsageContract.pricingSource,
-    pricingLastVerified: bedrockUsageContract.pricingLastVerified,
+    pricingSource: primaryUsage?.pricingSource ?? bedrockUsageContract.pricingSource,
+    pricingLastVerified: primaryUsage?.pricingLastVerified ?? bedrockUsageContract.pricingLastVerified,
     lineItems: usageItems,
-    note: "Estimated Bedrock model inference cost only. Excludes S3, Lambda, DynamoDB, API Gateway, CloudWatch, and data-transfer charges.",
+    note: "Estimated image model inference cost only. Excludes S3, Lambda, DynamoDB, API Gateway, CloudWatch, and data-transfer charges.",
   };
 }
 

@@ -79,7 +79,7 @@ Campaign/direct-link route:
 - `/twin-dashboard`
   - PIN-gated Twin Card run dashboard for expo operations
   - PIN: `5353`
-  - shows all recent runs, responses, consent, contact, image normalization metadata, DDB-backed fields, and S3/presigned artifact links
+  - shows all recent runs, replay rows, responses, consent, contact, image normalization metadata, DDB-backed fields, S3/presigned artifact links, Bedrock/fal.ai tracked model costs, and side-by-side replay image review
   - hidden direct-access route
   - `noindex`
 
@@ -123,6 +123,8 @@ Campaign/direct-link route:
 - Twin Card print sizing is contracted in [printContract.json](/C:/w/myveevee/src/twinCard/printContract.json:1): Canon SELPHY CP1500, 4x6/Postcard portrait, 300 DPI, 1200x1800 px, sRGB, borderless, 60 px safe margin.
 - Twin Card upload sizing is contracted in [uploadContract.json](/C:/w/myveevee/src/twinCard/uploadContract.json:1): max original upload 25 MB, normalized AI input 1024x1024 JPEG, normalized payload max 7.5 MB.
 - Twin Card goal findings and recommendations are contracted in [goalContentContract.json](/C:/w/myveevee/src/twinCard/goalContentContract.json:1): SWCA-specific card copy for `Move With Less Pain`, `Get Back To Life`, and `Explore Advanced Care`.
-- Twin Card run status semantics are contracted in [statusContract.json](/C:/w/myveevee/src/twinCard/statusContract.json:1). `completed` means Bedrock returned an AI avatar. `fallback_used` means the card is still complete and printable, but uses the normalized uploaded photo because Bedrock was not configured or failed. Staff views label this as `Photo fallback`.
-- Each live Twin Card run writes private date-partitioned S3 objects for source, generated avatar, print frame, failures, and run JSON, plus a DynamoDB row in `myveevee-twin-card-cards` containing the full run details. Source images trigger Nova Canvas generation, and generated images trigger print composition.
+- Twin Card avatar provider priority is contracted in [avatarProviderContract.json](/C:/w/myveevee/src/twinCard/avatarProviderContract.json:1): approved production order is direct fal.ai Nano Banana 2 Edit, direct fal.ai GPT Image 2 Edit, Bedrock Stability fallbacks, then normalized-photo fallback.
+- Twin Card run status semantics are contracted in [statusContract.json](/C:/w/myveevee/src/twinCard/statusContract.json:1). `completed` means an avatar provider returned an AI avatar. `fallback_used` means the card is still complete and printable, but uses the normalized uploaded photo because model generation was not configured or failed. Staff views label this as `Photo fallback`.
+- Each live Twin Card run writes private date-partitioned S3 objects for source, generated avatar, print frame, failures, and run JSON, plus a DynamoDB row in `myveevee-twin-card-cards` containing the full run details. Source images trigger the avatar-generation worker, and generated images trigger print composition.
+- External-provider model exploration is replay-only. Replay artifacts write under `twin-card-replay/`, replay rows use `recordType = replay`, and `/twin-dashboard` shows the latest three replay sources side by side for Raw Capture, Nano Banana 2 Edit, and GPT Image 2 Edit.
 - More detailed repo notes live in [codex/README.md](/C:/w/myveevee/codex/README.md:1).

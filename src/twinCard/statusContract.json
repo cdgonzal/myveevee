@@ -25,14 +25,14 @@
     },
     "completed": {
       "dashboardLabel": "AI complete",
-      "meaning": "Bedrock returned a generated avatar image and the card is ready.",
+      "meaning": "An avatar provider returned a generated avatar image and the generated/avatar stage has a usable image.",
       "printable": true,
       "terminal": true,
-      "currentUsage": "Set when Bedrock image generation succeeds."
+      "currentUsage": "Set when fal.ai or Bedrock image generation succeeds."
     },
     "fallback_used": {
       "dashboardLabel": "Photo fallback",
-      "meaning": "The card is complete and printable, but the final card image uses the normalized uploaded photo because all configured Bedrock avatar providers failed or were skipped.",
+      "meaning": "The card is complete and printable, but the final card image uses the normalized uploaded photo because all configured avatar providers failed or were skipped.",
       "printable": true,
       "terminal": true,
       "currentUsage": "Set when the provider priority reaches fallback_original_photo_card."
@@ -47,9 +47,9 @@
   },
   "generationMappings": {
     "apiAccepted": "submitted",
-    "bedrockProviderSuccess": "completed",
-    "bedrockProviderPriorityExhausted": "fallback_used",
-    "bedrockInvocationFailed": "fallback_used",
+    "avatarProviderSuccess": "completed",
+    "avatarProviderPriorityExhausted": "fallback_used",
+    "avatarProviderInvocationFailed": "fallback_used",
     "noUsableCardProduced": "failed"
   },
   "renderStatusField": "renderStatus",

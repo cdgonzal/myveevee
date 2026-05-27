@@ -9,6 +9,7 @@ export type TwinCardGenerationProvider =
   | "stability_control_structure"
   | "stability_style_transfer"
   | "stability_style_guide"
+  | "fal_ai"
   | "fallback"
   | "fallback_original_photo_card"
   | "manual";

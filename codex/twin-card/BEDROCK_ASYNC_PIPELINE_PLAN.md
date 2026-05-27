@@ -6,12 +6,12 @@ Initial implementation is in place:
 
 - API Lambda stores the run row and run JSON, then writes the source image to trigger the worker pipeline.
 - S3 source-image events invoke `aws/twin-card/avatar-generator.mjs`.
-- Avatar generator invokes the active Bedrock Stability provider-priority chain and writes a generated image, or writes a normalized-photo fallback image.
+- Avatar generator invokes the active provider-priority chain, starting with approved direct fal.ai image-edit providers, and writes a generated image or normalized-photo fallback image.
 - S3 generated-image events invoke `aws/twin-card/print-composer.mjs`.
 - Print composer writes a deterministic SVG print-frame artifact and a Canon SELPHY-ready PNG raster artifact.
 - CDK wires both worker Lambdas, S3 event notifications, permissions, and CloudWatch alarms.
 
-Current artifact split: `generated/avatar.*` is the Bedrock/Stability avatar-generation output; `print/selphy-cp1500-4x6.svg` is the deterministic print-layout source; `print/selphy-cp1500-4x6.png` is the Canon SELPHY-ready 4x6 raster output. Keep these stages decoupled so avatar tuning does not require print-layout changes, and print-layout tuning does not require rerunning Bedrock.
+Current artifact split: `generated/avatar.*` is the AI avatar-generation output; `print/selphy-cp1500-4x6.svg` is the deterministic print-layout source; `print/selphy-cp1500-4x6.png` is the Canon SELPHY-ready 4x6 raster output. Keep these stages decoupled so avatar tuning does not require print-layout changes, and print-layout tuning does not require rerunning avatar generation.
 
 ## Decision
 
@@ -19,15 +19,15 @@ Move Twin Card image generation from the current synchronous API Lambda path to 
 
 1. API Lambda validates the lead, stores the normalized source image, creates the DynamoDB run row, writes the run JSON, and returns quickly.
 2. S3 `ObjectCreated` on the source image prefix invokes an avatar-generation Lambda.
-3. The avatar-generation Lambda calls Amazon Bedrock with the configured Stability inference-profile provider priority and writes the generated image output back to S3.
+3. The avatar-generation Lambda calls the configured provider priority, starting with direct fal.ai Nano Banana 2 Edit, and writes the generated image output back to S3.
 4. S3 `ObjectCreated` on the generated-image prefix invokes a print-composition Lambda.
 5. The print-composition Lambda frames/masks the generated image into the Canon SELPHY CP1500 print contract, saves the deterministic layout SVG, then renders the final 1200x1800 sRGB PNG for booth printing.
 
-Use "generated image" or "model output image" for the Bedrock image result. Reserve "completion" for text/LLM-style responses.
+Use "generated image" or "model output image" for the avatar model result. Reserve "completion" for text/LLM-style responses.
 
-## AWS Model Baseline
+## Production Avatar Model Baseline
 
-Use active Stability AI Image Services inference profiles through Amazon Bedrock Runtime `InvokeModel`.
+Use the production provider priority in `src/twinCard/avatarProviderContract.json`.
 
 Provider priority source of truth: `src/twinCard/avatarProviderContract.json`.
 Avatar recipe source of truth: `src/twinCard/avatarRecipeContract.json`.
@@ -35,6 +35,8 @@ Avatar recipe source of truth: `src/twinCard/avatarRecipeContract.json`.
 Default priority:
 
 ```text
+fal-ai/nano-banana-2/edit
+openai/gpt-image-2/edit
 us.stability.stable-image-control-structure-v1:0
 us.stability.stable-style-transfer-v1:0
 us.stability.stable-image-style-guide-v1:0
@@ -43,8 +45,12 @@ fallback_original_photo_card
 
 Implementation notes:
 
+- `fal-ai/nano-banana-2/edit` is the approved production primary avatar engine as of 2026-05-27.
+- `openai/gpt-image-2/edit` through fal.ai is the approved production secondary provider.
+- The avatar Lambda reads the fal.ai API key from Secrets Manager secret `/myveevee/twin-card/fal-key`; do not hardcode or commit provider keys.
+- fal.ai calls use a short-lived presigned S3 URL for `source/normalized.jpg` and save the generated output to the existing `generated/avatar.png` path.
 - Use the `us.*` inference profile IDs. Do not call raw `stability.*` model IDs for this stack.
-- Control Structure is the V1 primary avatar engine because it preserves source-photo structure while restyling the image.
+- Bedrock Control Structure is now a fallback avatar engine because it preserves source-photo structure while restyling the image.
 - Style Transfer requires a configured VeeVee style reference image in S3.
 - Style Guide is tertiary for brand consistency.
 - `amazon.nova-canvas-v1:0` and `amazon.titan-image-generator-v2:0` are legacy in the production model list; Nova Canvas was denied during live testing.
@@ -111,22 +117,26 @@ Responsibilities:
 - Parse `{cardId}` from the S3 key or load the run JSON by convention.
 - Load DDB row and source object.
 - Update DDB `generationStatus = "generating"`.
-- Call Bedrock Runtime `InvokeModel` with the provider priority chain.
+- Call the provider priority chain:
+  - direct fal.ai Nano Banana 2 Edit
+  - direct fal.ai GPT Image 2 Edit
+  - Bedrock Stability fallback providers
+  - normalized-photo fallback
 - Save generated image output to `twin-card/{yyyy}/{mm}/{dd}/{cardId}/generated/avatar.png`.
 - Update DDB:
-  - `generationStatus = "completed"` on Bedrock success
-  - `generationProvider = "stability_control_structure"` or the successful provider
-  - `bedrockModelId = "<successful-provider-inference-profile-id>"`
+  - `generationStatus = "completed"` on model success
+  - `generationProvider = "fal_ai"`, `stability_control_structure`, or the successful provider
+  - `bedrockModelId = "<successful-provider-id>"` for legacy dashboard/run compatibility
   - `bedrockProviderPriority`
   - `bedrockProviderAttempts`
   - `generatedAvatarS3Key`
   - `generatedAvatarBytes`
   - `generatedAt`
-- On recoverable Bedrock failure, write a failure artifact and either:
+- On recoverable model failure, write a failure artifact and either:
   - set `generationStatus = "fallback_used"`, `generationProvider = "fallback_original_photo_card"`, and copy the normalized photo to the generated prefix so print composition can continue, or
   - set `generationStatus = "failed"` if no usable image should be printed.
 
-Expo recommendation: preserve the current resilient behavior and use `fallback_used` so booth printing continues when Bedrock fails.
+Expo recommendation: preserve the current resilient behavior and use `fallback_used` so booth printing continues when model generation fails.
 
 ### 3. Print Composition Lambda
 
@@ -286,13 +296,18 @@ Operational badge rule:
 5. Done: add print-composer Lambda and S3 trigger.
 6. Done: deterministic SVG frame and Canon-ready PNG raster output are implemented in `aws/twin-card/print-composer.mjs`; source-of-truth goal content is in `src/twinCard/goalContentContract.json`; the printer artifact contract is in `src/twinCard/printContract.json`.
 7. Done: add dashboard links/statuses for generated and print assets.
-8. Deploy CDK.
-9. Run one live booth test and verify:
+8. Done: deploy CDK to production account `767828748348` / `us-east-1`.
+9. Done: run live booth tests from iPad and mobile and verify:
    - DDB row moves through expected statuses
    - source image lands in S3
    - generated image lands in S3
    - final print asset lands in S3
    - dashboard shows all links and statuses
+10. Done: add replay/model-evaluation visibility for external providers without altering participant runs:
+   - replay artifacts write under `twin-card-replay/`
+   - replay rows write to DynamoDB with `recordType = replay` and `cardId` starting with `replay#`
+   - `/twin-dashboard` Image Review groups the latest three replay sources into Raw Capture, Nano Banana 2 Edit, and GPT Image 2 Edit columns
+   - dashboard cost summary separates Bedrock, fal.ai, and total tracked model costs
 
 ## Open Decisions
 
@@ -300,3 +315,4 @@ Operational badge rule:
 - Whether fallback should always proceed to print composition, or whether staff should explicitly approve fallback prints.
 - Whether to include an SWCA logo asset. If yes, store it as a static repo asset and package it with the print-composer Lambda.
 - Whether to use direct S3 notifications only, or S3 notifications into SQS for better retry/backlog visibility. Recommendation for expo reliability: S3 -> SQS -> Lambda if time allows; direct S3 -> Lambda is acceptable for MVP.
+- Whether to keep Bedrock Stability fallbacks in the production priority after Nano/GPT reliability is proven under booth traffic.

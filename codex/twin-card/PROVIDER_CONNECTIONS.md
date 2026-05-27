@@ -4,6 +4,17 @@ Source of truth for external image-provider connection status, required credenti
 
 Last updated: 2026-05-27
 
+Production provider priority source of truth: `src/twinCard/avatarProviderContract.json`.
+
+Approved production order:
+
+1. `fal-ai/nano-banana-2/edit` through direct fal.ai.
+2. `openai/gpt-image-2/edit` through direct fal.ai.
+3. Bedrock Stability fallback providers.
+4. `fallback_original_photo_card`.
+
+The production Lambda reads the fal.ai API key from Secrets Manager secret `/myveevee/twin-card/fal-key`. Do not commit or hardcode provider keys.
+
 ## Connection Matrix
 
 | Status | Provider path | Credential | Current model / endpoint | How we call it | Cost tracking | Notes |
@@ -12,7 +23,7 @@ Last updated: 2026-05-27
 | Working | Hugging Face Inference Providers -> Replicate | `HF_TOKEN` | `black-forest-labs/FLUX.2-dev` | `aws/twin-card/replay-huggingface-avatar.mjs --model black-forest-labs/FLUX.2-dev --hfProvider replicate` | Not configured yet; reports as `provider_defined` / `unpriced` | Recommended next non-Qwen comparison candidate. One-card probe completed. |
 | Blocked | Hugging Face Inference Providers -> fal.ai | `HF_TOKEN` plus Hugging Face pay-as-you-go enabled for `fal-ai` | `lightx2v/Qwen-Image-Edit-2511-Lightning` routed by HF to `fal-ai/qwen-image-edit-2511/lora` | `aws/twin-card/replay-huggingface-avatar.mjs --model lightx2v/Qwen-Image-Edit-2511-Lightning --hfProvider fal-ai` | Not configured yet | HF routes to fal.ai, but returns HTTP `402`: `Pay-as-you go is not enabled for provider fal-ai yet.` |
 | Working | Direct fal.ai | `FAL_KEY` | `fal-ai/nano-banana-2/edit` | Direct `POST https://fal.run/fal-ai/nano-banana-2/edit`; reusable script `aws/twin-card/replay-qwen-fal-comparison.mjs` | Captures `x-fal-billable-units`, `x-fal-request-id`, pricing API result, and billing-events permission status. Current pricing API: `$0.08` per `images` unit. | Current primary candidate. Billing-events returned `403` with the current key, so request-level billing events require an admin fal key. |
-| Ready to test | Direct fal.ai | `FAL_KEY` | `openai/gpt-image-2/edit` | Target for next comparison after fal audit hardening | fal pricing API currently reports `$1` per `units`; final per-run interpretation must be validated through request headers and billing events. | Compare against Nano Banana 2 Edit only after audit fields are visible in replay manifests and dashboard rows. |
+| Working | Direct fal.ai | `FAL_KEY` | `openai/gpt-image-2/edit` | `aws/twin-card/replay-qwen-fal-comparison.mjs --comparison nano-gpt --limit=3 --gptQuality medium` | Captures response headers, pricing API result, billing-events permission status, output metadata, estimated cost, and DDB replay rows. fal pricing API reports `$1` per `units`. | Preferred #2 model behind Nano Banana 2 Edit. Comparison completed on 2026-05-27 and is visible in `/twin-dashboard` Image Review. |
 
 ## Working Hugging Face + Replicate Qwen Setup
 
@@ -81,7 +92,7 @@ Fix needed in Hugging Face:
 
 ## Direct fal.ai Setup Target
 
-Direct fal.ai is separate from Hugging Face. It requires a fal.ai API key:
+Direct fal.ai is separate from Hugging Face. In production the avatar-generator Lambda reads the fal.ai API key from Secrets Manager. For local replay only, it can be exported as:
 
 ```powershell
 $env:FAL_KEY="<fal-ai-api-key>"
@@ -92,8 +103,8 @@ Target model:
 - Endpoint id: `fal-ai/nano-banana-2/edit`
 - HTTP endpoint: `POST https://fal.run/fal-ai/nano-banana-2/edit`
 - fal docs: `https://fal.ai/models/fal-ai/nano-banana-2/edit/api`
-- Current role: primary candidate for VeeVee health-twin avatar replay.
-- Next comparison target: `openai/gpt-image-2/edit`.
+- Current role: approved production primary provider for VeeVee health-twin avatar generation.
+- Preferred #2 model: `openai/gpt-image-2/edit`.
 
 Confirmed direct fal probe:
 
@@ -123,6 +134,23 @@ Reusable Qwen vs Nano Banana 2 replay:
 node aws/twin-card/replay-qwen-fal-comparison.mjs `
   --limit=3
 ```
+
+Reusable Nano Banana 2 vs GPT Image 2 replay:
+
+```powershell
+node aws/twin-card/replay-qwen-fal-comparison.mjs `
+  --comparison nano-gpt `
+  --limit=3 `
+  --gptQuality medium
+```
+
+Current completed Nano vs GPT comparison:
+
+- Run id: `2026-05-27T02-01-33-789Z`
+- S3 prefix: `s3://myveevee-twin-card-767828748348-us-east-1/twin-card-replay/provider-comparison/nano-banana-2-vs-gpt-image-2/2026-05-27T02-01-33-789Z/`
+- Dashboard: `/twin-dashboard` Image Review groups the latest three source images into Raw Capture, Nano Banana 2 Edit, and GPT Image 2 Edit columns.
+- Estimated model cost: Nano `$0.24`, GPT `$0.1839`, total `$0.4239`.
+- Local replay output folders were cleaned on 2026-05-27; use S3, DDB, and `/twin-dashboard` as the durable review record.
 
 Expected direct fal payload shape from fal docs:
 

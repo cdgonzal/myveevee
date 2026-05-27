@@ -1,7 +1,9 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { GetSecretValueCommand, SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
   DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY,
   DEFAULT_CARDS_PREFIX,
@@ -20,6 +22,7 @@ import avatarRecipeContract from "../../src/twinCard/avatarRecipeContract.json";
 const s3 = new S3Client({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const bedrock = new BedrockRuntimeClient({});
+const secrets = new SecretsManagerClient({});
 
 const {
   CARDS_BUCKET,
@@ -27,9 +30,13 @@ const {
   CARDS_PREFIX = DEFAULT_CARDS_PREFIX,
   BEDROCK_IMAGE_PROVIDER_PRIORITY,
   AVATAR_STYLE_REFERENCE_S3_KEY,
+  FAL_KEY_SECRET_NAME = "/myveevee/twin-card/fal-key",
 } = process.env;
 const BEDROCK_IMAGE_MODEL_ID_OVERRIDE = process.env.BEDROCK_IMAGE_MODEL_ID?.trim();
 const PROVIDER_PRIORITY = parseProviderPriority(BEDROCK_IMAGE_PROVIDER_PRIORITY, BEDROCK_IMAGE_MODEL_ID_OVERRIDE);
+const FAL_NANO_BANANA_2_EDIT_PROVIDER_ID = "fal-ai/nano-banana-2/edit";
+const FAL_GPT_IMAGE_2_EDIT_PROVIDER_ID = "openai/gpt-image-2/edit";
+let cachedFalKey;
 
 export async function handler(event) {
   validateConfig();
@@ -59,7 +66,7 @@ async function processSourceImage(sourceImageS3Key) {
 
   await updateCard(parsedKey.cardId, {
     generationStatus: "generating",
-    generationProvider: "bedrock",
+    generationProvider: "fal_ai",
     generationMessage: "Creating your VeeVee Twin Card image.",
     bedrockProviderPriority: PROVIDER_PRIORITY,
     avatarRecipeId: avatarRecipeContract.id,
@@ -72,9 +79,9 @@ async function processSourceImage(sourceImageS3Key) {
   const attempts = [];
 
   try {
-    generated = await generateAvatar(card, sourceImage, attempts);
+    generated = await generateAvatar(card, sourceImage, sourceImageS3Key, attempts);
   } catch (error) {
-    console.error("Twin Card Bedrock avatar generation failed; using original-photo fallback", {
+    console.error("Twin Card avatar generation failed; using original-photo fallback", {
       cardId: parsedKey.cardId,
       providerPriority: PROVIDER_PRIORITY,
       message: error instanceof Error ? error.message : String(error),
@@ -131,7 +138,7 @@ async function processSourceImage(sourceImageS3Key) {
   await writeRunArtifact(updatedCard);
 }
 
-async function generateAvatar(card, sourceImage, attempts) {
+async function generateAvatar(card, sourceImage, sourceImageS3Key, attempts) {
   const providers = PROVIDER_PRIORITY.length ? PROVIDER_PRIORITY : DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY;
   const errors = [];
 
@@ -152,13 +159,18 @@ async function generateAvatar(card, sourceImage, attempts) {
     }
 
     try {
-      const result = await invokeStabilityProvider(providerId, card, sourceImage);
+      const result = isFalProvider(providerId)
+        ? await invokeFalProvider(providerId, sourceImageS3Key)
+        : await invokeStabilityProvider(providerId, card, sourceImage);
       attempts.push({
         providerId,
         provider: result.provider,
         status: "completed",
-        usage: buildBedrockUsage(providerId, "completed"),
-        attemptedAt: new Date().toISOString(),
+        usage: result.usage ?? buildBedrockUsage(providerId, "completed"),
+        attemptedAt: result.attemptedAt,
+        durationMs: result.durationMs,
+        requestId: result.requestId,
+        providerAudit: result.providerAudit,
       });
       return result;
     } catch (error) {
@@ -168,7 +180,7 @@ async function generateAvatar(card, sourceImage, attempts) {
         provider: providerNameFor(providerId),
         status: "failed",
         message,
-        usage: buildBedrockUsage(providerId, "failed"),
+        usage: isFalProvider(providerId) ? buildFalUsage(providerId, "failed") : buildBedrockUsage(providerId, "failed"),
         attemptedAt: new Date().toISOString(),
       });
       errors.push(`${providerId}: ${message}`);
@@ -176,6 +188,173 @@ async function generateAvatar(card, sourceImage, attempts) {
   }
 
   throw new Error(errors.length ? errors.join(" | ") : "No Bedrock avatar provider was attempted.");
+}
+
+async function invokeFalProvider(providerId, sourceImageS3Key) {
+  const startedAt = new Date().toISOString();
+  const started = Date.now();
+  const sourceUrl = await getSignedUrl(
+    s3,
+    new GetObjectCommand({
+      Bucket: CARDS_BUCKET,
+      Key: sourceImageS3Key,
+    }),
+    { expiresIn: 900 }
+  );
+  const body = buildFalRequestBody(providerId, sourceUrl);
+  const falKey = await readFalKey();
+  const response = await fetch(`https://fal.run/${providerId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Key ${falKey}`,
+      "Content-Type": "application/json",
+      "X-Fal-Store-IO": "1",
+      "X-Fal-Object-Lifecycle-Preference": JSON.stringify({ expiration_duration_seconds: 604800 }),
+    },
+    body: JSON.stringify(body),
+  });
+  const responseText = await response.text();
+  const responseBody = readJsonText(responseText);
+  if (!response.ok) {
+    throw new Error(responseBody?.detail ?? responseBody?.error ?? response.statusText);
+  }
+
+  const imageUrl = responseBody?.images?.[0]?.url;
+  if (!imageUrl) {
+    throw new Error("fal.ai response did not include images[0].url.");
+  }
+
+  const imageResponse = await fetch(imageUrl);
+  if (!imageResponse.ok) {
+    throw new Error(`Unable to download fal.ai output: ${imageResponse.status}`);
+  }
+
+  const imageArrayBuffer = await imageResponse.arrayBuffer();
+  const billableUnits = Number(response.headers.get("x-fal-billable-units") ?? 1);
+  const requestId = response.headers.get("x-fal-request-id");
+  const pricing = await fetchFalPricing(providerId, falKey);
+  const price = pricing.prices?.find((item) => item.endpoint_id === providerId);
+  const unitPriceUsd = Number(price?.unit_price);
+
+  return {
+    buffer: Buffer.from(imageArrayBuffer),
+    contentType: imageResponse.headers.get("content-type") ?? responseBody.images?.[0]?.content_type ?? "image/png",
+    extension: "png",
+    usedFallback: false,
+    providerId,
+    provider: "fal_ai",
+    attemptedAt: startedAt,
+    durationMs: Date.now() - started,
+    requestId,
+    usage: buildFalUsage(providerId, "completed", {
+      billableUnits,
+      billingUnit: price?.unit,
+      unitPriceUsd,
+      pricing,
+    }),
+    providerAudit: {
+      endpointId: providerId,
+      requestId,
+      responseHeaders: readFalHeaders(response.headers),
+      responseBody: summarizeFalResponseBody(responseBody),
+      requestBody: summarizeFalRequestBody(body),
+      outputFetch: {
+        status: imageResponse.status,
+        contentType: imageResponse.headers.get("content-type"),
+        contentLength: imageResponse.headers.get("content-length"),
+      },
+    },
+  };
+}
+
+function buildFalRequestBody(providerId, sourceUrl) {
+  const prompt = buildFalPrompt();
+  if (providerId === FAL_NANO_BANANA_2_EDIT_PROVIDER_ID) {
+    return {
+      prompt,
+      image_urls: [sourceUrl],
+      num_images: 1,
+      aspect_ratio: "1:1",
+      output_format: "png",
+      resolution: "1K",
+      limit_generations: true,
+      safety_tolerance: "4",
+    };
+  }
+
+  if (providerId === FAL_GPT_IMAGE_2_EDIT_PROVIDER_ID) {
+    return {
+      prompt,
+      image_urls: [sourceUrl],
+      image_size: {
+        width: 1024,
+        height: 1024,
+      },
+      quality: "medium",
+      num_images: 1,
+      output_format: "png",
+    };
+  }
+
+  throw new Error(`Unsupported fal.ai Twin Card avatar provider: ${providerId}`);
+}
+
+function buildFalPrompt() {
+  return "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face, face features, face shape, hair, skin tone, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.";
+}
+
+async function readFalKey() {
+  if (cachedFalKey) return cachedFalKey;
+  const result = await secrets.send(new GetSecretValueCommand({ SecretId: FAL_KEY_SECRET_NAME }));
+  cachedFalKey = (result.SecretString ?? Buffer.from(result.SecretBinary ?? "").toString("utf8")).trim();
+  if (!cachedFalKey) {
+    throw new Error(`Secret ${FAL_KEY_SECRET_NAME} is empty.`);
+  }
+  return cachedFalKey;
+}
+
+async function fetchFalPricing(providerId, falKey) {
+  const params = new URLSearchParams();
+  params.append("endpoint_id", providerId);
+  const response = await fetch(`https://api.fal.ai/v1/models/pricing?${params}`, {
+    headers: { Authorization: `Key ${falKey}` },
+  });
+  const body = readJsonText(await response.text());
+  return {
+    ok: response.ok,
+    status: response.status,
+    prices: body?.prices ?? [],
+    error: response.ok ? null : body?.error ?? body,
+    checkedAt: new Date().toISOString(),
+  };
+}
+
+function buildFalUsage(providerId, status = "completed", options = {}) {
+  const billableUnits = status === "completed" ? Number(options.billableUnits ?? 1) : 0;
+  const fallbackPrice = providerId === FAL_NANO_BANANA_2_EDIT_PROVIDER_ID ? 0.08 : providerId === FAL_GPT_IMAGE_2_EDIT_PROVIDER_ID ? 1 : null;
+  const unitPriceUsd = Number(options.unitPriceUsd ?? fallbackPrice);
+  const estimatedCostUsd = Number.isFinite(billableUnits) && Number.isFinite(unitPriceUsd)
+    ? Number((billableUnits * unitPriceUsd).toFixed(6))
+    : null;
+
+  return {
+    contractId: "twin-card-fal-image-provider-production-v1",
+    contractVersion: "2026-05-27",
+    billingProvider: "fal.ai",
+    serviceTier: "fal_run",
+    pricingRegion: "provider_defined",
+    modelId: providerId,
+    billingUnit: options.billingUnit ?? (providerId === FAL_NANO_BANANA_2_EDIT_PROVIDER_ID ? "images" : "units"),
+    billableUnits,
+    unitPriceUsd: Number.isFinite(unitPriceUsd) ? unitPriceUsd : null,
+    estimatedCostUsd,
+    currency: "USD",
+    pricingSource: "fal.ai pricing API",
+    pricingSourceUrl: `https://api.fal.ai/v1/models/pricing?endpoint_id=${encodeURIComponent(providerId)}`,
+    pricingLastVerified: options.pricing?.checkedAt ?? new Date().toISOString(),
+    pricingApi: options.pricing,
+    note: "Estimated fal.ai image model cost only.",
+  };
 }
 
 async function invokeStabilityProvider(providerId, card, sourceImage) {
@@ -338,12 +517,68 @@ function parseProviderPriority(value, legacyModelOverride) {
 }
 
 function providerNameFor(providerId) {
+  if (isFalProvider(providerId)) return "fal_ai";
   if (providerId === "us.stability.stable-image-control-structure-v1:0") return "stability_control_structure";
   if (providerId === "us.stability.stable-style-transfer-v1:0") return "stability_style_transfer";
   if (providerId === "us.stability.stable-image-style-guide-v1:0") return "stability_style_guide";
   if (providerId === "amazon.nova-canvas-v1:0") return "nova_canvas";
   if (providerId === FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID) return FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID;
   return "bedrock";
+}
+
+function isFalProvider(providerId) {
+  return providerId === FAL_NANO_BANANA_2_EDIT_PROVIDER_ID || providerId === FAL_GPT_IMAGE_2_EDIT_PROVIDER_ID;
+}
+
+function readJsonText(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function readFalHeaders(headers) {
+  return {
+    requestId: headers.get("x-fal-request-id"),
+    billableUnits: headers.get("x-fal-billable-units"),
+    servedFrom: headers.get("x-fal-served-from"),
+    requestTimeoutType: headers.get("x-fal-request-timeout-type"),
+    errorType: headers.get("x-fal-error-type"),
+    runnerHints: headers.get("x-fal-runner-hints"),
+  };
+}
+
+function summarizeFalResponseBody(body) {
+  return {
+    imageCount: Array.isArray(body?.images) ? body.images.length : 0,
+    seed: body?.seed,
+    timings: body?.timings,
+    hasNsfwConcepts: body?.has_nsfw_concepts,
+    firstImage: body?.images?.[0]
+      ? {
+          width: body.images[0].width,
+          height: body.images[0].height,
+          contentType: body.images[0].content_type,
+          fileName: body.images[0].file_name,
+          fileSize: body.images[0].file_size,
+        }
+      : null,
+  };
+}
+
+function summarizeFalRequestBody(body) {
+  return {
+    promptChars: typeof body?.prompt === "string" ? body.prompt.length : 0,
+    imageUrlCount: Array.isArray(body?.image_urls) ? body.image_urls.length : 0,
+    numImages: body?.num_images,
+    aspectRatio: body?.aspect_ratio,
+    outputFormat: body?.output_format,
+    resolution: body?.resolution,
+    imageSize: body?.image_size,
+    quality: body?.quality,
+    safetyTolerance: body?.safety_tolerance,
+  };
 }
 
 async function loadCard(cardId) {

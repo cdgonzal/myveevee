@@ -9,7 +9,7 @@
   ],
   "safetyRules": [
     "Do not use live participant photos with external providers unless consent and legal/commercial review explicitly allow it.",
-    "Do not add this provider to the production funnel until model license, privacy posture, retention behavior, and commercial rights are approved.",
+    "Do not add Hugging Face-routed providers to the production funnel until model license, privacy posture, retention behavior, and commercial rights are approved. Direct fal.ai Nano Banana 2 Edit and GPT Image 2 Edit production approval is tracked in src/twinCard/avatarProviderContract.json.",
     "Use the same three replay source images for every candidate so marketing can compare model quality objectively.",
     "Store external-provider outputs under twin-card-replay only; never overwrite participant generated/avatar or print artifacts."
   ],
@@ -135,6 +135,32 @@
   "topCandidateStrategy": {
     "version": "2026-05-27",
     "selectionRule": "Rank model/provider pairs, not only model ids, because provider routing changes availability, billing, and output behavior.",
+    "preferredModelPriority": [
+      {
+        "rank": 1,
+        "role": "primary",
+        "modelId": "fal-ai/nano-banana-2/edit",
+        "provider": "fal.ai",
+        "providerEndpointId": "fal-ai/nano-banana-2/edit",
+        "recipeId": "fal_nano_banana_2_edit_avatar_v1"
+      },
+      {
+        "rank": 2,
+        "role": "secondary",
+        "modelId": "openai/gpt-image-2/edit",
+        "provider": "fal.ai",
+        "providerEndpointId": "openai/gpt-image-2/edit",
+        "recipeId": "fal_gpt_image_2_edit_avatar_v1"
+      },
+      {
+        "rank": 3,
+        "role": "last_fallback",
+        "modelId": "fallback_original_photo_card",
+        "provider": "local",
+        "providerEndpointId": null,
+        "recipeId": null
+      }
+    ],
     "currentWinner": {
       "rank": 1,
       "role": "primary",
@@ -146,7 +172,7 @@
       "bestObservedRecipeId": "fal_nano_banana_2_edit_avatar_v1",
       "reason": "Current preferred candidate after side-by-side replay. Nano Banana 2 Edit produced the strongest avatar output and has direct fal.ai audit headers plus pricing API support.",
       "status": "top_candidate",
-      "nextTest": "Before comparing against GPT Image 2 Edit, keep fal response headers, pricing API results, and billing-events permission status in every replay manifest."
+      "nextTest": "Compare future production-candidate tuning against GPT Image 2 Edit as the #2 preferred model, while keeping fal response headers, pricing API results, and billing-events permission status in every replay manifest."
     },
     "rankedCandidates": [
       {
@@ -163,14 +189,14 @@
       },
       {
         "rank": 2,
-        "role": "comparison_candidate",
+        "role": "secondary",
         "modelId": "openai/gpt-image-2/edit",
         "hfProvider": null,
         "provider": "fal.ai",
         "providerEndpointId": "openai/gpt-image-2/edit",
         "recipeId": "fal_gpt_image_2_edit_avatar_v1",
-        "strength": "Next direct fal.ai comparison candidate because it has an edit endpoint and a different model family from Nano Banana.",
-        "why": "Use this only after the fal audit path records price, request id, billable units, and billing-events permission status.",
+        "strength": "Preferred #2 direct-provider image-edit candidate and fallback comparison model behind Nano Banana 2 Edit.",
+        "why": "The Nano vs GPT replay is complete and dashboard-visible. Keep GPT Image 2 Edit as the secondary preferred model because it uses a different model family and has direct fal.ai pricing and audit metadata.",
         "knownIssue": "fal pricing reports a generic units price for this endpoint; final per-run cost must be validated through request headers and, ideally, admin billing events."
       },
       {

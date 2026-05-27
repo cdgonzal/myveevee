@@ -1,17 +1,41 @@
 {
   "id": "twin-card-avatar-provider-priority-v1",
-  "description": "Bedrock image-provider priority for SWCA Twin Card avatar generation. Use active inference profile IDs before falling back to the normalized uploaded photo.",
+  "description": "Production image-provider priority for SWCA Twin Card avatar generation. Use approved fal.ai image-edit providers first, then Bedrock inference profile IDs, before falling back to the normalized uploaded photo.",
   "recipeContractPath": "src/twinCard/avatarRecipeContract.json",
   "avatarProviderPriority": [
+    "fal-ai/nano-banana-2/edit",
+    "openai/gpt-image-2/edit",
     "us.stability.stable-image-control-structure-v1:0",
     "us.stability.stable-style-transfer-v1:0",
     "us.stability.stable-image-style-guide-v1:0",
     "fallback_original_photo_card"
   ],
   "providers": {
+    "fal-ai/nano-banana-2/edit": {
+      "provider": "fal_ai",
+      "status": "primary",
+      "purpose": "Approved production primary provider for likeness-preserving 2D wellness avatar generation.",
+      "requiresStyleReference": false,
+      "secretName": "/myveevee/twin-card/fal-key",
+      "invocation": "Direct HTTPS POST to https://fal.run/fal-ai/nano-banana-2/edit using a short-lived presigned S3 source-image URL.",
+      "billingProvider": "fal.ai",
+      "billingUnit": "images",
+      "unitPriceUsd": 0.08
+    },
+    "openai/gpt-image-2/edit": {
+      "provider": "fal_ai",
+      "status": "secondary",
+      "purpose": "Approved production secondary provider behind Nano Banana 2 Edit.",
+      "requiresStyleReference": false,
+      "secretName": "/myveevee/twin-card/fal-key",
+      "invocation": "Direct HTTPS POST to https://fal.run/openai/gpt-image-2/edit using a short-lived presigned S3 source-image URL.",
+      "billingProvider": "fal.ai",
+      "billingUnit": "units",
+      "unitPriceUsd": 1
+    },
     "us.stability.stable-image-control-structure-v1:0": {
       "provider": "stability_control_structure",
-      "status": "primary",
+      "status": "bedrock_fallback",
       "purpose": "Preserve the selfie structure while generating a clean 2D wellness avatar.",
       "requiresStyleReference": false,
       "bedrockInvocation": "InvokeModel through the active US inference profile ID."
@@ -46,6 +70,9 @@
     "failureArtifactPath": "twin-card/{yyyy}/{mm}/{dd}/{cardId}/failures/avatar-generation.json"
   },
   "notes": [
+    "Nano Banana 2 Edit and GPT Image 2 Edit are approved for the production Twin Card avatar-generation path as of 2026-05-27.",
+    "Never hardcode provider credentials. The production Lambda reads the fal.ai key from Secrets Manager secret /myveevee/twin-card/fal-key.",
+    "fal.ai calls must pass only a short-lived presigned S3 source-image URL and must store request id, latency, billable units, unit price, estimated cost, and provider audit metadata in DDB/run JSON.",
     "Do not use amazon.nova-canvas-v1:0 for expo V1; it is legacy in the production account and was denied by Bedrock.",
     "Do not move to amazon.titan-image-generator-v2:0 as the next default; it is also legacy.",
     "Style Transfer should become the preferred branded option only after a strong VeeVee avatar style reference image is configured."

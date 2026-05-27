@@ -39,6 +39,7 @@ export class TwinCardActivation extends Construct {
     const functionName = `${resourcePrefix}-handler`;
     const avatarGeneratorFunctionName = `${resourcePrefix}-avatar-generator`;
     const printComposerFunctionName = `${resourcePrefix}-print-composer`;
+    const falKeySecretName = "/myveevee/twin-card/fal-key";
 
     this.bucket = new s3.Bucket(this, "CardsBucket", {
       bucketName: `${resourcePrefix}-${cdk.Stack.of(this).account}-${cdk.Stack.of(this).region}`,
@@ -151,6 +152,7 @@ export class TwinCardActivation extends Construct {
         BEDROCK_IMAGE_MODEL_ID: props.bedrockImageModelId,
         BEDROCK_IMAGE_PROVIDER_PRIORITY: props.bedrockImageProviderPriority,
         AVATAR_STYLE_REFERENCE_S3_KEY: props.avatarStyleReferenceS3Key,
+        FAL_KEY_SECRET_NAME: falKeySecretName,
       },
     });
 
@@ -200,6 +202,16 @@ export class TwinCardActivation extends Construct {
       new iam.PolicyStatement({
         actions: ["aws-marketplace:ViewSubscriptions", "aws-marketplace:Subscribe", "aws-marketplace:Unsubscribe"],
         resources: ["*"],
+      })
+    );
+    this.avatarGeneratorFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["secretsmanager:GetSecretValue"],
+        resources: [
+          cdk.Fn.sub("arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${SecretName}*", {
+            SecretName: falKeySecretName,
+          }),
+        ],
       })
     );
 
