@@ -29,6 +29,7 @@ export const APP_LINKS = {
     swcaAdmin: "/swca/admin",
     twinCard: "/twin-card",
     twinCardResult: "/twin-card/result/:cardId",
+    twinCardPersonalize: "/twin-card/personalize/:cardId",
     twinCardAdmin: "/twin-card/admin",
     twinDashboard: "/twin-dashboard",
   },

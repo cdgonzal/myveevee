@@ -205,7 +205,7 @@ aws dynamodb scan `
   --limit 20 `
   --profile glue-admin `
   --region us-east-1 `
-  --query "Items[].{cardId:cardId.S,createdAt:createdAt.S,firstName:firstName.S,contactType:contactType.S,generation:generationStatus.S,render:renderStatus.S,fulfillment:fulfillmentStatus.S,email:emailStatus.S,emailSentAt:emailSentAt.S,source:sourceImageS3Key.S,avatar:generatedAvatarS3Key.S,layout:printLayoutS3Key.S,print:printImageS3Key.S}" `
+  --query "Items[].{cardId:cardId.S,createdAt:createdAt.S,firstName:firstName.S,contactType:contactType.S,generation:generationStatus.S,render:renderStatus.S,fulfillment:fulfillmentStatus.S,email:emailStatus.S,betaSurvey:betaSurveyStatus.S,betaAnswers:betaSurveyAnswerCount.N,source:sourceImageS3Key.S,avatar:generatedAvatarS3Key.S,layout:printLayoutS3Key.S,print:printImageS3Key.S}" `
   --output table
 ```
 
@@ -351,6 +351,16 @@ If a record is stuck at `completed` with `renderStatus=not_started`, check wheth
 8. Confirm DynamoDB has the same `cardId` and final statuses.
 9. Confirm `emailStatus=sent` for an email contact and confirm the email opens the `/twin-card/result/{cardId}` page.
 10. Confirm all Twin Card alarms are `OK`.
+
+## Beta Survey Follow-Up
+
+The emailed result page sends `Get More Personalized` clicks to `/twin-card/personalize/{cardId}`. The survey is progressive:
+
+- Core beta/contact/health signal block.
+- Optional product/AI trust block.
+- Optional pricing/access block.
+
+Each completed block writes to the same DynamoDB card row and refreshes `run.json` under `betaSurvey*` fields. Operators can check `betaSurveyStatus`, `betaSurveyStage`, `betaSurveyAnswerCount`, `betaSurveyUpdatedAt`, `betaSurveySubmittedAt`, `betaSurveyResponses`, and `betaSurveyContact`. The final survey action routes the participant to `/swca/funnel`.
 
 ## Avatar Recipe Replay
 

@@ -86,6 +86,7 @@ const SwcaProfileFunnelVisual = lazyWithRetry(() => import("./swca/profileFunnel
 const SwcaAdminDashboard = lazyWithRetry(() => import("./swca/admin/SwcaAdminDashboard"));
 const TwinCardPage = lazyWithRetry(() => import("./pages/TwinCardPage"));
 const TwinCardResultPage = lazyWithRetry(() => import("./pages/TwinCardResultPage"));
+const TwinCardPersonalizePage = lazyWithRetry(() => import("./pages/TwinCardPersonalizePage"));
 const TwinCardAdminPage = lazyWithRetry(() => import("./pages/TwinCardAdminPage"));
 const TwinDashboardPage = lazyWithRetry(() => import("./pages/TwinDashboardPage"));
 
@@ -228,6 +229,7 @@ export default function App() {
     pathname === APP_LINKS.internal.swcaAdmin ||
     pathname === APP_LINKS.internal.twinCard ||
     pathname.startsWith("/twin-card/result/") ||
+    pathname.startsWith("/twin-card/personalize/") ||
     pathname === APP_LINKS.internal.twinCardAdmin ||
     pathname === APP_LINKS.internal.twinDashboard;
   const pageGradient = useColorModeValue(
@@ -260,6 +262,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
                 <Route path={APP_LINKS.internal.twinCard} element={<TwinCardPage />} />
                 <Route path={APP_LINKS.internal.twinCardResult} element={<TwinCardResultPage />} />
+                <Route path={APP_LINKS.internal.twinCardPersonalize} element={<TwinCardPersonalizePage />} />
                 <Route path={APP_LINKS.internal.twinCardAdmin} element={<TwinCardAdminPage />} />
                 <Route path={APP_LINKS.internal.twinDashboard} element={<TwinDashboardPage />} />
               </Routes>
@@ -298,6 +301,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.swcaAdmin} element={<SwcaAdminDashboard />} />
                 <Route path={APP_LINKS.internal.twinCard} element={<TwinCardPage />} />
                 <Route path={APP_LINKS.internal.twinCardResult} element={<TwinCardResultPage />} />
+                <Route path={APP_LINKS.internal.twinCardPersonalize} element={<TwinCardPersonalizePage />} />
                 <Route path={APP_LINKS.internal.twinCardAdmin} element={<TwinCardAdminPage />} />
                 <Route path={APP_LINKS.internal.twinDashboard} element={<TwinDashboardPage />} />
                 <Route path="*" element={<NotFoundPage />} />

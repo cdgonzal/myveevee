@@ -84,6 +84,7 @@ The Twin Card backend is managed in the same stack as a sibling construct:
 - HTTP API route: `/twin-card/cards`
 - PIN-gated dashboard/admin list route: `/twin-card/admin/cards`
 - Result lookup route: `/twin-card/cards/{cardId}`
+- Beta survey route: `/twin-card/cards/{cardId}/beta-survey`
 - Private S3 bucket: `myveevee-twin-card-<account>-<region>`
 - DynamoDB table: `myveevee-twin-card-cards`
 - Frontend route: `https://myveevee.com/twin-card`
@@ -113,10 +114,11 @@ Twin Card run visibility:
 
 - Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
 - S3 stores each run under `twin-card/{yyyy}/{mm}/{dd}/{cardId}/` with `run.json`, `source/normalized.jpg`, `generated/avatar.*`, `print/selphy-cp1500-4x6.svg`, `print/selphy-cp1500-4x6.png`, and optional `failures/{stage}.json`.
-- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, upload-normalization metadata, provider attempts, estimated model usage/cost, and SES email delivery fields.
+- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, upload-normalization metadata, provider attempts, estimated model usage/cost, SES email delivery fields, and progressive beta-survey responses.
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
 - Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means the configured avatar provider succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
 - S3 source-image object creation triggers the provider-priority avatar-generation worker. S3 generated-image object creation triggers print composition. The print composer preserves the deterministic SVG layout artifact, adds a Canon SELPHY-ready PNG raster artifact as the final print file, and sends the customer SES email with the durable `/twin-card/result/{cardId}` link when consent and a valid email are present.
+- The result-page `Get More Personalized` CTA opens `/twin-card/personalize/{cardId}`. That survey saves after each completed block to the same DynamoDB card row and `run.json` under `betaSurvey*` fields, then sends the user to `/swca/funnel`.
 - The print-composer Lambda depends on `sharp` for SVG-to-PNG rendering. CDK bundling intentionally installs the Linux ARM64 `sharp` package into the Lambda asset; do not remove that bundling hook unless the Lambda architecture or renderer changes.
 - Twin Card Lambda logs, CDK output checks, S3/DynamoDB inspection commands, alarm checks, and live smoke-test steps live in `codex/twin-card/OPERATIONS_RUNBOOK.md`.
 

@@ -267,5 +267,16 @@ export function buildRunArtifact(record) {
       emailSkippedAt: record.emailSkippedAt || null,
       emailSkipReason: record.emailSkipReason || null,
     },
+    betaSurvey: {
+      status: record.betaSurveyStatus || null,
+      source: record.betaSurveySource || null,
+      stage: record.betaSurveyStage || null,
+      completedSections: record.betaSurveyCompletedSections || null,
+      answerCount: record.betaSurveyAnswerCount ?? null,
+      updatedAt: record.betaSurveyUpdatedAt || null,
+      submittedAt: record.betaSurveySubmittedAt || null,
+      responses: record.betaSurveyResponses || null,
+      contact: record.betaSurveyContact || null,
+    },
   };
 }

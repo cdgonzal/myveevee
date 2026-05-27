@@ -137,6 +137,15 @@ export type TwinCardLead = {
     normalizedBytesEstimate: number;
     contractId: string;
   };
+  betaSurveyStatus?: "partial" | "completed";
+  betaSurveySource?: string;
+  betaSurveyStage?: string;
+  betaSurveyCompletedSections?: string[];
+  betaSurveyResponses?: Record<string, string | string[]>;
+  betaSurveyContact?: Record<string, string | string[]>;
+  betaSurveyAnswerCount?: number;
+  betaSurveyUpdatedAt?: string;
+  betaSurveySubmittedAt?: string;
   runS3Key?: string;
   runJsonUrl?: string;
   printLayoutS3Key?: string;

@@ -789,6 +789,7 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
           <Field label="Email" value={formatEmailStatus(card)} />
+          <Field label="Beta Survey" value={formatBetaSurvey(card)} />
           <Field label="Provider" value={card.generationProvider} />
           {isReplayCard(card) ? <Field label="Replay Model" value={card.replayModelId ?? "-"} /> : null}
           {isReplayCard(card) ? <Field label="Replay Provider" value={card.replayProvider ?? "-"} /> : null}
@@ -1139,6 +1140,15 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     deviceMetadata: lead.deviceMetadata,
     language: lead.language,
     imageUpload: lead.imageUpload,
+    betaSurveyStatus: lead.betaSurveyStatus,
+    betaSurveySource: lead.betaSurveySource,
+    betaSurveyStage: lead.betaSurveyStage,
+    betaSurveyCompletedSections: lead.betaSurveyCompletedSections,
+    betaSurveyResponses: lead.betaSurveyResponses,
+    betaSurveyContact: lead.betaSurveyContact,
+    betaSurveyAnswerCount: lead.betaSurveyAnswerCount,
+    betaSurveyUpdatedAt: lead.betaSurveyUpdatedAt,
+    betaSurveySubmittedAt: lead.betaSurveySubmittedAt,
     sourceImageUrl: lead.sourceImageUrl,
     generatedAvatarUrl: lead.generatedAvatarUrl,
     runS3Key: lead.runS3Key,
@@ -1181,6 +1191,12 @@ function formatEmailStatus(card: TwinCardApiCard) {
   if (card.emailStatus === "failed") return `Failed ${formatDate(card.emailFailedAt)}`;
   if (card.emailStatus === "skipped") return `Skipped${card.emailSkipReason ? `: ${card.emailSkipReason}` : ""}`;
   return card.emailStatus;
+}
+
+function formatBetaSurvey(card: TwinCardApiCard) {
+  if (!card.betaSurveyStatus) return "-";
+  const count = Number(card.betaSurveyAnswerCount ?? 0);
+  return `${card.betaSurveyStatus} / ${count} answer${count === 1 ? "" : "s"}`;
 }
 
 function formatRunTiming(card: TwinCardApiCard) {

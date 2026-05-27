@@ -67,6 +67,15 @@ export type TwinCardApiCard = {
   printImageBytes?: number;
   printLayoutContentType?: string;
   printImageContentType?: string;
+  betaSurveyStatus?: TwinCardLead["betaSurveyStatus"];
+  betaSurveySource?: string;
+  betaSurveyStage?: string;
+  betaSurveyCompletedSections?: string[];
+  betaSurveyResponses?: TwinCardLead["betaSurveyResponses"];
+  betaSurveyContact?: TwinCardLead["betaSurveyContact"];
+  betaSurveyAnswerCount?: number;
+  betaSurveyUpdatedAt?: string;
+  betaSurveySubmittedAt?: string;
   sourceUploadedAt?: string;
   generatedAt?: string;
   renderedAt?: string;
@@ -209,6 +218,38 @@ export async function markTwinCardPrinted(cardId: string, dashboardPin?: string)
   return payload.card;
 }
 
+export type TwinCardBetaSurveyPayload = {
+  source?: string;
+  stage: string;
+  completedSections: string[];
+  responses: Record<string, string | string[]>;
+  contact: Record<string, string | string[]>;
+};
+
+export async function submitTwinCardBetaSurvey(
+  cardId: string,
+  survey: TwinCardBetaSurveyPayload
+): Promise<TwinCardApiCard | null> {
+  const endpoint = TWIN_CARD_API_URL?.trim();
+  if (!endpoint) return null;
+
+  const surveyEndpoint = endpoint.replace(/\/twin-card\/cards\/?$/, `/twin-card/cards/${encodeURIComponent(cardId)}/beta-survey`);
+  const response = await fetch(surveyEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(survey),
+  });
+  const payload = (await response.json().catch(() => ({}))) as { card?: TwinCardApiCard };
+
+  if (!response.ok || !payload.card) {
+    return null;
+  }
+
+  return payload.card;
+}
+
 export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): TwinCardLead {
   return {
     id: fallback?.id ?? card.cardId,
@@ -250,6 +291,15 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     deviceMetadata: card.deviceMetadata ?? fallback?.deviceMetadata,
     language: card.language ?? fallback?.language,
     imageUpload: card.imageUpload ?? fallback?.imageUpload,
+    betaSurveyStatus: card.betaSurveyStatus ?? fallback?.betaSurveyStatus,
+    betaSurveySource: card.betaSurveySource ?? fallback?.betaSurveySource,
+    betaSurveyStage: card.betaSurveyStage ?? fallback?.betaSurveyStage,
+    betaSurveyCompletedSections: card.betaSurveyCompletedSections ?? fallback?.betaSurveyCompletedSections,
+    betaSurveyResponses: card.betaSurveyResponses ?? fallback?.betaSurveyResponses,
+    betaSurveyContact: card.betaSurveyContact ?? fallback?.betaSurveyContact,
+    betaSurveyAnswerCount: card.betaSurveyAnswerCount ?? fallback?.betaSurveyAnswerCount,
+    betaSurveyUpdatedAt: card.betaSurveyUpdatedAt ?? fallback?.betaSurveyUpdatedAt,
+    betaSurveySubmittedAt: card.betaSurveySubmittedAt ?? fallback?.betaSurveySubmittedAt,
     runS3Key: card.runS3Key ?? fallback?.runS3Key,
     runJsonUrl: card.runJsonUrl ?? fallback?.runJsonUrl,
     printLayoutS3Key: card.printLayoutS3Key ?? fallback?.printLayoutS3Key,

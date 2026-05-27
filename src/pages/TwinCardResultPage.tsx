@@ -92,7 +92,7 @@ export default function TwinCardResultPage() {
                 <Stack spacing={3} w="100%" maxW="420px">
                   <Button
                     as={RouterLink}
-                    to={APP_LINKS.internal.healthTwin}
+                    to={APP_LINKS.internal.twinCardPersonalize.replace(":cardId", encodeURIComponent(lead.cardId))}
                     minH="54px"
                     borderRadius="999px"
                     bg="#061b38"

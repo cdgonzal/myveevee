@@ -288,6 +288,12 @@ export class TwinCardActivation extends Construct {
     });
 
     this.api.addRoutes({
+      path: "/twin-card/cards/{cardId}/beta-survey",
+      methods: [apigatewayv2.HttpMethod.POST],
+      integration,
+    });
+
+    this.api.addRoutes({
       path: "/twin-card/admin/cards",
       methods: [apigatewayv2.HttpMethod.GET],
       integration,

@@ -48,6 +48,10 @@ export async function handler(event) {
       return await getCard(event, origin);
     }
 
+    if ((event.requestContext?.http?.method ?? "") === "POST" && (event.rawPath ?? "").startsWith("/twin-card/cards/") && (event.rawPath ?? "").endsWith("/beta-survey")) {
+      return await saveBetaSurvey(event, origin);
+    }
+
     if (route.endsWith("GET /twin-card/admin/cards")) {
       return await listCards(event, origin);
     }
@@ -177,6 +181,38 @@ async function getCard(event, origin) {
   return response(200, { ok: true, card: await serializeCard(card) }, origin);
 }
 
+async function saveBetaSurvey(event, origin) {
+  const match = (event.rawPath ?? "").match(/\/twin-card\/cards\/([^/]+)\/beta-survey$/);
+  const cardId = decodeURIComponent(match?.[1] ?? "");
+  if (!cardId) {
+    return response(400, { message: "Card ID required." }, origin);
+  }
+
+  const existing = await loadCard(cardId);
+  if (!existing) {
+    return response(404, { message: "Twin Card not found." }, origin);
+  }
+
+  const payload = parseBody(event);
+  const survey = normalizeBetaSurvey(payload);
+  const now = new Date().toISOString();
+  const updatedCard = await updateCard(cardId, {
+    betaSurveyStatus: survey.stage === "completed" ? "completed" : "partial",
+    betaSurveySource: survey.source,
+    betaSurveyStage: survey.stage,
+    betaSurveyCompletedSections: survey.completedSections,
+    betaSurveyResponses: survey.responses,
+    betaSurveyContact: survey.contact,
+    betaSurveyAnswerCount: Object.keys(survey.responses).filter((key) => hasSurveyAnswer(survey.responses[key])).length,
+    betaSurveyUpdatedAt: now,
+    betaSurveySubmittedAt: survey.stage === "completed" ? now : existing.betaSurveySubmittedAt,
+    updatedAt: now,
+  });
+  await writeRunArtifact(updatedCard);
+
+  return response(200, { ok: true, card: await serializeCard(updatedCard) }, origin);
+}
+
 async function listCards(event, origin) {
   if (!isDashboardAuthorized(event)) {
     return response(403, { message: "Dashboard PIN required." }, origin);
@@ -280,6 +316,19 @@ async function updateCard(cardId, attributes) {
   return result.Attributes;
 }
 
+async function writeRunArtifact(card) {
+  if (!card?.runS3Key) return;
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: CARDS_BUCKET,
+      Key: card.runS3Key,
+      Body: JSON.stringify(buildRunArtifact(card), null, 2),
+      ContentType: "application/json",
+      ServerSideEncryption: "AES256",
+    })
+  );
+}
+
 async function serializeCard(card, options = {}) {
   const publicCard = {
     cardId: card.cardId,
@@ -312,6 +361,11 @@ async function serializeCard(card, options = {}) {
     emailFailedAt: card.emailFailedAt,
     emailSkippedAt: card.emailSkippedAt,
     emailSkipReason: card.emailSkipReason,
+    betaSurveyStatus: card.betaSurveyStatus,
+    betaSurveyStage: card.betaSurveyStage,
+    betaSurveyAnswerCount: card.betaSurveyAnswerCount,
+    betaSurveyUpdatedAt: card.betaSurveyUpdatedAt,
+    betaSurveySubmittedAt: card.betaSurveySubmittedAt,
     printedAt: card.printedAt,
     lastPrintedAt: card.lastPrintedAt,
     printedCount: Number(card.printedCount ?? 0),
@@ -345,6 +399,10 @@ async function serializeCard(card, options = {}) {
     deviceMetadata: card.deviceMetadata,
     language: card.language,
     imageUpload: card.imageUpload,
+    betaSurveySource: card.betaSurveySource,
+    betaSurveyCompletedSections: card.betaSurveyCompletedSections,
+    betaSurveyResponses: card.betaSurveyResponses,
+    betaSurveyContact: card.betaSurveyContact,
     runS3Key: card.runS3Key,
     sourceImageS3Key: card.sourceImageS3Key,
     generatedAvatarS3Key: card.generatedAvatarS3Key,
@@ -379,6 +437,41 @@ function normalizeDeviceMetadata(value) {
     viewportHeight: safeFiniteNumber(device.viewportHeight, 10000),
     devicePixelRatio: safeFiniteNumber(device.devicePixelRatio, 10) || 1,
   };
+}
+
+function normalizeBetaSurvey(payload) {
+  const body = typeof payload === "object" && payload ? payload : {};
+  return {
+    source: sanitizeString(body.source, 80) || "twin_card_result",
+    stage: sanitizeString(body.stage, 80) || "partial",
+    completedSections: Array.isArray(body.completedSections)
+      ? body.completedSections.map((value) => sanitizeString(value, 80)).filter(Boolean).slice(0, 10)
+      : [],
+    responses: normalizeSurveyMap(body.responses, 60, 1000),
+    contact: normalizeSurveyMap(body.contact, 12, 240),
+  };
+}
+
+function normalizeSurveyMap(value, maxKeys, maxValueLength) {
+  const object = typeof value === "object" && value && !Array.isArray(value) ? value : {};
+  return Object.fromEntries(
+    Object.entries(object)
+      .slice(0, maxKeys)
+      .map(([key, entry]) => [sanitizeString(key, 80), normalizeSurveyValue(entry, maxValueLength)])
+      .filter(([key, entry]) => key && hasSurveyAnswer(entry))
+  );
+}
+
+function normalizeSurveyValue(value, maxValueLength) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => sanitizeString(entry, maxValueLength)).filter(Boolean).slice(0, 20);
+  }
+  return sanitizeString(value, maxValueLength);
+}
+
+function hasSurveyAnswer(value) {
+  if (Array.isArray(value)) return value.length > 0;
+  return Boolean(String(value ?? "").trim());
 }
 
 function safeFiniteNumber(value, maxValue) {
