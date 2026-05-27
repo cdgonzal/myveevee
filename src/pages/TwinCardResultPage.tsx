@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Heading, Image, Link, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { apiCardToLead, fetchTwinCard } from "../twinCard/api";
 import { TWIN_CARD_EVENT_NAME } from "../twinCard/constants";
@@ -52,42 +52,22 @@ export default function TwinCardResultPage() {
             <Image src="/brand/2026/wordmark.svg" alt="VeeVee" h="13px" />
           </Stack>
 
-          <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, lg: 10 }} alignItems="center">
-            <Stack spacing={5}>
+          <Stack spacing={6} align="center" textAlign="center">
+            <Stack spacing={3} maxW="620px">
               <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="#1177BA">
                 {TWIN_CARD_EVENT_NAME}
               </Text>
-              <Heading as="h1" fontSize={{ base: "38px", md: "54px" }} lineHeight="1" letterSpacing="0">
-                Your VeeVee Twin Card is ready.
+              <Heading as="h1" fontSize={{ base: "30px", md: "42px" }} lineHeight="1.05" letterSpacing="0">
+                Your Twin Card is ready.
               </Heading>
-              <Text fontSize="lg" color="#35445d">
-                Your Twin Card is your first step into VeeVee: a personal health companion that helps you prepare for
-                care, organize health context, and explore next steps.
-              </Text>
-
-              {loading ? <Text color="#5d6880">Loading card...</Text> : null}
-              {!loading && !lead ? (
-                <Text color="#8a3b3b">This Twin Card could not be found on this device or the card API.</Text>
-              ) : null}
-
-              <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
-                <Button as={RouterLink} to={APP_LINKS.internal.healthTwin}>
-                  Join Beta
-                </Button>
-                <Button as={RouterLink} to={APP_LINKS.internal.home} variant="outline">
-                  Learn More
-                </Button>
-                <Button as="a" href={APP_LINKS.external.authenticatedConsole} variant="outline">
-                  Sign In
-                </Button>
-              </Stack>
-
-              <Link as={RouterLink} to={APP_LINKS.internal.twinCard} color="#1177BA" fontWeight="900">
-                Create another Twin Card
-              </Link>
             </Stack>
 
-            <Stack align="center" spacing={4}>
+            {loading ? <Text color="#5d6880">Loading card...</Text> : null}
+            {!loading && !lead ? (
+              <Text color="#8a3b3b">This Twin Card could not be found on this device or the card API.</Text>
+            ) : null}
+
+            <Stack align="center" spacing={5} w="100%">
               {lead?.printImageUrl ? (
                 <Box
                   className="twin-card-print-area"
@@ -109,22 +89,38 @@ export default function TwinCardResultPage() {
                 <TwinCardPrintView lead={lead} />
               ) : null}
               {lead ? (
-                <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
-                  <Button onClick={printCard}>Print Card</Button>
+                <Stack spacing={3} w="100%" maxW="420px">
+                  <Button
+                    as={RouterLink}
+                    to={APP_LINKS.internal.healthTwin}
+                    minH="54px"
+                    borderRadius="999px"
+                    bg="#061b38"
+                    color="white"
+                    _hover={{ bg: "#0b2b57" }}
+                  >
+                    Get More Personalized
+                  </Button>
+                  <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
+                    <Button onClick={printCard} flex="1" variant="outline">
+                      Print
+                    </Button>
                   {lead.printImageUrl ? (
                     <Button
                       as="a"
                       href={lead.printImageUrl}
                       download={downloadFileName}
+                      flex="1"
                       variant="outline"
                     >
                       Download Card
                     </Button>
                   ) : null}
+                  </Stack>
                 </Stack>
               ) : null}
             </Stack>
-          </SimpleGrid>
+          </Stack>
         </Stack>
       </Box>
     </Box>
