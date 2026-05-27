@@ -217,10 +217,14 @@ Use `/twin-dashboard` first during booth operations. Use DynamoDB directly only 
 
 The header shows:
 
-- Run counts: total runs, replays, print-ready rows, AI-complete rows, photo fallback rows, and consented rows.
+- Booth counts: total runs, active processing backlog, print-ready cards generated, printed count, completed beta surveys, and consented rows.
 - `Tracked Cost`: separate Bedrock model cost, fal.ai replay/model cost, and the combined tracked model total.
 
-The `Runs` tab shows recent DDB rows and S3/presigned artifact links. The `Image Review` tab shows the latest three replay source images in one row each, with columns for:
+The top booth queue shows the next unprinted Canon-ready card first, with the participant name, goal, email status, survey status, total run time, printed count, and direct actions to print, open the Canon PNG, or open the result page. Booth staff should use this panel first during live expo operations.
+
+The `Cards` tab is the print-ready fulfillment surface. It shows large card previews, print/reprint buttons, download links, result-page links, printed counts, last-printed timestamps, and the Canon PNG S3 key for each printable row. Printing from this tab calls the PIN-gated printed endpoint and increments `printedCount`.
+
+The `Runs` tab shows recent DDB rows and S3/presigned artifact links. The `Images` tab shows recent live raw/generated image reviews and the latest replay source images in one row each, with columns for:
 
 - Raw Capture
 - Nano Banana 2 Edit

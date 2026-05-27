@@ -58,7 +58,8 @@ export default function TwinDashboardPage() {
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
   const stats = useMemo(() => buildStats(cards), [cards]);
-  const printReadyCards = useMemo(() => cards.filter(isPrintReadyCard), [cards]);
+  const printReadyCards = useMemo(() => cards.filter(isPrintReadyCard).sort(sortPrintQueue), [cards]);
+  const liveCards = useMemo(() => cards.filter((card) => !isReplayCard(card)), [cards]);
 
   const handlePrintCard = async (card: TwinCardApiCard) => {
     if (!card.printImageUrl) return;
@@ -152,7 +153,7 @@ export default function TwinDashboardPage() {
                 </>
               ) : null}
               <Button as="a" href={APP_LINKS.internal.twinCard} variant="outline" borderColor="#b7d6e8">
-                Create Card
+                New Participant
               </Button>
               <Button as="a" href={APP_LINKS.internal.twinCardAdmin} bg="#1177BA" color="white" _hover={{ bg: "#0b5d94" }}>
                 Print View
@@ -161,8 +162,8 @@ export default function TwinDashboardPage() {
           </Flex>
 
           <Stack spacing={1}>
-            <Heading as="h1" size="xl">Twin Dashboard</Heading>
-            <Text color="#516176">All Twin Card runs, responses, storage links, and image normalization details.</Text>
+            <Heading as="h1" size="xl">Twin Card Booth Console</Heading>
+            <Text color="#516176">Print-ready queue, run health, survey capture, and asset review for booth staff.</Text>
           </Stack>
 
           {state !== "ready" ? (
@@ -190,13 +191,19 @@ export default function TwinDashboardPage() {
               <Stack spacing={4}>
                 <SimpleGrid columns={{ base: 1, md: 3, xl: 6 }} spacing={4}>
                   <StatBox label="Runs" value={String(stats.total)} />
-                  <StatBox label="Replays" value={String(stats.replays)} />
+                  <StatBox label="Processing" value={String(stats.processing)} />
                   <StatBox label="Cards Generated" value={String(stats.cardsGenerated)} />
                   <StatBox label="Cards Printed" value={String(stats.cardsPrinted)} />
-                  <StatBox label="AI Complete" value={String(stats.completed)} />
+                  <StatBox label="Surveys Done" value={String(stats.surveysCompleted)} />
                   <StatBox label="Consented" value={String(stats.consented)} />
                 </SimpleGrid>
                 <CostPill costs={stats.costs} />
+                <BoothQueuePanel
+                  cards={liveCards}
+                  printReadyCards={printReadyCards}
+                  printingCardId={printingCardId}
+                  onPrintCard={handlePrintCard}
+                />
               </Stack>
 
               <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
@@ -464,6 +471,115 @@ function LiveImageRunCard({ card }: { card: TwinCardApiCard }) {
   );
 }
 
+function BoothQueuePanel({
+  cards,
+  printReadyCards,
+  printingCardId,
+  onPrintCard,
+}: {
+  cards: TwinCardApiCard[];
+  printReadyCards: TwinCardApiCard[];
+  printingCardId: string;
+  onPrintCard: (card: TwinCardApiCard) => void | Promise<void>;
+}) {
+  const nextToPrint = printReadyCards.find((card) => !isCardPrinted(card)) ?? printReadyCards[0] ?? null;
+  const processingCards = cards
+    .filter((card) => !isPrintReadyCard(card))
+    .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+    .slice(0, 3);
+
+  return (
+    <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.2fr) minmax(320px, 0.8fr)" }} gap={4}>
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+        <Stack spacing={4}>
+          <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+            <Stack spacing={1}>
+              <HStack spacing={2} flexWrap="wrap">
+                <Heading as="h2" size="md">Next Card To Print</Heading>
+                {nextToPrint ? <Badge colorScheme={isCardPrinted(nextToPrint) ? "blue" : "green"}>{isCardPrinted(nextToPrint) ? "Reprint" : "Ready"}</Badge> : null}
+              </HStack>
+              <Text color="#516176" fontSize="sm">Use this first during the expo rush.</Text>
+            </Stack>
+            <Button as="a" href={APP_LINKS.internal.twinCard} variant="outline" borderColor="#b7d6e8">
+              Start New Run
+            </Button>
+          </Flex>
+
+          {nextToPrint ? (
+            <Grid templateColumns={{ base: "1fr", md: "180px minmax(0, 1fr)" }} gap={5} alignItems="center">
+              <PrintCardPreview card={nextToPrint} height="270px" />
+              <Stack spacing={4}>
+                <Stack spacing={1}>
+                  <Heading as="h3" size="lg">{nextToPrint.firstName}</Heading>
+                  <Text color="#516176">{nextToPrint.wellnessInterestLabel}</Text>
+                  <HStack spacing={2} flexWrap="wrap">
+                    <Badge colorScheme={formatEmailStatusColor(nextToPrint)}>{shortEmailStatus(nextToPrint)}</Badge>
+                    <Badge colorScheme={nextToPrint.betaSurveyStatus === "completed" ? "green" : nextToPrint.betaSurveyStatus ? "yellow" : "gray"}>
+                      {shortSurveyStatus(nextToPrint)}
+                    </Badge>
+                    <Badge colorScheme="blue">{formatRunTiming(nextToPrint)}</Badge>
+                    <Badge colorScheme={isCardPrinted(nextToPrint) ? "blue" : "gray"}>
+                      Printed {nextToPrint.printedCount ?? 0}
+                    </Badge>
+                  </HStack>
+                </Stack>
+                <HStack spacing={3} flexWrap="wrap">
+                  <Button
+                    bg="#1177BA"
+                    color="white"
+                    _hover={{ bg: "#0b5d94" }}
+                    minW="160px"
+                    isLoading={printingCardId === nextToPrint.cardId}
+                    onClick={() => void onPrintCard(nextToPrint)}
+                  >
+                    {isCardPrinted(nextToPrint) ? "Reprint Card" : "Print Card"}
+                  </Button>
+                  {nextToPrint.printImageUrl ? (
+                    <Button as="a" href={nextToPrint.printImageUrl} target="_blank" rel="noreferrer" variant="outline" borderColor="#b7d6e8">
+                      Open PNG
+                    </Button>
+                  ) : null}
+                  {nextToPrint.cardResultUrl ? (
+                    <Button as="a" href={nextToPrint.cardResultUrl} target="_blank" rel="noreferrer" variant="ghost">
+                      Result Page
+                    </Button>
+                  ) : null}
+                </HStack>
+              </Stack>
+            </Grid>
+          ) : (
+            <Box bg="#f8fbfd" border="1px dashed #b7d6e8" borderRadius="8px" p={5}>
+              <Text color="#516176">No print-ready cards right now. Start a run or wait for processing to finish.</Text>
+            </Box>
+          )}
+        </Stack>
+      </Box>
+
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+        <Stack spacing={3}>
+          <Heading as="h2" size="md">Now Processing</Heading>
+          {processingCards.length ? (
+            processingCards.map((card) => (
+              <Flex key={card.cardId} justify="space-between" gap={3} align="center" borderTop="1px solid #eef4f8" pt={3}>
+                <Stack spacing={0}>
+                  <Text fontWeight="900">{card.firstName}</Text>
+                  <Text color="#516176" fontSize="sm">{formatDate(card.createdAt)}</Text>
+                </Stack>
+                <HStack spacing={2}>
+                  <StatusBadge status={card.generationStatus} />
+                  <RenderStatusBadge status={card.renderStatus} />
+                </HStack>
+              </Flex>
+            ))
+          ) : (
+            <Text color="#516176">No active processing backlog.</Text>
+          )}
+        </Stack>
+      </Box>
+    </Grid>
+  );
+}
+
 function CardsPrintPanel({
   cards,
   generatedCount,
@@ -492,59 +608,36 @@ function CardsPrintPanel({
         <StatBox label="Cards Printed" value={String(printedCount)} />
       </SimpleGrid>
 
-      <Box overflowX="auto" bg="white" border="1px solid #dbeaf5" borderRadius="8px">
-        <Table size="sm">
-          <Thead>
-            <Tr>
-              <Th>Card</Th>
-              <Th>Goal</Th>
-              <Th>Created</Th>
-              <Th>Print Ready Asset</Th>
-              <Th isNumeric>Printed</Th>
-              <Th>Last Printed</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {cards.map((card) => (
-              <Tr key={card.cardId}>
-                <Td>
-                  <HStack spacing={3} minW="230px">
-                    <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="6px" overflow="hidden" w="64px" h="96px" flex="0 0 auto">
-                      {card.printImageUrl ? (
-                        <Image src={card.printImageUrl} alt={`${card.firstName} Twin Card`} w="100%" h="100%" objectFit="cover" />
-                      ) : null}
-                    </Box>
-                    <Stack spacing={0}>
-                      <Text fontWeight="900">{card.firstName}</Text>
-                      <Text color="#516176" fontSize="sm">{card.cardId}</Text>
-                      {isReplayCard(card) ? <Badge colorScheme="purple" w="fit-content">Replay</Badge> : null}
-                    </Stack>
-                  </HStack>
-                </Td>
-                <Td>{card.wellnessInterestLabel}</Td>
-                <Td whiteSpace="nowrap">{formatDate(card.createdAt)}</Td>
-                <Td>
+      <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={4}>
+        {cards.map((card) => (
+          <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+            <Grid templateColumns={{ base: "1fr", md: "170px minmax(0, 1fr)" }} gap={5}>
+              <PrintCardPreview card={card} height="255px" />
+              <Stack spacing={4}>
+                <Flex justify="space-between" gap={3} align="start">
                   <Stack spacing={1}>
-                    {card.printImageUrl ? (
-                      <Link
-                        href={card.printImageUrl}
-                        download={buildTwinCardFileName(card)}
-                        isExternal
-                        color="#1177BA"
-                        fontWeight="800"
-                      >
-                        Canon PNG
-                      </Link>
-                    ) : null}
-                    <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{card.printImageS3Key ?? "-"}</Text>
+                    <HStack spacing={2} flexWrap="wrap">
+                      <Heading as="h3" size="md">{card.firstName}</Heading>
+                      {isReplayCard(card) ? <Badge colorScheme="purple">Replay</Badge> : null}
+                      <Badge colorScheme={isCardPrinted(card) ? "blue" : "green"}>{isCardPrinted(card) ? "Printed" : "Ready"}</Badge>
+                    </HStack>
+                    <Text color="#516176">{card.wellnessInterestLabel}</Text>
+                    <Text color="#6b7890" fontSize="sm">{formatDate(card.createdAt)}</Text>
                   </Stack>
-                </Td>
-                <Td isNumeric fontWeight="900">{card.printedCount ?? 0}</Td>
-                <Td whiteSpace="nowrap">{card.lastPrintedAt ? formatDate(card.lastPrintedAt) : "-"}</Td>
-                <Td>
+                  <Text fontSize="3xl" fontWeight="900" color={isCardPrinted(card) ? "#1177BA" : "#061b38"}>
+                    {card.printedCount ?? 0}
+                  </Text>
+                </Flex>
+
+                <SimpleGrid columns={2} spacing={3}>
+                  <Field label="Email" value={shortEmailStatus(card)} />
+                  <Field label="Survey" value={shortSurveyStatus(card)} />
+                  <Field label="Run Time" value={formatRunTiming(card)} />
+                  <Field label="Last Printed" value={card.lastPrintedAt ? formatDate(card.lastPrintedAt) : "-"} />
+                </SimpleGrid>
+
+                <HStack spacing={3} flexWrap="wrap">
                   <Button
-                    size="sm"
                     bg="#1177BA"
                     color="white"
                     _hover={{ bg: "#0b5d94" }}
@@ -552,15 +645,56 @@ function CardsPrintPanel({
                     isLoading={printingCardId === card.cardId}
                     onClick={() => void onPrintCard(card)}
                   >
-                    Print Card
+                    {isCardPrinted(card) ? "Reprint" : "Print Card"}
                   </Button>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
+                  {card.printImageUrl ? (
+                    <Button
+                      as="a"
+                      href={card.printImageUrl}
+                      download={buildTwinCardFileName(card)}
+                      target="_blank"
+                      rel="noreferrer"
+                      variant="outline"
+                      borderColor="#b7d6e8"
+                    >
+                      Download PNG
+                    </Button>
+                  ) : null}
+                  {card.cardResultUrl ? (
+                    <Button as="a" href={card.cardResultUrl} target="_blank" rel="noreferrer" variant="ghost">
+                      Result Page
+                    </Button>
+                  ) : null}
+                </HStack>
+
+                <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{card.printImageS3Key ?? "-"}</Text>
+              </Stack>
+            </Grid>
+          </Box>
+        ))}
+      </SimpleGrid>
     </Stack>
+  );
+}
+
+function PrintCardPreview({ card, height }: { card: TwinCardApiCard; height: string }) {
+  return (
+    <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="8px" overflow="hidden" h={height} maxW={{ base: "220px", md: "none" }}>
+      {card.printImageUrl ? (
+        <Image
+          src={card.printImageUrl}
+          alt={`${card.firstName} Twin Card`}
+          w="100%"
+          h="100%"
+          objectFit="contain"
+          bg="#f8fbfd"
+        />
+      ) : (
+        <Flex h="100%" align="center" justify="center" px={4} textAlign="center">
+          <Text color="#6b7890">No Canon PNG.</Text>
+        </Flex>
+      )}
+    </Box>
   );
 }
 
@@ -1025,17 +1159,31 @@ function getReplayDurationMs(card: TwinCardApiCard) {
 function buildStats(cards: TwinCardApiCard[]) {
   const costs = buildProviderCostSummary(cards);
   const printReadyCards = cards.filter(isPrintReadyCard);
+  const liveCards = cards.filter((card) => !isReplayCard(card));
   return {
     total: cards.length,
     replays: cards.filter(isReplayCard).length,
+    processing: liveCards.filter((card) => !isPrintReadyCard(card)).length,
     completed: cards.filter((card) => card.generationStatus === "completed").length,
     fallback: cards.filter((card) => card.generationStatus === "fallback_used").length,
     printReady: printReadyCards.length,
     cardsGenerated: printReadyCards.length,
     cardsPrinted: printReadyCards.reduce((sum, card) => sum + Number(card.printedCount ?? 0), 0),
+    surveysCompleted: liveCards.filter((card) => card.betaSurveyStatus === "completed").length,
     consented: cards.filter((card) => card.consentAccepted).length,
     costs,
   };
+}
+
+function sortPrintQueue(left: TwinCardApiCard, right: TwinCardApiCard) {
+  const leftPrinted = isCardPrinted(left) ? 1 : 0;
+  const rightPrinted = isCardPrinted(right) ? 1 : 0;
+  if (leftPrinted !== rightPrinted) return leftPrinted - rightPrinted;
+  return Date.parse(right.createdAt) - Date.parse(left.createdAt);
+}
+
+function isCardPrinted(card: TwinCardApiCard) {
+  return Number(card.printedCount ?? 0) > 0 || card.fulfillmentStatus === "printed";
 }
 
 function isPrintReadyCard(card: TwinCardApiCard) {
@@ -1193,10 +1341,32 @@ function formatEmailStatus(card: TwinCardApiCard) {
   return card.emailStatus;
 }
 
+function shortEmailStatus(card: TwinCardApiCard) {
+  if (!card.emailStatus) return "Email -";
+  if (card.emailStatus === "sent") return "Email sent";
+  if (card.emailStatus === "failed") return "Email failed";
+  if (card.emailStatus === "skipped") return "Email skipped";
+  return `Email ${card.emailStatus}`;
+}
+
+function formatEmailStatusColor(card: TwinCardApiCard) {
+  if (card.emailStatus === "sent") return "green";
+  if (card.emailStatus === "failed") return "red";
+  if (card.emailStatus === "skipped") return "yellow";
+  return "gray";
+}
+
 function formatBetaSurvey(card: TwinCardApiCard) {
   if (!card.betaSurveyStatus) return "-";
   const count = Number(card.betaSurveyAnswerCount ?? 0);
   return `${card.betaSurveyStatus} / ${count} answer${count === 1 ? "" : "s"}`;
+}
+
+function shortSurveyStatus(card: TwinCardApiCard) {
+  if (!card.betaSurveyStatus) return "Survey -";
+  const count = Number(card.betaSurveyAnswerCount ?? 0);
+  if (card.betaSurveyStatus === "completed") return `Survey done (${count})`;
+  return `Survey ${card.betaSurveyStatus} (${count})`;
 }
 
 function formatRunTiming(card: TwinCardApiCard) {
@@ -1304,24 +1474,52 @@ function writePrintDocument(
     body { overflow: hidden; }
     img { width: 4in; height: 6in; object-fit: fill; display: block; margin: 0; padding: 0; }
     .status { font: 16px Arial, sans-serif; color: #061b38; padding: 24px; text-align: center; }
+    .toolbar { display: none; }
     @media screen {
       html, body { width: 100%; min-height: 100%; }
       body { display: grid; place-items: center; overflow: auto; }
       img { box-shadow: 0 18px 50px rgba(6,27,56,0.22); }
+      .toolbar {
+        display: flex;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        justify-content: center;
+        gap: 10px;
+        font: 14px Arial, sans-serif;
+        z-index: 2;
+      }
+      .toolbar button, .toolbar a {
+        appearance: none;
+        border: 1px solid #b7d6e8;
+        border-radius: 999px;
+        background: #fff;
+        color: #061b38;
+        font-weight: 700;
+        padding: 8px 12px;
+        text-decoration: none;
+      }
     }
+    @media print { .toolbar { display: none !important; } }
   </style>
 </head>
 <body>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">Print Again</button>
+    <a href="${escapeHtml(options.imageUrl)}" target="_blank" rel="noreferrer">Open PNG</a>
+  </div>
   <img id="twin-card-print-image" src="${escapeHtml(options.imageUrl)}" alt="${escapeHtml(options.alt)}" />
   <script>
     const image = document.getElementById("twin-card-print-image");
+    const imageUrl = ${JSON.stringify(options.imageUrl)};
     function printWhenReady() {
       window.focus();
-      setTimeout(function(){ window.print(); }, 250);
+      setTimeout(function(){ window.print(); }, 500);
     }
     image.addEventListener("load", printWhenReady, { once: true });
     image.addEventListener("error", function(){
-      document.body.innerHTML = '<div class="status">Print image did not load. Close this window and click Print Card again.</div>';
+      document.body.innerHTML = '<div class="status"><p><strong>Print image could not load in this popup.</strong></p><p><a href="' + imageUrl.replace(/"/g, "&quot;") + '" target="_blank" rel="noreferrer">Open Canon PNG directly</a></p><p>Then use the browser print dialog with 4 x 6 borderless photo settings.</p></div>';
     }, { once: true });
     if (image.complete && image.naturalWidth > 0) printWhenReady();
   </script>
@@ -1366,7 +1564,10 @@ function formatFileTimestamp(value: string) {
 
 function formatMs(value?: number) {
   const number = Number(value);
-  return Number.isFinite(number) ? `${number} ms` : "-";
+  if (!Number.isFinite(number)) return "-";
+  if (number >= 10000) return `${(number / 1000).toFixed(1)} sec`;
+  if (number >= 1000) return `${(number / 1000).toFixed(2)} sec`;
+  return `${number} ms`;
 }
 
 function isDashboardDebugEnabled() {
