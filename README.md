@@ -23,6 +23,8 @@ Public-facing marketing site for `myveevee.com`.
 - `/caregivers`
 - `/medicare-guidance`
 - `/hospital-to-home`
+- `/tools`
+  - central noindex index for active myveevee.com funnels, SWCA onboarding tracker, Twin Card tools, and admin dashboards
 
 Internal route:
 

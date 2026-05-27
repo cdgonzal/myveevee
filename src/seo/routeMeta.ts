@@ -171,6 +171,16 @@ export const ROUTE_SEO: Record<string, RouteSeoMeta> = {
     ogImage: "https://myveevee.com/og/technology.svg",
     twitterImage: "https://myveevee.com/og/technology.svg",
   },
+  [APP_LINKS.internal.tools]: {
+    title: "VeeVee Tools Index",
+    description:
+      "Central index of active myveevee.com funnels, expo tools, SWCA onboarding trackers, and admin dashboards.",
+    canonicalPath: APP_LINKS.internal.tools,
+    robots: "noindex, nofollow, noarchive, nosnippet",
+    ogType: "website",
+    ogImage: DEFAULT_OG_IMAGE,
+    twitterImage: DEFAULT_OG_IMAGE,
+  },
   [APP_LINKS.internal.contact]: {
     title: "Contact VeeVee | Press, Partnerships, and Support",
     description:

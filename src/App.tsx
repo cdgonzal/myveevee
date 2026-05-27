@@ -71,6 +71,7 @@ const Testimonials = lazyWithRetry(() => import("./pages/Testimonials"));
 const Caregivers = lazyWithRetry(() => import("./pages/Caregivers"));
 const MedicareGuidance = lazyWithRetry(() => import("./pages/MedicareGuidance"));
 const HospitalToHome = lazyWithRetry(() => import("./pages/HospitalToHome"));
+const Tools = lazyWithRetry(() => import("./pages/Tools"));
 const Contact = lazyWithRetry(() => import("./pages/Contact"));
 const Terms = lazyWithRetry(() => import("./pages/Terms"));
 const NotFoundPage = lazyWithRetry(() => import("./pages/NotFoundPage"));
@@ -282,6 +283,7 @@ export default function App() {
                 <Route path={APP_LINKS.internal.caregivers} element={<Caregivers />} />
                 <Route path={APP_LINKS.internal.medicare} element={<MedicareGuidance />} />
                 <Route path={APP_LINKS.internal.hospitalToHome} element={<HospitalToHome />} />
+                <Route path={APP_LINKS.internal.tools} element={<Tools />} />
                 <Route path={APP_LINKS.internal.contact} element={<Contact />} />
                 <Route path={APP_LINKS.internal.terms} element={<Terms />} />
                 <Route path={APP_LINKS.internal.swcaBrief} element={<SwcaBrief />} />

@@ -14,6 +14,7 @@ export const APP_LINKS = {
     caregivers: "/caregivers",
     medicare: "/medicare-guidance",
     hospitalToHome: "/hospital-to-home",
+    tools: "/tools",
     contact: "/contact",
     terms: "/terms",
     swcaBrief: "/briefs/swca-4821.html",
