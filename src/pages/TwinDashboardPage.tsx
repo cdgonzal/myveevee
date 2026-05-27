@@ -64,7 +64,7 @@ export default function TwinDashboardPage() {
     if (!card.printImageUrl) return;
 
     setPrintingCardId(card.cardId);
-    openPrintWindow(card);
+    void openPrintWindow(card);
     const updatedCard = await markTwinCardPrinted(card.cardId, DASHBOARD_PIN).catch(() => null);
     if (updatedCard) {
       setCards((current) => current.map((item) => (item.cardId === updatedCard.cardId ? updatedCard : item)));
@@ -1229,27 +1229,70 @@ function formatDate(value?: string) {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
 
-function openPrintWindow(card: TwinCardApiCard) {
+async function openPrintWindow(card: TwinCardApiCard) {
   if (!card.printImageUrl) return;
-  const printWindow = window.open("", "_blank", "noopener,noreferrer,width=900,height=1100");
+  const printWindow = window.open("", "_blank", "width=900,height=1100");
   if (!printWindow) {
     window.open(card.printImageUrl, "_blank", "noopener,noreferrer");
     return;
   }
 
+  printWindow.opener = null;
+  writePrintDocument(printWindow, {
+    title: `${card.firstName} Twin Card`,
+    body: `<div class="status">Loading print-ready card...</div>`,
+  });
+
+  try {
+    const response = await fetch(card.printImageUrl, { mode: "cors" });
+    if (!response.ok) {
+      throw new Error(`Print image request failed with ${response.status}.`);
+    }
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    writePrintDocument(printWindow, {
+      title: `${card.firstName} Twin Card`,
+      body: `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(card.firstName)} Twin Card" />`,
+      autoPrint: true,
+    });
+  } catch {
+    writePrintDocument(printWindow, {
+      title: `${card.firstName} Twin Card`,
+      body: `
+        <div class="status">
+          <strong>Print image could not load in the popup.</strong>
+          <a href="${escapeHtml(card.printImageUrl)}" target="_blank" rel="noreferrer">Open Canon PNG directly</a>
+        </div>
+      `,
+    });
+  }
+}
+
+function writePrintDocument(
+  printWindow: Window,
+  options: {
+    title: string;
+    body: string;
+    autoPrint?: boolean;
+  }
+) {
+  printWindow.document.open();
   printWindow.document.write(`<!doctype html>
 <html>
 <head>
-  <title>${escapeHtml(card.firstName)} Twin Card</title>
+  <title>${escapeHtml(options.title)}</title>
   <style>
     @page { size: 4in 6in; margin: 0; }
     html, body { margin: 0; width: 100%; min-height: 100%; background: #fff; }
     body { display: grid; place-items: center; }
     img { width: 4in; height: 6in; object-fit: contain; display: block; }
+    .status { font: 16px Arial, sans-serif; color: #061b38; padding: 24px; text-align: center; }
+    .status a { color: #1177BA; display: block; font-weight: 700; margin-top: 12px; }
   </style>
 </head>
 <body>
-  <img src="${escapeHtml(card.printImageUrl)}" alt="${escapeHtml(card.firstName)} Twin Card" onload="window.focus(); window.print();" />
+  ${options.body}
+  ${options.autoPrint ? "<script>window.addEventListener('load', function(){ window.focus(); window.print(); });</script>" : ""}
 </body>
 </html>`);
   printWindow.document.close();
