@@ -69,6 +69,8 @@ export type TwinCardBedrockProviderAttempt = {
   status: "completed" | "failed" | "skipped" | string;
   message?: string;
   attemptedAt?: string;
+  durationMs?: number;
+  requestId?: string | null;
   usage?: TwinCardBedrockUsageLineItem;
 };
 

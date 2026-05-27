@@ -309,6 +309,9 @@ function ModelEvaluationPanel({ card }: { card: TwinCardApiCard }) {
                 <Text color="#516176" fontSize="sm">
                   {formatUsageUnits(attempt.usage)} / {formatCurrency(attempt.usage?.estimatedCostUsd)}
                 </Text>
+                <Text color="#516176" fontSize="sm">
+                  {formatMs(attempt.durationMs)}{attempt.requestId ? ` / ${attempt.requestId}` : ""}
+                </Text>
                 {attempt.message ? <Text color="#8a5a00" fontSize="sm">{attempt.message}</Text> : null}
               </Box>
             ))
@@ -587,4 +590,9 @@ function formatBytes(value?: number) {
 function formatDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
+function formatMs(value?: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? `${number} ms` : "-";
 }

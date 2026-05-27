@@ -391,18 +391,28 @@ The Hugging Face contract currently targets image-to-image candidates such as:
 
 Current top candidate model/provider strategy is stored in `src/twinCard/huggingFaceImageProviderContract.json` under `topCandidateStrategy`.
 
-As of 2026-05-26:
+As of 2026-05-27:
 
-1. Primary: `Qwen/Qwen-Image-Edit` via `replicate`.
-   - This is the current top candidate after the simplified fixed prompt produced the preferred replay outputs.
-2. Open candidate slot.
-   - Leave this empty until a non-Qwen model proves itself in replay against Qwen.
+1. Primary: `fal-ai/nano-banana-2/edit` direct through fal.ai.
+   - This is the current top candidate after the Qwen vs Nano Banana replay produced the preferred avatar outputs.
+   - The replay manifest must store `x-fal-request-id`, `x-fal-billable-units`, pricing API result, billing-events lookup result, output metadata, and estimated cost.
+2. Comparison candidate: `openai/gpt-image-2/edit` direct through fal.ai.
+   - Do not run the comparison until the fal audit fields above are visible in the replay report and dashboard rows.
 3. Last fallback: `fallback_original_photo_card`.
    - Use the normalized raw source image in the card frame when external generation is unavailable or quality is unacceptable.
 
 Keep model rankings tied to provider names. The same model through different providers can have different availability, pricing, request behavior, and output consistency.
 
-Recommended next non-Qwen comparison candidate: `black-forest-labs/FLUX.2-dev` via `replicate`. It completed a one-card probe through Hugging Face on 2026-05-26. `tencent/HunyuanImage-3.0-Instruct` is attractive as a different model family from the Hugging Face image-to-image list, but the current Hugging Face route could not find inference-provider information for it.
+Previous non-Qwen comparison candidate: `black-forest-labs/FLUX.2-dev` via `replicate`. It completed a one-card probe through Hugging Face on 2026-05-26. The current next comparison is now direct fal.ai `openai/gpt-image-2/edit` against direct fal.ai `fal-ai/nano-banana-2/edit`.
+
+fal.ai pricing/audit check:
+
+```powershell
+node aws/twin-card/fal-platform-audit.mjs `
+  --endpoints fal-ai/nano-banana-2/edit,openai/gpt-image-2/edit
+```
+
+The current fal inference key can read pricing. It returned `$0.08` per `images` for `fal-ai/nano-banana-2/edit` and `$1` per `units` for `openai/gpt-image-2/edit` on 2026-05-27. The same key returned `403` for `GET /v1/models/billing-events`, so exact request-level billing-events require an admin fal key. Until then, per-run estimated cost is `x-fal-billable-units * pricing API unit_price`.
 
 Two-model comparison replay:
 

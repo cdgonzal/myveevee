@@ -31,6 +31,8 @@ const HF_TOKEN = process.env.HF_TOKEN;
 const FAL_KEY = process.env.FAL_KEY;
 const PROMPT = "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face, face features, face shape, hair, skin tone, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.";
 const NEGATIVE_PROMPT = "text, letters, numbers, words, caption, label, logo, badge, sign, watermark, UI, typography, writing, different person, changed identity, changed face, changed hair, changed expression, changed glasses, beauty filter, glam retouch, distorted face, extra limbs";
+const NANO_BANANA_ENDPOINT_ID = "fal-ai/nano-banana-2/edit";
+const GPT_IMAGE_2_EDIT_ENDPOINT_ID = "openai/gpt-image-2/edit";
 
 await main();
 
@@ -61,11 +63,15 @@ async function main() {
     bucket: CARDS_BUCKET,
     table: CARDS_TABLE,
     replayPrefix: WRITE_S3 ? REPLAY_PREFIX : null,
+    falAudit: {
+      pricing: await fetchFalPricing([NANO_BANANA_ENDPOINT_ID, GPT_IMAGE_2_EDIT_ENDPOINT_ID]),
+      billingEvents: null,
+    },
     prompt: PROMPT,
     negativePrompt: NEGATIVE_PROMPT,
     outputs: [
       { label: "Output #1 Qwen", provider: "huggingface:replicate", modelId: "Qwen/Qwen-Image-Edit", recipeId: "qwen_image_edit_replicate_no_text_avatar_v1" },
-      { label: "Output #2 Nano Banana 2 Edit", provider: "fal.ai", modelId: "fal-ai/nano-banana-2/edit", recipeId: "fal_nano_banana_2_edit_avatar_v1" },
+      { label: "Output #2 Nano Banana 2 Edit", provider: "fal.ai", modelId: NANO_BANANA_ENDPOINT_ID, recipeId: "fal_nano_banana_2_edit_avatar_v1" },
     ],
     items: [],
   };
@@ -74,6 +80,9 @@ async function main() {
     manifest.items.push(await replayCard(card, index + 1));
   }
   manifest.billingSummary = summarizeUsage(manifest.items);
+  manifest.falAudit.billingEvents = await fetchFalBillingEvents(
+    manifest.items.flatMap((item) => item.outputs ?? []).filter((output) => output.provider === "fal.ai").map((output) => output.requestId).filter(Boolean)
+  );
 
   const manifestPath = path.join(LOCAL_DIR, "manifest.json");
   const reportPath = path.join(LOCAL_DIR, "index.html");
@@ -111,6 +120,7 @@ async function writeReplayRowsToDynamo(manifest) {
   for (const item of manifest.items ?? []) {
     for (const output of item.outputs ?? []) {
       const replayCardId = `replay#${manifest.runId}#${sanitizeId(item.cardId)}#${output.sequence}`;
+      const usage = enrichReplayUsage(output.usage, output.modelId);
       writes.push(dynamo.send(new PutCommand({
         TableName: CARDS_TABLE,
         Item: {
@@ -154,12 +164,12 @@ async function writeReplayRowsToDynamo(manifest) {
           generationProvider: "manual",
           generationMessage: output.message,
           bedrockUsage: {
-            billingProvider: output.usage?.billingProvider,
-            billingUnit: output.usage?.billingUnit,
-            currency: output.usage?.currency ?? "USD",
-            totalBillableUnits: Number(output.usage?.billableUnits ?? 0),
-            totalEstimatedCostUsd: Number.isFinite(Number(output.usage?.estimatedCostUsd)) ? Number(output.usage.estimatedCostUsd) : null,
-            lineItems: [output.usage].filter(Boolean),
+            billingProvider: usage?.billingProvider,
+            billingUnit: usage?.billingUnit,
+            currency: usage?.currency ?? "USD",
+            totalBillableUnits: Number(usage?.billableUnits ?? 0),
+            totalEstimatedCostUsd: Number.isFinite(Number(usage?.estimatedCostUsd)) ? Number(usage.estimatedCostUsd) : null,
+            lineItems: [usage].filter(Boolean),
             note: "Replay-only external model test. Excludes storage, Lambda, DynamoDB, API Gateway, CloudWatch, and transfer charges.",
           },
           bedrockProviderAttempts: [{
@@ -169,7 +179,8 @@ async function writeReplayRowsToDynamo(manifest) {
             message: output.message,
             durationMs: output.durationMs,
             requestId: output.requestId,
-            usage: output.usage,
+            usage,
+            providerAudit: output.providerAudit,
           }],
           avatarRecipeId: output.sequence === 1 ? "qwen_image_edit_replicate_no_text_avatar_v1" : "fal_nano_banana_2_edit_avatar_v1",
           avatarRecipeVersion: manifest.schema,
@@ -196,6 +207,23 @@ async function writeReplayRowsToDynamo(manifest) {
   }
 
   await Promise.all(writes);
+}
+
+function enrichReplayUsage(usage, modelId) {
+  if (usage?.billingProvider === "fal.ai" && modelId === NANO_BANANA_ENDPOINT_ID) {
+    const billableUnits = Number(usage.billableUnits ?? 0);
+    const unitPriceUsd = Number(usage.unitPriceUsd ?? 0.08);
+    return {
+      ...usage,
+      billingUnit: usage.billingUnit === "fal_billable_unit" ? "images" : usage.billingUnit ?? "images",
+      unitPriceUsd,
+      estimatedCostUsd: Number.isFinite(billableUnits) && Number.isFinite(unitPriceUsd)
+        ? Number((billableUnits * unitPriceUsd).toFixed(6))
+        : usage.estimatedCostUsd ?? null,
+      pricingSourceUrl: usage.pricingSourceUrl ?? "https://api.fal.ai/v1/models/pricing?endpoint_id=fal-ai%2Fnano-banana-2%2Fedit",
+    };
+  }
+  return usage;
 }
 
 async function replayCard(card, ordinal) {
@@ -226,6 +254,7 @@ async function replayCard(card, ordinal) {
       durationMs: result.durationMs,
       requestId: result.requestId,
       usage: result.usage,
+      providerAudit: result.providerAudit,
       generatedMetrics: {
         contentType: result.contentType,
         bytes: result.buffer.length,
@@ -306,11 +335,13 @@ async function runQwen(sourceBuffer) {
 
 async function runNanoBanana(sourceUrl) {
   const started = Date.now();
-  const response = await fetch("https://fal.run/fal-ai/nano-banana-2/edit", {
+  const response = await fetch(`https://fal.run/${NANO_BANANA_ENDPOINT_ID}`, {
     method: "POST",
     headers: {
       Authorization: `Key ${FAL_KEY}`,
       "Content-Type": "application/json",
+      "X-Fal-Store-IO": "1",
+      "X-Fal-Object-Lifecycle-Preference": JSON.stringify({ expiration_duration_seconds: 604800 }),
     },
     body: JSON.stringify({
       prompt: PROMPT,
@@ -334,24 +365,119 @@ async function runNanoBanana(sourceUrl) {
   if (!imageResponse.ok) throw new Error(`Unable to download fal.ai output: ${imageResponse.status}`);
   const arrayBuffer = await imageResponse.arrayBuffer();
   const billableUnits = Number(response.headers.get("x-fal-billable-units") ?? 1);
+  const requestId = response.headers.get("x-fal-request-id");
+  const pricing = await fetchFalPricing([NANO_BANANA_ENDPOINT_ID]);
+  const price = pricing.prices?.find((item) => item.endpoint_id === NANO_BANANA_ENDPOINT_ID);
+  const unitPriceUsd = Number(price?.unit_price);
+  const estimatedCostUsd = Number.isFinite(unitPriceUsd) ? Number((billableUnits * unitPriceUsd).toFixed(6)) : null;
   return {
     provider: "fal.ai",
-    modelId: "fal-ai/nano-banana-2/edit",
+    modelId: NANO_BANANA_ENDPOINT_ID,
     status: "completed",
     message: "Nano Banana 2 Edit replay completed.",
     durationMs: Date.now() - started,
-    requestId: response.headers.get("x-fal-request-id"),
+    requestId,
     contentType: imageResponse.headers.get("content-type") ?? body.images?.[0]?.content_type ?? "image/png",
     buffer: Buffer.from(arrayBuffer),
     usage: {
       billingProvider: "fal.ai",
-      billingUnit: "fal_billable_unit",
+      billingUnit: price?.unit ?? "images",
       billableUnits,
-      unitPriceUsd: null,
-      estimatedCostUsd: null,
+      unitPriceUsd: Number.isFinite(unitPriceUsd) ? unitPriceUsd : null,
+      estimatedCostUsd,
       currency: "USD",
       pricingSourceUrl: "https://fal.ai/models/fal-ai/nano-banana-2/edit/api",
+      pricingApi: pricing,
     },
+    providerAudit: {
+      endpointId: NANO_BANANA_ENDPOINT_ID,
+      requestId,
+      responseHeaders: readFalHeaders(response.headers),
+      responseBody: summarizeFalResponseBody(body),
+      outputFetch: {
+        status: imageResponse.status,
+        contentType: imageResponse.headers.get("content-type"),
+        contentLength: imageResponse.headers.get("content-length"),
+      },
+    },
+  };
+}
+
+async function fetchFalPricing(endpointIds) {
+  if (!FAL_KEY || !endpointIds.length) return { ok: false, message: "FAL_KEY is not set.", prices: [] };
+  const params = new URLSearchParams();
+  for (const endpointId of endpointIds) params.append("endpoint_id", endpointId);
+  const response = await fetch(`https://api.fal.ai/v1/models/pricing?${params}`, {
+    headers: { Authorization: `Key ${FAL_KEY}` },
+  });
+  const body = await readJsonResponse(response);
+  return {
+    ok: response.ok,
+    status: response.status,
+    prices: body?.prices ?? [],
+    error: response.ok ? null : body?.error ?? body,
+    checkedAt: new Date().toISOString(),
+  };
+}
+
+async function fetchFalBillingEvents(requestIds) {
+  if (!FAL_KEY || !requestIds.length) return { ok: false, message: "No fal request ids to audit.", billingEvents: [] };
+  const params = new URLSearchParams();
+  params.set("endpoint_id", NANO_BANANA_ENDPOINT_ID);
+  params.set("limit", String(Math.min(requestIds.length, 50)));
+  params.set("expand", "auth_method");
+  for (const requestId of requestIds.slice(0, 50)) params.append("request_id", requestId);
+  const response = await fetch(`https://api.fal.ai/v1/models/billing-events?${params}`, {
+    headers: { Authorization: `Key ${FAL_KEY}` },
+  });
+  const body = await readJsonResponse(response);
+  return {
+    ok: response.ok,
+    status: response.status,
+    billingEvents: body?.billing_events ?? [],
+    error: response.ok ? null : body?.error ?? body,
+    checkedAt: new Date().toISOString(),
+    note: response.ok
+      ? "Request-level billing events returned by fal Platform API."
+      : "fal billing-events requires an admin API key. The run still uses response header billable units plus pricing API for estimated cost.",
+  };
+}
+
+async function readJsonResponse(response) {
+  const text = await response.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { raw: text.slice(0, 2000) };
+  }
+}
+
+function readFalHeaders(headers) {
+  return {
+    requestId: headers.get("x-fal-request-id"),
+    billableUnits: headers.get("x-fal-billable-units"),
+    servedFrom: headers.get("x-fal-served-from"),
+    requestTimeoutType: headers.get("x-fal-request-timeout-type"),
+    errorType: headers.get("x-fal-error-type"),
+    runnerHints: headers.get("x-fal-runner-hints"),
+  };
+}
+
+function summarizeFalResponseBody(body) {
+  return {
+    imageCount: Array.isArray(body?.images) ? body.images.length : 0,
+    seed: body?.seed ?? null,
+    timings: body?.timings ?? null,
+    hasDescription: typeof body?.description === "string",
+    imageMetadata: (body?.images ?? []).map((image) => ({
+      width: image.width ?? null,
+      height: image.height ?? null,
+      contentType: image.content_type ?? image.contentType ?? null,
+      fileName: image.file_name ?? image.fileName ?? null,
+      fileSize: image.file_size ?? image.fileSize ?? null,
+      urlPresent: Boolean(image.url),
+    })),
   };
 }
 
@@ -428,11 +554,11 @@ function buildHtmlReport(manifest, options = {}) {
     const source = useS3Urls ? item.replaySourceUrl : path.basename(item.localSourcePath);
     const outputFigures = item.outputs.map((output) => {
       const generated = useS3Urls ? output.replayGeneratedUrl : path.basename(output.localGeneratedPath);
-      return `<figure><img src="${escapeHtml(generated)}" alt="${escapeHtml(output.label)}"><figcaption><strong>${escapeHtml(output.label)}</strong><br>${escapeHtml(output.modelId)}<br>${escapeHtml(output.provider)} | ${escapeHtml(output.status)} | ${formatMs(output.durationMs)}<br>${formatImageMetric(output.generatedMetrics)} | ${formatBytes(output.generatedMetrics.bytes)}<br>${formatUsageUnits(output.usage)} | ${formatCost(output.usage.estimatedCostUsd)}<br>${escapeHtml(output.requestId ?? "")}</figcaption></figure>`;
+      return `<figure><img src="${escapeHtml(generated)}" alt="${escapeHtml(output.label)}"><figcaption><strong>${escapeHtml(output.label)}</strong><br>${escapeHtml(output.modelId)}<br>${escapeHtml(output.provider)} | ${escapeHtml(output.status)} | ${formatMs(output.durationMs)}<br>${formatImageMetric(output.generatedMetrics)} | ${formatBytes(output.generatedMetrics.bytes)}<br>${formatUsageUnits(output.usage)} | ${formatCost(output.usage.estimatedCostUsd)}<br>${escapeHtml(output.requestId ?? "")}<br>${escapeHtml(formatFalAudit(output.providerAudit))}</figcaption></figure>`;
     }).join("");
     return `<section class="item"><div class="meta"><strong>${escapeHtml(item.firstName ?? "Guest")}</strong><span>${escapeHtml(item.cardId)}</span><span>${escapeHtml(item.wellnessInterestLabel ?? "")}</span></div><div class="grid"><figure><img src="${escapeHtml(source)}" alt="Source"><figcaption><strong>Raw Source</strong><br>${formatImageMetric(item.sourceMetrics)} | ${formatBytes(item.sourceMetrics.bytes)}</figcaption></figure>${outputFigures}</div></section>`;
   }).join("");
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Qwen vs Nano Banana 2</title><style>body{margin:0;font-family:Arial,sans-serif;background:#f6f9fc;color:#061b38}main{max-width:1280px;margin:0 auto;padding:28px}h1{margin:0 0 8px;font-size:28px}.summary{color:#516176;margin-bottom:18px;line-height:1.45}.item{background:#fff;border:1px solid #dbeaf5;border-radius:8px;padding:14px;margin-bottom:14px}.meta{display:flex;gap:10px;flex-wrap:wrap;color:#516176;margin-bottom:12px}.meta strong{color:#061b38}.grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:12px}figure{margin:0;background:#eef4f8;border:1px solid #d5e5f0;border-radius:8px;overflow:hidden}img{display:block;width:100%;height:300px;object-fit:contain;background:#f8fbfd}figcaption{padding:10px 12px;font-size:13px;font-weight:700;color:#516176;line-height:1.35}figcaption strong{color:#061b38}@media(max-width:860px){main{padding:16px}.grid{grid-template-columns:1fr}img{height:260px}}</style></head><body><main><h1>Qwen vs Nano Banana 2 Edit</h1><div class="summary">Created ${escapeHtml(manifest.createdAt)}<br>Prompt: ${escapeHtml(manifest.prompt)}<br>Total estimated cost: ${formatCost(manifest.billingSummary?.totalEstimatedCostUsd)} / ${formatUsageUnits(manifest.billingSummary)}</div>${rows}</main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Qwen vs Nano Banana 2</title><style>body{margin:0;font-family:Arial,sans-serif;background:#f6f9fc;color:#061b38}main{max-width:1280px;margin:0 auto;padding:28px}h1{margin:0 0 8px;font-size:28px}.summary{color:#516176;margin-bottom:18px;line-height:1.45}.audit{background:#fff;border:1px solid #dbeaf5;border-radius:8px;padding:12px;margin-bottom:14px;color:#516176;font-size:13px;line-height:1.45}.item{background:#fff;border:1px solid #dbeaf5;border-radius:8px;padding:14px;margin-bottom:14px}.meta{display:flex;gap:10px;flex-wrap:wrap;color:#516176;margin-bottom:12px}.meta strong{color:#061b38}.grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:12px}figure{margin:0;background:#eef4f8;border:1px solid #d5e5f0;border-radius:8px;overflow:hidden}img{display:block;width:100%;height:300px;object-fit:contain;background:#f8fbfd}figcaption{padding:10px 12px;font-size:13px;font-weight:700;color:#516176;line-height:1.35}figcaption strong{color:#061b38}@media(max-width:860px){main{padding:16px}.grid{grid-template-columns:1fr}img{height:260px}}</style></head><body><main><h1>Qwen vs Nano Banana 2 Edit</h1><div class="summary">Created ${escapeHtml(manifest.createdAt)}<br>Prompt: ${escapeHtml(manifest.prompt)}<br>Total estimated cost: ${formatCost(manifest.billingSummary?.totalEstimatedCostUsd)} / ${formatUsageUnits(manifest.billingSummary)}</div><div class="audit"><strong>fal.ai audit</strong><br>${escapeHtml(formatFalAuditSummary(manifest.falAudit))}</div>${rows}</main></body></html>`;
 }
 
 function formatImageMetric(metrics = {}) {
@@ -456,6 +582,21 @@ function formatMs(value) {
 function formatUsageUnits(usage = {}) {
   const units = Number(usage.totalBillableUnits ?? usage.billableUnits);
   return Number.isFinite(units) ? `${units} ${escapeHtml(usage.billingUnit ?? "unit")}` : "-";
+}
+
+function formatFalAudit(audit) {
+  if (!audit) return "";
+  const headers = audit.responseHeaders ?? {};
+  return `fal units: ${headers.billableUnits ?? "-"} | served: ${headers.servedFrom ?? "-"}`;
+}
+
+function formatFalAuditSummary(audit = {}) {
+  const nanoPrice = audit.pricing?.prices?.find((price) => price.endpoint_id === NANO_BANANA_ENDPOINT_ID);
+  const billing = audit.billingEvents;
+  return [
+    `Nano pricing API: ${nanoPrice ? `$${nanoPrice.unit_price} / ${nanoPrice.unit}` : "not available"}`,
+    `Billing events API: ${billing?.ok ? `${billing.billingEvents?.length ?? 0} event(s)` : billing?.error?.message ?? billing?.note ?? "not checked"}`,
+  ].join(" | ");
 }
 
 function formatCost(value) {

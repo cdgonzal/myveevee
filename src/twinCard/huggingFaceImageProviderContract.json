@@ -4,7 +4,8 @@
   "purpose": "Replay-only contract for testing external Hugging Face image-to-image models against Twin Card source images before any production integration.",
   "mode": "replay_only",
   "requiredEnvironment": [
-    "HF_TOKEN"
+    "HF_TOKEN",
+    "FAL_KEY"
   ],
   "safetyRules": [
     "Do not use live participant photos with external providers unless consent and legal/commercial review explicitly allow it.",
@@ -90,6 +91,22 @@
     ],
     "knownRates": [
       {
+        "modelId": "fal-ai/nano-banana-2/edit",
+        "hfProvider": null,
+        "providerEndpointId": "fal-ai/nano-banana-2/edit",
+        "billingUnit": "images",
+        "unitPriceUsd": 0.08,
+        "pricingSourceUrl": "https://api.fal.ai/v1/models/pricing?endpoint_id=fal-ai%2Fnano-banana-2%2Fedit"
+      },
+      {
+        "modelId": "openai/gpt-image-2/edit",
+        "hfProvider": null,
+        "providerEndpointId": "openai/gpt-image-2/edit",
+        "billingUnit": "units",
+        "unitPriceUsd": 1,
+        "pricingSourceUrl": "https://api.fal.ai/v1/models/pricing?endpoint_id=openai%2Fgpt-image-2%2Fedit"
+      },
+      {
         "modelId": "black-forest-labs/FLUX.1-Kontext-dev",
         "hfProvider": "replicate",
         "providerEndpointId": "black-forest-labs/flux-kontext-dev",
@@ -116,40 +133,45 @@
     ]
   },
   "topCandidateStrategy": {
-    "version": "2026-05-26",
+    "version": "2026-05-27",
     "selectionRule": "Rank model/provider pairs, not only model ids, because provider routing changes availability, billing, and output behavior.",
     "currentWinner": {
       "rank": 1,
       "role": "primary",
-      "modelId": "Qwen/Qwen-Image-Edit",
-      "hfProvider": "replicate",
+      "modelId": "fal-ai/nano-banana-2/edit",
+      "hfProvider": null,
+      "provider": "fal.ai",
+      "providerEndpointId": "fal-ai/nano-banana-2/edit",
       "bestObservedCardId": "0a0ffaf8-6235-4b12-bf13-7816e88bdc13",
-      "bestObservedRecipeId": "qwen_image_edit_replicate_no_text_avatar_v1",
-      "reason": "Current preferred candidate after simplifying the Qwen prompt. Qwen produced the preferred replay outputs with the exact no-text wellness-avatar prompt.",
+      "bestObservedRecipeId": "fal_nano_banana_2_edit_avatar_v1",
+      "reason": "Current preferred candidate after side-by-side replay. Nano Banana 2 Edit produced the strongest avatar output and has direct fal.ai audit headers plus pricing API support.",
       "status": "top_candidate",
-      "nextTest": "Compare Qwen against one non-Qwen candidate at a time. FLUX.2-dev via replicate completed a one-card probe and is the recommended next comparison candidate."
+      "nextTest": "Before comparing against GPT Image 2 Edit, keep fal response headers, pricing API results, and billing-events permission status in every replay manifest."
     },
     "rankedCandidates": [
       {
         "rank": 1,
         "role": "primary",
-        "modelId": "Qwen/Qwen-Image-Edit",
-        "hfProvider": "replicate",
-        "providerEndpointId": "qwen/qwen-image-edit",
-        "recipeId": "qwen_image_edit_replicate_no_text_avatar_v1",
-        "strength": "Current preferred image-edit candidate for clean 2D wellness-avatar outputs with recognizable face features.",
-        "why": "The simplified fixed prompt removed extra context and Qwen completed replay through Hugging Face with explicit replicate routing.",
-        "knownIssue": "Qwen can render text when prompts imply cards, labels, or typography; keep the recipe short and explicitly no-text."
+        "modelId": "fal-ai/nano-banana-2/edit",
+        "hfProvider": null,
+        "provider": "fal.ai",
+        "providerEndpointId": "fal-ai/nano-banana-2/edit",
+        "recipeId": "fal_nano_banana_2_edit_avatar_v1",
+        "strength": "Current preferred direct-provider image-edit candidate for likeness-preserving 2D wellness-avatar outputs.",
+        "why": "The Qwen vs Nano Banana replay made Nano Banana 2 Edit the new front-runner. fal response headers expose request id and billable units, and fal Platform pricing gives current unit price.",
+        "knownIssue": "Request-level billing events require a fal admin API key; with a normal inference key, cost visibility relies on response billable units multiplied by pricing API unit price."
       },
       {
         "rank": 2,
-        "role": "open_candidate_slot",
-        "modelId": null,
+        "role": "comparison_candidate",
+        "modelId": "openai/gpt-image-2/edit",
         "hfProvider": null,
-        "providerEndpointId": null,
-        "strength": "Reserved for the next non-Qwen model that beats or complements Qwen in replay.",
-        "why": "Keep this slot intentionally empty until a side-by-side comparison proves the next candidate.",
-        "knownIssue": "Do not fill this slot from marketing preference or model popularity alone; require replay evidence."
+        "provider": "fal.ai",
+        "providerEndpointId": "openai/gpt-image-2/edit",
+        "recipeId": "fal_gpt_image_2_edit_avatar_v1",
+        "strength": "Next direct fal.ai comparison candidate because it has an edit endpoint and a different model family from Nano Banana.",
+        "why": "Use this only after the fal audit path records price, request id, billable units, and billing-events permission status.",
+        "knownIssue": "fal pricing reports a generic units price for this endpoint; final per-run cost must be validated through request headers and, ideally, admin billing events."
       },
       {
         "rank": 3,
