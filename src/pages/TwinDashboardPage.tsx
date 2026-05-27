@@ -3,6 +3,7 @@ import {
   Badge,
   Box,
   Button,
+  Collapse,
   Divider,
   Flex,
   Grid,
@@ -52,7 +53,6 @@ export default function TwinDashboardPage() {
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
   const stats = useMemo(() => buildStats(cards), [cards]);
-  const latestImageReviewCards = useMemo(() => cards.slice(0, 5), [cards]);
 
   const unlockDashboard = async () => {
     if (pin !== DASHBOARD_PIN) {
@@ -181,7 +181,7 @@ export default function TwinDashboardPage() {
                     </Grid>
                   </TabPanel>
                   <TabPanel p={0}>
-                    <ImageReview cards={latestImageReviewCards} />
+                    <ImageReview cards={cards} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -227,7 +227,22 @@ function ArtifactLinks({ card }: { card: TwinCardApiCard }) {
   );
 }
 
+type ReplayComparisonGroup = {
+  id: string;
+  runId: string;
+  sourceCardId: string;
+  firstName: string;
+  wellnessInterestLabel: string;
+  createdAt: string;
+  source: TwinCardApiCard;
+  nano?: TwinCardApiCard;
+  gpt?: TwinCardApiCard;
+};
+
 function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
+  const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
+  const replayGroups = useMemo(() => buildReplayComparisonGroups(cards), [cards]);
+
   if (!cards.length) {
     return (
       <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
@@ -236,9 +251,82 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
     );
   }
 
+  if (replayGroups.length) {
+    const toggleDetails = (groupId: string) => {
+      setExpandedGroupIds((current) =>
+        current.includes(groupId) ? current.filter((id) => id !== groupId) : [...current, groupId]
+      );
+    };
+
+    return (
+      <Stack spacing={4}>
+        {replayGroups.map((group) => {
+          const isExpanded = expandedGroupIds.includes(group.id);
+          return (
+            <Box key={group.id} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+              <Stack spacing={4}>
+                <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+                  <Stack spacing={1}>
+                    <HStack spacing={2} flexWrap="wrap">
+                      <Heading as="h2" size="sm">{group.firstName}</Heading>
+                      <Badge colorScheme="purple">Replay Compare</Badge>
+                    </HStack>
+                    <Text color="#516176" fontSize="sm">
+                      {formatDate(group.createdAt)} | {group.wellnessInterestLabel} | {group.runId}
+                    </Text>
+                  </Stack>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="#b7d6e8"
+                    onClick={() => toggleDetails(group.id)}
+                    rightIcon={<Text as="span" fontWeight="900">{isExpanded ? "⌃" : "⌄"}</Text>}
+                  >
+                    Details
+                  </Button>
+                </Flex>
+
+                <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
+                  <ReplayImagePanel
+                    title="Raw Capture"
+                    imageUrl={group.source.sourceImageUrl}
+                    s3Key={group.source.sourceImageS3Key}
+                    metrics={`Source | ${formatBytes(group.source.sourceImageBytes)}`}
+                    isExpanded={isExpanded}
+                    details={[
+                      ["Card", group.sourceCardId],
+                      ["S3", group.source.sourceImageS3Key ?? "-"],
+                      ["Image", formatOriginal(group.source)],
+                    ]}
+                  />
+                  <ReplayImagePanel
+                    title="Nano Banana 2 Edit"
+                    imageUrl={group.nano?.generatedAvatarUrl}
+                    s3Key={group.nano?.generatedAvatarS3Key}
+                    metrics={formatReplayMetrics(group.nano)}
+                    isExpanded={isExpanded}
+                    details={buildReplayDetails(group.nano)}
+                  />
+                  <ReplayImagePanel
+                    title="GPT Image 2 Edit"
+                    imageUrl={group.gpt?.generatedAvatarUrl}
+                    s3Key={group.gpt?.generatedAvatarS3Key}
+                    metrics={formatReplayMetrics(group.gpt)}
+                    isExpanded={isExpanded}
+                    details={buildReplayDetails(group.gpt)}
+                  />
+                </SimpleGrid>
+              </Stack>
+            </Box>
+          );
+        })}
+      </Stack>
+    );
+  }
+
   return (
     <Stack spacing={4}>
-      {cards.map((card) => (
+      {cards.slice(0, 3).map((card) => (
         <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
           <Stack spacing={4}>
             <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
@@ -265,6 +353,82 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
           </Stack>
         </Box>
       ))}
+    </Stack>
+  );
+}
+
+function ReplayImagePanel({
+  title,
+  imageUrl,
+  s3Key,
+  metrics,
+  isExpanded,
+  details,
+}: {
+  title: string;
+  imageUrl?: string;
+  s3Key?: string;
+  metrics: string;
+  isExpanded: boolean;
+  details: Array<[string, string]>;
+}) {
+  return (
+    <Stack spacing={2}>
+      <Flex justify="space-between" gap={3} align="center" minH="24px">
+        <Text fontWeight="900">{title}</Text>
+        {imageUrl ? (
+          <Link href={imageUrl} isExternal color="#1177BA" fontSize="sm" fontWeight="700">
+            Open
+          </Link>
+        ) : null}
+      </Flex>
+      <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="8px" overflow="hidden" h={{ base: "240px", md: "260px" }}>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={title}
+            w="100%"
+            h="100%"
+            objectFit="contain"
+            bg="#f8fbfd"
+            onLoad={(event) => {
+              const image = event.currentTarget;
+              debugDashboard("image loaded", {
+                title,
+                s3Key,
+                urlHost: readUrlHost(imageUrl),
+                naturalWidth: image.naturalWidth,
+                naturalHeight: image.naturalHeight,
+              });
+            }}
+            onError={(event) => {
+              debugDashboard("image error", {
+                title,
+                s3Key,
+                urlHost: readUrlHost(imageUrl),
+                currentSrc: event.currentTarget.currentSrc,
+              });
+            }}
+          />
+        ) : (
+          <Flex h="100%" align="center" justify="center" px={4} textAlign="center">
+            <Text color="#6b7890">No image URL available.</Text>
+          </Flex>
+        )}
+      </Box>
+      <Text color="#516176" fontSize="sm" fontWeight="800">{metrics}</Text>
+      <Collapse in={isExpanded} animateOpacity>
+        <Box bg="#f8fbfd" border="1px solid #e5f0f7" borderRadius="8px" p={3}>
+          <Stack spacing={2}>
+            {details.map(([label, value]) => (
+              <Stack key={label} spacing={0}>
+                <Text color="#6b7890" fontSize="xs" textTransform="uppercase">{label}</Text>
+                <Text color="#061b38" fontSize="sm" wordBreak="break-word">{value}</Text>
+              </Stack>
+            ))}
+          </Stack>
+        </Box>
+      </Collapse>
     </Stack>
   );
 }
@@ -504,6 +668,97 @@ function RenderStatusBadge({ status }: { status?: string }) {
       {getTwinCardRenderStatusLabel(status)}
     </Badge>
   );
+}
+
+function buildReplayComparisonGroups(cards: TwinCardApiCard[]): ReplayComparisonGroup[] {
+  const replayCards = cards
+    .filter(isReplayCard)
+    .filter((card) => isNanoModel(card.replayModelId) || isGptImageModel(card.replayModelId));
+  if (!replayCards.length) return [];
+
+  const latestRunId = replayCards
+    .map((card) => readReplayRunId(card))
+    .filter(Boolean)
+    .sort((left, right) => Date.parse(readLatestCreatedAtForRun(replayCards, right)) - Date.parse(readLatestCreatedAtForRun(replayCards, left)))[0];
+  if (!latestRunId) return [];
+
+  const groups = new Map<string, ReplayComparisonGroup>();
+  for (const card of replayCards.filter((item) => readReplayRunId(item) === latestRunId)) {
+    const sourceCardId = readReplaySourceCardId(card);
+    if (!sourceCardId) continue;
+
+    const existing = groups.get(sourceCardId) ?? {
+      id: `${latestRunId}:${sourceCardId}`,
+      runId: latestRunId,
+      sourceCardId,
+      firstName: card.firstName,
+      wellnessInterestLabel: card.wellnessInterestLabel,
+      createdAt: card.createdAt,
+      source: card,
+    };
+
+    existing.source = existing.source.sourceImageUrl ? existing.source : card;
+    existing.createdAt = Date.parse(card.createdAt) > Date.parse(existing.createdAt) ? card.createdAt : existing.createdAt;
+    if (isNanoModel(card.replayModelId)) existing.nano = card;
+    if (isGptImageModel(card.replayModelId)) existing.gpt = card;
+    groups.set(sourceCardId, existing);
+  }
+
+  return [...groups.values()]
+    .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+    .slice(0, 3);
+}
+
+function readLatestCreatedAtForRun(cards: TwinCardApiCard[], runId: string) {
+  return cards
+    .filter((card) => readReplayRunId(card) === runId)
+    .map((card) => card.createdAt)
+    .sort((left, right) => Date.parse(right) - Date.parse(left))[0] ?? "";
+}
+
+function readReplayRunId(card: TwinCardApiCard) {
+  if (card.replayRunId) return card.replayRunId;
+  const match = card.cardId.match(/^replay#([^#]+)/);
+  return match?.[1] ?? "";
+}
+
+function readReplaySourceCardId(card: TwinCardApiCard) {
+  if (card.replaySourceCardId) return card.replaySourceCardId;
+  const match = card.cardId.match(/^replay#[^#]+#([^#]+)/);
+  return match?.[1] ?? "";
+}
+
+function isNanoModel(modelId?: string) {
+  return modelId === "fal-ai/nano-banana-2/edit";
+}
+
+function isGptImageModel(modelId?: string) {
+  return modelId === "openai/gpt-image-2/edit";
+}
+
+function formatReplayMetrics(card?: TwinCardApiCard) {
+  if (!card) return "Not available";
+  return `${formatCurrency(card.bedrockUsage?.totalEstimatedCostUsd)} | ${formatMs(getReplayDurationMs(card))}`;
+}
+
+function buildReplayDetails(card?: TwinCardApiCard): Array<[string, string]> {
+  if (!card) return [["Status", "Not available"]];
+  const attempt = card.bedrockProviderAttempts?.[0];
+  return [
+    ["Model", card.replayModelId ?? getBedrockModelId(card)],
+    ["Provider", card.replayProvider ?? attempt?.provider ?? card.generationProvider],
+    ["Status", card.generationStatus],
+    ["Cost", formatCurrency(card.bedrockUsage?.totalEstimatedCostUsd)],
+    ["Usage", formatUsageUnits(card.bedrockUsage)],
+    ["Duration", formatMs(getReplayDurationMs(card))],
+    ["Request ID", attempt?.requestId ?? "-"],
+    ["Bytes", formatBytes(card.generatedAvatarBytes)],
+    ["S3", card.generatedAvatarS3Key ?? "-"],
+  ];
+}
+
+function getReplayDurationMs(card: TwinCardApiCard) {
+  return card.bedrockProviderAttempts?.[0]?.durationMs;
 }
 
 function buildStats(cards: TwinCardApiCard[]) {
