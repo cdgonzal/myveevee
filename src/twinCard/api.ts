@@ -38,6 +38,9 @@ export type TwinCardApiCard = {
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardLead["renderStatus"];
   fulfillmentStatus?: TwinCardLead["fulfillmentStatus"];
+  printedAt?: string;
+  lastPrintedAt?: string;
+  printedCount?: number;
   eventName: string;
   createdAt: string;
   updatedAt: string;
@@ -171,6 +174,24 @@ export async function fetchRecentTwinCards(dashboardPin?: string): Promise<TwinC
   return payload.cards;
 }
 
+export async function markTwinCardPrinted(cardId: string, dashboardPin?: string): Promise<TwinCardApiCard | null> {
+  const endpoint = TWIN_CARD_API_URL?.trim();
+  if (!endpoint) return null;
+
+  const adminEndpoint = endpoint.replace(/\/twin-card\/cards\/?$/, `/twin-card/admin/cards/${encodeURIComponent(cardId)}/printed`);
+  const response = await fetch(adminEndpoint, {
+    method: "POST",
+    headers: dashboardPin ? { "x-twin-dashboard-pin": dashboardPin } : undefined,
+  });
+  const payload = (await response.json().catch(() => ({}))) as { card?: TwinCardApiCard };
+
+  if (!response.ok || !payload.card) {
+    return null;
+  }
+
+  return payload.card;
+}
+
 export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): TwinCardLead {
   return {
     id: fallback?.id ?? card.cardId,
@@ -196,6 +217,9 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     avatarRecipeVersion: card.avatarRecipeVersion ?? fallback?.avatarRecipeVersion,
     renderStatus: card.renderStatus ?? fallback?.renderStatus,
     fulfillmentStatus: card.fulfillmentStatus ?? fallback?.fulfillmentStatus,
+    printedAt: card.printedAt ?? fallback?.printedAt,
+    lastPrintedAt: card.lastPrintedAt ?? fallback?.lastPrintedAt,
+    printedCount: card.printedCount ?? fallback?.printedCount,
     eventName: card.eventName,
     boothDeviceId: card.boothDeviceId ?? fallback?.boothDeviceId,
     deviceMetadata: card.deviceMetadata ?? fallback?.deviceMetadata,

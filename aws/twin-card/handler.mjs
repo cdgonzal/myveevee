@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { DynamoDBDocumentClient, GetCommand, PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, PutCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
   DEFAULT_CARDS_PREFIX,
@@ -46,6 +46,10 @@ export async function handler(event) {
 
     if (route.endsWith("GET /twin-card/admin/cards")) {
       return await listCards(event, origin);
+    }
+
+    if ((event.requestContext?.http?.method ?? "") === "POST" && (event.rawPath ?? "").startsWith("/twin-card/admin/cards/") && (event.rawPath ?? "").endsWith("/printed")) {
+      return await markCardPrinted(event, origin);
     }
 
     return response(404, { message: "Not found." }, origin);
@@ -168,6 +172,53 @@ async function listCards(event, origin) {
   return response(200, { ok: true, cards: await Promise.all(cards.map((card) => serializeCard(card, { includePrivateFields: true }))) }, origin);
 }
 
+async function markCardPrinted(event, origin) {
+  if (!isDashboardAuthorized(event)) {
+    return response(403, { message: "Dashboard PIN required." }, origin);
+  }
+
+  const match = (event.rawPath ?? "").match(/\/twin-card\/admin\/cards\/([^/]+)\/printed$/);
+  const cardId = decodeURIComponent(match?.[1] ?? "");
+  if (!cardId) {
+    return response(400, { message: "Card ID required." }, origin);
+  }
+
+  const existing = await loadCard(cardId);
+  if (!existing) {
+    return response(404, { message: "Twin Card not found." }, origin);
+  }
+
+  const now = new Date().toISOString();
+  let result;
+  try {
+    result = await dynamo.send(
+      new UpdateCommand({
+        TableName: CARDS_TABLE,
+        Key: { cardId },
+        ConditionExpression: "attribute_exists(cardId)",
+        UpdateExpression: "SET fulfillmentStatus = :printed, printedAt = if_not_exists(printedAt, :now), lastPrintedAt = :now, updatedAt = :now ADD printedCount :one",
+        ExpressionAttributeValues: {
+          ":printed": "printed",
+          ":now": now,
+          ":one": 1,
+        },
+        ReturnValues: "ALL_NEW",
+      })
+    );
+  } catch (error) {
+    if (error?.name === "ConditionalCheckFailedException") {
+      return response(404, { message: "Twin Card not found." }, origin);
+    }
+    throw error;
+  }
+
+  if (!result.Attributes) {
+    return response(404, { message: "Twin Card not found." }, origin);
+  }
+
+  return response(200, { ok: true, card: await serializeCard(result.Attributes, { includePrivateFields: true }) }, origin);
+}
+
 async function loadCard(cardId) {
   if (!cardId) return null;
   const result = await dynamo.send(
@@ -203,6 +254,9 @@ async function serializeCard(card, options = {}) {
     avatarRecipeVersion: card.avatarRecipeVersion,
     renderStatus: card.renderStatus,
     fulfillmentStatus: card.fulfillmentStatus,
+    printedAt: card.printedAt,
+    lastPrintedAt: card.lastPrintedAt,
+    printedCount: Number(card.printedCount ?? 0),
     eventName: card.eventName,
     createdAt: card.createdAt,
     updatedAt: card.updatedAt,

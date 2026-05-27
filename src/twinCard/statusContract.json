@@ -84,12 +84,12 @@
     "not_printed": {
       "dashboardLabel": "Not printed",
       "meaning": "No staff print action has been recorded.",
-      "currentUsage": "Future field."
+      "currentUsage": "Default fulfillment state for new Twin Card runs."
     },
     "printed": {
       "dashboardLabel": "Printed",
       "meaning": "Staff marked the card as printed at the booth.",
-      "currentUsage": "Future field."
+      "currentUsage": "Set by the Twin Dashboard Cards tab when staff prints a Canon-ready card. Each print action increments printedCount and updates lastPrintedAt."
     },
     "email_pending": {
       "dashboardLabel": "Email pending",

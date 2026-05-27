@@ -26,8 +26,9 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
-import { apiCardToLead, fetchRecentTwinCards, type TwinCardApiCard } from "../twinCard/api";
+import { apiCardToLead, fetchRecentTwinCards, markTwinCardPrinted, type TwinCardApiCard } from "../twinCard/api";
 import { listTwinCardLeads } from "../twinCard/storage";
 import {
   getTwinCardGenerationStatusColorScheme,
@@ -50,9 +51,39 @@ export default function TwinDashboardPage() {
   const [state, setState] = useState<DashboardState>("locked");
   const [cards, setCards] = useState<TwinCardApiCard[]>([]);
   const [selectedCardId, setSelectedCardId] = useState("");
+  const [printingCardId, setPrintingCardId] = useState("");
+  const toast = useToast();
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
   const stats = useMemo(() => buildStats(cards), [cards]);
+  const printReadyCards = useMemo(() => cards.filter(isPrintReadyCard), [cards]);
+
+  const handlePrintCard = async (card: TwinCardApiCard) => {
+    if (!card.printImageUrl) return;
+
+    setPrintingCardId(card.cardId);
+    openPrintWindow(card);
+    const updatedCard = await markTwinCardPrinted(card.cardId, DASHBOARD_PIN).catch(() => null);
+    if (updatedCard) {
+      setCards((current) => current.map((item) => (item.cardId === updatedCard.cardId ? updatedCard : item)));
+      toast({
+        title: "Print recorded",
+        description: `${updatedCard.firstName} has been marked printed ${updatedCard.printedCount ?? 1} time${(updatedCard.printedCount ?? 1) === 1 ? "" : "s"}.`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Print opened, count not saved",
+        description: "The browser print dialog opened, but the dashboard could not update the printed count.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    setPrintingCardId("");
+  };
 
   const unlockDashboard = async () => {
     if (pin !== DASHBOARD_PIN) {
@@ -123,9 +154,9 @@ export default function TwinDashboardPage() {
                 <SimpleGrid columns={{ base: 1, md: 3, xl: 6 }} spacing={4}>
                   <StatBox label="Runs" value={String(stats.total)} />
                   <StatBox label="Replays" value={String(stats.replays)} />
-                  <StatBox label="Print Ready" value={String(stats.printReady)} />
+                  <StatBox label="Cards Generated" value={String(stats.cardsGenerated)} />
+                  <StatBox label="Cards Printed" value={String(stats.cardsPrinted)} />
                   <StatBox label="AI Complete" value={String(stats.completed)} />
-                  <StatBox label="Photo Fallback" value={String(stats.fallback)} />
                   <StatBox label="Consented" value={String(stats.consented)} />
                 </SimpleGrid>
                 <CostPill costs={stats.costs} />
@@ -134,7 +165,8 @@ export default function TwinDashboardPage() {
               <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
                 <TabList gap={2} flexWrap="wrap">
                   <Tab>Runs</Tab>
-                  <Tab>Image Review</Tab>
+                  <Tab>Images</Tab>
+                  <Tab>Cards</Tab>
                 </TabList>
                 <TabPanels pt={5}>
                   <TabPanel p={0}>
@@ -184,6 +216,15 @@ export default function TwinDashboardPage() {
                   </TabPanel>
                   <TabPanel p={0}>
                     <ImageReview cards={cards} />
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    <CardsPrintPanel
+                      cards={printReadyCards}
+                      generatedCount={stats.cardsGenerated}
+                      printedCount={stats.cardsPrinted}
+                      printingCardId={printingCardId}
+                      onPrintCard={handlePrintCard}
+                    />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -355,6 +396,100 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
           </Stack>
         </Box>
       ))}
+    </Stack>
+  );
+}
+
+function CardsPrintPanel({
+  cards,
+  generatedCount,
+  printedCount,
+  printingCardId,
+  onPrintCard,
+}: {
+  cards: TwinCardApiCard[];
+  generatedCount: number;
+  printedCount: number;
+  printingCardId: string;
+  onPrintCard: (card: TwinCardApiCard) => void | Promise<void>;
+}) {
+  if (!cards.length) {
+    return (
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
+        <Text color="#516176">No print-ready cards yet.</Text>
+      </Box>
+    );
+  }
+
+  return (
+    <Stack spacing={4}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+        <StatBox label="Cards Generated" value={String(generatedCount)} />
+        <StatBox label="Cards Printed" value={String(printedCount)} />
+      </SimpleGrid>
+
+      <Box overflowX="auto" bg="white" border="1px solid #dbeaf5" borderRadius="8px">
+        <Table size="sm">
+          <Thead>
+            <Tr>
+              <Th>Card</Th>
+              <Th>Goal</Th>
+              <Th>Created</Th>
+              <Th>Print Ready Asset</Th>
+              <Th isNumeric>Printed</Th>
+              <Th>Last Printed</Th>
+              <Th>Action</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {cards.map((card) => (
+              <Tr key={card.cardId}>
+                <Td>
+                  <HStack spacing={3} minW="230px">
+                    <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="6px" overflow="hidden" w="64px" h="96px" flex="0 0 auto">
+                      {card.printImageUrl ? (
+                        <Image src={card.printImageUrl} alt={`${card.firstName} Twin Card`} w="100%" h="100%" objectFit="cover" />
+                      ) : null}
+                    </Box>
+                    <Stack spacing={0}>
+                      <Text fontWeight="900">{card.firstName}</Text>
+                      <Text color="#516176" fontSize="sm">{card.cardId}</Text>
+                      {isReplayCard(card) ? <Badge colorScheme="purple" w="fit-content">Replay</Badge> : null}
+                    </Stack>
+                  </HStack>
+                </Td>
+                <Td>{card.wellnessInterestLabel}</Td>
+                <Td whiteSpace="nowrap">{formatDate(card.createdAt)}</Td>
+                <Td>
+                  <Stack spacing={1}>
+                    {card.printImageUrl ? (
+                      <Link href={card.printImageUrl} isExternal color="#1177BA" fontWeight="800">
+                        Canon PNG
+                      </Link>
+                    ) : null}
+                    <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{card.printImageS3Key ?? "-"}</Text>
+                  </Stack>
+                </Td>
+                <Td isNumeric fontWeight="900">{card.printedCount ?? 0}</Td>
+                <Td whiteSpace="nowrap">{card.lastPrintedAt ? formatDate(card.lastPrintedAt) : "-"}</Td>
+                <Td>
+                  <Button
+                    size="sm"
+                    bg="#1177BA"
+                    color="white"
+                    _hover={{ bg: "#0b5d94" }}
+                    isDisabled={!card.printImageUrl}
+                    isLoading={printingCardId === card.cardId}
+                    onClick={() => void onPrintCard(card)}
+                  >
+                    Print Card
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
     </Stack>
   );
 }
@@ -802,19 +937,26 @@ function getReplayDurationMs(card: TwinCardApiCard) {
 
 function buildStats(cards: TwinCardApiCard[]) {
   const costs = buildProviderCostSummary(cards);
+  const printReadyCards = cards.filter(isPrintReadyCard);
   return {
     total: cards.length,
     replays: cards.filter(isReplayCard).length,
     completed: cards.filter((card) => card.generationStatus === "completed").length,
     fallback: cards.filter((card) => card.generationStatus === "fallback_used").length,
-    printReady: cards.filter(
-      (card) =>
-        isTwinCardGenerationStatusPrintable(card.generationStatus) &&
-        isTwinCardRenderStatusPrintReady(card.renderStatus)
-    ).length,
+    printReady: printReadyCards.length,
+    cardsGenerated: printReadyCards.length,
+    cardsPrinted: printReadyCards.reduce((sum, card) => sum + Number(card.printedCount ?? 0), 0),
     consented: cards.filter((card) => card.consentAccepted).length,
     costs,
   };
+}
+
+function isPrintReadyCard(card: TwinCardApiCard) {
+  return (
+    Boolean(card.printImageUrl) &&
+    isTwinCardGenerationStatusPrintable(card.generationStatus) &&
+    isTwinCardRenderStatusPrintReady(card.renderStatus)
+  );
 }
 
 function buildProviderCostSummary(cards: TwinCardApiCard[]): ProviderCostSummary {
@@ -895,6 +1037,9 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     avatarRecipeVersion: lead.avatarRecipeVersion,
     renderStatus: lead.renderStatus,
     fulfillmentStatus: lead.fulfillmentStatus,
+    printedAt: lead.printedAt,
+    lastPrintedAt: lead.lastPrintedAt,
+    printedCount: lead.printedCount,
     eventName: lead.eventName,
     boothDeviceId: lead.boothDeviceId,
     deviceMetadata: lead.deviceMetadata,
@@ -981,6 +1126,40 @@ function formatBytes(value?: number) {
 function formatDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
+function openPrintWindow(card: TwinCardApiCard) {
+  if (!card.printImageUrl) return;
+  const printWindow = window.open("", "_blank", "noopener,noreferrer,width=900,height=1100");
+  if (!printWindow) {
+    window.open(card.printImageUrl, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  printWindow.document.write(`<!doctype html>
+<html>
+<head>
+  <title>${escapeHtml(card.firstName)} Twin Card</title>
+  <style>
+    @page { size: 4in 6in; margin: 0; }
+    html, body { margin: 0; width: 100%; min-height: 100%; background: #fff; }
+    body { display: grid; place-items: center; }
+    img { width: 4in; height: 6in; object-fit: contain; display: block; }
+  </style>
+</head>
+<body>
+  <img src="${escapeHtml(card.printImageUrl)}" alt="${escapeHtml(card.firstName)} Twin Card" onload="window.focus(); window.print();" />
+</body>
+</html>`);
+  printWindow.document.close();
+}
+
+function escapeHtml(value: string) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function formatMs(value?: number) {

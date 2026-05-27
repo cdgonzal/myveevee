@@ -108,6 +108,9 @@ export type TwinCardLead = {
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardRenderStatus;
   fulfillmentStatus?: TwinCardFulfillmentStatus;
+  printedAt?: string;
+  lastPrintedAt?: string;
+  printedCount?: number;
   eventName: string;
   boothDeviceId?: string;
   deviceMetadata?: TwinCardDeviceMetadata;

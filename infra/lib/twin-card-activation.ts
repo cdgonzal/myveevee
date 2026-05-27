@@ -270,6 +270,12 @@ export class TwinCardActivation extends Construct {
       integration,
     });
 
+    this.api.addRoutes({
+      path: "/twin-card/admin/cards/{cardId}/printed",
+      methods: [apigatewayv2.HttpMethod.POST],
+      integration,
+    });
+
     const alertTopic = new sns.Topic(this, "OperationalAlertsTopic", {
       topicName: `${resourcePrefix}-operational-alerts`,
       displayName: "Twin Card operational alerts",

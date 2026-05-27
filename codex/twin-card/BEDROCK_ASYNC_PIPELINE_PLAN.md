@@ -189,6 +189,13 @@ Current print composition:
 - Footer line with the provided SWCA vector logo asset and `Spine and Wellness Centers of America` wordmark treatment.
 - No custom font files, no diagnosis, no risk score, no medical claim, and no clinical interpretation.
 
+Dashboard print operations:
+
+- `/twin-dashboard` separates `Images` from `Cards`.
+- `Images` is for raw capture and generated-avatar review.
+- `Cards` is for final Canon-ready PNGs only. Staff can open browser print for each row, and each print action calls the PIN-gated admin API to increment `printedCount`, set `fulfillmentStatus=printed`, and update `lastPrintedAt`.
+- The Cards tab shows total cards generated from print-ready rows and total cards printed from the sum of `printedCount`.
+
 ## Prompt Contract
 
 Bedrock avatar prompts should be generated server-side from controlled templates, not raw user text.
