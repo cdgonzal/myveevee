@@ -36,6 +36,9 @@ type FlowLanguage = "en" | "es";
 const CONFIRMATION_REDIRECT_MS = 12_000;
 const CONFIRMATION_REDIRECT_SECONDS = Math.ceil(CONFIRMATION_REDIRECT_MS / 1000);
 const CONFIRMATION_REDIRECT_URL = "https://myveevee.com/swca/funnel";
+const CARD_NAVY = "#061b38";
+const CARD_GOLD = "#d88a05";
+const CARD_PAPER = "#fffdf8";
 
 type ConfirmationMode = "restart" | "redirect";
 
@@ -55,27 +58,27 @@ const initialForm: TwinCardFormValues = {
 const copy = {
   en: {
     start: "Start",
-    title: "Create your VeeVee Twin Card",
+    title: "Create your Digital Health Twin",
     event: `${TWIN_CARD_EVENT_NAME} · ${TWIN_CARD_EVENT_DATE}`,
     firstName: "First name",
     email: "Email",
     continue: "Continue",
-    goalsTitle: "Choose your wellness focus",
+    goalsTitle: "Select One Goal",
     goals: {
       track_goals: {
         title: "Move With Less Pain",
-        subtitle: "Focus on comfort and mobility.",
-        bullets: ["Ease daily movement", "Reduce stiffness", "Feel more comfortable"],
+        subtitle: "Because everyday movement should feel easier.",
+        bullets: ["Comfort", "Mobility", "Confidence"],
       },
       prepare_for_care: {
         title: "Get Back To Life",
-        subtitle: "Return to what matters most.",
-        bullets: ["Do more each day", "Feel more confident", "Enjoy family and activity"],
+        subtitle: "Because your care should help you do more.",
+        bullets: ["Daily activity", "Family time", "Momentum"],
       },
       support_loved_one: {
         title: "Explore Advanced Care",
-        subtitle: "Learn about more care options.",
-        bullets: ["Functional medicine", "Bracing and support", "Specialty treatments"],
+        subtitle: "Because whole-body options can open new paths.",
+        bullets: ["Functional care", "Bracing", "Specialty options"],
       },
     },
     consentTitle: "One quick consent",
@@ -105,27 +108,27 @@ const copy = {
   },
   es: {
     start: "Comenzar",
-    title: "Crea tu VeeVee Twin Card",
+    title: "Crea tu Digital Health Twin",
     event: `${TWIN_CARD_EVENT_NAME} · ${TWIN_CARD_EVENT_DATE}`,
     firstName: "Nombre",
     email: "Email",
     continue: "Continuar",
-    goalsTitle: "Elige tu enfoque de bienestar",
+    goalsTitle: "Selecciona una meta",
     goals: {
       track_goals: {
         title: "Moverme con menos dolor",
-        subtitle: "Enfocarme en comodidad y movimiento.",
-        bullets: ["Moverme mejor cada dia", "Reducir rigidez", "Sentirme mas comodo"],
+        subtitle: "Porque moverte cada dia debe sentirse mas facil.",
+        bullets: ["Comodidad", "Movimiento", "Confianza"],
       },
       prepare_for_care: {
         title: "Volver a mi vida",
-        subtitle: "Regresar a lo que mas importa.",
-        bullets: ["Hacer mas cada dia", "Sentirme con mas confianza", "Disfrutar familia y actividad"],
+        subtitle: "Porque tu cuidado debe ayudarte a hacer mas.",
+        bullets: ["Actividad diaria", "Familia", "Momentum"],
       },
       support_loved_one: {
         title: "Explorar cuidado avanzado",
-        subtitle: "Conocer mas opciones de cuidado.",
-        bullets: ["Medicina funcional", "Soporte y bracing", "Tratamientos especiales"],
+        subtitle: "Porque nuevas opciones pueden abrir caminos.",
+        bullets: ["Medicina funcional", "Bracing", "Opciones especiales"],
       },
     },
     consentTitle: "Un consentimiento rapido",
@@ -307,7 +310,7 @@ export default function TwinCardPage() {
   };
 
   return (
-    <Box minH="100vh" bg="#f7fbff" color="#061b38">
+    <Box minH="100vh" bg={CARD_PAPER} color={CARD_NAVY}>
       <Box as="style">{printCss}</Box>
       <Box maxW="760px" mx="auto" px={{ base: 5, md: 8 }} py={{ base: 6, md: 10 }}>
         <Stack minH={{ base: "calc(100vh - 48px)", md: "calc(100vh - 80px)" }} justify="center" spacing={8}>
@@ -316,22 +319,20 @@ export default function TwinCardPage() {
             <Image src="/brand/2026/wordmark.svg" alt="VeeVee" h="14px" />
           </HStack>
 
-          <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 8 }} boxShadow="0 18px 45px rgba(6, 37, 76, 0.08)">
+          <Box bg="white" border={`1px solid rgba(216, 138, 5, 0.28)`} borderRadius="8px" p={{ base: 5, md: 8 }} boxShadow="0 18px 45px rgba(6, 27, 56, 0.08)">
             {step === "language" ? (
               <Stack spacing={8} textAlign="center">
                 <Stack spacing={3}>
-                  <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="#1177BA">
+                  <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color={CARD_GOLD}>
                     {copy.en.event}
                   </Text>
-                  <Heading as="h1" fontSize={{ base: "38px", md: "56px" }} lineHeight="1" letterSpacing="0">
-                    VeeVee Twin Card
-                  </Heading>
+                  <DigitalTwinTitle />
                 </Stack>
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
-                  <Button minH="72px" fontSize="xl" onClick={() => chooseLanguage("en")}>
+                  <Button minH="72px" fontSize="xl" bg={CARD_NAVY} color="white" _hover={{ bg: "#0b2448" }} onClick={() => chooseLanguage("en")}>
                     Start
                   </Button>
-                  <Button minH="72px" fontSize="xl" onClick={() => chooseLanguage("es")}>
+                  <Button minH="72px" fontSize="xl" bg={CARD_GOLD} color="white" _hover={{ bg: "#bd7604" }} onClick={() => chooseLanguage("es")}>
                     Comenzar
                   </Button>
                 </SimpleGrid>
@@ -358,59 +359,76 @@ export default function TwinCardPage() {
               <Stack spacing={5}>
                 <StepHeader title={t.goalsTitle} eyebrow={t.event} />
                 <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                  {TWIN_CARD_INTERESTS.map((goal) => (
+                  {TWIN_CARD_INTERESTS.map((goal, index) => (
                     <Box
                       key={goal.id}
                       as="button"
                       type="button"
                       textAlign="left"
-                      minH={{ base: "176px", md: "248px" }}
+                      minH={{ base: "190px", md: "270px" }}
                       h="100%"
-                      p={{ base: 5, md: 6 }}
-                      border="1px solid"
-                      borderColor="rgba(12, 35, 64, 0.14)"
-                      borderRadius="20px"
-                      bg="linear-gradient(180deg, #ffffff 0%, #f7fbff 100%)"
+                      p={{ base: 5, md: 5 }}
+                      border="2px solid"
+                      borderColor="rgba(216, 138, 5, 0.32)"
+                      borderRadius="8px"
+                      bg="linear-gradient(180deg, #ffffff 0%, #fffaf0 100%)"
                       boxShadow="0 16px 40px rgba(20, 43, 72, 0.11)"
                       transition="transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease"
                       _hover={{
                         transform: "translateY(-3px)",
-                        borderColor: "#2f74d0",
-                        boxShadow: "0 22px 48px rgba(28, 78, 138, 0.18)",
+                        borderColor: CARD_GOLD,
+                        boxShadow: "0 22px 48px rgba(216, 138, 5, 0.16)",
                       }}
                       _focusVisible={{
-                        outline: "3px solid rgba(47, 116, 208, 0.32)",
+                        outline: "3px solid rgba(216, 138, 5, 0.28)",
                         outlineOffset: "3px",
                       }}
                       onClick={() => chooseGoal(goal.id)}
                     >
-                      <Stack spacing={4} h="100%">
-                        <Box w="44px" h="5px" borderRadius="999px" bg="#2f74d0" />
-                        <Stack spacing={2}>
-                          <Heading as="h3" size="md" color="#172033">
+                      <Stack spacing={4} h="100%" justify="space-between">
+                        <HStack spacing={3} align="center">
+                          <Box
+                            w="42px"
+                            h="42px"
+                            borderRadius="8px"
+                            bg={CARD_GOLD}
+                            color="white"
+                            display="grid"
+                            placeItems="center"
+                            fontSize="xl"
+                            fontWeight="900"
+                            flex="0 0 auto"
+                          >
+                            {index + 1}
+                          </Box>
+                          <Text color={CARD_GOLD} fontSize="xs" fontWeight="900" letterSpacing="0.14em" textTransform="uppercase">
+                            Select
+                          </Text>
+                        </HStack>
+                        <Stack spacing={3}>
+                          <Heading as="h3" fontSize={{ base: "2xl", md: "xl" }} lineHeight="1.02" color={CARD_NAVY}>
                             {t.goals[goal.id as keyof typeof t.goals].title}
                           </Heading>
-                          <Text color="#516176" fontSize={{ base: "md", md: "sm" }} lineHeight="1.45">
+                          <Text color="#35445d" fontSize={{ base: "md", md: "sm" }} lineHeight="1.35" fontWeight="700">
                             {t.goals[goal.id as keyof typeof t.goals].subtitle}
                           </Text>
                         </Stack>
-                        <Stack spacing={2} pt={1}>
+                        <HStack spacing={2} pt={1} flexWrap="wrap">
                           {t.goals[goal.id as keyof typeof t.goals].bullets.map((bullet: string) => (
-                            <HStack key={bullet} align="flex-start" spacing={2}>
-                              <Box
-                                flex="0 0 auto"
-                                mt="0.45em"
-                                w="7px"
-                                h="7px"
-                                borderRadius="999px"
-                                bg="#62b879"
-                              />
-                              <Text color="#26364f" fontSize="sm" lineHeight="1.35">
-                                {bullet}
-                              </Text>
-                            </HStack>
+                            <Box
+                              key={bullet}
+                              px={3}
+                              py={1.5}
+                              borderRadius="999px"
+                              bg="rgba(6, 27, 56, 0.06)"
+                              color={CARD_NAVY}
+                              fontSize="xs"
+                              fontWeight="900"
+                            >
+                              {bullet}
+                            </Box>
                           ))}
-                        </Stack>
+                        </HStack>
                       </Stack>
                     </Box>
                   ))}
@@ -648,12 +666,64 @@ function buildDeviceMetadata() {
 function StepHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <Stack spacing={2} textAlign="center">
-      <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="#1177BA">
+      <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color={CARD_GOLD}>
         {eyebrow}
       </Text>
-      <Heading as="h1" fontSize={{ base: "32px", md: "48px" }} lineHeight="1.05" letterSpacing="0">
+      <Heading
+        as="h1"
+        fontSize={{ base: "32px", md: "48px" }}
+        lineHeight="1.05"
+        letterSpacing="0"
+        color={CARD_NAVY}
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontStyle="italic"
+        fontWeight="700"
+      >
         {title}
       </Heading>
+    </Stack>
+  );
+}
+
+function DigitalTwinTitle() {
+  return (
+    <Stack spacing={0} align="center">
+      <Heading
+        as="h1"
+        fontSize={{ base: "44px", md: "68px" }}
+        lineHeight="0.95"
+        letterSpacing="0"
+        color={CARD_NAVY}
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontStyle="italic"
+        fontWeight="500"
+      >
+        Meet Your
+      </Heading>
+      <Text
+        as="div"
+        fontSize={{ base: "64px", md: "104px" }}
+        lineHeight="0.9"
+        color={CARD_GOLD}
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontStyle="italic"
+        fontWeight="700"
+      >
+        Digital
+      </Text>
+      <Heading
+        as="div"
+        fontSize={{ base: "42px", md: "66px" }}
+        lineHeight="0.95"
+        letterSpacing="0"
+        color={CARD_NAVY}
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontStyle="italic"
+        fontWeight="700"
+      >
+        Health Twin
+      </Heading>
+      <Box w={{ base: "210px", md: "340px" }} h="2px" bg={CARD_NAVY} mt={3} transform="skewX(-18deg)" opacity={0.9} />
     </Stack>
   );
 }
