@@ -119,13 +119,13 @@ export default function TwinDashboardPage() {
             </Box>
           ) : (
             <>
-              <SimpleGrid columns={{ base: 1, md: 5 }} spacing={4}>
+              <SimpleGrid columns={{ base: 1, md: 4, xl: 7 }} spacing={4}>
                 <StatBox label="Runs" value={String(stats.total)} />
                 <StatBox label="Replays" value={String(stats.replays)} />
                 <StatBox label="Print Ready" value={String(stats.printReady)} />
                 <StatBox label="AI Complete" value={String(stats.completed)} />
                 <StatBox label="Photo Fallback" value={String(stats.fallback)} />
-                <StatBox label="Bedrock Cost" value={formatCurrency(stats.estimatedBedrockCost)} />
+                <CostPill costs={stats.costs} />
                 <StatBox label="Consented" value={String(stats.consented)} />
               </SimpleGrid>
 
@@ -630,6 +630,43 @@ function StatBox({ label, value }: { label: string; value: string }) {
   );
 }
 
+type ProviderCostSummary = {
+  bedrock: number;
+  fal: number;
+  total: number;
+};
+
+function CostPill({ costs }: { costs: ProviderCostSummary }) {
+  return (
+    <Box bg="#061b38" color="white" border="1px solid #061b38" borderRadius="999px" px={4} py={3}>
+      <Stack spacing={2}>
+        <Text color="#b8d7ec" fontSize="sm" fontWeight="800">Tracked Cost</Text>
+        <HStack spacing={3} flexWrap="wrap">
+          <CostSegment label="Bedrock" value={costs.bedrock} />
+          <CostSegment label="fal.ai" value={costs.fal} />
+          <CostSegment label="Total" value={costs.total} isPrimary />
+        </HStack>
+      </Stack>
+    </Box>
+  );
+}
+
+function CostSegment({ label, value, isPrimary = false }: { label: string; value: number; isPrimary?: boolean }) {
+  return (
+    <HStack
+      spacing={1}
+      bg={isPrimary ? "white" : "rgba(255,255,255,0.12)"}
+      color={isPrimary ? "#061b38" : "white"}
+      borderRadius="999px"
+      px={2.5}
+      py={1}
+    >
+      <Text fontSize="xs" fontWeight="800">{label}</Text>
+      <Text fontSize="sm" fontWeight="900">{formatCurrency(value)}</Text>
+    </HStack>
+  );
+}
+
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <Stack spacing={0}>
@@ -762,6 +799,7 @@ function getReplayDurationMs(card: TwinCardApiCard) {
 }
 
 function buildStats(cards: TwinCardApiCard[]) {
+  const costs = buildProviderCostSummary(cards);
   return {
     total: cards.length,
     replays: cards.filter(isReplayCard).length,
@@ -773,8 +811,62 @@ function buildStats(cards: TwinCardApiCard[]) {
         isTwinCardRenderStatusPrintReady(card.renderStatus)
     ).length,
     consented: cards.filter((card) => card.consentAccepted).length,
-    estimatedBedrockCost: cards.reduce((sum, card) => sum + Number(card.bedrockUsage?.totalEstimatedCostUsd ?? 0), 0),
+    costs,
   };
+}
+
+function buildProviderCostSummary(cards: TwinCardApiCard[]): ProviderCostSummary {
+  const costs = cards.reduce(
+    (sum, card) => {
+      const cost = Number(card.bedrockUsage?.totalEstimatedCostUsd ?? 0);
+      if (!Number.isFinite(cost) || cost <= 0) return sum;
+      if (isFalCost(card)) {
+        sum.fal += cost;
+      } else if (isBedrockCost(card)) {
+        sum.bedrock += cost;
+      }
+      return sum;
+    },
+    { bedrock: 0, fal: 0 }
+  );
+
+  return {
+    ...costs,
+    total: costs.bedrock + costs.fal,
+  };
+}
+
+function isFalCost(card: TwinCardApiCard) {
+  const provider = card.replayProvider?.toLowerCase();
+  const modelId = card.replayModelId?.toLowerCase();
+  const usage = card.bedrockUsage as
+    | (NonNullable<TwinCardApiCard["bedrockUsage"]> & { billingProvider?: string })
+    | undefined;
+  const lineItems = usage?.lineItems ?? [];
+
+  return (
+    provider === "fal" ||
+    provider === "fal.ai" ||
+    modelId?.startsWith("fal-ai/") === true ||
+    lineItems.some((item) => {
+      const runtimeItem = item as typeof item & { billingProvider?: string; provider?: string };
+      return (
+        runtimeItem.billingProvider?.toLowerCase() === "fal_ai" ||
+        runtimeItem.billingProvider?.toLowerCase() === "fal.ai" ||
+        runtimeItem.provider?.toLowerCase() === "fal" ||
+        runtimeItem.modelId?.toLowerCase().startsWith("fal-ai/") === true
+      );
+    })
+  );
+}
+
+function isBedrockCost(card: TwinCardApiCard) {
+  const usage = card.bedrockUsage as
+    | (NonNullable<TwinCardApiCard["bedrockUsage"]> & { billingProvider?: string })
+    | undefined;
+  if (!usage) return false;
+  if (usage.billingProvider === "aws_bedrock") return true;
+  return usage.lineItems?.some((item) => item.billingProvider === "aws_bedrock") ?? false;
 }
 
 function isReplayCard(card: TwinCardApiCard) {
