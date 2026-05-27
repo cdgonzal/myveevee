@@ -205,7 +205,7 @@ aws dynamodb scan `
   --limit 20 `
   --profile glue-admin `
   --region us-east-1 `
-  --query "Items[].{cardId:cardId.S,createdAt:createdAt.S,firstName:firstName.S,email:email.S,generation:generationStatus.S,render:renderStatus.S,fulfillment:fulfillmentStatus.S,source:sourceImageS3Key.S,avatar:generatedAvatarS3Key.S,layout:printLayoutS3Key.S,print:printImageS3Key.S}" `
+  --query "Items[].{cardId:cardId.S,createdAt:createdAt.S,firstName:firstName.S,contactType:contactType.S,generation:generationStatus.S,render:renderStatus.S,fulfillment:fulfillmentStatus.S,email:emailStatus.S,emailSentAt:emailSentAt.S,source:sourceImageS3Key.S,avatar:generatedAvatarS3Key.S,layout:printLayoutS3Key.S,print:printImageS3Key.S}" `
   --output table
 ```
 
@@ -313,7 +313,10 @@ Normal async path:
 submitted -> generating -> completed
 renderStatus: not_started -> rendering -> rendered
 fulfillmentStatus: not_printed
+emailStatus: pending -> sent
 ```
+
+The print-composer Lambda sends the customer SES email only after it creates the Canon-ready PNG. The email contains the durable result-page link, not a presigned S3 URL or attachment. Delivery is skipped when consent is missing, `SES_FROM_EMAIL` is not configured, or the contact is not a valid email address. Email audit fields are `emailStatus`, `emailChannel`, `emailQueuedAt`, `emailSentAt`, `emailMessageId`, `emailFailedAt`, `emailSkippedAt`, and `emailSkipReason`.
 
 Fallback path:
 
@@ -346,7 +349,8 @@ If a record is stuck at `completed` with `renderStatus=not_started`, check wheth
 6. Confirm source image, generated avatar, run JSON, print layout SVG, and Canon print PNG links populate.
 7. Confirm S3 contains the expected prefix and objects.
 8. Confirm DynamoDB has the same `cardId` and final statuses.
-9. Confirm all Twin Card alarms are `OK`.
+9. Confirm `emailStatus=sent` for an email contact and confirm the email opens the `/twin-card/result/{cardId}` page.
+10. Confirm all Twin Card alarms are `OK`.
 
 ## Avatar Recipe Replay
 

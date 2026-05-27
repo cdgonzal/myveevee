@@ -90,22 +90,30 @@
       "dashboardLabel": "Printed",
       "meaning": "Staff marked the card as printed at the booth.",
       "currentUsage": "Set by the Twin Dashboard Cards tab when staff prints a Canon-ready card. Each print action increments printedCount and updates lastPrintedAt."
-    },
-    "email_pending": {
-      "dashboardLabel": "Email pending",
-      "meaning": "A confirmation email is queued or expected.",
-      "currentUsage": "Future field."
-    },
-    "emailed": {
-      "dashboardLabel": "Emailed",
-      "meaning": "A confirmation email was sent.",
-      "currentUsage": "Future field."
-    },
-    "email_failed": {
-      "dashboardLabel": "Email failed",
-      "meaning": "Confirmation email delivery failed or was not accepted by the provider.",
-      "currentUsage": "Future field."
     }
   },
-  "operatorRule": "completed and fallback_used mean the generated/avatar stage has a usable image. A card is print-ready only when renderStatus is rendered. failed and render_failed require staff attention."
+  "emailStatusField": "emailStatus",
+  "emailStatuses": {
+    "pending": {
+      "dashboardLabel": "Email pending",
+      "meaning": "The final card is rendered and SES delivery has started.",
+      "terminal": false
+    },
+    "sent": {
+      "dashboardLabel": "Email sent",
+      "meaning": "SES accepted the customer email with the public Twin Card result link.",
+      "terminal": true
+    },
+    "failed": {
+      "dashboardLabel": "Email failed",
+      "meaning": "SES delivery was attempted but failed. The DDB row stores emailError for operator review.",
+      "terminal": true
+    },
+    "skipped": {
+      "dashboardLabel": "Email skipped",
+      "meaning": "No customer email was sent because consent, email config, or a valid email contact was missing.",
+      "terminal": true
+    }
+  },
+  "operatorRule": "completed and fallback_used mean the generated/avatar stage has a usable image. A card is print-ready only when renderStatus is rendered. Email delivery is tracked separately in emailStatus. failed, render_failed, and email failed require staff attention."
 }

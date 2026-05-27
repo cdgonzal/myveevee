@@ -1,5 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import opentype from "opentype.js";
 import sharp from "sharp";
@@ -21,6 +22,7 @@ import {
 import printContract from "../../src/twinCard/printContract.json";
 
 const s3 = new S3Client({});
+const ses = new SESClient({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
   marshallOptions: {
     removeUndefinedValues: true,
@@ -36,7 +38,13 @@ const FONTS = {
   boldItalic: parseFont(liberationSansBoldItalicFont),
 };
 
-const { CARDS_BUCKET, CARDS_TABLE, CARDS_PREFIX = DEFAULT_CARDS_PREFIX } = process.env;
+const {
+  CARDS_BUCKET,
+  CARDS_TABLE,
+  CARDS_PREFIX = DEFAULT_CARDS_PREFIX,
+  SES_FROM_EMAIL,
+  PUBLIC_BASE_URL = "https://myveevee.com",
+} = process.env;
 
 export async function handler(event) {
   validateConfig();
@@ -116,7 +124,8 @@ async function processGeneratedImage(generatedAvatarS3Key) {
       renderedAt: now,
       updatedAt: now,
     });
-    await writeRunArtifact(updatedCard);
+    const deliveryCard = await deliverTwinCardEmail(updatedCard);
+    await writeRunArtifact(deliveryCard);
   } catch (error) {
     console.error("Twin Card print composition failed", {
       cardId: parsedKey.cardId,
@@ -134,6 +143,142 @@ async function processGeneratedImage(generatedAvatarS3Key) {
     });
     await writeRunArtifact(updatedCard);
   }
+}
+
+async function deliverTwinCardEmail(card) {
+  if (!SES_FROM_EMAIL) {
+    return markEmailSkipped(card, "SES_FROM_EMAIL is not configured.");
+  }
+
+  if (!card?.consentAccepted) {
+    return markEmailSkipped(card, "Consent was not accepted.");
+  }
+
+  if (card.contactType !== "email" || !isValidEmail(card.contact)) {
+    return markEmailSkipped(card, "Contact is not a valid email address.");
+  }
+
+  if (card.emailStatus === "sent") {
+    return card;
+  }
+
+  const pendingAt = new Date().toISOString();
+  const pendingCard = await updateCard(card.cardId, {
+    emailStatus: "pending",
+    emailChannel: "ses",
+    emailQueuedAt: pendingAt,
+    emailError: "",
+    updatedAt: pendingAt,
+  });
+
+  try {
+    const result = await ses.send(
+      new SendEmailCommand({
+        Source: SES_FROM_EMAIL,
+        Destination: {
+          ToAddresses: [pendingCard.contact],
+        },
+        Message: {
+          Subject: {
+            Charset: "UTF-8",
+            Data: "Your VeeVee Digital Health Twin Card is ready",
+          },
+          Body: {
+            Text: {
+              Charset: "UTF-8",
+              Data: buildTwinCardEmailText(pendingCard),
+            },
+            Html: {
+              Charset: "UTF-8",
+              Data: buildTwinCardEmailHtml(pendingCard),
+            },
+          },
+        },
+      })
+    );
+
+    const sentAt = new Date().toISOString();
+    return updateCard(card.cardId, {
+      emailStatus: "sent",
+      emailSentAt: sentAt,
+      emailMessageId: result.MessageId ?? "",
+      updatedAt: sentAt,
+    });
+  } catch (error) {
+    console.error("Twin Card email delivery failed", {
+      cardId: card.cardId,
+      message: error instanceof Error ? error.message : String(error),
+    });
+    const failedAt = new Date().toISOString();
+    return updateCard(card.cardId, {
+      emailStatus: "failed",
+      emailFailedAt: failedAt,
+      emailError: sanitizeError(error),
+      updatedAt: failedAt,
+    });
+  }
+}
+
+async function markEmailSkipped(card, reason) {
+  if (card.emailStatus) return card;
+  const skippedAt = new Date().toISOString();
+  return updateCard(card.cardId, {
+    emailStatus: "skipped",
+    emailSkippedAt: skippedAt,
+    emailSkipReason: reason,
+    updatedAt: skippedAt,
+  });
+}
+
+function buildTwinCardEmailText(card) {
+  const firstName = card.firstName || "there";
+  const resultUrl = buildResultUrl(card);
+  return [
+    `Hi ${firstName},`,
+    "",
+    "Your VeeVee Digital Health Twin Card is ready.",
+    "",
+    `View or download it here: ${resultUrl}`,
+    "",
+    "You can also visit myveevee.com to learn more and create a more personalized health experience.",
+    "",
+    "This Twin Card is for educational, promotional, and informational purposes only. It is not medical advice and does not replace care from a licensed clinician.",
+  ].join("\n");
+}
+
+function buildTwinCardEmailHtml(card) {
+  const firstName = escapeHtml(card.firstName || "there");
+  const resultUrl = escapeHtml(buildResultUrl(card));
+  return `<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#f7fbff;color:#061b38;font-family:Arial,Helvetica,sans-serif;">
+    <div style="max-width:620px;margin:0 auto;padding:28px;">
+      <div style="background:#ffffff;border:1px solid #dbeaf5;border-radius:12px;padding:28px;">
+        <p style="font-size:16px;line-height:1.5;margin:0 0 16px;">Hi ${firstName},</p>
+        <h1 style="font-size:28px;line-height:1.15;margin:0 0 16px;color:#061b38;">Your VeeVee Digital Health Twin Card is ready.</h1>
+        <p style="font-size:16px;line-height:1.5;margin:0 0 24px;">Open your card to view, download, or save it.</p>
+        <p style="margin:0 0 24px;">
+          <a href="${resultUrl}" style="display:inline-block;background:#061b38;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:8px;font-weight:700;">View your Twin Card</a>
+        </p>
+        <p style="font-size:15px;line-height:1.5;margin:0 0 18px;">Visit <a href="https://myveevee.com" style="color:#1177ba;">myveevee.com</a> to learn more and create a more personalized health experience.</p>
+        <p style="font-size:12px;line-height:1.5;margin:0;color:#5d6a7d;">This Twin Card is for educational, promotional, and informational purposes only. It is not medical advice and does not replace care from a licensed clinician.</p>
+      </div>
+    </div>
+  </body>
+</html>`;
+}
+
+function buildResultUrl(card) {
+  if (card.cardResultUrl) return card.cardResultUrl;
+  return `${PUBLIC_BASE_URL.replace(/\/+$/, "")}/twin-card/result/${encodeURIComponent(card.cardId)}`;
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value ?? "").trim());
+}
+
+function sanitizeError(error) {
+  return (error instanceof Error ? error.message : String(error)).slice(0, 500);
 }
 
 async function renderCanonReadyPng(svgBody) {
@@ -410,6 +555,10 @@ function escapeXml(value) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function escapeHtml(value) {
+  return escapeXml(value).replace(/'/g, "&#39;");
 }
 
 function validateConfig() {

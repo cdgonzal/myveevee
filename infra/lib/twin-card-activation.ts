@@ -19,6 +19,7 @@ export type TwinCardActivationProps = {
   allowedOrigins: string[];
   publicBaseUrl: string;
   alertEmail: string;
+  sesFromEmail: string;
   bedrockImageModelId: string;
   bedrockImageProviderPriority: string;
   avatarStyleReferenceS3Key: string;
@@ -203,6 +204,8 @@ export class TwinCardActivation extends Construct {
         CARDS_BUCKET: this.bucket.bucketName,
         CARDS_TABLE: this.cardsTable.tableName,
         CARDS_PREFIX: "twin-card",
+        PUBLIC_BASE_URL: props.publicBaseUrl,
+        SES_FROM_EMAIL: props.sesFromEmail,
       },
     });
 
@@ -210,6 +213,12 @@ export class TwinCardActivation extends Construct {
     this.bucket.grantReadWrite(this.printComposerFunction, "twin-card/*");
     this.cardsTable.grantReadWriteData(this.avatarGeneratorFunction);
     this.cardsTable.grantReadWriteData(this.printComposerFunction);
+    this.printComposerFunction.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["ses:SendEmail", "ses:SendRawEmail"],
+        resources: ["*"],
+      })
+    );
     this.avatarGeneratorFunction.addToRolePolicy(
       new iam.PolicyStatement({
         actions: ["bedrock:InvokeModel"],

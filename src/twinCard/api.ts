@@ -38,6 +38,14 @@ export type TwinCardApiCard = {
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardLead["renderStatus"];
   fulfillmentStatus?: TwinCardLead["fulfillmentStatus"];
+  emailStatus?: TwinCardLead["emailStatus"];
+  emailChannel?: TwinCardLead["emailChannel"];
+  emailQueuedAt?: string;
+  emailSentAt?: string;
+  emailMessageId?: string;
+  emailFailedAt?: string;
+  emailSkippedAt?: string;
+  emailSkipReason?: string;
   printedAt?: string;
   lastPrintedAt?: string;
   printedCount?: number;
@@ -226,6 +234,14 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     avatarRecipeVersion: card.avatarRecipeVersion ?? fallback?.avatarRecipeVersion,
     renderStatus: card.renderStatus ?? fallback?.renderStatus,
     fulfillmentStatus: card.fulfillmentStatus ?? fallback?.fulfillmentStatus,
+    emailStatus: card.emailStatus ?? fallback?.emailStatus,
+    emailChannel: card.emailChannel ?? fallback?.emailChannel,
+    emailQueuedAt: card.emailQueuedAt ?? fallback?.emailQueuedAt,
+    emailSentAt: card.emailSentAt ?? fallback?.emailSentAt,
+    emailMessageId: card.emailMessageId ?? fallback?.emailMessageId,
+    emailFailedAt: card.emailFailedAt ?? fallback?.emailFailedAt,
+    emailSkippedAt: card.emailSkippedAt ?? fallback?.emailSkippedAt,
+    emailSkipReason: card.emailSkipReason ?? fallback?.emailSkipReason,
     printedAt: card.printedAt ?? fallback?.printedAt,
     lastPrintedAt: card.lastPrintedAt ?? fallback?.lastPrintedAt,
     printedCount: card.printedCount ?? fallback?.printedCount,

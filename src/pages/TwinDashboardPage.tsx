@@ -788,6 +788,7 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <Field label="Device" value={formatDevice(card)} />
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
+          <Field label="Email" value={formatEmailStatus(card)} />
           <Field label="Provider" value={card.generationProvider} />
           {isReplayCard(card) ? <Field label="Replay Model" value={card.replayModelId ?? "-"} /> : null}
           {isReplayCard(card) ? <Field label="Replay Provider" value={card.replayProvider ?? "-"} /> : null}
@@ -1122,6 +1123,14 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     avatarRecipeVersion: lead.avatarRecipeVersion,
     renderStatus: lead.renderStatus,
     fulfillmentStatus: lead.fulfillmentStatus,
+    emailStatus: lead.emailStatus,
+    emailChannel: lead.emailChannel,
+    emailQueuedAt: lead.emailQueuedAt,
+    emailSentAt: lead.emailSentAt,
+    emailMessageId: lead.emailMessageId,
+    emailFailedAt: lead.emailFailedAt,
+    emailSkippedAt: lead.emailSkippedAt,
+    emailSkipReason: lead.emailSkipReason,
     printedAt: lead.printedAt,
     lastPrintedAt: lead.lastPrintedAt,
     printedCount: lead.printedCount,
@@ -1164,6 +1173,14 @@ function formatBedrockUsage(card: TwinCardApiCard) {
   const usage = card.bedrockUsage;
   if (!usage) return "-";
   return `${formatUsageUnits(usage)} / ${formatCurrency(usage.totalEstimatedCostUsd)}`;
+}
+
+function formatEmailStatus(card: TwinCardApiCard) {
+  if (!card.emailStatus) return "-";
+  if (card.emailStatus === "sent") return `Sent ${formatDate(card.emailSentAt)}`;
+  if (card.emailStatus === "failed") return `Failed ${formatDate(card.emailFailedAt)}`;
+  if (card.emailStatus === "skipped") return `Skipped${card.emailSkipReason ? `: ${card.emailSkipReason}` : ""}`;
+  return card.emailStatus;
 }
 
 function formatRunTiming(card: TwinCardApiCard) {

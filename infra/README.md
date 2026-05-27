@@ -24,6 +24,7 @@ This package is the CDK source of truth for AWS resources that sit behind the st
 - SNS topic and CloudWatch alarms for Lambda errors, API 5xx responses, and unusual API volume
 - frontend environment variable for the spin endpoint
 - Twin Card expo activation backend using API Gateway, Lambda, private S3, DynamoDB, optional Bedrock image generation, and operational alarms
+- Twin Card customer email delivery through SES after final card render
 
 ## Live SWCA Intake Resources
 
@@ -88,13 +89,13 @@ The Twin Card backend is managed in the same stack as a sibling construct:
 - Frontend route: `https://myveevee.com/twin-card`
 - Dashboard route: `https://myveevee.com/twin-dashboard`
 - Frontend environment variable: `VITE_TWIN_CARD_API_URL`
+- SES sender: `info@veevee.io` through the shared `SwcaSesFromEmail` stack parameter
 
 Twin Card avatar provider priority is contracted in `src/twinCard/avatarProviderContract.json`. Leave `TwinCardBedrockImageProviderPriority` blank to use the repo default:
 
 ```text
-us.stability.stable-image-control-structure-v1:0,
-us.stability.stable-style-transfer-v1:0,
-us.stability.stable-image-style-guide-v1:0,
+fal-ai/nano-banana-2/edit,
+openai/gpt-image-2/edit,
 fallback_original_photo_card
 ```
 
@@ -112,10 +113,10 @@ Twin Card run visibility:
 
 - Dashboard PIN is set by Lambda env var `DASHBOARD_PIN`; CDK currently deploys the expo PIN as `5353`.
 - S3 stores each run under `twin-card/{yyyy}/{mm}/{dd}/{cardId}/` with `run.json`, `source/normalized.jpg`, `generated/avatar.*`, `print/selphy-cp1500-4x6.svg`, `print/selphy-cp1500-4x6.png`, and optional `failures/{stage}.json`.
-- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, upload-normalization metadata, Bedrock provider attempts, and estimated Bedrock model usage/cost.
+- DynamoDB table `myveevee-twin-card-cards` stores the run record with contact, language, goal, consent, generation state, S3 keys, image byte sizes, upload-normalization metadata, provider attempts, estimated model usage/cost, and SES email delivery fields.
 - Browser upload normalization is contracted in `src/twinCard/uploadContract.json`: max original upload 25 MB, normalized AI input 1024x1024 JPEG at quality 0.88, normalized payload max 7.5 MB.
-- Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means Bedrock succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
-- S3 source-image object creation triggers the Stability provider-priority avatar-generation worker. S3 generated-image object creation triggers print composition. The print composer preserves the deterministic SVG layout artifact and adds a Canon SELPHY-ready PNG raster artifact as the final print file.
+- Run status semantics are contracted in `src/twinCard/statusContract.json`. For current generation status, `completed` means the configured avatar provider succeeded, `fallback_used` means the card is complete and printable using the normalized uploaded photo, and `failed` means no usable card was produced. `completed` and `fallback_used` are both printable; do not treat `fallback_used` as a failed run.
+- S3 source-image object creation triggers the provider-priority avatar-generation worker. S3 generated-image object creation triggers print composition. The print composer preserves the deterministic SVG layout artifact, adds a Canon SELPHY-ready PNG raster artifact as the final print file, and sends the customer SES email with the durable `/twin-card/result/{cardId}` link when consent and a valid email are present.
 - The print-composer Lambda depends on `sharp` for SVG-to-PNG rendering. CDK bundling intentionally installs the Linux ARM64 `sharp` package into the Lambda asset; do not remove that bundling hook unless the Lambda architecture or renderer changes.
 - Twin Card Lambda logs, CDK output checks, S3/DynamoDB inspection commands, alarm checks, and live smoke-test steps live in `codex/twin-card/OPERATIONS_RUNBOOK.md`.
 

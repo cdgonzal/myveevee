@@ -16,7 +16,9 @@ export type TwinCardGenerationProvider =
 
 export type TwinCardRenderStatus = "not_started" | "rendering" | "rendered" | "render_failed";
 
-export type TwinCardFulfillmentStatus = "not_printed" | "printed" | "email_pending" | "emailed" | "email_failed";
+export type TwinCardFulfillmentStatus = "not_printed" | "printed";
+
+export type TwinCardEmailStatus = "pending" | "sent" | "failed" | "skipped";
 
 export type TwinCardLanguage = "en" | "es";
 
@@ -108,6 +110,14 @@ export type TwinCardLead = {
   avatarRecipeVersion?: string;
   renderStatus?: TwinCardRenderStatus;
   fulfillmentStatus?: TwinCardFulfillmentStatus;
+  emailStatus?: TwinCardEmailStatus;
+  emailChannel?: "ses" | string;
+  emailQueuedAt?: string;
+  emailSentAt?: string;
+  emailMessageId?: string;
+  emailFailedAt?: string;
+  emailSkippedAt?: string;
+  emailSkipReason?: string;
   printedAt?: string;
   lastPrintedAt?: string;
   printedCount?: number;

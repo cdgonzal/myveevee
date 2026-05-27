@@ -258,6 +258,14 @@ export function buildRunArtifact(record) {
     },
     fulfillment: {
       status: record.fulfillmentStatus,
+      emailStatus: record.emailStatus || null,
+      emailChannel: record.emailChannel || null,
+      emailQueuedAt: record.emailQueuedAt || null,
+      emailSentAt: record.emailSentAt || null,
+      emailMessageId: record.emailMessageId || null,
+      emailFailedAt: record.emailFailedAt || null,
+      emailSkippedAt: record.emailSkippedAt || null,
+      emailSkipReason: record.emailSkipReason || null,
     },
   };
 }

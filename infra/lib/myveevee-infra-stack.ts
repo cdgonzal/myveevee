@@ -117,6 +117,7 @@ export class MyVeeVeeInfraStack extends cdk.Stack {
       allowedOrigins: allowedOrigins.valueAsList,
       publicBaseUrl: publicBaseUrl.valueAsString,
       alertEmail: alertEmail.valueAsString,
+      sesFromEmail: sesFromEmail.valueAsString,
       bedrockImageModelId: twinCardBedrockImageModelId.valueAsString,
       bedrockImageProviderPriority: twinCardBedrockImageProviderPriority.valueAsString,
       avatarStyleReferenceS3Key: twinCardAvatarStyleReferenceS3Key.valueAsString,
