@@ -118,6 +118,7 @@ export class TwinCardActivation extends Construct {
     });
 
     this.bucket.grantReadWrite(this.function, "twin-card/*");
+    this.bucket.grantRead(this.function, "twin-card-replay/*");
     this.cardsTable.grantReadWriteData(this.function);
 
     const avatarGeneratorLogGroup = new logs.LogGroup(this, "AvatarGeneratorLogGroup", {

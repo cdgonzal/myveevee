@@ -484,6 +484,8 @@ Output locations:
 
 Do not put Hugging Face results under `generated/avatar.*` or `print/*` for real participant runs during exploration.
 
+The Twin Card handler Lambda must have read permission for `twin-card-replay/*` so `/twin-dashboard` can create valid presigned S3 URLs for replay images, manifests, and reports. If replay links exist but images return S3 `AccessDenied`, deploy the CDK stack and confirm the handler role includes `s3:GetObject` for the replay prefix.
+
 By default, real replay scripts write both S3 artifacts and DDB dashboard rows. Use `--no-write-s3` for local-only dry runs, and `--no-write-ddb` only when the output should not appear in `/twin-dashboard`.
 
 To publish an already-generated replay manifest to the dashboard without paying to regenerate images:
