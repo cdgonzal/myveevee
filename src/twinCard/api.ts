@@ -11,6 +11,16 @@ type GenerateTwinCardResponse = {
 
 export type TwinCardApiCard = {
   cardId: string;
+  recordType?: "card" | "replay" | string;
+  replayRunId?: string;
+  replaySourceCardId?: string;
+  replayOutputSequence?: number;
+  replayModelId?: string;
+  replayProvider?: string;
+  replayManifestS3Key?: string;
+  replayReportS3Key?: string;
+  replayManifestUrl?: string;
+  replayReportUrl?: string;
   firstName: string;
   contact?: string;
   contactType: "email" | "phone" | "unknown";

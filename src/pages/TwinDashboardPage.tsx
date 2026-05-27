@@ -115,6 +115,7 @@ export default function TwinDashboardPage() {
             <>
               <SimpleGrid columns={{ base: 1, md: 5 }} spacing={4}>
                 <StatBox label="Runs" value={String(stats.total)} />
+                <StatBox label="Replays" value={String(stats.replays)} />
                 <StatBox label="Print Ready" value={String(stats.printReady)} />
                 <StatBox label="AI Complete" value={String(stats.completed)} />
                 <StatBox label="Photo Fallback" value={String(stats.fallback)} />
@@ -189,6 +190,8 @@ export default function TwinDashboardPage() {
 function ArtifactLinks({ card }: { card: TwinCardApiCard }) {
   const links = [
     { label: "Run", url: card.runJsonUrl },
+    { label: "Replay Report", url: card.replayReportUrl },
+    { label: "Replay Manifest", url: card.replayManifestUrl },
     { label: "Source", url: card.sourceImageUrl },
     { label: "Avatar", url: card.generatedAvatarUrl },
     { label: "Layout", url: card.printLayoutUrl },
@@ -226,11 +229,13 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
               <Stack spacing={1}>
                 <HStack spacing={2} flexWrap="wrap">
                   <Heading as="h2" size="sm">{card.firstName}</Heading>
+                  {isReplayCard(card) ? <Badge colorScheme="purple">Replay</Badge> : null}
                   <StatusBadge status={card.generationStatus} />
                   <RenderStatusBadge status={card.renderStatus} />
                 </HStack>
                 <Text color="#516176" fontSize="sm">
                   {formatDate(card.createdAt)} | {formatDevice(card)} | {card.generationProvider}
+                  {isReplayCard(card) ? ` | ${card.replayProvider ?? "-"} | ${card.replayModelId ?? "-"}` : ""}
                 </Text>
               </Stack>
               <ArtifactLinks card={card} />
@@ -355,7 +360,10 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
             <Heading as="h2" size="md">{card.firstName}</Heading>
             <StatusBadge status={card.generationStatus} />
           </HStack>
-          <Text color="#516176" fontSize="sm">{card.cardId}</Text>
+          <HStack spacing={2} flexWrap="wrap">
+            {isReplayCard(card) ? <Badge colorScheme="purple">Replay</Badge> : null}
+            <Text color="#516176" fontSize="sm">{card.cardId}</Text>
+          </HStack>
         </Stack>
 
         <SimpleGrid columns={2} spacing={3}>
@@ -365,6 +373,8 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
           <Field label="Goal" value={card.wellnessInterestLabel} />
           <Field label="Consent" value={card.consentAccepted ? "Yes" : "No"} />
           <Field label="Provider" value={card.generationProvider} />
+          {isReplayCard(card) ? <Field label="Replay Model" value={card.replayModelId ?? "-"} /> : null}
+          {isReplayCard(card) ? <Field label="Replay Provider" value={card.replayProvider ?? "-"} /> : null}
           <Field label="Bedrock Usage" value={formatBedrockUsage(card)} />
           <Field label="Bedrock Cost" value={formatCurrency(card.bedrockUsage?.totalEstimatedCostUsd)} />
           <Field label="Recipe" value={card.avatarRecipeVersion ?? card.avatarRecipeId ?? "-"} />
@@ -389,6 +399,8 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
         <Stack spacing={2}>
           <Heading as="h3" size="sm">Storage</Heading>
           <StorageLine label="Run JSON" s3Key={card.runS3Key} url={card.runJsonUrl} />
+          {isReplayCard(card) ? <StorageLine label="Replay Report" s3Key={card.replayReportS3Key} url={card.replayReportUrl} /> : null}
+          {isReplayCard(card) ? <StorageLine label="Replay Manifest" s3Key={card.replayManifestS3Key} url={card.replayManifestUrl} /> : null}
           <StorageLine label="Source Image" s3Key={card.sourceImageS3Key} url={card.sourceImageUrl} />
           <StorageLine label="Generated Avatar" s3Key={card.generatedAvatarS3Key} url={card.generatedAvatarUrl} />
           <StorageLine label="Print Layout SVG" s3Key={card.printLayoutS3Key} url={card.printLayoutUrl} />
@@ -452,6 +464,7 @@ function RenderStatusBadge({ status }: { status?: string }) {
 function buildStats(cards: TwinCardApiCard[]) {
   return {
     total: cards.length,
+    replays: cards.filter(isReplayCard).length,
     completed: cards.filter((card) => card.generationStatus === "completed").length,
     fallback: cards.filter((card) => card.generationStatus === "fallback_used").length,
     printReady: cards.filter(
@@ -462,6 +475,10 @@ function buildStats(cards: TwinCardApiCard[]) {
     consented: cards.filter((card) => card.consentAccepted).length,
     estimatedBedrockCost: cards.reduce((sum, card) => sum + Number(card.bedrockUsage?.totalEstimatedCostUsd ?? 0), 0),
   };
+}
+
+function isReplayCard(card: TwinCardApiCard) {
+  return card.recordType === "replay" || card.cardId.startsWith("replay#");
 }
 
 function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {

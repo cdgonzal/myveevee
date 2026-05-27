@@ -19,6 +19,179 @@
   },
   "defaultPromptSuffix": "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face shape, hair, skin tone, eyewear, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.",
   "defaultNegativePrompt": "different person, changed identity, changed face, changed hairstyle, different hair color, removed glasses, added glasses, different age, glam beauty filter, plastic skin, text, logo, watermark, distorted face, extra limbs",
+  "promptVariants": [
+    {
+      "id": "baseline",
+      "label": "Baseline wellness avatar",
+      "promptSuffix": "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face shape, hair, skin tone, eyewear, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.",
+      "negativePrompt": "different person, changed identity, changed face, changed hairstyle, different hair color, removed glasses, added glasses, different age, glam beauty filter, plastic skin, text, logo, watermark, distorted face, extra limbs"
+    },
+    {
+      "id": "identity_lock",
+      "label": "Identity lock",
+      "promptSuffix": "Create a subtle 2D wellness avatar version of the reference photo. Keep the same person highly recognizable: same face geometry, eyes, nose, mouth, jawline, hair, skin tone, eyewear, expression, camera angle, pose, and crop. Make only gentle illustration cleanup and lighting polish. Do not beautify, age-shift, slim, reshape, or invent features. Simple premium healthcare background, no text, no logos.",
+      "negativePrompt": "different person, low likeness, changed identity, changed face structure, changed eyes, changed nose, changed mouth, changed jawline, changed hairstyle, different hair color, removed glasses, added glasses, different age, beauty filter, glam makeup, plastic skin, face swap, text, logo, watermark, distorted face, extra limbs"
+    },
+    {
+      "id": "minimal_avatar",
+      "label": "Minimal avatar edit",
+      "promptSuffix": "Keep the reference photo composition and identity almost unchanged, then convert it into a clean soft 2D avatar card portrait. Preserve the exact visible person, facial proportions, hair, eyewear, expression, pose, and framing. Apply light illustration styling only: smoother edges, warmer health-and-wellness color, clean background, premium approachable finish. No text, no logos.",
+      "negativePrompt": "different person, changed identity, over-stylized, cartoon caricature, changed face, changed hair, changed expression, changed glasses, beauty retouch, glam filter, younger, older, text, logo, watermark, distorted face, extra limbs"
+    }
+  ],
+  "modelRecipes": [
+    {
+      "id": "flux_kontext_replicate_avatar_v1",
+      "modelId": "black-forest-labs/FLUX.1-Kontext-dev",
+      "hfProvider": "replicate",
+      "purpose": "Primary likeness-preserving 2D wellness avatar transformation.",
+      "promptSuffix": "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face shape, hair, skin tone, eyewear, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.",
+      "negativePrompt": "different person, changed identity, changed face, changed hairstyle, different hair color, removed glasses, added glasses, different age, glam beauty filter, plastic skin, text, logo, watermark, distorted face, extra limbs",
+      "parameters": {
+        "target_size": {
+          "width": 1024,
+          "height": 1024
+        }
+      },
+      "notes": [
+        "Use for the primary candidate because it produced the best observed likeness in replay.",
+        "Prompt can tolerate more stylistic language than Qwen without producing text artifacts in the observed tests."
+      ]
+    },
+    {
+      "id": "qwen_image_edit_replicate_no_text_avatar_v1",
+      "modelId": "Qwen/Qwen-Image-Edit",
+      "hfProvider": "replicate",
+      "purpose": "Fallback image-edit recipe tuned to avoid Qwen text-rendering artifacts.",
+      "prompt": "Transform the reference photo into a clean, polished 2D wellness avatar while preserving the same person's visible identity, face, face features, face shape, hair, skin tone, pose, framing, and natural expression. Keep it healthcare-friendly, premium, simple background, no text, no logos.",
+      "negativePrompt": "text, letters, numbers, words, caption, label, logo, badge, sign, watermark, UI, typography, writing, different person, changed identity, changed face, changed hair, changed expression, changed glasses, beauty filter, glam retouch, distorted face, extra limbs",
+      "parameters": {
+        "target_size": {
+          "width": 1024,
+          "height": 1024
+        }
+      },
+      "notes": [
+        "Qwen-Image-Edit is documented as strong at text rendering and precise text editing, so this recipe avoids card/banner language and explicitly excludes text artifacts.",
+        "Keep the instruction short and edit-focused because Replicate's Qwen Image Edit schema exposes a prompt instruction for editing the given image."
+      ]
+    }
+  ],
+  "billing": {
+    "billingProvider": "huggingface_inference_providers",
+    "currency": "USD",
+    "pricingMode": "provider_pass_through",
+    "pricingSource": "Hugging Face Inference Providers pricing and fal.ai FLUX.1 Kontext dev pricing",
+    "pricingLastVerified": "2026-05-26",
+    "notes": [
+      "Hugging Face Inference Providers charge the same rates as the selected provider with no additional Hugging Face fee.",
+      "fal.ai FLUX.1 Kontext dev is priced per generated output megapixel and images are rounded up to the nearest megapixel.",
+      "Failed provider calls are recorded with zero estimated successful output units unless an output image is returned."
+    ],
+    "knownRates": [
+      {
+        "modelId": "black-forest-labs/FLUX.1-Kontext-dev",
+        "hfProvider": "replicate",
+        "providerEndpointId": "black-forest-labs/flux-kontext-dev",
+        "billingUnit": "output_image",
+        "unitPriceUsd": 0.025,
+        "pricingSourceUrl": "https://replicate.com/black-forest-labs/flux-kontext-dev/api/learn-more"
+      },
+      {
+        "modelId": "Qwen/Qwen-Image-Edit",
+        "hfProvider": "replicate",
+        "providerEndpointId": "qwen/qwen-image-edit",
+        "billingUnit": "output_image",
+        "unitPriceUsd": 0.03,
+        "pricingSourceUrl": "https://replicate.com/qwen/qwen-image-edit"
+      },
+      {
+        "modelId": "black-forest-labs/FLUX.1-Kontext-dev",
+        "hfProvider": "fal-ai",
+        "providerEndpointId": "fal-ai/flux-kontext/dev",
+        "billingUnit": "output_megapixel_rounded_up",
+        "unitPriceUsd": 0.025,
+        "pricingSourceUrl": "https://fal.ai/models/fal-ai/flux-kontext/dev/"
+      }
+    ]
+  },
+  "topCandidateStrategy": {
+    "version": "2026-05-26",
+    "selectionRule": "Rank model/provider pairs, not only model ids, because provider routing changes availability, billing, and output behavior.",
+    "currentWinner": {
+      "rank": 1,
+      "role": "primary",
+      "modelId": "Qwen/Qwen-Image-Edit",
+      "hfProvider": "replicate",
+      "bestObservedCardId": "0a0ffaf8-6235-4b12-bf13-7816e88bdc13",
+      "bestObservedRecipeId": "qwen_image_edit_replicate_no_text_avatar_v1",
+      "reason": "Current preferred candidate after simplifying the Qwen prompt. Qwen produced the preferred replay outputs with the exact no-text wellness-avatar prompt.",
+      "status": "top_candidate",
+      "nextTest": "Compare Qwen against one non-Qwen candidate at a time. FLUX.2-dev via replicate completed a one-card probe and is the recommended next comparison candidate."
+    },
+    "rankedCandidates": [
+      {
+        "rank": 1,
+        "role": "primary",
+        "modelId": "Qwen/Qwen-Image-Edit",
+        "hfProvider": "replicate",
+        "providerEndpointId": "qwen/qwen-image-edit",
+        "recipeId": "qwen_image_edit_replicate_no_text_avatar_v1",
+        "strength": "Current preferred image-edit candidate for clean 2D wellness-avatar outputs with recognizable face features.",
+        "why": "The simplified fixed prompt removed extra context and Qwen completed replay through Hugging Face with explicit replicate routing.",
+        "knownIssue": "Qwen can render text when prompts imply cards, labels, or typography; keep the recipe short and explicitly no-text."
+      },
+      {
+        "rank": 2,
+        "role": "open_candidate_slot",
+        "modelId": null,
+        "hfProvider": null,
+        "providerEndpointId": null,
+        "strength": "Reserved for the next non-Qwen model that beats or complements Qwen in replay.",
+        "why": "Keep this slot intentionally empty until a side-by-side comparison proves the next candidate.",
+        "knownIssue": "Do not fill this slot from marketing preference or model popularity alone; require replay evidence."
+      },
+      {
+        "rank": 3,
+        "role": "last_fallback",
+        "modelId": "fallback_original_photo_card",
+        "hfProvider": null,
+        "providerEndpointId": null,
+        "strength": "Use the normalized raw source image in the card frame when external generation is unavailable or quality is unacceptable.",
+        "why": "The raw-image fallback preserves identity and keeps the booth flow moving.",
+        "knownIssue": "This is not an AI avatar output; use only as operational fallback."
+      }
+    ],
+    "researchBacklog": [
+      {
+        "modelId": "black-forest-labs/FLUX.2-dev",
+        "hfProvider": "replicate",
+        "category": "next_comparison_candidate",
+        "reason": "Recommended next non-Qwen comparison candidate. It completed a one-card Hugging Face replay probe via replicate on 2026-05-26."
+      },
+      {
+        "modelId": "tencent/HunyuanImage-3.0-Instruct",
+        "hfProvider": "replicate",
+        "category": "deferred_candidate",
+        "reason": "High-ranking different model family on the Hugging Face image-to-image list, but the 2026-05-26 replay probe could not find inference-provider information through the current Hugging Face route."
+      },
+      {
+        "modelId": "Qwen/Qwen-Image-Edit-2509",
+        "category": "accuracy_candidate",
+        "reason": "Potential newer Qwen edit candidate; verify provider availability, pricing, and license before ranking."
+      },
+      {
+        "modelId": "Qwen/Qwen-Image-Edit",
+        "category": "cartoon_avatar_candidate",
+        "reason": "Test with the minimal_avatar and identity_lock prompt variants to see whether it can preserve facial features while adding a more illustrated look."
+      },
+      {
+        "modelId": "black-forest-labs/FLUX.1-Kontext-dev",
+        "category": "cartoon_avatar_candidate",
+        "reason": "Best current model for controlled image edits; pair it with stricter prompt variants before trying LoRA/style-specific cartoon adapters."
+      }
+    ]
+  },
   "candidateModels": [
     {
       "rank": 1,

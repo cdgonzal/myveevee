@@ -378,6 +378,8 @@ Use Hugging Face replay only for model exploration. It is not part of the produc
 
 Source of truth: `src/twinCard/huggingFaceImageProviderContract.json`.
 
+Connection registry: `codex/twin-card/PROVIDER_CONNECTIONS.md`. Use that file to see which provider paths are working, which credentials are required, known blockers, and the next direct-provider setup target.
+
 The Twin Card funnel consent copy in `src/pages/TwinCardPage.tsx` explicitly covers AI, image-generation, image-editing, model-evaluation, quality-review, replay, testing, cloud hosting, storage, email, printing, and operations providers. Keep that consent language aligned before any external model provider is used beyond approved replay/test images.
 
 The Hugging Face contract currently targets image-to-image candidates such as:
@@ -387,7 +389,47 @@ The Hugging Face contract currently targets image-to-image candidates such as:
 - `Qwen/Qwen-Image-Edit-2509`
 - `black-forest-labs/FLUX.2-dev`
 
+Current top candidate model/provider strategy is stored in `src/twinCard/huggingFaceImageProviderContract.json` under `topCandidateStrategy`.
+
+As of 2026-05-26:
+
+1. Primary: `Qwen/Qwen-Image-Edit` via `replicate`.
+   - This is the current top candidate after the simplified fixed prompt produced the preferred replay outputs.
+2. Open candidate slot.
+   - Leave this empty until a non-Qwen model proves itself in replay against Qwen.
+3. Last fallback: `fallback_original_photo_card`.
+   - Use the normalized raw source image in the card frame when external generation is unavailable or quality is unacceptable.
+
+Keep model rankings tied to provider names. The same model through different providers can have different availability, pricing, request behavior, and output consistency.
+
+Recommended next non-Qwen comparison candidate: `black-forest-labs/FLUX.2-dev` via `replicate`. It completed a one-card probe through Hugging Face on 2026-05-26. `tencent/HunyuanImage-3.0-Instruct` is attractive as a different model family from the Hugging Face image-to-image list, but the current Hugging Face route could not find inference-provider information for it.
+
+Two-model comparison replay:
+
+```powershell
+node aws/twin-card/replay-huggingface-avatar.mjs `
+  --limit=3 `
+  --compareTop2 `
+  --promptVariant baseline `
+  --hfTimeoutMs=180000
+```
+
+The comparison report renders one row per source image with raw image, primary output, and fallback output side by side. It stores per-output model id, provider, status, latency, dimensions, bytes, billing unit, estimated cost, prompt variant, and provider response metadata.
+
+Model-specific recipes are decoupled in `src/twinCard/huggingFaceImageProviderContract.json` under `modelRecipes`. Do not assume FLUX and Qwen should receive the same language:
+
+- FLUX Kontext uses the primary wellness-avatar transformation recipe.
+- Qwen Image Edit uses a shorter edit-only recipe that avoids card/banner wording and explicitly forbids text, letters, numbers, labels, logos, badges, signs, captions, watermarks, UI, and typography. Qwen's model card and Replicate page both emphasize text editing/rendering strength, so the prompt should be cautious when the desired output has no text.
+
+The replay report shows each output's recipe id, exact prompt, exact negative prompt, model/provider, latency, dimensions, bytes, status, and cost fields. Use that report as the recipe tab/source of truth during model review.
+
 Hugging Face Inference Providers are a unified proxy/client layer across providers such as fal.ai and Replicate. The image-to-image API accepts an input image plus prompt parameters and returns image bytes. The script uses the official `@huggingface/inference` client.
+
+Billing source of truth: `src/twinCard/huggingFaceImageProviderContract.json`.
+
+Hugging Face Inference Providers use provider-pass-through billing. Hugging Face states that it charges the same rates as the selected provider with no extra fee. For `black-forest-labs/FLUX.1-Kontext-dev` routed to `fal-ai`, the known fal endpoint is `fal-ai/flux-kontext/dev`, priced at `$0.025` per output megapixel, rounded up to the nearest megapixel. Replay reports store this as `output_megapixel_rounded_up` and include estimated cost per card plus a replay-level billing summary.
+
+If a model/provider pair does not have a rate in the contract, the replay report marks cost as `unpriced`. Add the provider endpoint id, billing unit, unit price, source URL, and verification date to the contract before using that model for cost comparisons.
 
 Required environment:
 
@@ -410,13 +452,36 @@ node aws/twin-card/replay-huggingface-avatar.mjs `
   --hfProvider fal-ai
 ```
 
+Single-card prompt-variant replay example:
+
+```powershell
+node aws/twin-card/replay-huggingface-avatar.mjs `
+  --limit=1 `
+  --cardId 0a0ffaf8-6235-4b12-bf13-7816e88bdc13 `
+  --promptVariant identity_lock `
+  --model black-forest-labs/FLUX.1-Kontext-dev `
+  --hfProvider replicate
+```
+
+Prompt variants live in `src/twinCard/huggingFaceImageProviderContract.json`. Use this path when comparing likeness changes so every replay stores the exact prompt variant, prompt text, negative prompt, model, provider, and billing metadata.
+
 Output locations:
 
 - Local comparison files: `_sandbox/twin-card-huggingface-replays/{timestamp}/`
 - Local report: `_sandbox/twin-card-huggingface-replays/{timestamp}/index.html`
 - S3 replay files: `s3://myveevee-twin-card-767828748348-us-east-1/twin-card-replay/huggingface/{model}/{timestamp}/`
+- DynamoDB replay rows: `cardId` starts with `replay#`, `recordType` is `replay`, and `/twin-dashboard` labels them with a Replay badge. These rows point to replay S3 artifacts and must not be treated as participant booth runs.
 
 Do not put Hugging Face results under `generated/avatar.*` or `print/*` for real participant runs during exploration.
+
+By default, real replay scripts write both S3 artifacts and DDB dashboard rows. Use `--no-write-s3` for local-only dry runs, and `--no-write-ddb` only when the output should not appear in `/twin-dashboard`.
+
+To publish an already-generated replay manifest to the dashboard without paying to regenerate images:
+
+```powershell
+node aws/twin-card/replay-huggingface-avatar.mjs --indexManifest C:\path\to\manifest.json
+node aws/twin-card/replay-qwen-fal-comparison.mjs --indexManifest C:\path\to\manifest.json
+```
 
 ## Print Artifact Contract
 

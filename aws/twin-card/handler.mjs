@@ -182,6 +182,13 @@ async function loadCard(cardId) {
 async function serializeCard(card, options = {}) {
   const publicCard = {
     cardId: card.cardId,
+    recordType: card.recordType,
+    replayRunId: card.replayRunId,
+    replaySourceCardId: card.replaySourceCardId,
+    replayOutputSequence: card.replayOutputSequence,
+    replayModelId: card.replayModelId,
+    replayProvider: card.replayProvider,
+    replayReportUrl: await presign(card.replayReportS3Key),
     firstName: card.firstName,
     contactType: card.contactType,
     wellnessInterest: card.wellnessInterest,
@@ -228,6 +235,10 @@ async function serializeCard(card, options = {}) {
     printLayoutContentType: card.printLayoutContentType,
     printImageContentType: card.printImageContentType,
     runJsonUrl: await presign(card.runS3Key),
+    replayManifestS3Key: card.replayManifestS3Key,
+    replayReportS3Key: card.replayReportS3Key,
+    replayManifestUrl: await presign(card.replayManifestS3Key),
+    replayReportUrl: await presign(card.replayReportS3Key),
     printLayoutUrl: await presign(card.printLayoutS3Key),
     printImageUrl: await presign(card.printImageS3Key),
   };
