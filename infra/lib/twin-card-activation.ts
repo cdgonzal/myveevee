@@ -175,6 +175,10 @@ export class TwinCardActivation extends Construct {
       logGroup: printComposerLogGroup,
       bundling: {
         format: nodejs.OutputFormat.ESM,
+        loader: {
+          ".png": "dataurl",
+          ".svg": "text",
+        },
         mainFields: ["module", "main"],
         minify: true,
         nodeModules: ["sharp"],

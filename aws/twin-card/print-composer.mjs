@@ -2,6 +2,9 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import sharp from "sharp";
+import swcaLogoSvg from "./assets/swca-logo-vector-whitebg.svg";
+import veeveeIconLogoSvg from "./assets/veevee-icon-lightmode-transparent.svg";
+import veeveeWordmarkLogoSvg from "./assets/veevee-wordmark-lightmode-transparent.svg";
 import {
   DEFAULT_CARDS_PREFIX,
   GOAL_CONTENT,
@@ -14,6 +17,9 @@ import printContract from "../../src/twinCard/printContract.json";
 
 const s3 = new S3Client({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const SWCA_LOGO_DATA_URI = svgAssetDataUri(swcaLogoSvg);
+const VEEVEE_ICON_LOGO_DATA_URI = svgAssetDataUri(veeveeIconLogoSvg);
+const VEEVEE_WORDMARK_LOGO_DATA_URI = svgAssetDataUri(veeveeWordmarkLogoSvg);
 
 const { CARDS_BUCKET, CARDS_TABLE, CARDS_PREFIX = DEFAULT_CARDS_PREFIX } = process.env;
 
@@ -119,66 +125,101 @@ async function renderCanonReadyPng(svgBody) {
     .toBuffer();
 }
 
-function buildPrintSvg(card, image) {
+export function buildPrintSvg(card, image) {
   const firstName = escapeXml(card.firstName || "VeeVee Guest");
-  const focus = escapeXml(card.wellnessInterestLabel || "Wellness journey");
   const goalContent = GOAL_CONTENT[card.wellnessInterest] ?? GOAL_CONTENT.just_exploring;
-  const headline = escapeXml(goalContent.cardHeadline);
-  const findingLines = wrapText(goalContent.finding, 68)
-    .slice(0, 2)
+  const goalTitleLines = wrapText(goalContent.goalTitle || card.wellnessInterestLabel || "Wellness Journey", 10)
+    .slice(0, 3)
     .map(escapeXml);
-  const recommendations = goalContent.recommendations.slice(0, 3).map(escapeXml);
-  const cta = escapeXml(goalContent.cta);
-  const eventName = escapeXml(card.eventName || "4th SWCA Medical Summit");
+  const findingLines = wrapText(goalContent.finding, 25)
+    .slice(0, 4)
+    .map(escapeXml);
+  const recommendations = goalContent.recommendations.slice(0, 2).map((recommendation) => wrapText(recommendation, 26).map(escapeXml));
   const imageDataUri = `data:${image.contentType};base64,${image.buffer.toString("base64")}`;
-  const findingText = findingLines
+  const goalTitle = goalTitleLines
     .map(
-      (line, index) => `
-  <text x="180" y="${1574 + index * 34}" fill="#35445D" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700">${line}</text>`
+      (line, index) =>
+        `<text x="750" y="${930 + index * 72}" fill="#061B38" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="800">${line}</text>`
     )
     .join("");
-  const recommendationItems = recommendations
+  const findingText = findingLines
     .map(
-      (recommendation, index) => `
-  <circle cx="${202 + index * 292}" cy="1662" r="7" fill="#62B879"/>
-  <text x="${222 + index * 292}" y="1671" fill="#26364F" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">${recommendation}</text>`
+      (line, index) =>
+        `<text x="750" y="${1160 + index * 38}" fill="#13233D" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400">${line}</text>`
     )
+    .join("");
+  let nextStepY = 1370;
+  const nextSteps = recommendations
+    .map((lines) => {
+      const bulletY = nextStepY - 8;
+      const text = lines
+        .map((line, lineIndex) => {
+          const y = nextStepY + lineIndex * 36;
+          return `<text x="785" y="${y}" fill="#13233D" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400">${line}</text>`;
+        })
+        .join("");
+      nextStepY += Math.max(lines.length, 1) * 36 + 28;
+      return `<circle cx="756" cy="${bulletY}" r="7" fill="#D98A00"/>${text}`;
+    })
     .join("");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#06254C"/>
-      <stop offset="45%" stop-color="#1177BA"/>
-      <stop offset="100%" stop-color="#9CE7FF"/>
-    </linearGradient>
-    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#EEF9FF"/>
+    <linearGradient id="avatarFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#061B38" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#061B38" stop-opacity="0.78"/>
     </linearGradient>
     <clipPath id="avatarClip">
-      <rect x="150" y="260" width="900" height="900" rx="58" ry="58"/>
+      <rect x="65" y="790" width="575" height="590" rx="18" ry="18"/>
     </clipPath>
   </defs>
-  <rect width="1200" height="1800" fill="url(#bg)"/>
-  <circle cx="1060" cy="170" r="220" fill="#FFFFFF" opacity="0.14"/>
-  <circle cx="110" cy="1530" r="260" fill="#FFFFFF" opacity="0.10"/>
-  <rect x="76" y="78" width="1048" height="1644" rx="68" fill="url(#panel)" opacity="0.98"/>
-  <text x="150" y="170" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900" letter-spacing="4">VEEVEE</text>
-  <text x="150" y="222" fill="#44556F" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">${eventName}</text>
-  <rect x="140" y="250" width="920" height="920" rx="66" fill="#FFFFFF"/>
-  <image x="150" y="260" width="900" height="900" href="${imageDataUri}" preserveAspectRatio="xMidYMid slice" clip-path="url(#avatarClip)"/>
-  <rect x="150" y="260" width="900" height="900" rx="58" fill="none" stroke="#9CE7FF" stroke-width="10"/>
-  <text x="600" y="1274" text-anchor="middle" fill="#061B38" font-family="Inter, Arial, sans-serif" font-size="92" font-weight="900">${firstName}</text>
-  <text x="600" y="1342" text-anchor="middle" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">Health Twin Activated</text>
-  <text x="600" y="1406" text-anchor="middle" fill="#35445D" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700">Focus: ${focus}</text>
-  <rect x="140" y="1440" width="920" height="246" rx="34" fill="#E9FBFF"/>
-  <text x="180" y="1488" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="900" letter-spacing="2">YOUR HEALTH TWIN FINDING</text>
-  <text x="180" y="1530" fill="#061B38" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">${headline}</text>${findingText}
-  <text x="180" y="1640" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="900" letter-spacing="2">NEXT BEST STEPS</text>${recommendationItems}
-  <text x="600" y="1718" text-anchor="middle" fill="#1177BA" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">${cta}</text>
-  <text x="600" y="1742" text-anchor="middle" fill="#6B7890" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600">Wellness identity card. Educational only. Not medical advice or a medical record.</text>
+  <rect width="1200" height="1800" fill="#FFFDF8"/>
+
+  <text x="245" y="112" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700">2026</text>
+  <circle cx="395" cy="96" r="8" fill="#D98A00"/>
+  <text x="445" y="112" fill="#061B38" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400">4th SWCA Medical Summit Edition</text>
+
+  <path d="M112 156 L148 224" stroke="#D98A00" stroke-width="4" stroke-linecap="round"/>
+  <path d="M76 196 L132 232" stroke="#D98A00" stroke-width="4" stroke-linecap="round"/>
+  <path d="M62 252 L126 264" stroke="#D98A00" stroke-width="4" stroke-linecap="round"/>
+  <text x="160" y="300" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-style="italic">Meet Your</text>
+  <path d="M70 406 C155 286 330 304 250 470 C220 530 156 522 174 456 C190 400 260 372 365 386" fill="none" stroke="#D98A00" stroke-width="4"/>
+  <text x="235" y="505" fill="#D98A00" font-family="Georgia, 'Times New Roman', serif" font-size="210" font-style="italic">Digital</text>
+  <path d="M92 612 C230 500 468 520 690 552" fill="none" stroke="#D98A00" stroke-width="4"/>
+  <text x="240" y="680" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="152" font-style="italic">Health Twin</text>
+  <path d="M600 724 C730 690 895 690 1160 720" fill="none" stroke="#061B38" stroke-width="4"/>
+  <path d="M1016 410 L1026 436 L1052 446 L1026 456 L1016 482 L1006 456 L980 446 L1006 436 Z" fill="#D98A00"/>
+  <path d="M1080 375 L1096 418 L1138 434 L1096 450 L1080 493 L1064 450 L1022 434 L1064 418 Z" fill="#D98A00"/>
+  <path d="M1136 452 L1144 472 L1164 480 L1144 488 L1136 508 L1128 488 L1108 480 L1128 472 Z" fill="#D98A00"/>
+
+  <rect x="65" y="790" width="575" height="590" rx="18" fill="#FFFFFF" stroke="#D98A00" stroke-width="2"/>
+  <image x="65" y="790" width="575" height="590" href="${imageDataUri}" preserveAspectRatio="xMidYMid slice" clip-path="url(#avatarClip)"/>
+  <rect x="65" y="1225" width="575" height="155" rx="18" fill="url(#avatarFade)" clip-path="url(#avatarClip)"/>
+  <text x="95" y="1340" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800">${firstName}</text>
+
+  <image x="238" y="1412" width="190" height="120" href="${VEEVEE_ICON_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
+  <image x="130" y="1530" width="405" height="105" href="${VEEVEE_WORDMARK_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
+
+  <line x1="690" y1="790" x2="690" y2="1600" stroke="#D98A00" stroke-width="2"/>
+  <text x="750" y="845" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="800">GOAL</text>
+  <line x1="885" y1="832" x2="1140" y2="832" stroke="#D98A00" stroke-width="2"/>
+  ${goalTitle}
+  <line x1="750" y1="1105" x2="1130" y2="1105" stroke="#D98A00" stroke-width="2"/>
+  ${findingText}
+  <text x="750" y="1305" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="800">NEXT STEPS</text>
+  <line x1="970" y1="1292" x2="1130" y2="1292" stroke="#D98A00" stroke-width="2"/>
+  ${nextSteps}
+
+  <line x1="80" y1="1668" x2="1135" y2="1668" stroke="#D98A00" stroke-width="2"/>
+  <g transform="translate(620 1695)">
+    <image x="0" y="-8" width="84" height="84" href="${SWCA_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
+    <line x1="108" y1="0" x2="108" y2="68" stroke="#D98A00" stroke-width="2"/>
+    <text x="138" y="30" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="30">SPINE AND WELLNESS</text>
+    <text x="158" y="62" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="20">CENTERS OF AMERICA</text>
+    <line x1="138" y1="44" x2="165" y2="44" stroke="#0D9BD7" stroke-width="2"/>
+    <line x1="440" y1="44" x2="468" y2="44" stroke="#0D9BD7" stroke-width="2"/>
+  </g>
 </svg>`;
 }
 
@@ -202,6 +243,10 @@ function wrapText(text, maxChars) {
   }
 
   return lines;
+}
+
+function svgAssetDataUri(svgText) {
+  return `data:image/svg+xml;base64,${Buffer.from(svgText, "utf8").toString("base64")}`;
 }
 
 async function loadCard(cardId) {

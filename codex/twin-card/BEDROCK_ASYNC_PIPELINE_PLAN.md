@@ -177,17 +177,16 @@ Frame composition should be deterministic and not model-generated. The AI model 
 
 Current renderer note: `aws/twin-card/print-composer.mjs` uses `sharp` to render the SVG layout into the 1200x1800 PNG. The CDK construct installs the Linux ARM64 `sharp` package during bundling so local Windows synth output does not accidentally ship a Windows-native `sharp` binary to Lambda.
 
-Recommended print composition:
+Current print composition:
 
-- Full-bleed branded background that can tolerate slight borderless crop.
-- Avatar image masked into a consistent hero shape.
-- VeeVee logo.
-- SWCA brand/event line.
-- Event text: `4th SWCA Medical Summit`.
-- Findings, recommendations, doctor questions, and CTA selected from `src/twinCard/goalContentContract.json`.
-- CTA: `Visit myveevee.com`.
-- Optional QR code to `https://myveevee.com/swca/funnel` or the participant result page.
-- No diagnosis, risk score, medical claim, or clinical interpretation.
+- White 4x6 portrait frame matching the marketing sample direction.
+- Top event line: `2026 • 4th SWCA Medical Summit Edition`.
+- Large title treatment: `Meet Your Digital Health Twin`.
+- Generated avatar masked into the left image well, with participant first name overlaid at the bottom-left of the image.
+- Provided VeeVee SVG logo assets below the avatar well. The assets live in `aws/twin-card/assets/` and are embedded into the bundled print Lambda so production rendering does not depend on desktop file paths.
+- Right column with `GOAL`, the selected goal title, one short wellness finding, and two short next steps from `src/twinCard/goalContentContract.json`.
+- Footer line with the provided SWCA vector logo asset and `Spine and Wellness Centers of America` wordmark treatment.
+- No custom font files, no diagnosis, no risk score, no medical claim, and no clinical interpretation.
 
 ## Prompt Contract
 
@@ -313,6 +312,6 @@ Operational badge rule:
 
 - Whether the final print QR points to the participant result page or `https://myveevee.com/swca/funnel`.
 - Whether fallback should always proceed to print composition, or whether staff should explicitly approve fallback prints.
-- Whether to include an SWCA logo asset. If yes, store it as a static repo asset and package it with the print-composer Lambda.
+- Whether to include an SWCA logo asset. Resolved: the provided SWCA Illustrator/PDF-compatible source was converted into `aws/twin-card/assets/swca-logo-vector-whitebg.svg` and embedded into the print-composer Lambda bundle.
 - Whether to use direct S3 notifications only, or S3 notifications into SQS for better retry/backlog visibility. Recommendation for expo reliability: S3 -> SQS -> Lambda if time allows; direct S3 -> Lambda is acceptable for MVP.
 - Whether to keep Bedrock Stability fallbacks in the production priority after Nano/GPT reliability is proven under booth traffic.
