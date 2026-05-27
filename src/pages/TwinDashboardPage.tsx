@@ -40,6 +40,7 @@ import { APP_LINKS } from "../config/links";
 import type { TwinCardLead } from "../twinCard/types";
 
 const DASHBOARD_PIN = "5353";
+const DASHBOARD_DEBUG_STORAGE_KEY = "vv:twin-dashboard-debug";
 
 type DashboardState = "locked" | "loading" | "ready" | "denied";
 
@@ -62,6 +63,11 @@ export default function TwinDashboardPage() {
     setState("loading");
     const apiCards = await withTimeout(fetchRecentTwinCards(DASHBOARD_PIN), 6000).catch(() => null);
     const nextCards = apiCards ?? listTwinCardLeads().map(localLeadToApiCard);
+    debugDashboard("unlock result", {
+      source: apiCards ? "api" : "localStorageFallback",
+      count: nextCards.length,
+      cards: nextCards.map(summarizeCardForDebug),
+    });
     setCards(nextCards);
     setSelectedCardId(nextCards[0]?.cardId ?? "");
     setState("ready");
@@ -200,6 +206,16 @@ function ArtifactLinks({ card }: { card: TwinCardApiCard }) {
 
   if (!links.length) return <Text color="#6b7890">Local only</Text>;
 
+  debugDashboard("artifact links", {
+    cardId: card.cardId,
+    recordType: card.recordType,
+    links: links.map((link) => ({
+      label: link.label,
+      hasUrl: Boolean(link.url),
+      urlHost: readUrlHost(link.url),
+    })),
+  });
+
   return (
     <HStack spacing={2} flexWrap="wrap" onClick={(event) => event.stopPropagation()}>
       {links.map((link) => (
@@ -266,8 +282,34 @@ function ImageComparePanel({ title, imageUrl, s3Key }: { title: string; imageUrl
       </Flex>
       <Box bg="#eef4f8" border="1px solid #d5e5f0" borderRadius="8px" overflow="hidden" h={{ base: "260px", md: "260px" }}>
         {imageUrl ? (
-          <Image src={imageUrl} alt={title} w="100%" h="100%" objectFit="contain" bg="#f8fbfd" />
+          <Image
+            src={imageUrl}
+            alt={title}
+            w="100%"
+            h="100%"
+            objectFit="contain"
+            bg="#f8fbfd"
+            onLoad={(event) => {
+              const image = event.currentTarget;
+              debugDashboard("image loaded", {
+                title,
+                s3Key,
+                urlHost: readUrlHost(imageUrl),
+                naturalWidth: image.naturalWidth,
+                naturalHeight: image.naturalHeight,
+              });
+            }}
+            onError={(event) => {
+              debugDashboard("image error", {
+                title,
+                s3Key,
+                urlHost: readUrlHost(imageUrl),
+                currentSrc: event.currentTarget.currentSrc,
+              });
+            }}
+          />
         ) : (
+          debugDashboard("image missing url", { title, s3Key }),
           <Flex h="100%" align="center" justify="center" px={4} textAlign="center">
             <Text color="#6b7890">No image URL available.</Text>
           </Flex>
@@ -595,4 +637,43 @@ function formatDate(value: string) {
 function formatMs(value?: number) {
   const number = Number(value);
   return Number.isFinite(number) ? `${number} ms` : "-";
+}
+
+function isDashboardDebugEnabled() {
+  if (typeof window === "undefined") return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get("debugTwinDashboard") === "1" || window.localStorage.getItem(DASHBOARD_DEBUG_STORAGE_KEY) === "1";
+}
+
+function debugDashboard(message: string, payload?: unknown) {
+  if (!isDashboardDebugEnabled()) return;
+  console.log(`[twin-dashboard] ${message}`, payload ?? "");
+}
+
+function summarizeCardForDebug(card: TwinCardApiCard) {
+  return {
+    cardId: card.cardId,
+    recordType: card.recordType,
+    firstName: card.firstName,
+    status: card.generationStatus,
+    replayModelId: card.replayModelId,
+    sourceImageS3Key: card.sourceImageS3Key,
+    generatedAvatarS3Key: card.generatedAvatarS3Key,
+    printImageS3Key: card.printImageS3Key,
+    hasSourceImageUrl: Boolean(card.sourceImageUrl),
+    hasGeneratedAvatarUrl: Boolean(card.generatedAvatarUrl),
+    hasPrintImageUrl: Boolean(card.printImageUrl),
+    sourceImageUrlHost: readUrlHost(card.sourceImageUrl),
+    generatedAvatarUrlHost: readUrlHost(card.generatedAvatarUrl),
+    printImageUrlHost: readUrlHost(card.printImageUrl),
+  };
+}
+
+function readUrlHost(url?: string) {
+  if (!url) return null;
+  try {
+    return new URL(url).host;
+  } catch {
+    return "invalid-url";
+  }
 }
