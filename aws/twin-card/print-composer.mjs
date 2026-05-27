@@ -211,6 +211,7 @@ export function buildPrintSvg(card, image) {
   <line x1="970" y1="1292" x2="1130" y2="1292" stroke="#D98A00" stroke-width="2"/>
   ${nextSteps}
 
+  <text x="600" y="1635" text-anchor="middle" fill="#061B38" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800">Visit myveevee.com to learn more</text>
   <line x1="80" y1="1668" x2="1135" y2="1668" stroke="#D98A00" stroke-width="2"/>
   <g transform="translate(620 1695)">
     <image x="0" y="-8" width="84" height="84" href="${SWCA_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>

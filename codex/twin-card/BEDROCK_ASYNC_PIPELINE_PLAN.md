@@ -185,6 +185,7 @@ Current print composition:
 - Generated avatar masked into the left image well, with participant first name overlaid at the bottom-left of the image.
 - Provided VeeVee SVG logo assets below the avatar well. The assets live in `aws/twin-card/assets/` and are embedded into the bundled print Lambda so production rendering does not depend on desktop file paths.
 - Right column with `GOAL`, the selected goal title, one short wellness finding, and two short next steps from `src/twinCard/goalContentContract.json`.
+- Hardcoded bottom CTA: `Visit myveevee.com to learn more`.
 - Footer line with the provided SWCA vector logo asset and `Spine and Wellness Centers of America` wordmark treatment.
 - No custom font files, no diagnosis, no risk score, no medical claim, and no clinical interpretation.
 
