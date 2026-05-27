@@ -54,6 +54,8 @@ export async function handler(event) {
 }
 
 async function processGeneratedImage(generatedAvatarS3Key) {
+  const printStartedAtMs = Date.now();
+  const printCompositionStartedAt = new Date().toISOString();
   const parsedKey = parseCardKey(generatedAvatarS3Key);
   if (!parsedKey || parsedKey.stage !== "generated" || !parsedKey.runPrefix.startsWith(CARDS_PREFIX)) {
     return;
@@ -66,6 +68,7 @@ async function processGeneratedImage(generatedAvatarS3Key) {
 
   await updateCard(parsedKey.cardId, {
     renderStatus: "rendering",
+    printCompositionStartedAt,
     updatedAt: new Date().toISOString(),
   });
 
@@ -98,6 +101,7 @@ async function processGeneratedImage(generatedAvatarS3Key) {
     );
 
     const now = new Date().toISOString();
+    const printCompositionDurationMs = Date.now() - printStartedAtMs;
     const updatedCard = await updateCard(parsedKey.cardId, {
       renderStatus: "rendered",
       printLayoutS3Key,
@@ -106,6 +110,9 @@ async function processGeneratedImage(generatedAvatarS3Key) {
       printImageS3Key,
       printImageBytes: printImageBody.length,
       printImageContentType: "image/png",
+      printCompositionStartedAt,
+      printCompositionDurationMs,
+      totalRunDurationMs: calculateTotalRunDurationMs(card.createdAt, now),
       renderedAt: now,
       updatedAt: now,
     });
@@ -308,6 +315,13 @@ function parseFont(fontDataUrl) {
   }
   const buffer = Buffer.from(base64, "base64");
   return opentype.parse(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
+}
+
+function calculateTotalRunDurationMs(createdAt, completedAt) {
+  const started = Date.parse(createdAt);
+  const completed = Date.parse(completedAt);
+  if (!Number.isFinite(started) || !Number.isFinite(completed) || completed < started) return undefined;
+  return completed - started;
 }
 
 function svgAssetDataUri(svgText) {

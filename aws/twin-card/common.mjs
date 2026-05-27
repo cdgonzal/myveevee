@@ -232,6 +232,7 @@ export function buildRunArtifact(record) {
       status: record.generationStatus,
       provider: record.generationProvider,
       message: record.generationMessage,
+      generatedAt: record.generatedAt || null,
       bedrockModelId: record.bedrockModelId || null,
       bedrockProviderPriority: record.bedrockProviderPriority || null,
       bedrockProviderAttempts: record.bedrockProviderAttempts || null,
@@ -242,6 +243,18 @@ export function buildRunArtifact(record) {
     render: {
       status: record.renderStatus,
       renderedAt: record.renderedAt,
+    },
+    timings: {
+      createdAt: record.createdAt || null,
+      sourceUploadedAt: record.sourceUploadedAt || null,
+      avatarGenerationStartedAt: record.avatarGenerationStartedAt || null,
+      generatedAt: record.generatedAt || null,
+      printCompositionStartedAt: record.printCompositionStartedAt || null,
+      renderedAt: record.renderedAt || null,
+      uploadDurationMs: record.uploadDurationMs ?? null,
+      avatarGenerationDurationMs: record.avatarGenerationDurationMs ?? null,
+      printCompositionDurationMs: record.printCompositionDurationMs ?? null,
+      totalRunDurationMs: record.totalRunDurationMs ?? null,
     },
     fulfillment: {
       status: record.fulfillmentStatus,

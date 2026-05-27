@@ -58,6 +58,8 @@ export async function handler(event) {
 }
 
 async function processSourceImage(sourceImageS3Key) {
+  const generationStartedAtMs = Date.now();
+  const generationStartedAt = new Date().toISOString();
   const parsedKey = parseCardKey(sourceImageS3Key);
   if (!parsedKey || parsedKey.stage !== "source" || !parsedKey.runPrefix.startsWith(CARDS_PREFIX)) {
     return;
@@ -75,6 +77,7 @@ async function processSourceImage(sourceImageS3Key) {
     bedrockProviderPriority: PROVIDER_PRIORITY,
     avatarRecipeId: avatarRecipeContract.id,
     avatarRecipeVersion: avatarRecipeContract.version,
+    avatarGenerationStartedAt: generationStartedAt,
     updatedAt: new Date().toISOString(),
   });
 
@@ -134,6 +137,8 @@ async function processSourceImage(sourceImageS3Key) {
     generatedAvatarBytes: generated.buffer.length,
     generatedAvatarContentType: generated.contentType,
     bedrockUsage: summarizeBedrockUsage(attempts),
+    avatarGenerationStartedAt: generationStartedAt,
+    avatarGenerationDurationMs: Date.now() - generationStartedAtMs,
     generatedAt: now,
     updatedAt: now,
   };

@@ -135,6 +135,15 @@ export type TwinCardLead = {
   printImageContentType?: string;
   printImageS3Key?: string;
   printImageUrl?: string;
+  sourceUploadedAt?: string;
+  generatedAt?: string;
+  renderedAt?: string;
+  avatarGenerationStartedAt?: string;
+  printCompositionStartedAt?: string;
+  uploadDurationMs?: number;
+  avatarGenerationDurationMs?: number;
+  printCompositionDurationMs?: number;
+  totalRunDurationMs?: number;
   createdAt: string;
   updatedAt: string;
 };

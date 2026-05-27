@@ -59,6 +59,15 @@ export type TwinCardApiCard = {
   printImageBytes?: number;
   printLayoutContentType?: string;
   printImageContentType?: string;
+  sourceUploadedAt?: string;
+  generatedAt?: string;
+  renderedAt?: string;
+  avatarGenerationStartedAt?: string;
+  printCompositionStartedAt?: string;
+  uploadDurationMs?: number;
+  avatarGenerationDurationMs?: number;
+  printCompositionDurationMs?: number;
+  totalRunDurationMs?: number;
   runJsonUrl?: string;
   sourceImageUrl?: string;
   generatedAvatarUrl?: string;
@@ -233,6 +242,15 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     printImageContentType: card.printImageContentType ?? fallback?.printImageContentType,
     printImageS3Key: card.printImageS3Key ?? fallback?.printImageS3Key,
     printImageUrl: card.printImageUrl ?? fallback?.printImageUrl,
+    sourceUploadedAt: card.sourceUploadedAt ?? fallback?.sourceUploadedAt,
+    generatedAt: card.generatedAt ?? fallback?.generatedAt,
+    renderedAt: card.renderedAt ?? fallback?.renderedAt,
+    avatarGenerationStartedAt: card.avatarGenerationStartedAt ?? fallback?.avatarGenerationStartedAt,
+    printCompositionStartedAt: card.printCompositionStartedAt ?? fallback?.printCompositionStartedAt,
+    uploadDurationMs: card.uploadDurationMs ?? fallback?.uploadDurationMs,
+    avatarGenerationDurationMs: card.avatarGenerationDurationMs ?? fallback?.avatarGenerationDurationMs,
+    printCompositionDurationMs: card.printCompositionDurationMs ?? fallback?.printCompositionDurationMs,
+    totalRunDurationMs: card.totalRunDurationMs ?? fallback?.totalRunDurationMs,
     createdAt: card.createdAt,
     updatedAt: card.updatedAt,
   };

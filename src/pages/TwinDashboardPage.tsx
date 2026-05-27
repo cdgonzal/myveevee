@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Badge,
   Box,
@@ -52,6 +52,8 @@ export default function TwinDashboardPage() {
   const [cards, setCards] = useState<TwinCardApiCard[]>([]);
   const [selectedCardId, setSelectedCardId] = useState("");
   const [printingCardId, setPrintingCardId] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState("");
   const toast = useToast();
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
@@ -85,13 +87,7 @@ export default function TwinDashboardPage() {
     setPrintingCardId("");
   };
 
-  const unlockDashboard = async () => {
-    if (pin !== DASHBOARD_PIN) {
-      setState("denied");
-      return;
-    }
-
-    setState("loading");
+  const loadDashboardCards = async () => {
     const apiCards = await withTimeout(fetchRecentTwinCards(DASHBOARD_PIN), 6000).catch(() => null);
     const nextCards = apiCards ?? listTwinCardLeads().map(localLeadToApiCard);
     debugDashboard("unlock result", {
@@ -100,9 +96,35 @@ export default function TwinDashboardPage() {
       cards: nextCards.map(summarizeCardForDebug),
     });
     setCards(nextCards);
-    setSelectedCardId(nextCards[0]?.cardId ?? "");
+    setSelectedCardId((current) => current || nextCards[0]?.cardId || "");
+    setLastRefreshedAt(new Date().toISOString());
+    return nextCards;
+  };
+
+  const unlockDashboard = async () => {
+    if (pin !== DASHBOARD_PIN) {
+      setState("denied");
+      return;
+    }
+
+    setState("loading");
+    await loadDashboardCards();
     setState("ready");
   };
+
+  const refreshDashboard = async () => {
+    setRefreshing(true);
+    await loadDashboardCards();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    if (state !== "ready") return undefined;
+    const intervalId = window.setInterval(() => {
+      void loadDashboardCards();
+    }, 10000);
+    return () => window.clearInterval(intervalId);
+  }, [state]);
 
   return (
     <Box minH="100vh" bg="#f7fbff" color="#061b38">
@@ -114,6 +136,21 @@ export default function TwinDashboardPage() {
               <Image src="/brand/2026/wordmark.svg" alt="VeeVee" h="13px" />
             </HStack>
             <HStack spacing={3}>
+              {state === "ready" ? (
+                <>
+                  <Text color="#516176" fontSize="sm">
+                    Updated {lastRefreshedAt ? formatDate(lastRefreshedAt) : "-"}
+                  </Text>
+                  <Button
+                    variant="outline"
+                    borderColor="#b7d6e8"
+                    isLoading={refreshing}
+                    onClick={() => void refreshDashboard()}
+                  >
+                    Refresh
+                  </Button>
+                </>
+              ) : null}
               <Button as="a" href={APP_LINKS.internal.twinCard} variant="outline" borderColor="#b7d6e8">
                 Create Card
               </Button>
@@ -181,6 +218,7 @@ export default function TwinDashboardPage() {
                               <Th>Goal</Th>
                               <Th>Avatar</Th>
                               <Th>Print</Th>
+                              <Th>Time</Th>
                               <Th>Bedrock</Th>
                               <Th>AI Input</Th>
                               <Th>S3 Files</Th>
@@ -200,6 +238,7 @@ export default function TwinDashboardPage() {
                                 <Td>{card.wellnessInterestLabel}</Td>
                                 <Td><StatusBadge status={card.generationStatus} /></Td>
                                 <Td><RenderStatusBadge status={card.renderStatus} /></Td>
+                                <Td whiteSpace="nowrap">{formatRunTiming(card)}</Td>
                                 <Td whiteSpace="nowrap">{formatBedrockUsage(card)}</Td>
                                 <Td whiteSpace="nowrap">{formatImageSize(card)}</Td>
                                 <Td minW="220px">
@@ -756,6 +795,21 @@ function RunDetails({ card }: { card: TwinCardApiCard | null }) {
         <Divider />
 
         <Stack spacing={2}>
+          <Heading as="h3" size="sm">Timing</Heading>
+          <SimpleGrid columns={2} spacing={3}>
+            <Field label="Upload" value={formatMs(card.uploadDurationMs)} />
+            <Field label="Avatar" value={formatMs(card.avatarGenerationDurationMs ?? getWinningAttempt(card)?.durationMs)} />
+            <Field label="Card Render" value={formatMs(card.printCompositionDurationMs)} />
+            <Field label="Total Run" value={formatRunTiming(card)} />
+            <Field label="Source Uploaded" value={formatDate(card.sourceUploadedAt)} />
+            <Field label="Generated" value={formatDate(card.generatedAt)} />
+            <Field label="Rendered" value={formatDate(card.renderedAt)} />
+          </SimpleGrid>
+        </Stack>
+
+        <Divider />
+
+        <Stack spacing={2}>
           <Heading as="h3" size="sm">Image Contract</Heading>
           <SimpleGrid columns={2} spacing={3}>
             <Field label="Original" value={formatOriginal(card)} />
@@ -1080,6 +1134,15 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     printImageContentType: lead.printImageContentType,
     printImageS3Key: lead.printImageS3Key,
     printImageUrl: lead.printImageUrl,
+    sourceUploadedAt: lead.sourceUploadedAt,
+    generatedAt: lead.generatedAt,
+    renderedAt: lead.renderedAt,
+    avatarGenerationStartedAt: lead.avatarGenerationStartedAt,
+    printCompositionStartedAt: lead.printCompositionStartedAt,
+    uploadDurationMs: lead.uploadDurationMs,
+    avatarGenerationDurationMs: lead.avatarGenerationDurationMs,
+    printCompositionDurationMs: lead.printCompositionDurationMs,
+    totalRunDurationMs: lead.totalRunDurationMs,
     createdAt: lead.createdAt,
     updatedAt: lead.updatedAt,
   };
@@ -1095,6 +1158,18 @@ function formatBedrockUsage(card: TwinCardApiCard) {
   const usage = card.bedrockUsage;
   if (!usage) return "-";
   return `${formatUsageUnits(usage)} / ${formatCurrency(usage.totalEstimatedCostUsd)}`;
+}
+
+function formatRunTiming(card: TwinCardApiCard) {
+  const total = card.totalRunDurationMs ?? calculateDurationMs(card.createdAt, card.renderedAt ?? card.generatedAt ?? card.updatedAt);
+  return formatMs(total);
+}
+
+function calculateDurationMs(startedAt?: string, completedAt?: string) {
+  const started = Date.parse(startedAt ?? "");
+  const completed = Date.parse(completedAt ?? "");
+  if (!Number.isFinite(started) || !Number.isFinite(completed) || completed < started) return undefined;
+  return completed - started;
 }
 
 function formatUsageUnits(usage?: { totalBillableUnits?: number; billableUnits?: number; billingUnit?: string } | null) {
@@ -1148,7 +1223,8 @@ function formatBytes(value?: number) {
   return `${(value / 1024 / 1024).toFixed(1)} MB`;
 }
 
-function formatDate(value: string) {
+function formatDate(value?: string) {
+  if (!value) return "-";
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }

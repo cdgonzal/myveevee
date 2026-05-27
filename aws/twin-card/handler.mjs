@@ -66,6 +66,7 @@ export async function handler(event) {
 }
 
 async function createCard(event, origin) {
+  const requestStartedAtMs = Date.now();
   const payload = parseBody(event);
   const now = new Date().toISOString();
   const cardId = crypto.randomUUID();
@@ -146,7 +147,23 @@ async function createCard(event, origin) {
     })
   );
 
-  return response(200, { ok: true, card: await serializeCard(record) }, origin);
+  const sourceUploadedAt = new Date().toISOString();
+  const uploadedRecord = await updateCard(cardId, {
+    sourceUploadedAt,
+    uploadDurationMs: Date.now() - requestStartedAtMs,
+    updatedAt: sourceUploadedAt,
+  });
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: CARDS_BUCKET,
+      Key: runS3Key,
+      Body: JSON.stringify(buildRunArtifact(uploadedRecord), null, 2),
+      ContentType: "application/json",
+      ServerSideEncryption: "AES256",
+    })
+  );
+
+  return response(200, { ok: true, card: await serializeCard(uploadedRecord) }, origin);
 }
 
 async function getCard(event, origin) {
@@ -264,6 +281,15 @@ async function serializeCard(card, options = {}) {
     eventName: card.eventName,
     createdAt: card.createdAt,
     updatedAt: card.updatedAt,
+    sourceUploadedAt: card.sourceUploadedAt,
+    generatedAt: card.generatedAt,
+    renderedAt: card.renderedAt,
+    avatarGenerationStartedAt: card.avatarGenerationStartedAt,
+    printCompositionStartedAt: card.printCompositionStartedAt,
+    uploadDurationMs: card.uploadDurationMs,
+    avatarGenerationDurationMs: card.avatarGenerationDurationMs,
+    printCompositionDurationMs: card.printCompositionDurationMs,
+    totalRunDurationMs: card.totalRunDurationMs,
     sourceImageUrl: await presign(card.sourceImageS3Key),
     generatedAvatarUrl: await presign(card.generatedAvatarS3Key),
   };
