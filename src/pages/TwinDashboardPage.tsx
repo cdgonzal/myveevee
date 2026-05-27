@@ -527,7 +527,13 @@ function CardsPrintPanel({
                 <Td>
                   <Stack spacing={1}>
                     {card.printImageUrl ? (
-                      <Link href={card.printImageUrl} isExternal color="#1177BA" fontWeight="800">
+                      <Link
+                        href={card.printImageUrl}
+                        download={buildTwinCardFileName(card)}
+                        isExternal
+                        color="#1177BA"
+                        fontWeight="800"
+                      >
                         Canon PNG
                       </Link>
                     ) : null}
@@ -1238,8 +1244,9 @@ async function openPrintWindow(card: TwinCardApiCard) {
   }
 
   printWindow.opener = null;
+  const fileName = buildTwinCardFileName(card);
   writePrintDocument(printWindow, {
-    title: `${card.firstName} Twin Card`,
+    title: fileName,
     body: `<div class="status">Loading print-ready card...</div>`,
   });
 
@@ -1251,17 +1258,17 @@ async function openPrintWindow(card: TwinCardApiCard) {
     const blob = await response.blob();
     const objectUrl = URL.createObjectURL(blob);
     writePrintDocument(printWindow, {
-      title: `${card.firstName} Twin Card`,
+      title: fileName,
       body: `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(card.firstName)} Twin Card" />`,
       autoPrint: true,
     });
   } catch {
     writePrintDocument(printWindow, {
-      title: `${card.firstName} Twin Card`,
+      title: fileName,
       body: `
         <div class="status">
           <strong>Print image could not load in the popup.</strong>
-          <a href="${escapeHtml(card.printImageUrl)}" target="_blank" rel="noreferrer">Open Canon PNG directly</a>
+          <a href="${escapeHtml(card.printImageUrl)}" download="${escapeHtml(fileName)}" target="_blank" rel="noreferrer">Open Canon PNG directly</a>
         </div>
       `,
     });
@@ -1304,6 +1311,32 @@ function escapeHtml(value: string) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function buildTwinCardFileName(card: TwinCardApiCard) {
+  const name = sanitizeFileNamePart(card.firstName || "guest");
+  const timestamp = formatFileTimestamp(card.renderedAt ?? card.createdAt ?? new Date().toISOString());
+  return `${name}_twin_card_${timestamp}.png`;
+}
+
+function sanitizeFileNamePart(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "") || "guest";
+}
+
+function formatFileTimestamp(value: string) {
+  const date = new Date(value);
+  const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+  const yyyy = String(safeDate.getFullYear());
+  const mm = String(safeDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(safeDate.getDate()).padStart(2, "0");
+  const hh = String(safeDate.getHours()).padStart(2, "0");
+  const min = String(safeDate.getMinutes()).padStart(2, "0");
+  const ss = String(safeDate.getSeconds()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
 }
 
 function formatMs(value?: number) {
