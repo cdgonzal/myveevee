@@ -292,6 +292,8 @@ async function serializeCard(card, options = {}) {
     totalRunDurationMs: card.totalRunDurationMs,
     sourceImageUrl: await presign(card.sourceImageS3Key),
     generatedAvatarUrl: await presign(card.generatedAvatarS3Key),
+    printImageContentType: card.printImageContentType,
+    printImageUrl: await presign(card.printImageS3Key),
   };
 
   if (!options.includePrivateFields) {

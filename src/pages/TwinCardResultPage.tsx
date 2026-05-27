@@ -33,8 +33,14 @@ export default function TwinCardResultPage() {
 
   const printCard = () => {
     if (lead) trackTwinCardEvent("public.twin_card.print_clicked", lead);
+    if (lead?.printImageUrl) {
+      void openPrintCardWindow(lead);
+      return;
+    }
     window.print();
   };
+
+  const downloadFileName = lead ? buildTwinCardFileName(lead) : "veevee_twin_card.png";
 
   return (
     <Box minH="100vh" bg="#f7fbff" color="#061b38">
@@ -82,8 +88,41 @@ export default function TwinCardResultPage() {
             </Stack>
 
             <Stack align="center" spacing={4}>
-              {lead ? <TwinCardPrintView lead={lead} /> : null}
-              {lead ? <Button onClick={printCard}>Print Card</Button> : null}
+              {lead?.printImageUrl ? (
+                <Box
+                  className="twin-card-print-area"
+                  bg="white"
+                  border="1px solid rgba(6, 37, 76, 0.14)"
+                  borderRadius="8px"
+                  boxShadow="0 24px 55px rgba(6, 37, 76, 0.18)"
+                  overflow="hidden"
+                  w={{ base: "min(100%, 360px)", md: "360px" }}
+                >
+                  <Image
+                    src={lead.printImageUrl}
+                    alt={`${lead.firstName} VeeVee Twin Card`}
+                    w="100%"
+                    display="block"
+                  />
+                </Box>
+              ) : lead ? (
+                <TwinCardPrintView lead={lead} />
+              ) : null}
+              {lead ? (
+                <Stack direction={{ base: "column", sm: "row" }} spacing={3}>
+                  <Button onClick={printCard}>Print Card</Button>
+                  {lead.printImageUrl ? (
+                    <Button
+                      as="a"
+                      href={lead.printImageUrl}
+                      download={downloadFileName}
+                      variant="outline"
+                    >
+                      Download Card
+                    </Button>
+                  ) : null}
+                </Stack>
+              ) : null}
             </Stack>
           </SimpleGrid>
         </Stack>
@@ -93,3 +132,104 @@ export default function TwinCardResultPage() {
 }
 
 const printCss = buildTwinCardPrintCss();
+
+async function openPrintCardWindow(lead: TwinCardLead) {
+  if (!lead.printImageUrl) return;
+  const printWindow = window.open("", "_blank", "width=900,height=1100");
+  if (!printWindow) {
+    window.open(lead.printImageUrl, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  printWindow.opener = null;
+  writePrintDocument(printWindow, {
+    title: buildTwinCardFileName(lead),
+    body: `<div class="status">Loading print-ready card...</div>`,
+  });
+
+  try {
+    const response = await fetch(lead.printImageUrl, { mode: "cors" });
+    if (!response.ok) throw new Error(`Print image request failed with ${response.status}.`);
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    writePrintDocument(printWindow, {
+      title: buildTwinCardFileName(lead),
+      body: `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(lead.firstName)} Twin Card" />`,
+      autoPrint: true,
+    });
+  } catch {
+    writePrintDocument(printWindow, {
+      title: buildTwinCardFileName(lead),
+      body: `
+        <div class="status">
+          <strong>Print image could not load in the popup.</strong>
+          <a href="${escapeHtml(lead.printImageUrl)}" download="${escapeHtml(buildTwinCardFileName(lead))}" target="_blank" rel="noreferrer">Open Twin Card PNG directly</a>
+        </div>
+      `,
+    });
+  }
+}
+
+function writePrintDocument(
+  printWindow: Window,
+  options: {
+    title: string;
+    body: string;
+    autoPrint?: boolean;
+  }
+) {
+  printWindow.document.open();
+  printWindow.document.write(`<!doctype html>
+<html>
+<head>
+  <title>${escapeHtml(options.title)}</title>
+  <style>
+    @page { size: 4in 6in; margin: 0; }
+    html, body { margin: 0; width: 100%; min-height: 100%; background: #fff; }
+    body { display: grid; place-items: center; }
+    img { width: 4in; height: 6in; object-fit: contain; display: block; }
+    .status { font: 16px Arial, sans-serif; color: #061b38; padding: 24px; text-align: center; }
+    .status a { color: #1177BA; display: block; font-weight: 700; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  ${options.body}
+  ${options.autoPrint ? "<script>window.addEventListener('load', function(){ window.focus(); window.print(); });</script>" : ""}
+</body>
+</html>`);
+  printWindow.document.close();
+}
+
+function buildTwinCardFileName(lead: TwinCardLead) {
+  const name = sanitizeFileNamePart(lead.firstName || "guest");
+  const timestamp = formatFileTimestamp(lead.renderedAt ?? lead.createdAt ?? new Date().toISOString());
+  return `${name}_twin_card_${timestamp}.png`;
+}
+
+function sanitizeFileNamePart(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "") || "guest";
+}
+
+function formatFileTimestamp(value: string) {
+  const date = new Date(value);
+  const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+  const yyyy = String(safeDate.getFullYear());
+  const mm = String(safeDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(safeDate.getDate()).padStart(2, "0");
+  const hh = String(safeDate.getHours()).padStart(2, "0");
+  const min = String(safeDate.getMinutes()).padStart(2, "0");
+  const ss = String(safeDate.getSeconds()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+}
+
+function escapeHtml(value: string) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
