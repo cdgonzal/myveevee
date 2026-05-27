@@ -119,15 +119,17 @@ export default function TwinDashboardPage() {
             </Box>
           ) : (
             <>
-              <SimpleGrid columns={{ base: 1, md: 4, xl: 7 }} spacing={4}>
-                <StatBox label="Runs" value={String(stats.total)} />
-                <StatBox label="Replays" value={String(stats.replays)} />
-                <StatBox label="Print Ready" value={String(stats.printReady)} />
-                <StatBox label="AI Complete" value={String(stats.completed)} />
-                <StatBox label="Photo Fallback" value={String(stats.fallback)} />
+              <Stack spacing={4}>
+                <SimpleGrid columns={{ base: 1, md: 3, xl: 6 }} spacing={4}>
+                  <StatBox label="Runs" value={String(stats.total)} />
+                  <StatBox label="Replays" value={String(stats.replays)} />
+                  <StatBox label="Print Ready" value={String(stats.printReady)} />
+                  <StatBox label="AI Complete" value={String(stats.completed)} />
+                  <StatBox label="Photo Fallback" value={String(stats.fallback)} />
+                  <StatBox label="Consented" value={String(stats.consented)} />
+                </SimpleGrid>
                 <CostPill costs={stats.costs} />
-                <StatBox label="Consented" value={String(stats.consented)} />
-              </SimpleGrid>
+              </Stack>
 
               <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
                 <TabList gap={2} flexWrap="wrap">
