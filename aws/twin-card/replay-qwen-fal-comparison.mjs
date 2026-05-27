@@ -22,9 +22,11 @@ const CARDS_BUCKET = args.bucket ?? process.env.CARDS_BUCKET ?? "myveevee-twin-c
 const CARDS_TABLE = args.table ?? process.env.CARDS_TABLE ?? "myveevee-twin-card-cards";
 const LIMIT = Number(args.limit ?? 3);
 const CARD_ID = args.cardId ?? process.env.REPLAY_CARD_ID ?? null;
+const COMPARISON = args.comparison ?? "qwen-fal";
 const RUN_ID = args.runId ?? new Date().toISOString().replace(/[:.]/g, "-");
 const LOCAL_DIR = path.resolve(args.outDir ?? path.join(repoRoot, "_sandbox", "twin-card-provider-comparisons", RUN_ID));
-const REPLAY_PREFIX = args.replayPrefix ?? `twin-card-replay/provider-comparison/qwen-vs-nano-banana-2/${RUN_ID}`;
+const COMPARISON_SLUG = COMPARISON === "nano-gpt" ? "nano-banana-2-vs-gpt-image-2" : "qwen-vs-nano-banana-2";
+const REPLAY_PREFIX = args.replayPrefix ?? `twin-card-replay/provider-comparison/${COMPARISON_SLUG}/${RUN_ID}`;
 const WRITE_S3 = args.writeS3 !== false;
 const WRITE_DDB = args.writeDdb !== false;
 const HF_TOKEN = process.env.HF_TOKEN;
@@ -49,16 +51,17 @@ async function main() {
     return;
   }
 
-  if (!HF_TOKEN) throw new Error("HF_TOKEN is required.");
   if (!FAL_KEY) throw new Error("FAL_KEY is required.");
+  if (COMPARISON !== "nano-gpt" && !HF_TOKEN) throw new Error("HF_TOKEN is required for Qwen comparison. Use --comparison nano-gpt for direct fal-only replay.");
   await mkdir(LOCAL_DIR, { recursive: true });
 
   const cards = await fetchRecentCards(LIMIT);
   if (!cards.length) throw new Error(`No source images found in ${CARDS_TABLE}.`);
 
   const manifest = {
-    schema: "twin-card-qwen-fal-comparison-v1",
+    schema: COMPARISON === "nano-gpt" ? "twin-card-nano-gpt-comparison-v1" : "twin-card-qwen-fal-comparison-v1",
     runId: RUN_ID,
+    comparison: COMPARISON,
     createdAt: new Date().toISOString(),
     bucket: CARDS_BUCKET,
     table: CARDS_TABLE,
@@ -70,8 +73,15 @@ async function main() {
     prompt: PROMPT,
     negativePrompt: NEGATIVE_PROMPT,
     outputs: [
-      { label: "Output #1 Qwen", provider: "huggingface:replicate", modelId: "Qwen/Qwen-Image-Edit", recipeId: "qwen_image_edit_replicate_no_text_avatar_v1" },
-      { label: "Output #2 Nano Banana 2 Edit", provider: "fal.ai", modelId: NANO_BANANA_ENDPOINT_ID, recipeId: "fal_nano_banana_2_edit_avatar_v1" },
+      ...(COMPARISON === "nano-gpt"
+        ? [
+          { label: "Output #1 Nano Banana 2 Edit", provider: "fal.ai", modelId: NANO_BANANA_ENDPOINT_ID, recipeId: "fal_nano_banana_2_edit_avatar_v1" },
+          { label: "Output #2 GPT Image 2 Edit", provider: "fal.ai", modelId: GPT_IMAGE_2_EDIT_ENDPOINT_ID, recipeId: "fal_gpt_image_2_edit_avatar_v1" },
+        ]
+        : [
+          { label: "Output #1 Qwen", provider: "huggingface:replicate", modelId: "Qwen/Qwen-Image-Edit", recipeId: "qwen_image_edit_replicate_no_text_avatar_v1" },
+          { label: "Output #2 Nano Banana 2 Edit", provider: "fal.ai", modelId: NANO_BANANA_ENDPOINT_ID, recipeId: "fal_nano_banana_2_edit_avatar_v1" },
+        ]),
     ],
     items: [],
   };
@@ -80,9 +90,11 @@ async function main() {
     manifest.items.push(await replayCard(card, index + 1));
   }
   manifest.billingSummary = summarizeUsage(manifest.items);
-  manifest.falAudit.billingEvents = await fetchFalBillingEvents(
-    manifest.items.flatMap((item) => item.outputs ?? []).filter((output) => output.provider === "fal.ai").map((output) => output.requestId).filter(Boolean)
-  );
+  const falOutputs = manifest.items.flatMap((item) => item.outputs ?? []).filter((output) => output.provider === "fal.ai");
+  manifest.falAudit.billingEvents = await fetchFalBillingEvents({
+    requestIds: falOutputs.map((output) => output.requestId).filter(Boolean),
+    endpointIds: [...new Set(falOutputs.map((output) => output.modelId).filter(Boolean))],
+  });
 
   const manifestPath = path.join(LOCAL_DIR, "manifest.json");
   const reportPath = path.join(LOCAL_DIR, "index.html");
@@ -182,7 +194,7 @@ async function writeReplayRowsToDynamo(manifest) {
             usage,
             providerAudit: output.providerAudit,
           }],
-          avatarRecipeId: output.sequence === 1 ? "qwen_image_edit_replicate_no_text_avatar_v1" : "fal_nano_banana_2_edit_avatar_v1",
+          avatarRecipeId: output.recipeId ?? (output.sequence === 1 ? "qwen_image_edit_replicate_no_text_avatar_v1" : "fal_nano_banana_2_edit_avatar_v1"),
           avatarRecipeVersion: manifest.schema,
           renderStatus: "not_started",
           fulfillmentStatus: "not_printed",
@@ -210,17 +222,18 @@ async function writeReplayRowsToDynamo(manifest) {
 }
 
 function enrichReplayUsage(usage, modelId) {
-  if (usage?.billingProvider === "fal.ai" && modelId === NANO_BANANA_ENDPOINT_ID) {
+  if (usage?.billingProvider === "fal.ai") {
     const billableUnits = Number(usage.billableUnits ?? 0);
-    const unitPriceUsd = Number(usage.unitPriceUsd ?? 0.08);
+    const fallbackPrice = modelId === NANO_BANANA_ENDPOINT_ID ? 0.08 : modelId === GPT_IMAGE_2_EDIT_ENDPOINT_ID ? 1 : null;
+    const unitPriceUsd = Number(usage.unitPriceUsd ?? fallbackPrice);
     return {
       ...usage,
-      billingUnit: usage.billingUnit === "fal_billable_unit" ? "images" : usage.billingUnit ?? "images",
+      billingUnit: usage.billingUnit === "fal_billable_unit" ? "images" : usage.billingUnit ?? "units",
       unitPriceUsd,
       estimatedCostUsd: Number.isFinite(billableUnits) && Number.isFinite(unitPriceUsd)
         ? Number((billableUnits * unitPriceUsd).toFixed(6))
         : usage.estimatedCostUsd ?? null,
-      pricingSourceUrl: usage.pricingSourceUrl ?? "https://api.fal.ai/v1/models/pricing?endpoint_id=fal-ai%2Fnano-banana-2%2Fedit",
+      pricingSourceUrl: usage.pricingSourceUrl ?? `https://api.fal.ai/v1/models/pricing?endpoint_id=${encodeURIComponent(modelId)}`,
     };
   }
   return usage;
@@ -235,20 +248,24 @@ async function replayCard(card, ordinal) {
   const localSourcePath = path.join(LOCAL_DIR, `${localStem}-source.jpg`);
   await writeFile(localSourcePath, source.buffer);
 
-  const qwen = await runQwen(source.buffer);
-  const nano = await runNanoBanana(sourceUrl);
+  const results = COMPARISON === "nano-gpt"
+    ? [await runNanoBanana(sourceUrl), await runGptImage2(sourceUrl)]
+    : [await runQwen(source.buffer), await runNanoBanana(sourceUrl)];
   const outputs = [];
 
-  for (const [index, result] of [qwen, nano].entries()) {
+  for (const [index, result] of results.entries()) {
     const sequence = index + 1;
     const generatedMetrics = await imageMetrics(result.buffer, result.contentType);
     const localGeneratedPath = path.join(LOCAL_DIR, `${localStem}-output-${sequence}.png`);
     await writeFile(localGeneratedPath, result.buffer);
     const output = {
       sequence,
-      label: sequence === 1 ? "Output #1 Qwen" : "Output #2 Nano Banana 2 Edit",
+      label: COMPARISON === "nano-gpt"
+        ? result.label ?? `Output #${sequence}`
+        : (sequence === 1 ? "Output #1 Qwen" : "Output #2 Nano Banana 2 Edit"),
       provider: result.provider,
       modelId: result.modelId,
+      recipeId: result.recipeId,
       status: result.status,
       message: result.message,
       durationMs: result.durationMs,
@@ -334,16 +351,11 @@ async function runQwen(sourceBuffer) {
 }
 
 async function runNanoBanana(sourceUrl) {
-  const started = Date.now();
-  const response = await fetch(`https://fal.run/${NANO_BANANA_ENDPOINT_ID}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Key ${FAL_KEY}`,
-      "Content-Type": "application/json",
-      "X-Fal-Store-IO": "1",
-      "X-Fal-Object-Lifecycle-Preference": JSON.stringify({ expiration_duration_seconds: 604800 }),
-    },
-    body: JSON.stringify({
+  return runFalImageEdit({
+    endpointId: NANO_BANANA_ENDPOINT_ID,
+    label: "Output #1 Nano Banana 2 Edit",
+    recipeId: "fal_nano_banana_2_edit_avatar_v1",
+    body: {
       prompt: PROMPT,
       image_urls: [sourceUrl],
       num_images: 1,
@@ -352,7 +364,40 @@ async function runNanoBanana(sourceUrl) {
       resolution: "1K",
       limit_generations: true,
       safety_tolerance: "4",
-    }),
+    },
+  });
+}
+
+async function runGptImage2(sourceUrl) {
+  return runFalImageEdit({
+    endpointId: GPT_IMAGE_2_EDIT_ENDPOINT_ID,
+    label: "Output #2 GPT Image 2 Edit",
+    recipeId: "fal_gpt_image_2_edit_avatar_v1",
+    body: {
+      prompt: PROMPT,
+      image_urls: [sourceUrl],
+      image_size: {
+        width: 1024,
+        height: 1024,
+      },
+      quality: args.gptQuality ?? "medium",
+      num_images: 1,
+      output_format: "png",
+    },
+  });
+}
+
+async function runFalImageEdit({ endpointId, label, recipeId, body: requestBody }) {
+  const started = Date.now();
+  const response = await fetch(`https://fal.run/${endpointId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Key ${FAL_KEY}`,
+      "Content-Type": "application/json",
+      "X-Fal-Store-IO": "1",
+      "X-Fal-Object-Lifecycle-Preference": JSON.stringify({ expiration_duration_seconds: 604800 }),
+    },
+    body: JSON.stringify(requestBody),
   });
   const text = await response.text();
   const body = JSON.parse(text);
@@ -366,15 +411,17 @@ async function runNanoBanana(sourceUrl) {
   const arrayBuffer = await imageResponse.arrayBuffer();
   const billableUnits = Number(response.headers.get("x-fal-billable-units") ?? 1);
   const requestId = response.headers.get("x-fal-request-id");
-  const pricing = await fetchFalPricing([NANO_BANANA_ENDPOINT_ID]);
-  const price = pricing.prices?.find((item) => item.endpoint_id === NANO_BANANA_ENDPOINT_ID);
+  const pricing = await fetchFalPricing([endpointId]);
+  const price = pricing.prices?.find((item) => item.endpoint_id === endpointId);
   const unitPriceUsd = Number(price?.unit_price);
   const estimatedCostUsd = Number.isFinite(unitPriceUsd) ? Number((billableUnits * unitPriceUsd).toFixed(6)) : null;
   return {
     provider: "fal.ai",
-    modelId: NANO_BANANA_ENDPOINT_ID,
+    modelId: endpointId,
+    label,
+    recipeId,
     status: "completed",
-    message: "Nano Banana 2 Edit replay completed.",
+    message: `${label.replace(/^Output #\d+ /, "")} replay completed.`,
     durationMs: Date.now() - started,
     requestId,
     contentType: imageResponse.headers.get("content-type") ?? body.images?.[0]?.content_type ?? "image/png",
@@ -386,14 +433,15 @@ async function runNanoBanana(sourceUrl) {
       unitPriceUsd: Number.isFinite(unitPriceUsd) ? unitPriceUsd : null,
       estimatedCostUsd,
       currency: "USD",
-      pricingSourceUrl: "https://fal.ai/models/fal-ai/nano-banana-2/edit/api",
+      pricingSourceUrl: `https://fal.ai/models/${endpointId}/api`,
       pricingApi: pricing,
     },
     providerAudit: {
-      endpointId: NANO_BANANA_ENDPOINT_ID,
+      endpointId,
       requestId,
       responseHeaders: readFalHeaders(response.headers),
       responseBody: summarizeFalResponseBody(body),
+      requestBody: summarizeFalRequestBody(requestBody),
       outputFetch: {
         status: imageResponse.status,
         contentType: imageResponse.headers.get("content-type"),
@@ -420,10 +468,10 @@ async function fetchFalPricing(endpointIds) {
   };
 }
 
-async function fetchFalBillingEvents(requestIds) {
+async function fetchFalBillingEvents({ requestIds, endpointIds }) {
   if (!FAL_KEY || !requestIds.length) return { ok: false, message: "No fal request ids to audit.", billingEvents: [] };
   const params = new URLSearchParams();
-  params.set("endpoint_id", NANO_BANANA_ENDPOINT_ID);
+  for (const endpointId of endpointIds?.length ? endpointIds : [NANO_BANANA_ENDPOINT_ID]) params.append("endpoint_id", endpointId);
   params.set("limit", String(Math.min(requestIds.length, 50)));
   params.set("expand", "auth_method");
   for (const requestId of requestIds.slice(0, 50)) params.append("request_id", requestId);
@@ -478,6 +526,20 @@ function summarizeFalResponseBody(body) {
       fileSize: image.file_size ?? image.fileSize ?? null,
       urlPresent: Boolean(image.url),
     })),
+  };
+}
+
+function summarizeFalRequestBody(body) {
+  return {
+    promptChars: String(body?.prompt ?? "").length,
+    imageUrlCount: Array.isArray(body?.image_urls) ? body.image_urls.length : 0,
+    imageSize: body?.image_size ?? null,
+    quality: body?.quality ?? null,
+    resolution: body?.resolution ?? null,
+    aspectRatio: body?.aspect_ratio ?? null,
+    numImages: body?.num_images ?? null,
+    outputFormat: body?.output_format ?? null,
+    syncMode: body?.sync_mode ?? null,
   };
 }
 
