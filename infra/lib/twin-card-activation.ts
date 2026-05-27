@@ -174,6 +174,19 @@ export class TwinCardActivation extends Construct {
       memorySize: 1024,
       logGroup: printComposerLogGroup,
       bundling: {
+        commandHooks: {
+          beforeBundling() {
+            return [];
+          },
+          beforeInstall() {
+            return [];
+          },
+          afterBundling(_inputDir, outputDir) {
+            return [
+              `npm install --prefix "${outputDir}" --os=linux --cpu=arm64 --libc=glibc sharp@0.34.5`,
+            ];
+          },
+        },
         format: nodejs.OutputFormat.ESM,
         loader: {
           ".png": "dataurl",
