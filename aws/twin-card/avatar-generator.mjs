@@ -20,7 +20,11 @@ import {
 import avatarRecipeContract from "../../src/twinCard/avatarRecipeContract.json";
 
 const s3 = new S3Client({});
-const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 const bedrock = new BedrockRuntimeClient({});
 const secrets = new SecretsManagerClient({});
 
@@ -306,7 +310,15 @@ function buildFalPrompt() {
 async function readFalKey() {
   if (cachedFalKey) return cachedFalKey;
   const result = await secrets.send(new GetSecretValueCommand({ SecretId: FAL_KEY_SECRET_NAME }));
-  cachedFalKey = (result.SecretString ?? Buffer.from(result.SecretBinary ?? "").toString("utf8")).trim();
+  const secretValue = (result.SecretString ?? Buffer.from(result.SecretBinary ?? "").toString("utf8")).trim();
+  const secretJson = readJsonText(secretValue);
+  cachedFalKey = (
+    secretJson?.["fal-key"] ??
+    secretJson?.FAL_KEY ??
+    secretJson?.falKey ??
+    secretJson?.key ??
+    secretValue
+  ).trim();
   if (!cachedFalKey) {
     throw new Error(`Secret ${FAL_KEY_SECRET_NAME} is empty.`);
   }

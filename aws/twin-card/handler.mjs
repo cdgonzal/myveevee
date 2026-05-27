@@ -18,7 +18,11 @@ import {
 } from "./common.mjs";
 
 const s3 = new S3Client({});
-const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 const {
   CARDS_BUCKET,

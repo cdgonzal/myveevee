@@ -285,6 +285,7 @@ type ReplayComparisonGroup = {
 function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
   const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
   const replayGroups = useMemo(() => buildReplayComparisonGroups(cards), [cards]);
+  const liveCards = useMemo(() => cards.filter((card) => !isReplayCard(card)).slice(0, 3), [cards]);
 
   if (!cards.length) {
     return (
@@ -294,15 +295,42 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
     );
   }
 
-  if (replayGroups.length) {
-    const toggleDetails = (groupId: string) => {
-      setExpandedGroupIds((current) =>
-        current.includes(groupId) ? current.filter((id) => id !== groupId) : [...current, groupId]
-      );
-    };
+  const toggleDetails = (groupId: string) => {
+    setExpandedGroupIds((current) =>
+      current.includes(groupId) ? current.filter((id) => id !== groupId) : [...current, groupId]
+    );
+  };
 
-    return (
+  return (
+    <Stack spacing={6}>
       <Stack spacing={4}>
+        <Box>
+          <Heading as="h2" size="md" color="#061B38">
+            Latest Live Images
+          </Heading>
+          <Text color="#516176" fontSize="sm" mt={1}>
+            Raw capture, generated avatar, and model details from the latest production runs.
+          </Text>
+        </Box>
+        {liveCards.length ? (
+          liveCards.map((card) => <LiveImageRunCard key={card.cardId} card={card} />)
+        ) : (
+          <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
+            <Text color="#516176">No live production image runs yet.</Text>
+          </Box>
+        )}
+      </Stack>
+
+      {replayGroups.length ? (
+        <Stack spacing={4}>
+          <Box>
+            <Heading as="h2" size="md" color="#061B38">
+              Replay Comparisons
+            </Heading>
+            <Text color="#516176" fontSize="sm" mt={1}>
+              Side-by-side model tests from the latest replay batch.
+            </Text>
+          </Box>
         {replayGroups.map((group) => {
           const isExpanded = expandedGroupIds.includes(group.id);
           return (
@@ -363,40 +391,37 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
             </Box>
           );
         })}
-      </Stack>
-    );
-  }
-
-  return (
-    <Stack spacing={4}>
-      {cards.slice(0, 3).map((card) => (
-        <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
-          <Stack spacing={4}>
-            <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
-              <Stack spacing={1}>
-                <HStack spacing={2} flexWrap="wrap">
-                  <Heading as="h2" size="sm">{card.firstName}</Heading>
-                  {isReplayCard(card) ? <Badge colorScheme="purple">Replay</Badge> : null}
-                  <StatusBadge status={card.generationStatus} />
-                  <RenderStatusBadge status={card.renderStatus} />
-                </HStack>
-                <Text color="#516176" fontSize="sm">
-                  {formatDate(card.createdAt)} | {formatDevice(card)} | {card.generationProvider}
-                  {isReplayCard(card) ? ` | ${card.replayProvider ?? "-"} | ${card.replayModelId ?? "-"}` : ""}
-                </Text>
-              </Stack>
-              <ArtifactLinks card={card} />
-            </Flex>
-
-            <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
-              <ImageComparePanel title="Raw Capture" imageUrl={card.sourceImageUrl} s3Key={card.sourceImageS3Key} />
-              <ImageComparePanel title="Generated Avatar" imageUrl={card.generatedAvatarUrl} s3Key={card.generatedAvatarS3Key} />
-              <ModelEvaluationPanel card={card} />
-            </SimpleGrid>
-          </Stack>
-        </Box>
-      ))}
+        </Stack>
+      ) : null}
     </Stack>
+  );
+}
+
+function LiveImageRunCard({ card }: { card: TwinCardApiCard }) {
+  return (
+    <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+      <Stack spacing={4}>
+        <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+          <Stack spacing={1}>
+            <HStack spacing={2} flexWrap="wrap">
+              <Heading as="h2" size="sm">{card.firstName}</Heading>
+              <StatusBadge status={card.generationStatus} />
+              <RenderStatusBadge status={card.renderStatus} />
+            </HStack>
+            <Text color="#516176" fontSize="sm">
+              {formatDate(card.createdAt)} | {formatDevice(card)} | {card.generationProvider}
+            </Text>
+          </Stack>
+          <ArtifactLinks card={card} />
+        </Flex>
+
+        <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={4}>
+          <ImageComparePanel title="Raw Capture" imageUrl={card.sourceImageUrl} s3Key={card.sourceImageS3Key} />
+          <ImageComparePanel title="Generated Avatar" imageUrl={card.generatedAvatarUrl} s3Key={card.generatedAvatarS3Key} />
+          <ModelEvaluationPanel card={card} />
+        </SimpleGrid>
+      </Stack>
+    </Box>
   );
 }
 

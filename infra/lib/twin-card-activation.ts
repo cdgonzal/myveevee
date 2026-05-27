@@ -191,6 +191,7 @@ export class TwinCardActivation extends Construct {
         loader: {
           ".png": "dataurl",
           ".svg": "text",
+          ".ttf": "dataurl",
         },
         mainFields: ["module", "main"],
         minify: true,

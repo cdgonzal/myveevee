@@ -1,7 +1,12 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import opentype from "opentype.js";
 import sharp from "sharp";
+import liberationSansBoldItalicFont from "./assets/LiberationSans-BoldItalic.ttf";
+import liberationSansBoldFont from "./assets/LiberationSans-Bold.ttf";
+import liberationSansItalicFont from "./assets/LiberationSans-Italic.ttf";
+import liberationSansRegularFont from "./assets/LiberationSans-Regular.ttf";
 import swcaLogoSvg from "./assets/swca-logo-vector-whitebg.svg";
 import veeveeIconLogoSvg from "./assets/veevee-icon-lightmode-transparent.svg";
 import veeveeWordmarkLogoSvg from "./assets/veevee-wordmark-lightmode-transparent.svg";
@@ -16,10 +21,20 @@ import {
 import printContract from "../../src/twinCard/printContract.json";
 
 const s3 = new S3Client({});
-const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 const SWCA_LOGO_DATA_URI = svgAssetDataUri(swcaLogoSvg);
 const VEEVEE_ICON_LOGO_DATA_URI = svgAssetDataUri(veeveeIconLogoSvg);
 const VEEVEE_WORDMARK_LOGO_DATA_URI = svgAssetDataUri(veeveeWordmarkLogoSvg);
+const FONTS = {
+  regular: parseFont(liberationSansRegularFont),
+  bold: parseFont(liberationSansBoldFont),
+  italic: parseFont(liberationSansItalicFont),
+  boldItalic: parseFont(liberationSansBoldItalicFont),
+};
 
 const { CARDS_BUCKET, CARDS_TABLE, CARDS_PREFIX = DEFAULT_CARDS_PREFIX } = process.env;
 
@@ -126,26 +141,24 @@ async function renderCanonReadyPng(svgBody) {
 }
 
 export function buildPrintSvg(card, image) {
-  const firstName = escapeXml(card.firstName || "VeeVee Guest");
+  const firstName = card.firstName || "VeeVee Guest";
   const goalContent = GOAL_CONTENT[card.wellnessInterest] ?? GOAL_CONTENT.just_exploring;
   const goalTitleLines = wrapText(goalContent.goalTitle || card.wellnessInterestLabel || "Wellness Journey", 10)
-    .slice(0, 3)
-    .map(escapeXml);
+    .slice(0, 3);
   const findingLines = wrapText(goalContent.finding, 25)
-    .slice(0, 4)
-    .map(escapeXml);
-  const recommendations = goalContent.recommendations.slice(0, 2).map((recommendation) => wrapText(recommendation, 26).map(escapeXml));
+    .slice(0, 4);
+  const recommendations = goalContent.recommendations.slice(0, 2).map((recommendation) => wrapText(recommendation, 26));
   const imageDataUri = `data:${image.contentType};base64,${image.buffer.toString("base64")}`;
   const goalTitle = goalTitleLines
     .map(
       (line, index) =>
-        `<text x="750" y="${930 + index * 72}" fill="#061B38" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="800">${line}</text>`
+        textPath(line, { x: 750, y: 930 + index * 72, fill: "#061B38", size: 66, font: "bold" })
     )
     .join("");
   const findingText = findingLines
     .map(
       (line, index) =>
-        `<text x="750" y="${1160 + index * 38}" fill="#13233D" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400">${line}</text>`
+        textPath(line, { x: 750, y: 1160 + index * 38, fill: "#13233D", size: 28 })
     )
     .join("");
   let nextStepY = 1370;
@@ -155,7 +168,7 @@ export function buildPrintSvg(card, image) {
       const text = lines
         .map((line, lineIndex) => {
           const y = nextStepY + lineIndex * 36;
-          return `<text x="785" y="${y}" fill="#13233D" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400">${line}</text>`;
+          return textPath(line, { x: 785, y, fill: "#13233D", size: 28 });
         })
         .join("");
       nextStepY += Math.max(lines.length, 1) * 36 + 28;
@@ -176,18 +189,18 @@ export function buildPrintSvg(card, image) {
   </defs>
   <rect width="1200" height="1800" fill="#FFFDF8"/>
 
-  <text x="245" y="112" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700">2026</text>
+  ${textPath("2026", { x: 245, y: 112, fill: "#D98A00", size: 40, font: "bold" })}
   <circle cx="395" cy="96" r="8" fill="#D98A00"/>
-  <text x="445" y="112" fill="#061B38" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="400">4th SWCA Medical Summit Edition</text>
+  ${textPath("4th SWCA Medical Summit Edition", { x: 445, y: 112, fill: "#061B38", size: 40 })}
 
   <path d="M112 156 L148 224" stroke="#D98A00" stroke-width="4" stroke-linecap="round"/>
   <path d="M76 196 L132 232" stroke="#D98A00" stroke-width="4" stroke-linecap="round"/>
   <path d="M62 252 L126 264" stroke="#D98A00" stroke-width="4" stroke-linecap="round"/>
-  <text x="160" y="300" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-style="italic">Meet Your</text>
+  ${textPath("Meet Your", { x: 160, y: 300, fill: "#061B38", size: 102, font: "italic" })}
   <path d="M70 406 C155 286 330 304 250 470 C220 530 156 522 174 456 C190 400 260 372 365 386" fill="none" stroke="#D98A00" stroke-width="4"/>
-  <text x="235" y="505" fill="#D98A00" font-family="Georgia, 'Times New Roman', serif" font-size="210" font-style="italic">Digital</text>
+  ${textPath("Digital", { x: 235, y: 505, fill: "#D98A00", size: 210, font: "italic" })}
   <path d="M92 612 C230 500 468 520 690 552" fill="none" stroke="#D98A00" stroke-width="4"/>
-  <text x="240" y="680" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="152" font-style="italic">Health Twin</text>
+  ${textPath("Health Twin", { x: 240, y: 680, fill: "#061B38", size: 152, font: "italic" })}
   <path d="M600 724 C730 690 895 690 1160 720" fill="none" stroke="#061B38" stroke-width="4"/>
   <path d="M1016 410 L1026 436 L1052 446 L1026 456 L1016 482 L1006 456 L980 446 L1006 436 Z" fill="#D98A00"/>
   <path d="M1080 375 L1096 418 L1138 434 L1096 450 L1080 493 L1064 450 L1022 434 L1064 418 Z" fill="#D98A00"/>
@@ -196,29 +209,29 @@ export function buildPrintSvg(card, image) {
   <rect x="65" y="790" width="575" height="590" rx="18" fill="#FFFFFF" stroke="#D98A00" stroke-width="2"/>
   <image x="65" y="790" width="575" height="590" href="${imageDataUri}" preserveAspectRatio="xMidYMid slice" clip-path="url(#avatarClip)"/>
   <rect x="65" y="1225" width="575" height="155" rx="18" fill="url(#avatarFade)" clip-path="url(#avatarClip)"/>
-  <text x="95" y="1340" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800">${firstName}</text>
+  ${textPath(firstName, { x: 95, y: 1340, fill: "#FFFFFF", size: 38, font: "bold" })}
 
   <image x="272" y="1398" width="150" height="78" href="${VEEVEE_ICON_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
   <image x="188" y="1468" width="315" height="74" href="${VEEVEE_WORDMARK_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
 
   <line x1="690" y1="790" x2="690" y2="1600" stroke="#D98A00" stroke-width="2"/>
-  <text x="750" y="845" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="800">GOAL</text>
+  ${textPath("GOAL", { x: 750, y: 845, fill: "#D98A00", size: 36, font: "bold" })}
   <line x1="885" y1="832" x2="1140" y2="832" stroke="#D98A00" stroke-width="2"/>
   ${goalTitle}
   <line x1="750" y1="1105" x2="1130" y2="1105" stroke="#D98A00" stroke-width="2"/>
   ${findingText}
-  <text x="750" y="1305" fill="#D98A00" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="800">NEXT STEPS</text>
+  ${textPath("NEXT STEPS", { x: 750, y: 1305, fill: "#D98A00", size: 36, font: "bold", letterSpacing: 4 })}
   <line x1="970" y1="1292" x2="1130" y2="1292" stroke="#D98A00" stroke-width="2"/>
   ${nextSteps}
 
   <rect x="205" y="1572" width="790" height="68" fill="#FFFDF8"/>
-  <text x="600" y="1618" text-anchor="middle" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-style="italic" font-weight="700">Visit myveevee.com to learn more</text>
+  ${textPath("Visit myveevee.com to learn more", { x: 600, y: 1618, fill: "#061B38", size: 42, font: "boldItalic", anchor: "middle" })}
   <line x1="80" y1="1668" x2="1135" y2="1668" stroke="#D98A00" stroke-width="2"/>
   <g transform="translate(620 1695)">
     <image x="0" y="-8" width="84" height="84" href="${SWCA_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
     <line x1="108" y1="0" x2="108" y2="68" stroke="#D98A00" stroke-width="2"/>
-    <text x="138" y="30" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="30">SPINE AND WELLNESS</text>
-    <text x="158" y="62" fill="#061B38" font-family="Georgia, 'Times New Roman', serif" font-size="20">CENTERS OF AMERICA</text>
+    ${textPath("SPINE AND WELLNESS", { x: 138, y: 30, fill: "#061B38", size: 30, letterSpacing: 4 })}
+    ${textPath("CENTERS OF AMERICA", { x: 158, y: 62, fill: "#061B38", size: 20, letterSpacing: 6 })}
     <line x1="138" y1="44" x2="165" y2="44" stroke="#0D9BD7" stroke-width="2"/>
     <line x1="440" y1="44" x2="468" y2="44" stroke="#0D9BD7" stroke-width="2"/>
   </g>
@@ -245,6 +258,56 @@ function wrapText(text, maxChars) {
   }
 
   return lines;
+}
+
+function textPath(text, options) {
+  const value = String(text || "");
+  const font = FONTS[options.font || "regular"] ?? FONTS.regular;
+  const size = options.size;
+  const fill = options.fill;
+  const letterSpacing = options.letterSpacing ?? 0;
+  let x = options.x;
+
+  if (options.anchor === "middle") {
+    x -= measureText(font, value, size, letterSpacing) / 2;
+  } else if (options.anchor === "end") {
+    x -= measureText(font, value, size, letterSpacing);
+  }
+
+  if (!letterSpacing) {
+    const path = font.getPath(value, x, options.y, size, { kerning: true });
+    return `<path d="${path.toPathData(2)}" fill="${fill}"/>`;
+  }
+
+  let cursor = x;
+  const paths = [];
+  for (const char of value) {
+    if (char !== " ") {
+      const path = font.getPath(char, cursor, options.y, size, { kerning: true });
+      paths.push(`<path d="${path.toPathData(2)}" fill="${fill}"/>`);
+    }
+    cursor += font.getAdvanceWidth(char, size, { kerning: true }) + letterSpacing;
+  }
+  return paths.join("");
+}
+
+function measureText(font, text, size, letterSpacing = 0) {
+  const value = String(text || "");
+  if (!value) return 0;
+  if (!letterSpacing) return font.getAdvanceWidth(value, size, { kerning: true });
+  return Array.from(value).reduce((total, char, index) => {
+    const spacing = index === value.length - 1 ? 0 : letterSpacing;
+    return total + font.getAdvanceWidth(char, size, { kerning: true }) + spacing;
+  }, 0);
+}
+
+function parseFont(fontDataUrl) {
+  const [, base64] = String(fontDataUrl).split(",");
+  if (!base64) {
+    throw new Error("Bundled font asset was not loaded as a data URL.");
+  }
+  const buffer = Buffer.from(base64, "base64");
+  return opentype.parse(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
 }
 
 function svgAssetDataUri(svgText) {
