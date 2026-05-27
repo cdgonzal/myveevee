@@ -328,14 +328,34 @@ export default function TwinCardPage() {
                   </Text>
                   <DigitalTwinTitle />
                 </Stack>
-                <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
-                  <Button minH="72px" fontSize="xl" bg={CARD_NAVY} color="white" _hover={{ bg: "#0b2448" }} onClick={() => chooseLanguage("en")}>
+                <Stack spacing={3}>
+                  <Button
+                    minH="76px"
+                    w="100%"
+                    fontSize="2xl"
+                    bg={CARD_GOLD}
+                    color="white"
+                    borderRadius="999px"
+                    boxShadow="0 16px 34px rgba(216, 138, 5, 0.28)"
+                    _hover={{ bg: "#bd7604", boxShadow: "0 18px 40px rgba(216, 138, 5, 0.34)" }}
+                    onClick={() => chooseLanguage("en")}
+                  >
                     Start
                   </Button>
-                  <Button minH="72px" fontSize="xl" bg={CARD_GOLD} color="white" _hover={{ bg: "#bd7604" }} onClick={() => chooseLanguage("es")}>
+                  <Button
+                    minH="54px"
+                    alignSelf="center"
+                    w={{ base: "100%", sm: "58%" }}
+                    fontSize="lg"
+                    bg={CARD_NAVY}
+                    color="white"
+                    borderRadius="999px"
+                    _hover={{ bg: "#0b2448" }}
+                    onClick={() => chooseLanguage("es")}
+                  >
                     Comenzar
                   </Button>
-                </SimpleGrid>
+                </Stack>
               </Stack>
             ) : null}
 
@@ -702,7 +722,7 @@ function DigitalTwinTitle() {
       </Heading>
       <Text
         as="div"
-        fontSize={{ base: "64px", md: "104px" }}
+        fontSize={{ base: "56px", md: "84px" }}
         lineHeight="0.9"
         color={CARD_GOLD}
         fontFamily="Georgia, 'Times New Roman', serif"
