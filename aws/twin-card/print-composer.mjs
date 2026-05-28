@@ -376,10 +376,10 @@ export function buildPrintSvg(card, image) {
   <line x1="970" y1="1292" x2="1130" y2="1292" stroke="#D98A00" stroke-width="2"/>
   ${nextSteps}
 
-  <rect x="205" y="1572" width="790" height="68" fill="#FFFDF8"/>
-  ${textPath("Visit myveevee.com to learn more", { x: 600, y: 1618, fill: "#061B38", size: 42, font: "boldItalic", anchor: "middle" })}
-  <line x1="80" y1="1668" x2="1135" y2="1668" stroke="#D98A00" stroke-width="2"/>
-  <g transform="translate(620 1695)">
+  <rect x="205" y="1526" width="790" height="68" fill="#FFFDF8"/>
+  ${textPath("Visit myveevee.com to learn more", { x: 600, y: 1572, fill: "#061B38", size: 42, font: "boldItalic", anchor: "middle" })}
+  <line x1="80" y1="1622" x2="1135" y2="1622" stroke="#D98A00" stroke-width="2"/>
+  <g transform="translate(620 1649)">
     <image x="0" y="-8" width="84" height="84" href="${SWCA_LOGO_DATA_URI}" preserveAspectRatio="xMidYMid meet"/>
     <line x1="108" y1="0" x2="108" y2="68" stroke="#D98A00" stroke-width="2"/>
     ${textPath("SPINE AND WELLNESS", { x: 138, y: 30, fill: "#061B38", size: 30, letterSpacing: 4 })}
