@@ -60,6 +60,10 @@ export async function handler(event) {
       return await markCardPrinted(event, origin);
     }
 
+    if ((event.requestContext?.http?.method ?? "") === "POST" && (event.rawPath ?? "").startsWith("/twin-card/admin/cards/") && (event.rawPath ?? "").endsWith("/fulfillment")) {
+      return await updateCardFulfillment(event, origin);
+    }
+
     return response(404, { message: "Not found." }, origin);
   } catch (error) {
     console.error("Twin Card Lambda failure", {
@@ -246,6 +250,8 @@ async function markCardPrinted(event, origin) {
   }
 
   const now = new Date().toISOString();
+  const payload = parseBody(event);
+  const printedBy = sanitizeString(payload.printedBy ?? payload.updatedBy, 120) || "booth-dashboard";
   let result;
   try {
     result = await dynamo.send(
@@ -253,10 +259,11 @@ async function markCardPrinted(event, origin) {
         TableName: CARDS_TABLE,
         Key: { cardId },
         ConditionExpression: "attribute_exists(cardId)",
-        UpdateExpression: "SET fulfillmentStatus = :printed, printedAt = if_not_exists(printedAt, :now), lastPrintedAt = :now, updatedAt = :now ADD printedCount :one",
+        UpdateExpression: "SET fulfillmentStatus = :printed, printedAt = if_not_exists(printedAt, :now), lastPrintedAt = :now, printedBy = :printedBy, updatedAt = :now ADD printedCount :one",
         ExpressionAttributeValues: {
           ":printed": "printed",
           ":now": now,
+          ":printedBy": printedBy,
           ":one": 1,
         },
         ReturnValues: "ALL_NEW",
@@ -273,7 +280,56 @@ async function markCardPrinted(event, origin) {
     return response(404, { message: "Twin Card not found." }, origin);
   }
 
+  await writeRunArtifact(result.Attributes);
+
   return response(200, { ok: true, card: await serializeCard(result.Attributes, { includePrivateFields: true }) }, origin);
+}
+
+async function updateCardFulfillment(event, origin) {
+  if (!isDashboardAuthorized(event)) {
+    return response(403, { message: "Dashboard PIN required." }, origin);
+  }
+
+  const match = (event.rawPath ?? "").match(/\/twin-card\/admin\/cards\/([^/]+)\/fulfillment$/);
+  const cardId = decodeURIComponent(match?.[1] ?? "");
+  if (!cardId) {
+    return response(400, { message: "Card ID required." }, origin);
+  }
+
+  const existing = await loadCard(cardId);
+  if (!existing) {
+    return response(404, { message: "Twin Card not found." }, origin);
+  }
+
+  const payload = parseBody(event);
+  const fulfillmentStatus = normalizeFulfillmentStatus(payload.fulfillmentStatus);
+  if (!fulfillmentStatus) {
+    return response(400, { message: "Valid fulfillment status required." }, origin);
+  }
+
+  const now = new Date().toISOString();
+  const updatedBy = sanitizeString(payload.updatedBy ?? payload.printedBy, 120) || "booth-dashboard";
+  const attributes = {
+    fulfillmentStatus,
+    updatedAt: now,
+  };
+
+  if (fulfillmentStatus === "printed") {
+    attributes.printedAt = existing.printedAt ?? now;
+    attributes.lastPrintedAt = now;
+    attributes.printedBy = updatedBy;
+    attributes.printedCount = Math.max(Number(existing.printedCount ?? 0), 1);
+  }
+
+  if (fulfillmentStatus === "issue") {
+    attributes.issueAt = now;
+    attributes.issueBy = updatedBy;
+  }
+
+  const updatedCard = await updateCard(cardId, attributes);
+  await writeRunArtifact(updatedCard);
+
+  return response(200, { ok: true, card: await serializeCard(updatedCard, { includePrivateFields: true }) }, origin);
 }
 
 async function loadCard(cardId) {
@@ -368,6 +424,9 @@ async function serializeCard(card, options = {}) {
     betaSurveySubmittedAt: card.betaSurveySubmittedAt,
     printedAt: card.printedAt,
     lastPrintedAt: card.lastPrintedAt,
+    printedBy: card.printedBy,
+    issueAt: card.issueAt,
+    issueBy: card.issueBy,
     printedCount: Number(card.printedCount ?? 0),
     eventName: card.eventName,
     createdAt: card.createdAt,
@@ -437,6 +496,14 @@ function normalizeDeviceMetadata(value) {
     viewportHeight: safeFiniteNumber(device.viewportHeight, 10000),
     devicePixelRatio: safeFiniteNumber(device.devicePixelRatio, 10) || 1,
   };
+}
+
+function normalizeFulfillmentStatus(value) {
+  const status = sanitizeString(value, 40);
+  if (status === "ready_to_print" || status === "to_print" || status === "not_printed") return "not_printed";
+  if (status === "printed") return "printed";
+  if (status === "issue" || status === "problem") return "issue";
+  return "";
 }
 
 function normalizeBetaSurvey(payload) {

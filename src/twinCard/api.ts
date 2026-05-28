@@ -48,6 +48,9 @@ export type TwinCardApiCard = {
   emailSkipReason?: string;
   printedAt?: string;
   lastPrintedAt?: string;
+  printedBy?: string;
+  issueAt?: string;
+  issueBy?: string;
   printedCount?: number;
   eventName: string;
   createdAt: string;
@@ -218,6 +221,33 @@ export async function markTwinCardPrinted(cardId: string, dashboardPin?: string)
   return payload.card;
 }
 
+export async function updateTwinCardFulfillmentStatus(
+  cardId: string,
+  fulfillmentStatus: "not_printed" | "printed" | "issue",
+  dashboardPin?: string,
+  updatedBy?: string
+): Promise<TwinCardApiCard | null> {
+  const endpoint = TWIN_CARD_API_URL?.trim();
+  if (!endpoint) return null;
+
+  const adminEndpoint = endpoint.replace(/\/twin-card\/cards\/?$/, `/twin-card/admin/cards/${encodeURIComponent(cardId)}/fulfillment`);
+  const response = await fetch(adminEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(dashboardPin ? { "x-twin-dashboard-pin": dashboardPin } : {}),
+    },
+    body: JSON.stringify({ fulfillmentStatus, updatedBy }),
+  });
+  const payload = (await response.json().catch(() => ({}))) as { card?: TwinCardApiCard };
+
+  if (!response.ok || !payload.card) {
+    return null;
+  }
+
+  return payload.card;
+}
+
 export type TwinCardBetaSurveyPayload = {
   source?: string;
   stage: string;
@@ -285,6 +315,9 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     emailSkipReason: card.emailSkipReason ?? fallback?.emailSkipReason,
     printedAt: card.printedAt ?? fallback?.printedAt,
     lastPrintedAt: card.lastPrintedAt ?? fallback?.lastPrintedAt,
+    printedBy: card.printedBy ?? fallback?.printedBy,
+    issueAt: card.issueAt ?? fallback?.issueAt,
+    issueBy: card.issueBy ?? fallback?.issueBy,
     printedCount: card.printedCount ?? fallback?.printedCount,
     eventName: card.eventName,
     boothDeviceId: card.boothDeviceId ?? fallback?.boothDeviceId,

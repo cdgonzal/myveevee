@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Badge,
   Box,
@@ -28,11 +28,18 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import { apiCardToLead, fetchRecentTwinCards, markTwinCardPrinted, type TwinCardApiCard } from "../twinCard/api";
+import {
+  apiCardToLead,
+  fetchRecentTwinCards,
+  markTwinCardPrinted,
+  updateTwinCardFulfillmentStatus,
+  type TwinCardApiCard,
+} from "../twinCard/api";
 import { listTwinCardLeads } from "../twinCard/storage";
 import {
   getTwinCardGenerationStatusColorScheme,
   getTwinCardGenerationStatusLabel,
+  getTwinCardFulfillmentStatusLabel,
   getTwinCardRenderStatusColorScheme,
   getTwinCardRenderStatusLabel,
   isTwinCardGenerationStatusPrintable,
@@ -89,6 +96,38 @@ export default function TwinDashboardPage() {
       });
     }
     setPrintingCardId("");
+  };
+
+  const handleUpdateFulfillmentStatus = async (
+    card: TwinCardApiCard,
+    fulfillmentStatus: "not_printed" | "printed" | "issue"
+  ) => {
+    const updatedCard = await updateTwinCardFulfillmentStatus(
+      card.cardId,
+      fulfillmentStatus,
+      DASHBOARD_PIN,
+      "booth-dashboard"
+    ).catch(() => null);
+
+    if (!updatedCard) {
+      toast({
+        title: "Could not update card",
+        description: "Refresh the dashboard and try again.",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setCards((current) => current.map((item) => (item.cardId === updatedCard.cardId ? updatedCard : item)));
+    toast({
+      title: readFulfillmentToastTitle(fulfillmentStatus),
+      description: `${updatedCard.firstName} moved to ${readFulfillmentQueueLabel(fulfillmentStatus)}.`,
+      status: fulfillmentStatus === "issue" ? "warning" : "success",
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   const loadDashboardCards = async () => {
@@ -215,9 +254,9 @@ export default function TwinDashboardPage() {
 
               <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
                 <TabList gap={2} flexWrap="wrap">
-                  <Tab>Runs</Tab>
-                  <Tab>Images</Tab>
-                  <Tab>Cards</Tab>
+                  <Tab>All Runs</Tab>
+                  <Tab>Image Review</Tab>
+                  <Tab>Print Queue</Tab>
                 </TabList>
                 <TabPanels pt={5}>
                   <TabPanel p={0}>
@@ -283,6 +322,7 @@ export default function TwinDashboardPage() {
                       printedCount={stats.cardsPrinted}
                       printingCardId={printingCardId}
                       onPrintCard={handlePrintCard}
+                      onUpdateFulfillmentStatus={handleUpdateFulfillmentStatus}
                     />
                   </TabPanel>
                 </TabPanels>
@@ -678,19 +718,39 @@ function CardsPrintPanel({
   printedCount,
   printingCardId,
   onPrintCard,
+  onUpdateFulfillmentStatus,
 }: {
   cards: TwinCardApiCard[];
   generatedCount: number;
   printedCount: number;
   printingCardId: string;
   onPrintCard: (card: TwinCardApiCard) => void | Promise<void>;
+  onUpdateFulfillmentStatus: (
+    card: TwinCardApiCard,
+    fulfillmentStatus: "not_printed" | "printed" | "issue"
+  ) => void | Promise<void>;
 }) {
   const [cardsPage, setCardsPage] = useState(1);
-  const pageCards = useMemo(() => paginateItems(cards, cardsPage), [cards, cardsPage]);
+  const [printedPage, setPrintedPage] = useState(1);
+  const [problemPage, setProblemPage] = useState(1);
+  const toPrintCards = useMemo(() => cards.filter(isToPrintCard), [cards]);
+  const printedCards = useMemo(() => cards.filter((card) => card.fulfillmentStatus === "printed"), [cards]);
+  const problemCards = useMemo(() => cards.filter((card) => card.fulfillmentStatus === "issue"), [cards]);
+  const pageCards = useMemo(() => paginateItems(toPrintCards, cardsPage), [toPrintCards, cardsPage]);
+  const printedPageCards = useMemo(() => paginateItems(printedCards, printedPage), [printedCards, printedPage]);
+  const problemPageCards = useMemo(() => paginateItems(problemCards, problemPage), [problemCards, problemPage]);
 
   useEffect(() => {
-    setCardsPage((current) => clampPage(current, cards.length));
-  }, [cards.length]);
+    setCardsPage((current) => clampPage(current, toPrintCards.length));
+  }, [toPrintCards.length]);
+
+  useEffect(() => {
+    setPrintedPage((current) => clampPage(current, printedCards.length));
+  }, [printedCards.length]);
+
+  useEffect(() => {
+    setProblemPage((current) => clampPage(current, problemCards.length));
+  }, [problemCards.length]);
 
   if (!cards.length) {
     return (
@@ -707,78 +767,163 @@ function CardsPrintPanel({
         <StatBox label="Cards Printed" value={String(printedCount)} />
       </SimpleGrid>
 
-      <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={4}>
-        {pageCards.map((card) => (
-          <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
-            <Grid templateColumns={{ base: "1fr", md: "170px minmax(0, 1fr)" }} gap={5}>
-              <PrintCardPreview card={card} height="255px" />
-              <Stack spacing={4}>
-                <Flex justify="space-between" gap={3} align="start">
-                  <Stack spacing={1}>
-                    <HStack spacing={2} flexWrap="wrap">
-                      <Heading as="h3" size="md">{card.firstName}</Heading>
-                      {isReplayCard(card) ? <Badge colorScheme="purple">Replay</Badge> : null}
-                      <Badge colorScheme={isCardPrinted(card) ? "blue" : "green"}>{isCardPrinted(card) ? "Printed" : "Ready"}</Badge>
-                    </HStack>
-                    <Text color="#516176">{card.wellnessInterestLabel}</Text>
-                    <Text color="#6b7890" fontSize="sm">{formatDate(card.createdAt)}</Text>
-                  </Stack>
-                  <Text fontSize="3xl" fontWeight="900" color={isCardPrinted(card) ? "#1177BA" : "#061b38"}>
+      <Tabs variant="soft-rounded" colorScheme="blue" defaultIndex={0} isLazy>
+        <TabList gap={2} flexWrap="wrap">
+          <QueueTab label="To Print" count={toPrintCards.length} />
+          <QueueTab label="Printed" count={printedCards.length} />
+          <QueueTab label="Problems" count={problemCards.length} />
+        </TabList>
+        <TabPanels pt={4}>
+          <TabPanel p={0}>
+            <PrintQueueList
+              cards={pageCards}
+              emptyLabel="No cards waiting to print."
+              printingCardId={printingCardId}
+              primaryActionLabel="Mark Printed"
+              onPrimaryAction={(card) => onUpdateFulfillmentStatus(card, "printed")}
+              secondaryActions={(card) => [
+                <Button key="view" as="a" href={card.cardResultUrl} target="_blank" rel="noreferrer" size="lg" variant="outline" borderColor="#b7d6e8">
+                  View
+                </Button>,
+                <Button key="issue" size="lg" variant="outline" borderColor="#f4b740" color="#8a5700" onClick={() => void onUpdateFulfillmentStatus(card, "issue")}>
+                  Problem
+                </Button>,
+              ]}
+            />
+            <PaginationControls page={cardsPage} totalItems={toPrintCards.length} label="cards to print" onPageChange={setCardsPage} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <PrintQueueList
+              cards={printedPageCards}
+              emptyLabel="No printed cards yet."
+              printingCardId={printingCardId}
+              primaryActionLabel="Reprint"
+              onPrimaryAction={onPrintCard}
+              secondaryActions={(card) => [
+                <Button key="view" as="a" href={card.cardResultUrl} target="_blank" rel="noreferrer" size="lg" variant="outline" borderColor="#b7d6e8">
+                  View
+                </Button>,
+                <Button key="undo" size="lg" variant="outline" borderColor="#b7d6e8" onClick={() => void onUpdateFulfillmentStatus(card, "not_printed")}>
+                  Undo
+                </Button>,
+              ]}
+            />
+            <PaginationControls page={printedPage} totalItems={printedCards.length} label="printed cards" onPageChange={setPrintedPage} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <PrintQueueList
+              cards={problemPageCards}
+              emptyLabel="No problem cards."
+              printingCardId={printingCardId}
+              primaryActionLabel="Retry"
+              onPrimaryAction={(card) => onUpdateFulfillmentStatus(card, "not_printed")}
+              secondaryActions={(card) => [
+                <Button key="move" size="lg" variant="outline" borderColor="#b7d6e8" onClick={() => void onUpdateFulfillmentStatus(card, "not_printed")}>
+                  Move to To Print
+                </Button>,
+                <Button key="view" as="a" href={card.cardResultUrl} target="_blank" rel="noreferrer" size="lg" variant="outline" borderColor="#b7d6e8">
+                  View
+                </Button>,
+              ]}
+            />
+            <PaginationControls page={problemPage} totalItems={problemCards.length} label="problem cards" onPageChange={setProblemPage} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Stack>
+  );
+}
+
+function QueueTab({ label, count }: { label: string; count: number }) {
+  return (
+    <Tab>
+      <HStack spacing={2}>
+        <Text>{label}</Text>
+        <Badge colorScheme={count ? "blue" : "gray"} borderRadius="999px" px={2}>
+          {count}
+        </Badge>
+      </HStack>
+    </Tab>
+  );
+}
+
+function PrintQueueList({
+  cards,
+  emptyLabel,
+  printingCardId,
+  primaryActionLabel,
+  onPrimaryAction,
+  secondaryActions,
+}: {
+  cards: TwinCardApiCard[];
+  emptyLabel: string;
+  printingCardId: string;
+  primaryActionLabel: string;
+  onPrimaryAction: (card: TwinCardApiCard) => void | Promise<void>;
+  secondaryActions: (card: TwinCardApiCard) => ReactNode[];
+}) {
+  if (!cards.length) {
+    return (
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
+        <Text color="#516176">{emptyLabel}</Text>
+      </Box>
+    );
+  }
+
+  return (
+    <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={4}>
+      {cards.map((card) => (
+        <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+          <Grid templateColumns={{ base: "1fr", md: "170px minmax(0, 1fr)" }} gap={5}>
+            <PrintCardPreview card={card} height="255px" />
+            <Stack spacing={4}>
+              <Flex justify="space-between" gap={3} align="start">
+                <Stack spacing={1}>
+                  <HStack spacing={2} flexWrap="wrap">
+                    <Heading as="h3" size="md">{card.firstName}</Heading>
+                    {isReplayCard(card) ? <Badge colorScheme="purple">Replay</Badge> : null}
+                    <FulfillmentBadge card={card} />
+                  </HStack>
+                  <Text color="#516176">{card.wellnessInterestLabel}</Text>
+                  <Text color="#6b7890" fontSize="sm">{formatDate(card.createdAt)}</Text>
+                </Stack>
+                <Stack spacing={0} align="end">
+                  <Text fontSize="3xl" fontWeight="900" color={card.fulfillmentStatus === "printed" ? "#1177BA" : "#061b38"}>
                     {card.printedCount ?? 0}
                   </Text>
-                </Flex>
+                  <Text color="#6b7890" fontSize="xs" fontWeight="800">prints</Text>
+                </Stack>
+              </Flex>
 
-                <SimpleGrid columns={2} spacing={3}>
-                  <Field label="Email" value={shortEmailStatus(card)} />
-                  <Field label="Survey" value={shortSurveyStatus(card)} />
-                  <Field label="Run Time" value={formatRunTiming(card)} />
-                  <Field label="Last Printed" value={card.lastPrintedAt ? formatDate(card.lastPrintedAt) : "-"} />
-                </SimpleGrid>
+              <SimpleGrid columns={2} spacing={3}>
+                <Field label="Email" value={shortEmailStatus(card)} />
+                <Field label="Survey" value={shortSurveyStatus(card)} />
+                <Field label="Run Time" value={formatRunTiming(card)} />
+                <Field label="Last Printed" value={card.lastPrintedAt ? formatDate(card.lastPrintedAt) : "-"} />
+              </SimpleGrid>
 
-                <HStack spacing={3} flexWrap="wrap">
-                  <Button
-                    bg="#1177BA"
-                    color="white"
-                    _hover={{ bg: "#0b5d94" }}
-                    isDisabled={!card.printImageUrl}
-                    isLoading={printingCardId === card.cardId}
-                    onClick={() => void onPrintCard(card)}
-                  >
-                    {isCardPrinted(card) ? "Reprint" : "Print Card"}
-                  </Button>
-                  {card.printImageUrl ? (
-                    <Button
-                      as="a"
-                      href={card.printImageUrl}
-                      download={buildTwinCardFileName(card)}
-                      target="_blank"
-                      rel="noreferrer"
-                      variant="outline"
-                      borderColor="#b7d6e8"
-                    >
-                      Download PNG
-                    </Button>
-                  ) : null}
-                  {card.cardResultUrl ? (
-                    <Button as="a" href={card.cardResultUrl} target="_blank" rel="noreferrer" variant="ghost">
-                      Result Page
-                    </Button>
-                  ) : null}
-                </HStack>
+              <HStack spacing={3} flexWrap="wrap">
+                <Button
+                  bg={primaryActionLabel === "Mark Printed" ? "#14804A" : "#1177BA"}
+                  color="white"
+                  _hover={{ bg: primaryActionLabel === "Mark Printed" ? "#0f6b3d" : "#0b5d94" }}
+                  size="lg"
+                  minW="170px"
+                  isDisabled={primaryActionLabel === "Reprint" && !card.printImageUrl}
+                  isLoading={printingCardId === card.cardId}
+                  onClick={() => void onPrimaryAction(card)}
+                >
+                  {primaryActionLabel}
+                </Button>
+                {secondaryActions(card)}
+              </HStack>
 
-                <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{card.printImageS3Key ?? "-"}</Text>
-              </Stack>
-            </Grid>
-          </Box>
-        ))}
-      </SimpleGrid>
-      <PaginationControls
-        page={cardsPage}
-        totalItems={cards.length}
-        label="print-ready cards"
-        onPageChange={setCardsPage}
-      />
-    </Stack>
+              <Text color="#6b7890" fontSize="xs" wordBreak="break-all">{card.printImageS3Key ?? "-"}</Text>
+            </Stack>
+          </Grid>
+        </Box>
+      ))}
+    </SimpleGrid>
   );
 }
 
@@ -1170,6 +1315,17 @@ function RenderStatusBadge({ status }: { status?: string }) {
   );
 }
 
+function FulfillmentBadge({ card }: { card: TwinCardApiCard }) {
+  const status = card.fulfillmentStatus ?? "not_printed";
+  const colorScheme = status === "printed" ? "blue" : status === "issue" ? "orange" : "green";
+  const label = status === "not_printed" ? "To Print" : getTwinCardFulfillmentStatusLabel(status);
+  return (
+    <Badge colorScheme={colorScheme} borderRadius="999px" px={2.5} py={1}>
+      {label}
+    </Badge>
+  );
+}
+
 function buildReplayComparisonGroups(cards: TwinCardApiCard[]): ReplayComparisonGroup[] {
   const replayCards = cards
     .filter(isReplayCard)
@@ -1226,6 +1382,18 @@ function readReplaySourceCardId(card: TwinCardApiCard) {
   if (card.replaySourceCardId) return card.replaySourceCardId;
   const match = card.cardId.match(/^replay#[^#]+#([^#]+)/);
   return match?.[1] ?? "";
+}
+
+function readFulfillmentToastTitle(status: "not_printed" | "printed" | "issue") {
+  if (status === "printed") return "Marked printed";
+  if (status === "issue") return "Moved to Problems";
+  return "Moved to To Print";
+}
+
+function readFulfillmentQueueLabel(status: "not_printed" | "printed" | "issue") {
+  if (status === "printed") return "Printed";
+  if (status === "issue") return "Problems";
+  return "To Print";
 }
 
 function sortCardsNewestFirst(cards: TwinCardApiCard[]) {
@@ -1295,7 +1463,7 @@ function buildStats(cards: TwinCardApiCard[]) {
     fallback: cards.filter((card) => card.generationStatus === "fallback_used").length,
     printReady: printReadyCards.length,
     cardsGenerated: printReadyCards.length,
-    cardsPrinted: printReadyCards.reduce((sum, card) => sum + Number(card.printedCount ?? 0), 0),
+    cardsPrinted: printReadyCards.filter((card) => card.fulfillmentStatus === "printed").length,
     surveysCompleted: liveCards.filter((card) => card.betaSurveyStatus === "completed").length,
     consented: cards.filter((card) => card.consentAccepted).length,
     costs,
@@ -1310,7 +1478,7 @@ function sortPrintQueue(left: TwinCardApiCard, right: TwinCardApiCard) {
 }
 
 function isCardPrinted(card: TwinCardApiCard) {
-  return Number(card.printedCount ?? 0) > 0 || card.fulfillmentStatus === "printed";
+  return card.fulfillmentStatus === "printed";
 }
 
 function isPrintReadyCard(card: TwinCardApiCard) {
@@ -1319,6 +1487,10 @@ function isPrintReadyCard(card: TwinCardApiCard) {
     isTwinCardGenerationStatusPrintable(card.generationStatus) &&
     isTwinCardRenderStatusPrintReady(card.renderStatus)
   );
+}
+
+function isToPrintCard(card: TwinCardApiCard) {
+  return isPrintReadyCard(card) && (card.fulfillmentStatus ?? "not_printed") === "not_printed";
 }
 
 function buildProviderCostSummary(cards: TwinCardApiCard[]): ProviderCostSummary {
@@ -1409,6 +1581,9 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     emailSkipReason: lead.emailSkipReason,
     printedAt: lead.printedAt,
     lastPrintedAt: lead.lastPrintedAt,
+    printedBy: lead.printedBy,
+    issueAt: lead.issueAt,
+    issueBy: lead.issueBy,
     printedCount: lead.printedCount,
     eventName: lead.eventName,
     boothDeviceId: lead.boothDeviceId,

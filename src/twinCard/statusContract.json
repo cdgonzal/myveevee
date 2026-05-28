@@ -90,6 +90,11 @@
       "dashboardLabel": "Printed",
       "meaning": "Staff marked the card as printed at the booth.",
       "currentUsage": "Set by the Twin Dashboard Cards tab when staff prints a Canon-ready card. Each print action increments printedCount and updates lastPrintedAt."
+    },
+    "issue": {
+      "dashboardLabel": "Problem",
+      "meaning": "Staff marked the card as needing booth attention before printing.",
+      "currentUsage": "Set by the Twin Dashboard Print Queue when staff flags a print, image, or card problem."
     }
   },
   "emailStatusField": "emailStatus",
@@ -115,5 +120,5 @@
       "terminal": true
     }
   },
-  "operatorRule": "completed and fallback_used mean the generated/avatar stage has a usable image. A card is print-ready only when renderStatus is rendered. Email delivery is tracked separately in emailStatus. failed, render_failed, and email failed require staff attention."
+  "operatorRule": "completed and fallback_used mean the generated/avatar stage has a usable image. A card is print-ready only when renderStatus is rendered. Email delivery is tracked separately in emailStatus. fulfillmentStatus not_printed belongs in To Print, printed belongs in Printed, and issue belongs in Problems. failed, render_failed, email failed, and issue require staff attention."
 }

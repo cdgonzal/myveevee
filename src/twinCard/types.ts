@@ -16,7 +16,7 @@ export type TwinCardGenerationProvider =
 
 export type TwinCardRenderStatus = "not_started" | "rendering" | "rendered" | "render_failed";
 
-export type TwinCardFulfillmentStatus = "not_printed" | "printed";
+export type TwinCardFulfillmentStatus = "not_printed" | "printed" | "issue";
 
 export type TwinCardEmailStatus = "pending" | "sent" | "failed" | "skipped";
 
@@ -120,6 +120,9 @@ export type TwinCardLead = {
   emailSkipReason?: string;
   printedAt?: string;
   lastPrintedAt?: string;
+  printedBy?: string;
+  issueAt?: string;
+  issueBy?: string;
   printedCount?: number;
   eventName: string;
   boothDeviceId?: string;
