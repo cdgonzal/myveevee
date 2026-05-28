@@ -222,13 +222,20 @@ async function listCards(event, origin) {
     return response(403, { message: "Dashboard PIN required." }, origin);
   }
 
-  const result = await dynamo.send(
-    new ScanCommand({
-      TableName: CARDS_TABLE,
-      Limit: 50,
-    })
-  );
-  const cards = [...(result.Items ?? [])].sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt));
+  const items = [];
+  let ExclusiveStartKey;
+  do {
+    const result = await dynamo.send(
+      new ScanCommand({
+        TableName: CARDS_TABLE,
+        Limit: 100,
+        ExclusiveStartKey,
+      })
+    );
+    items.push(...(result.Items ?? []));
+    ExclusiveStartKey = result.LastEvaluatedKey;
+  } while (ExclusiveStartKey);
+  const cards = items.sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt));
 
   return response(200, { ok: true, cards: await Promise.all(cards.map((card) => serializeCard(card, { includePrivateFields: true }))) }, origin);
 }

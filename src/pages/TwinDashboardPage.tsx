@@ -67,7 +67,7 @@ export default function TwinDashboardPage() {
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
   const stats = useMemo(() => buildStats(cards), [cards]);
-  const printReadyCards = useMemo(() => cards.filter(isPrintReadyCard).sort(sortPrintQueue), [cards]);
+  const printReadyCards = useMemo(() => cards.filter((card) => !isReplayCard(card) && isPrintReadyCard(card)).sort(sortPrintQueue), [cards]);
   const liveCards = useMemo(() => cards.filter((card) => !isReplayCard(card)), [cards]);
   const runPageCards = useMemo(() => paginateItems(cards, runsPage), [cards, runsPage]);
 
@@ -614,7 +614,7 @@ function BoothQueuePanel({
   printingCardId: string;
   onPrintCard: (card: TwinCardApiCard) => void | Promise<void>;
 }) {
-  const nextToPrint = printReadyCards.find((card) => !isCardPrinted(card)) ?? printReadyCards[0] ?? null;
+  const nextToPrint = printReadyCards.find(isToPrintCard) ?? null;
   const processingCards = cards
     .filter((card) => !isPrintReadyCard(card))
     .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
@@ -628,7 +628,7 @@ function BoothQueuePanel({
             <Stack spacing={1}>
               <HStack spacing={2} flexWrap="wrap">
                 <Heading as="h2" size="md">Next Card To Print</Heading>
-                {nextToPrint ? <Badge colorScheme={isCardPrinted(nextToPrint) ? "blue" : "green"}>{isCardPrinted(nextToPrint) ? "Reprint" : "Ready"}</Badge> : null}
+                {nextToPrint ? <Badge colorScheme="green">Ready</Badge> : null}
               </HStack>
               <Text color="#516176" fontSize="sm">Use this first during the expo rush.</Text>
             </Stack>
@@ -681,7 +681,8 @@ function BoothQueuePanel({
             </Grid>
           ) : (
             <Box bg="#f8fbfd" border="1px dashed #b7d6e8" borderRadius="8px" p={5}>
-              <Text color="#516176">No print-ready cards right now. Start a run or wait for processing to finish.</Text>
+              <Heading as="h3" size="md" color="#061b38">Nothing else to print.</Heading>
+              <Text color="#516176" mt={1}>New cards will appear here as soon as they finish rendering.</Text>
             </Box>
           )}
         </Stack>
@@ -777,7 +778,7 @@ function CardsPrintPanel({
           <TabPanel p={0}>
             <PrintQueueList
               cards={pageCards}
-              emptyLabel="No cards waiting to print."
+              emptyLabel="Nothing else to print."
               printingCardId={printingCardId}
               primaryActionLabel="Mark Printed"
               onPrimaryAction={(card) => onUpdateFulfillmentStatus(card, "printed")}
