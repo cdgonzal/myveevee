@@ -43,6 +43,7 @@ import type { TwinCardLead } from "../twinCard/types";
 
 const DASHBOARD_PIN = "5353";
 const DASHBOARD_DEBUG_STORAGE_KEY = "vv:twin-dashboard-debug";
+const DASHBOARD_PAGE_SIZE = 10;
 
 type DashboardState = "locked" | "loading" | "ready" | "denied";
 
@@ -54,12 +55,14 @@ export default function TwinDashboardPage() {
   const [printingCardId, setPrintingCardId] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefreshedAt, setLastRefreshedAt] = useState("");
+  const [runsPage, setRunsPage] = useState(1);
   const toast = useToast();
 
   const selectedCard = cards.find((card) => card.cardId === selectedCardId) ?? cards[0] ?? null;
   const stats = useMemo(() => buildStats(cards), [cards]);
   const printReadyCards = useMemo(() => cards.filter(isPrintReadyCard).sort(sortPrintQueue), [cards]);
   const liveCards = useMemo(() => cards.filter((card) => !isReplayCard(card)), [cards]);
+  const runPageCards = useMemo(() => paginateItems(cards, runsPage), [cards, runsPage]);
 
   const handlePrintCard = async (card: TwinCardApiCard) => {
     if (!card.printImageUrl) return;
@@ -90,14 +93,14 @@ export default function TwinDashboardPage() {
 
   const loadDashboardCards = async () => {
     const apiCards = await withTimeout(fetchRecentTwinCards(DASHBOARD_PIN), 6000).catch(() => null);
-    const nextCards = apiCards ?? listTwinCardLeads().map(localLeadToApiCard);
+    const nextCards = sortCardsNewestFirst(apiCards ?? listTwinCardLeads().map(localLeadToApiCard));
     debugDashboard("unlock result", {
       source: apiCards ? "api" : "localStorageFallback",
       count: nextCards.length,
       cards: nextCards.map(summarizeCardForDebug),
     });
     setCards(nextCards);
-    setSelectedCardId((current) => current || nextCards[0]?.cardId || "");
+    setSelectedCardId((current) => nextCards.find((card) => card.cardId === current)?.cardId ?? nextCards[0]?.cardId ?? "");
     setLastRefreshedAt(new Date().toISOString());
     return nextCards;
   };
@@ -126,6 +129,10 @@ export default function TwinDashboardPage() {
     }, 10000);
     return () => window.clearInterval(intervalId);
   }, [state]);
+
+  useEffect(() => {
+    setRunsPage((current) => clampPage(current, cards.length));
+  }, [cards.length]);
 
   return (
     <Box minH="100vh" bg="#f7fbff" color="#061b38">
@@ -232,7 +239,7 @@ export default function TwinDashboardPage() {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {cards.map((card) => (
+                            {runPageCards.map((card) => (
                               <Tr
                                 key={card.cardId}
                                 bg={card.cardId === selectedCard?.cardId ? "#eefaff" : undefined}
@@ -255,6 +262,12 @@ export default function TwinDashboardPage() {
                             ))}
                           </Tbody>
                         </Table>
+                        <PaginationControls
+                          page={runsPage}
+                          totalItems={cards.length}
+                          label="runs"
+                          onPageChange={setRunsPage}
+                        />
                       </Box>
 
                       <RunDetails card={selectedCard} />
@@ -316,6 +329,71 @@ function ArtifactLinks({ card }: { card: TwinCardApiCard }) {
   );
 }
 
+function PaginationControls({
+  page,
+  totalItems,
+  label,
+  onPageChange,
+}: {
+  page: number;
+  totalItems: number;
+  label: string;
+  onPageChange: (page: number) => void;
+}) {
+  const totalPages = getTotalPages(totalItems);
+  const start = totalItems ? (page - 1) * DASHBOARD_PAGE_SIZE + 1 : 0;
+  const end = Math.min(page * DASHBOARD_PAGE_SIZE, totalItems);
+
+  if (totalPages <= 1) {
+    return (
+      <Flex justify="space-between" align="center" gap={3} px={4} py={3} color="#516176" fontSize="sm">
+        <Text>
+          Showing {totalItems} {label}
+        </Text>
+      </Flex>
+    );
+  }
+
+  return (
+    <Flex
+      justify="space-between"
+      align={{ base: "stretch", sm: "center" }}
+      gap={3}
+      direction={{ base: "column", sm: "row" }}
+      px={4}
+      py={3}
+      borderTop="1px solid #eef4f8"
+    >
+      <Text color="#516176" fontSize="sm">
+        Showing {start}-{end} of {totalItems} {label}
+      </Text>
+      <HStack spacing={2}>
+        <Button
+          size="sm"
+          variant="outline"
+          borderColor="#b7d6e8"
+          isDisabled={page <= 1}
+          onClick={() => onPageChange(page - 1)}
+        >
+          Previous
+        </Button>
+        <Badge colorScheme="blue" px={3} py={1} borderRadius="999px">
+          Page {page} of {totalPages}
+        </Badge>
+        <Button
+          size="sm"
+          variant="outline"
+          borderColor="#b7d6e8"
+          isDisabled={page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+        >
+          Next
+        </Button>
+      </HStack>
+    </Flex>
+  );
+}
+
 type ReplayComparisonGroup = {
   id: string;
   runId: string;
@@ -330,8 +408,14 @@ type ReplayComparisonGroup = {
 
 function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
   const [expandedGroupIds, setExpandedGroupIds] = useState<string[]>([]);
+  const [livePage, setLivePage] = useState(1);
   const replayGroups = useMemo(() => buildReplayComparisonGroups(cards), [cards]);
-  const liveCards = useMemo(() => cards.filter((card) => !isReplayCard(card)).slice(0, 3), [cards]);
+  const liveCardsAll = useMemo(() => cards.filter((card) => !isReplayCard(card)), [cards]);
+  const liveCards = useMemo(() => paginateItems(liveCardsAll, livePage), [liveCardsAll, livePage]);
+
+  useEffect(() => {
+    setLivePage((current) => clampPage(current, liveCardsAll.length));
+  }, [liveCardsAll.length]);
 
   if (!cards.length) {
     return (
@@ -359,7 +443,15 @@ function ImageReview({ cards }: { cards: TwinCardApiCard[] }) {
           </Text>
         </Box>
         {liveCards.length ? (
-          liveCards.map((card) => <LiveImageRunCard key={card.cardId} card={card} />)
+          <>
+            {liveCards.map((card) => <LiveImageRunCard key={card.cardId} card={card} />)}
+            <PaginationControls
+              page={livePage}
+              totalItems={liveCardsAll.length}
+              label="image runs"
+              onPageChange={setLivePage}
+            />
+          </>
         ) : (
           <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
             <Text color="#516176">No live production image runs yet.</Text>
@@ -593,6 +685,13 @@ function CardsPrintPanel({
   printingCardId: string;
   onPrintCard: (card: TwinCardApiCard) => void | Promise<void>;
 }) {
+  const [cardsPage, setCardsPage] = useState(1);
+  const pageCards = useMemo(() => paginateItems(cards, cardsPage), [cards, cardsPage]);
+
+  useEffect(() => {
+    setCardsPage((current) => clampPage(current, cards.length));
+  }, [cards.length]);
+
   if (!cards.length) {
     return (
       <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={5}>
@@ -609,7 +708,7 @@ function CardsPrintPanel({
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, xl: 2 }} spacing={4}>
-        {cards.map((card) => (
+        {pageCards.map((card) => (
           <Box key={card.cardId} bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
             <Grid templateColumns={{ base: "1fr", md: "170px minmax(0, 1fr)" }} gap={5}>
               <PrintCardPreview card={card} height="255px" />
@@ -673,6 +772,12 @@ function CardsPrintPanel({
           </Box>
         ))}
       </SimpleGrid>
+      <PaginationControls
+        page={cardsPage}
+        totalItems={cards.length}
+        label="print-ready cards"
+        onPageChange={setCardsPage}
+      />
     </Stack>
   );
 }
@@ -1121,6 +1226,28 @@ function readReplaySourceCardId(card: TwinCardApiCard) {
   if (card.replaySourceCardId) return card.replaySourceCardId;
   const match = card.cardId.match(/^replay#[^#]+#([^#]+)/);
   return match?.[1] ?? "";
+}
+
+function sortCardsNewestFirst(cards: TwinCardApiCard[]) {
+  return [...cards].sort((left, right) => getCardCreatedAtMs(right) - getCardCreatedAtMs(left));
+}
+
+function paginateItems<T>(items: T[], page: number) {
+  const start = (page - 1) * DASHBOARD_PAGE_SIZE;
+  return items.slice(start, start + DASHBOARD_PAGE_SIZE);
+}
+
+function clampPage(page: number, totalItems: number) {
+  return Math.min(Math.max(page, 1), getTotalPages(totalItems));
+}
+
+function getTotalPages(totalItems: number) {
+  return Math.max(1, Math.ceil(totalItems / DASHBOARD_PAGE_SIZE));
+}
+
+function getCardCreatedAtMs(card: TwinCardApiCard) {
+  const parsed = Date.parse(card.createdAt);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function isNanoModel(modelId?: string) {
