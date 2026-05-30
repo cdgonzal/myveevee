@@ -1086,13 +1086,15 @@ function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
   const printPngCount = cards.filter((card) => Boolean(card.printImageUrl)).length;
   const boardSummaryPdfUrl = "/post-event/twin-card-post-event-board-summary.pdf";
   const boardSummaryPreviewUrl = "/post-event/twin-card-post-event-board-summary-preview.png";
+  const thankYouReelUrl = "/post-event/twin-card-swca-thank-you-reel.mp4";
+  const thankYouReelPosterUrl = "/post-event/twin-card-swca-thank-you-reel-poster.jpg";
 
   return (
     <Stack spacing={4}>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
         <StatBox label="Avatars Available" value={String(avatarCount)} />
         <StatBox label="Print Assets" value={String(printPngCount)} />
-        <StatBox label="Board Summary" value="Ready" />
+        <StatBox label="Post Event Assets" value="2 ready" />
       </SimpleGrid>
 
       <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 0.95fr) minmax(320px, 0.75fr)" }} gap={4}>
@@ -1119,10 +1121,21 @@ function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
         </Box>
 
         <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 6 }}>
-          <Stack spacing={2}>
-            <Heading as="h3" size="md">Asset Reel Planning</Heading>
+          <Stack spacing={4}>
+            <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+              <Stack spacing={1}>
+                <Heading as="h3" size="md">SWCA Thank-You Reel</Heading>
+                <Text color="#516176">18-second avatar montage for post-event sharing.</Text>
+              </Stack>
+              <Button as="a" href={thankYouReelUrl} target="_blank" rel="noreferrer" bg="#061b38" color="white" _hover={{ bg: "#0b2b57" }}>
+                Open MP4
+              </Button>
+            </Flex>
+            <Box border="1px solid #dbeaf5" borderRadius="8px" overflow="hidden" bg="#eef4f8">
+              <Image src={thankYouReelPosterUrl} alt="SWCA thank-you reel poster" w="100%" display="block" />
+            </Box>
             <Text color="#516176">
-              Reserved for the thank-you reel workflow: avatar pull, 10-15 second highlight video, expo summary, and SWCA thank-you creative.
+              Intro, avatar wall, event signal, and thank-you end card with myveevee.com.
             </Text>
           </Stack>
         </Box>
