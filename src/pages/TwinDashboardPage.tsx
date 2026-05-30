@@ -1084,22 +1084,49 @@ function ResponseMetricsTab({
 function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
   const avatarCount = cards.filter((card) => Boolean(card.generatedAvatarUrl)).length;
   const printPngCount = cards.filter((card) => Boolean(card.printImageUrl)).length;
+  const boardSummaryPdfUrl = "/post-event/twin-card-post-event-board-summary.pdf";
+  const boardSummaryPreviewUrl = "/post-event/twin-card-post-event-board-summary-preview.png";
 
   return (
     <Stack spacing={4}>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
         <StatBox label="Avatars Available" value={String(avatarCount)} />
         <StatBox label="Print Assets" value={String(printPngCount)} />
-        <StatBox label="Creative Export" value="Next" />
+        <StatBox label="Board Summary" value="Ready" />
       </SimpleGrid>
-      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 6 }}>
-        <Stack spacing={2}>
-          <Heading as="h3" size="md">Asset Reel Planning</Heading>
-          <Text color="#516176">
-            The asset tab is reserved for the thank-you reel workflow: avatar pull, 10-15 second highlight video, expo summary, and SWCA thank-you creative.
-          </Text>
-        </Stack>
-      </Box>
+
+      <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 0.95fr) minmax(320px, 0.75fr)" }} gap={4}>
+        <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+          <Stack spacing={4}>
+            <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+              <Stack spacing={1}>
+                <Heading as="h3" size="md">Board Summary Asset</Heading>
+                <Text color="#516176">One-page PDF for the executive board post-event summary.</Text>
+              </Stack>
+              <HStack spacing={3}>
+                <Button as="a" href={boardSummaryPdfUrl} target="_blank" rel="noreferrer" bg="#1177BA" color="white" _hover={{ bg: "#0b5d94" }}>
+                  Open PDF
+                </Button>
+                <Button as="a" href={boardSummaryPreviewUrl} target="_blank" rel="noreferrer" variant="outline" borderColor="#b7d6e8">
+                  Open PNG
+                </Button>
+              </HStack>
+            </Flex>
+            <Box border="1px solid #dbeaf5" borderRadius="8px" overflow="hidden" bg="#eef4f8">
+              <Image src={boardSummaryPreviewUrl} alt="Twin Card post-event board summary preview" w="100%" display="block" />
+            </Box>
+          </Stack>
+        </Box>
+
+        <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 6 }}>
+          <Stack spacing={2}>
+            <Heading as="h3" size="md">Asset Reel Planning</Heading>
+            <Text color="#516176">
+              Reserved for the thank-you reel workflow: avatar pull, 10-15 second highlight video, expo summary, and SWCA thank-you creative.
+            </Text>
+          </Stack>
+        </Box>
+      </Grid>
     </Stack>
   );
 }
