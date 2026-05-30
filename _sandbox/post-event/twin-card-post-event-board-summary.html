@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Twin Card Post-Event Board Summary</title>
+  <style>
+    @page { size: letter landscape; margin: 0.35in; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #eef3f8;
+      color: #071a3a;
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: 0;
+    }
+    .page {
+      width: 10.3in;
+      min-height: 7.8in;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 28px 34px 24px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 18px;
+    }
+    .topline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 2px solid #e1edf5;
+      padding-bottom: 16px;
+    }
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #1177ba;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.05;
+      max-width: 670px;
+    }
+    .date {
+      text-align: right;
+      color: #506177;
+      font-size: 12px;
+      line-height: 1.45;
+      min-width: 190px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .journey {
+      border: 1px solid #dbeaf5;
+      border-radius: 8px;
+      padding: 18px;
+      background: #f8fbfd;
+    }
+    .journey h2,
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 17px;
+    }
+    .quote {
+      margin: 0 0 14px;
+      font-size: 26px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+    .note {
+      margin: 0;
+      color: #516176;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .step {
+      border: 1px solid #cfe0ec;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 76px;
+      background: #ffffff;
+    }
+    .step strong {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    .step span {
+      color: #5c6b7e;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .kpi {
+      border: 1px solid #dbeaf5;
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 96px;
+      background: #ffffff;
+    }
+    .kpi .value {
+      display: block;
+      font-size: 29px;
+      line-height: 1;
+      font-weight: 900;
+      color: #071a3a;
+      margin-bottom: 7px;
+    }
+    .kpi .label {
+      color: #506177;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .middle {
+      display: grid;
+      grid-template-columns: 1fr 1fr 0.9fr;
+      gap: 14px;
+    }
+    .panel {
+      border: 1px solid #dbeaf5;
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 245px;
+      background: #ffffff;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 112px 1fr 42px;
+      gap: 9px;
+      align-items: center;
+      margin: 13px 0;
+      font-size: 12px;
+    }
+    .track {
+      height: 12px;
+      border-radius: 999px;
+      background: #e7eff6;
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      border-radius: 999px;
+      background: #1177ba;
+    }
+    .bar.green { background: #14804a; }
+    .bar.orange { background: #f39a25; }
+    .bar.red { background: #c44949; }
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .donut {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      background: conic-gradient(#1177ba 0 87.5%, #f39a25 87.5% 96.4%, #c44949 96.4% 100%);
+      position: relative;
+    }
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 27px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid #e1edf5;
+    }
+    .legend {
+      display: grid;
+      gap: 8px;
+      font-size: 12px;
+      color: #516176;
+    }
+    .legend b {
+      color: #071a3a;
+    }
+    .swatch {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 7px;
+    }
+    .blue { background: #1177ba; }
+    .gold { background: #f39a25; }
+    .brick { background: #c44949; }
+    .observations {
+      margin: 0;
+      padding-left: 18px;
+      color: #26384f;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .observations li {
+      margin: 0 0 9px;
+    }
+    .footer {
+      border-top: 2px solid #e1edf5;
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: #516176;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .footer strong { color: #071a3a; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topline">
+      <div>
+        <p class="eyebrow">VeeVee Twin Card Booth | Post-Event Board Summary</p>
+        <h1>From first contact to printed Twin Card in under 60 seconds.</h1>
+      </div>
+      <div class="date">
+        4th SWCA Medical Summit<br />
+        Prepared May 30, 2026<br />
+        Source: Twin Card production records
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="journey">
+        <h2>The Journey</h2>
+        <p class="quote">Zero to 100 in less than 60 seconds.</p>
+        <p class="note">The booth team observed a complete guest-facing journey: person approaches the booth, photo is captured, the digital twin card is generated, the final card is printed, and the attendee leaves with the card and goodie bag.</p>
+        <div class="flow">
+          <div class="step"><strong>1. Approach</strong><span>Staff greeted the attendee and captured the intent/photo moment.</span></div>
+          <div class="step"><strong>2. Generate</strong><span>Average system generation was 29 seconds, with median at 25 seconds.</span></div>
+          <div class="step"><strong>3. Print</strong><span>All generated cards were moved through to final print output.</span></div>
+          <div class="step"><strong>4. Takeaway</strong><span>Attendee left with a tangible Twin Card and event goodie bag.</span></div>
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><span class="value">56</span><span class="label">live Twin Card booth runs</span></div>
+        <div class="kpi"><span class="value">100%</span><span class="label">generated cards from live runs</span></div>
+        <div class="kpi"><span class="value">100%</span><span class="label">printed cards from generated cards</span></div>
+        <div class="kpi"><span class="value">29s</span><span class="label">average system run time</span></div>
+        <div class="kpi"><span class="value">25s</span><span class="label">median system run time</span></div>
+        <div class="kpi"><span class="value">31s</span><span class="label">p90 system run time</span></div>
+      </div>
+    </section>
+
+    <section class="middle">
+      <div class="panel">
+        <h2>Booth Funnel Outcomes</h2>
+        <div class="bar-row"><span>Generated</span><div class="track"><div class="bar green" style="width:100%"></div></div><strong>100%</strong></div>
+        <div class="bar-row"><span>Printed</span><div class="track"><div class="bar green" style="width:100%"></div></div><strong>100%</strong></div>
+        <div class="bar-row"><span>Email sent</span><div class="track"><div class="bar" style="width:82%"></div></div><strong>82%</strong></div>
+        <div class="bar-row"><span>Survey completed</span><div class="track"><div class="bar orange" style="width:2%"></div></div><strong>2%</strong></div>
+        <p class="note">Operationally, the avatar-to-print flow worked. The post-event conversion signal is still thin: one completed survey was recorded from 46 emails sent at the time of this summary.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Generation Mix</h2>
+        <div class="donut-wrap">
+          <div class="donut" aria-label="Provider mix chart"></div>
+          <div class="legend">
+            <div><span class="swatch blue"></span><b>49</b> fal.ai generated cards</div>
+            <div><span class="swatch gold"></span><b>5</b> Stability generated cards</div>
+            <div><span class="swatch brick"></span><b>2</b> fallback cards</div>
+          </div>
+        </div>
+        <p class="note">The base system held up in production. Fallback was limited to 4 percent of live runs.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Board Observations</h2>
+        <ul class="observations">
+          <li>Attendees engaged with the avatar experience and the booth team did not report complaint patterns from the printed-card journey.</li>
+          <li>The process is promising, but still needs polish before it can be considered a smooth conversion engine.</li>
+          <li>The largest gap is the transition after the avatar: attendees should not be left only at the card level.</li>
+          <li>The end-state observation is clear: app account, avatar inside VeeVee, and a reason to return should all be part of the same completed journey.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div><strong>Interpretation:</strong> The base journey worked in a live expo setting. The next board discussion is about conversion quality, not whether the booth concept can operate.</div>
+      <div><strong>Scope:</strong> Twin Card metrics only. SWCA rewards data is intentionally excluded.</div>
+    </footer>
+  </main>
+</body>
+</html>
