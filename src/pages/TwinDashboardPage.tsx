@@ -1125,7 +1125,7 @@ function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
             <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
               <Stack spacing={1}>
                 <Heading as="h3" size="md">SWCA Thank-You Reel</Heading>
-                <Text color="#516176">18-second avatar montage for post-event sharing.</Text>
+                <Text color="#516176">12-second latest-30 avatar montage for post-event sharing.</Text>
               </Stack>
               <Button as="a" href={thankYouReelUrl} target="_blank" rel="noreferrer" bg="#061b38" color="white" _hover={{ bg: "#0b2b57" }}>
                 Open MP4
