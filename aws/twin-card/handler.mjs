@@ -52,6 +52,10 @@ export async function handler(event) {
       return await saveBetaSurvey(event, origin);
     }
 
+    if ((event.requestContext?.http?.method ?? "") === "POST" && (event.rawPath ?? "").startsWith("/twin-card/cards/") && (event.rawPath ?? "").endsWith("/engagement")) {
+      return await recordEngagement(event, origin);
+    }
+
     if (route.endsWith("GET /twin-card/admin/cards")) {
       return await listCards(event, origin);
     }
@@ -212,6 +216,55 @@ async function saveBetaSurvey(event, origin) {
     betaSurveySubmittedAt: survey.stage === "completed" ? now : existing.betaSurveySubmittedAt,
     updatedAt: now,
   });
+  await writeRunArtifact(updatedCard);
+
+  return response(200, { ok: true, card: await serializeCard(updatedCard) }, origin);
+}
+
+async function recordEngagement(event, origin) {
+  const match = (event.rawPath ?? "").match(/\/twin-card\/cards\/([^/]+)\/engagement$/);
+  const cardId = decodeURIComponent(match?.[1] ?? "");
+  if (!cardId) {
+    return response(400, { message: "Card ID required." }, origin);
+  }
+
+  const existing = await loadCard(cardId);
+  if (!existing) {
+    return response(404, { message: "Twin Card not found." }, origin);
+  }
+
+  const payload = parseBody(event);
+  const eventName = normalizeEngagementEventName(payload.eventName);
+  const source = sanitizeString(payload.source, 40);
+  const pagePath = sanitizeString(payload.pagePath, 160);
+  const now = new Date().toISOString();
+  const updates = {
+    engagementUpdatedAt: now,
+    lastEngagementEvent: eventName,
+    lastEngagementSource: source,
+    lastEngagementPagePath: pagePath,
+    updatedAt: now,
+  };
+
+  if (eventName === "result_view" || eventName === "email_result_view") {
+    updates.resultViewCount = Number(existing.resultViewCount ?? 0) + 1;
+    updates.firstResultViewedAt = existing.firstResultViewedAt ?? now;
+    updates.lastResultViewedAt = now;
+  }
+
+  if (eventName === "email_result_view" || source === "email") {
+    updates.emailClickCount = Number(existing.emailClickCount ?? 0) + 1;
+    updates.firstEmailClickedAt = existing.firstEmailClickedAt ?? now;
+    updates.lastEmailClickedAt = now;
+  }
+
+  if (eventName === "personalize_click") {
+    updates.personalizeClickCount = Number(existing.personalizeClickCount ?? 0) + 1;
+    updates.firstPersonalizeClickedAt = existing.firstPersonalizeClickedAt ?? now;
+    updates.lastPersonalizeClickedAt = now;
+  }
+
+  const updatedCard = await updateCard(cardId, updates);
   await writeRunArtifact(updatedCard);
 
   return response(200, { ok: true, card: await serializeCard(updatedCard) }, origin);
@@ -429,6 +482,18 @@ async function serializeCard(card, options = {}) {
     betaSurveyAnswerCount: card.betaSurveyAnswerCount,
     betaSurveyUpdatedAt: card.betaSurveyUpdatedAt,
     betaSurveySubmittedAt: card.betaSurveySubmittedAt,
+    resultViewCount: Number(card.resultViewCount ?? 0),
+    firstResultViewedAt: card.firstResultViewedAt,
+    lastResultViewedAt: card.lastResultViewedAt,
+    emailClickCount: Number(card.emailClickCount ?? 0),
+    firstEmailClickedAt: card.firstEmailClickedAt,
+    lastEmailClickedAt: card.lastEmailClickedAt,
+    personalizeClickCount: Number(card.personalizeClickCount ?? 0),
+    firstPersonalizeClickedAt: card.firstPersonalizeClickedAt,
+    lastPersonalizeClickedAt: card.lastPersonalizeClickedAt,
+    engagementUpdatedAt: card.engagementUpdatedAt,
+    lastEngagementEvent: card.lastEngagementEvent,
+    lastEngagementSource: card.lastEngagementSource,
     printedAt: card.printedAt,
     lastPrintedAt: card.lastPrintedAt,
     printedBy: card.printedBy,
@@ -546,6 +611,12 @@ function normalizeSurveyValue(value, maxValueLength) {
 function hasSurveyAnswer(value) {
   if (Array.isArray(value)) return value.length > 0;
   return Boolean(String(value ?? "").trim());
+}
+
+function normalizeEngagementEventName(value) {
+  const normalized = sanitizeString(value, 80);
+  if (normalized === "email_result_view" || normalized === "personalize_click") return normalized;
+  return "result_view";
 }
 
 function safeFiniteNumber(value, maxValue) {

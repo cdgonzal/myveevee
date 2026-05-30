@@ -136,7 +136,7 @@ export class TwinCardActivation extends Construct {
       runtime: lambda.Runtime.NODEJS_20_X,
       architecture: lambda.Architecture.ARM_64,
       projectRoot: repoPath(),
-      timeout: cdk.Duration.seconds(90),
+      timeout: cdk.Duration.seconds(180),
       memorySize: 1536,
       logGroup: avatarGeneratorLogGroup,
       bundling: {
@@ -289,6 +289,12 @@ export class TwinCardActivation extends Construct {
 
     this.api.addRoutes({
       path: "/twin-card/cards/{cardId}/beta-survey",
+      methods: [apigatewayv2.HttpMethod.POST],
+      integration,
+    });
+
+    this.api.addRoutes({
+      path: "/twin-card/cards/{cardId}/engagement",
       methods: [apigatewayv2.HttpMethod.POST],
       integration,
     });

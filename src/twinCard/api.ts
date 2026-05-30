@@ -79,6 +79,18 @@ export type TwinCardApiCard = {
   betaSurveyAnswerCount?: number;
   betaSurveyUpdatedAt?: string;
   betaSurveySubmittedAt?: string;
+  resultViewCount?: number;
+  firstResultViewedAt?: string;
+  lastResultViewedAt?: string;
+  emailClickCount?: number;
+  firstEmailClickedAt?: string;
+  lastEmailClickedAt?: string;
+  personalizeClickCount?: number;
+  firstPersonalizeClickedAt?: string;
+  lastPersonalizeClickedAt?: string;
+  engagementUpdatedAt?: string;
+  lastEngagementEvent?: string;
+  lastEngagementSource?: string;
   sourceUploadedAt?: string;
   generatedAt?: string;
   renderedAt?: string;
@@ -280,6 +292,36 @@ export async function submitTwinCardBetaSurvey(
   return payload.card;
 }
 
+export type TwinCardEngagementPayload = {
+  eventName: "result_view" | "email_result_view" | "personalize_click";
+  source?: string;
+  pagePath?: string;
+};
+
+export async function recordTwinCardEngagement(
+  cardId: string,
+  engagement: TwinCardEngagementPayload
+): Promise<TwinCardApiCard | null> {
+  const endpoint = TWIN_CARD_API_URL?.trim();
+  if (!endpoint) return null;
+
+  const engagementEndpoint = endpoint.replace(/\/twin-card\/cards\/?$/, `/twin-card/cards/${encodeURIComponent(cardId)}/engagement`);
+  const response = await fetch(engagementEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(engagement),
+  });
+  const payload = (await response.json().catch(() => ({}))) as { card?: TwinCardApiCard };
+
+  if (!response.ok || !payload.card) {
+    return null;
+  }
+
+  return payload.card;
+}
+
 export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): TwinCardLead {
   return {
     id: fallback?.id ?? card.cardId,
@@ -333,6 +375,18 @@ export function apiCardToLead(card: TwinCardApiCard, fallback?: TwinCardLead): T
     betaSurveyAnswerCount: card.betaSurveyAnswerCount ?? fallback?.betaSurveyAnswerCount,
     betaSurveyUpdatedAt: card.betaSurveyUpdatedAt ?? fallback?.betaSurveyUpdatedAt,
     betaSurveySubmittedAt: card.betaSurveySubmittedAt ?? fallback?.betaSurveySubmittedAt,
+    resultViewCount: card.resultViewCount ?? fallback?.resultViewCount,
+    firstResultViewedAt: card.firstResultViewedAt ?? fallback?.firstResultViewedAt,
+    lastResultViewedAt: card.lastResultViewedAt ?? fallback?.lastResultViewedAt,
+    emailClickCount: card.emailClickCount ?? fallback?.emailClickCount,
+    firstEmailClickedAt: card.firstEmailClickedAt ?? fallback?.firstEmailClickedAt,
+    lastEmailClickedAt: card.lastEmailClickedAt ?? fallback?.lastEmailClickedAt,
+    personalizeClickCount: card.personalizeClickCount ?? fallback?.personalizeClickCount,
+    firstPersonalizeClickedAt: card.firstPersonalizeClickedAt ?? fallback?.firstPersonalizeClickedAt,
+    lastPersonalizeClickedAt: card.lastPersonalizeClickedAt ?? fallback?.lastPersonalizeClickedAt,
+    engagementUpdatedAt: card.engagementUpdatedAt ?? fallback?.engagementUpdatedAt,
+    lastEngagementEvent: card.lastEngagementEvent ?? fallback?.lastEngagementEvent,
+    lastEngagementSource: card.lastEngagementSource ?? fallback?.lastEngagementSource,
     runS3Key: card.runS3Key ?? fallback?.runS3Key,
     runJsonUrl: card.runJsonUrl ?? fallback?.runJsonUrl,
     printLayoutS3Key: card.printLayoutS3Key ?? fallback?.printLayoutS3Key,

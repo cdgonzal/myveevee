@@ -149,6 +149,18 @@ export type TwinCardLead = {
   betaSurveyAnswerCount?: number;
   betaSurveyUpdatedAt?: string;
   betaSurveySubmittedAt?: string;
+  resultViewCount?: number;
+  firstResultViewedAt?: string;
+  lastResultViewedAt?: string;
+  emailClickCount?: number;
+  firstEmailClickedAt?: string;
+  lastEmailClickedAt?: string;
+  personalizeClickCount?: number;
+  firstPersonalizeClickedAt?: string;
+  lastPersonalizeClickedAt?: string;
+  engagementUpdatedAt?: string;
+  lastEngagementEvent?: string;
+  lastEngagementSource?: string;
   runS3Key?: string;
   runJsonUrl?: string;
   printLayoutS3Key?: string;

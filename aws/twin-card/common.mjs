@@ -7,9 +7,6 @@ export const FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID = "fallback_original_photo_card
 export const DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY = avatarProviderContract.avatarProviderPriority ?? [
   "fal-ai/nano-banana-2/edit",
   "openai/gpt-image-2/edit",
-  "us.stability.stable-image-control-structure-v1:0",
-  "us.stability.stable-style-transfer-v1:0",
-  "us.stability.stable-image-style-guide-v1:0",
   FALLBACK_ORIGINAL_PHOTO_PROVIDER_ID,
 ];
 export const DEFAULT_BEDROCK_IMAGE_MODEL_ID = DEFAULT_BEDROCK_IMAGE_PROVIDER_PRIORITY[0];
@@ -277,6 +274,20 @@ export function buildRunArtifact(record) {
       submittedAt: record.betaSurveySubmittedAt || null,
       responses: record.betaSurveyResponses || null,
       contact: record.betaSurveyContact || null,
+    },
+    engagement: {
+      resultViewCount: record.resultViewCount ?? 0,
+      firstResultViewedAt: record.firstResultViewedAt || null,
+      lastResultViewedAt: record.lastResultViewedAt || null,
+      emailClickCount: record.emailClickCount ?? 0,
+      firstEmailClickedAt: record.firstEmailClickedAt || null,
+      lastEmailClickedAt: record.lastEmailClickedAt || null,
+      personalizeClickCount: record.personalizeClickCount ?? 0,
+      firstPersonalizeClickedAt: record.firstPersonalizeClickedAt || null,
+      lastPersonalizeClickedAt: record.lastPersonalizeClickedAt || null,
+      updatedAt: record.engagementUpdatedAt || null,
+      lastEvent: record.lastEngagementEvent || null,
+      lastSource: record.lastEngagementSource || null,
     },
   };
 }

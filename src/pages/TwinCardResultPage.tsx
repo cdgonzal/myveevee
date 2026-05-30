@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
-import { Link as RouterLink, useParams } from "react-router-dom";
-import { apiCardToLead, fetchTwinCard } from "../twinCard/api";
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
+import { apiCardToLead, fetchTwinCard, recordTwinCardEngagement } from "../twinCard/api";
 import { TWIN_CARD_EVENT_NAME } from "../twinCard/constants";
 import { trackTwinCardEvent } from "../twinCard/events";
 import { buildTwinCardPrintCss } from "../twinCard/printContract";
@@ -12,12 +12,17 @@ import { APP_LINKS } from "../config/links";
 
 export default function TwinCardResultPage() {
   const { cardId = "" } = useParams();
+  const location = useLocation();
   const [lead, setLead] = useState<TwinCardLead | null>(() => getTwinCardLead(cardId));
   const [loading, setLoading] = useState(Boolean(cardId));
 
   useEffect(() => {
     let cancelled = false;
+    const source = new URLSearchParams(location.search).get("source") ?? "";
+    const eventName = source === "email" ? "email_result_view" : "result_view";
+
     trackTwinCardEvent("public.twin_card.result_page_viewed", lead ?? undefined);
+    recordResultEngagementOnce(cardId, eventName, source, location.pathname);
 
     fetchTwinCard(cardId).then((card) => {
       if (!cancelled) {
@@ -29,7 +34,7 @@ export default function TwinCardResultPage() {
     return () => {
       cancelled = true;
     };
-  }, [cardId]);
+  }, [cardId, location.pathname, location.search]);
 
   const printCard = () => {
     if (lead) trackTwinCardEvent("public.twin_card.print_clicked", lead);
@@ -41,6 +46,18 @@ export default function TwinCardResultPage() {
   };
 
   const downloadFileName = lead ? buildTwinCardFileName(lead) : "veevee_twin_card.png";
+  const personalizeUrl = lead
+    ? APP_LINKS.internal.twinCardPersonalize.replace(":cardId", encodeURIComponent(lead.cardId))
+    : APP_LINKS.internal.twinCardPersonalize.replace(":cardId", encodeURIComponent(cardId));
+
+  const handlePersonalizeClick = () => {
+    if (!lead) return;
+    void recordTwinCardEngagement(lead.cardId, {
+      eventName: "personalize_click",
+      source: "result_page",
+      pagePath: location.pathname,
+    });
+  };
 
   return (
     <Box minH="100vh" bg="#f7fbff" color="#061b38">
@@ -92,7 +109,8 @@ export default function TwinCardResultPage() {
                 <Stack spacing={3} w="100%" maxW="420px">
                   <Button
                     as={RouterLink}
-                    to={APP_LINKS.internal.twinCardPersonalize.replace(":cardId", encodeURIComponent(lead.cardId))}
+                    to={personalizeUrl}
+                    onClick={handlePersonalizeClick}
                     minH="54px"
                     borderRadius="999px"
                     bg="#061b38"
@@ -128,6 +146,23 @@ export default function TwinCardResultPage() {
 }
 
 const printCss = buildTwinCardPrintCss();
+
+function recordResultEngagementOnce(
+  cardId: string,
+  eventName: "result_view" | "email_result_view",
+  source: string,
+  pagePath: string
+) {
+  if (!cardId || typeof window === "undefined") return;
+  const key = `vv:twin-card-engagement:${cardId}:${eventName}:${source || "direct"}`;
+  if (window.sessionStorage.getItem(key)) return;
+  window.sessionStorage.setItem(key, "1");
+  void recordTwinCardEngagement(cardId, {
+    eventName,
+    source,
+    pagePath,
+  });
+}
 
 function openPrintCardWindow(lead: TwinCardLead) {
   if (!lead.printImageUrl) return;

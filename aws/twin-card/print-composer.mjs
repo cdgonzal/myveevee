@@ -269,8 +269,13 @@ function buildTwinCardEmailHtml(card) {
 }
 
 function buildResultUrl(card) {
-  if (card.cardResultUrl) return card.cardResultUrl;
-  return `${PUBLIC_BASE_URL.replace(/\/+$/, "")}/twin-card/result/${encodeURIComponent(card.cardId)}`;
+  const resultUrl = card.cardResultUrl || `${PUBLIC_BASE_URL.replace(/\/+$/, "")}/twin-card/result/${encodeURIComponent(card.cardId)}`;
+  return appendEmailSource(resultUrl);
+}
+
+function appendEmailSource(value) {
+  const separator = value.includes("?") ? "&" : "?";
+  return `${value}${separator}source=email`;
 }
 
 function isValidEmail(value) {

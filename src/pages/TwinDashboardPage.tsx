@@ -257,6 +257,7 @@ export default function TwinDashboardPage() {
                   <Tab>All Runs</Tab>
                   <Tab>Image Review</Tab>
                   <Tab>Print Queue</Tab>
+                  <Tab>Post Event</Tab>
                 </TabList>
                 <TabPanels pt={5}>
                   <TabPanel p={0}>
@@ -324,6 +325,9 @@ export default function TwinDashboardPage() {
                       onPrintCard={handlePrintCard}
                       onUpdateFulfillmentStatus={handleUpdateFulfillmentStatus}
                     />
+                  </TabPanel>
+                  <TabPanel p={0}>
+                    <PostEventPanel cards={liveCards} stats={stats} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -831,6 +835,271 @@ function CardsPrintPanel({
           </TabPanel>
         </TabPanels>
       </Tabs>
+    </Stack>
+  );
+}
+
+function PostEventPanel({
+  cards,
+  stats,
+}: {
+  cards: TwinCardApiCard[];
+  stats: ReturnType<typeof buildStats>;
+}) {
+  const summary = useMemo(() => buildPostEventSummary(cards), [cards]);
+
+  return (
+    <Stack spacing={5}>
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 6 }}>
+        <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+          <Stack spacing={1}>
+            <Heading as="h2" size="lg">Post Event</Heading>
+            <Text color="#516176">Expo outcomes, financial summary, response metrics, and follow-up asset planning.</Text>
+          </Stack>
+          <Badge colorScheme="green" borderRadius="999px" px={3} py={1}>
+            {summary.totalRuns} live runs
+          </Badge>
+        </Flex>
+      </Box>
+
+      <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
+        <TabList gap={2} flexWrap="wrap">
+          <Tab>Financial Summary</Tab>
+          <Tab>Response Metrics</Tab>
+          <Tab>Post Event Assets</Tab>
+        </TabList>
+        <TabPanels pt={4}>
+          <TabPanel p={0}>
+            <FinancialSummaryTab cards={cards} stats={stats} summary={summary} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <ResponseMetricsTab cards={cards} summary={summary} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <PostEventAssetsTab cards={cards} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Stack>
+  );
+}
+
+function FinancialSummaryTab({
+  cards,
+  stats,
+  summary,
+}: {
+  cards: TwinCardApiCard[];
+  stats: ReturnType<typeof buildStats>;
+  summary: ReturnType<typeof buildPostEventSummary>;
+}) {
+  const providerRows = useMemo(() => buildProviderSummaryRows(cards), [cards]);
+
+  return (
+    <Stack spacing={4}>
+      <SimpleGrid columns={{ base: 1, md: 2, xl: 4 }} spacing={4}>
+        <StatBox label="Live Runs" value={String(summary.totalRuns)} />
+        <StatBox label="Cards Generated" value={`${summary.generatedCount} / ${formatPercent(summary.generatedCount, summary.totalRuns)}`} />
+        <StatBox label="Cards Printed" value={`${summary.printedCount} / ${formatPercent(summary.printedCount, summary.generatedCount)}`} />
+        <StatBox label="Model Spend" value={formatCurrency(summary.modelCostTotal)} />
+      </SimpleGrid>
+
+      <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.2fr) minmax(320px, 0.8fr)" }} gap={4}>
+        <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }} overflowX="auto">
+          <Stack spacing={4}>
+            <Flex justify="space-between" gap={3} align="start" direction={{ base: "column", md: "row" }}>
+              <Stack spacing={1}>
+                <Heading as="h3" size="md">Provider Cost Summary</Heading>
+                <Text color="#516176" fontSize="sm">Model inference only; excludes booth supplies, printing, AWS infrastructure, and labor.</Text>
+              </Stack>
+              <CostPill costs={stats.costs} />
+            </Flex>
+            <Table size="sm">
+              <Thead>
+                <Tr>
+                  <Th>Provider</Th>
+                  <Th>Model</Th>
+                  <Th isNumeric>Runs</Th>
+                  <Th isNumeric>Printed</Th>
+                  <Th isNumeric>Avg Time</Th>
+                  <Th isNumeric>Cost</Th>
+                  <Th isNumeric>Avg / Generated</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {providerRows.map((row) => (
+                  <Tr key={`${row.provider}-${row.model}`}>
+                    <Td fontWeight="800">{formatProviderName(row.provider)}</Td>
+                    <Td>{row.model}</Td>
+                    <Td isNumeric>{row.count}</Td>
+                    <Td isNumeric>{row.printedCount}</Td>
+                    <Td isNumeric>{formatMs(row.averageDurationMs)}</Td>
+                    <Td isNumeric>{formatCurrency(row.cost)}</Td>
+                    <Td isNumeric>{formatCurrencyPerUnit(row.cost, row.generatedCount)}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Stack>
+        </Box>
+
+        <Stack spacing={4}>
+          <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+            <Stack spacing={3}>
+              <Heading as="h3" size="md">Outcome Rates</Heading>
+              <SummaryLine label="Generated rate" value={formatPercent(summary.generatedCount, summary.totalRuns)} />
+              <SummaryLine label="Printed rate" value={formatPercent(summary.printedCount, summary.generatedCount)} />
+              <SummaryLine label="Fallback rate" value={formatPercent(summary.fallbackCount, summary.totalRuns)} />
+              <SummaryLine label="Average generated cost" value={formatCurrencyPerUnit(summary.modelCostTotal, summary.generatedCount)} />
+              <SummaryLine label="Average printed cost" value={formatCurrencyPerUnit(summary.modelCostTotal, summary.printedCount)} />
+            </Stack>
+          </Box>
+
+          <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+            <Stack spacing={3}>
+              <Heading as="h3" size="md">Spend Split</Heading>
+              <SummaryLine label="fal.ai" value={formatCurrency(summary.costs.fal)} />
+              <SummaryLine label="Bedrock" value={formatCurrency(summary.costs.bedrock)} />
+              <SummaryLine label="Total tracked model spend" value={formatCurrency(summary.costs.total)} />
+            </Stack>
+          </Box>
+        </Stack>
+      </Grid>
+    </Stack>
+  );
+}
+
+function ResponseMetricsTab({
+  cards,
+  summary,
+}: {
+  cards: TwinCardApiCard[];
+  summary: ReturnType<typeof buildPostEventSummary>;
+}) {
+  const emailRows = useMemo(() => buildEmailEngagementRows(cards), [cards]);
+  const surveyRows = useMemo(() => buildSurveyRespondentRows(cards), [cards]);
+  const betaIntent = useMemo(() => countSurveyAnswerValues(cards, "beta_intent"), [cards]);
+  const followUp = useMemo(() => countSurveyAnswerValues(cards, "follow_up_call"), [cards]);
+  const preferredContact = useMemo(() => countSurveyAnswerValues(cards, "preferred_contact"), [cards]);
+  const monthlyPrice = useMemo(() => countSurveyAnswerValues(cards, "monthly_price"), [cards]);
+
+  return (
+    <Stack spacing={4}>
+      <SimpleGrid columns={{ base: 1, md: 2, xl: 5 }} spacing={4}>
+        <StatBox label="Emails Sent" value={`${summary.emailsSent} / ${formatPercent(summary.emailsSent, summary.totalRuns)}`} />
+        <StatBox label="Email Clicked" value={`${summary.emailClickedCards} / ${formatPercent(summary.emailClickedCards, summary.emailsSent)}`} />
+        <StatBox label="Result Views" value={String(summary.resultViewedCards)} />
+        <StatBox label="Surveys Started" value={String(summary.surveysStarted)} />
+        <StatBox label="Surveys Completed" value={`${summary.surveysCompleted} / ${formatPercent(summary.surveysCompleted, summary.emailsSent || summary.totalRuns)}`} />
+      </SimpleGrid>
+
+      <Box bg="#fff8e8" border="1px solid #f4d58d" borderRadius="8px" p={{ base: 4, md: 5 }}>
+        <Text color="#634700" fontWeight="800">
+          Email clicks are Twin Card only. New email links include source=email and update the Twin Card card row; older expo emails sent before this tracker existed may only show survey response or general result-page activity.
+        </Text>
+      </Box>
+
+      <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.35fr) minmax(320px, 0.65fr)" }} gap={4}>
+        <Stack spacing={4}>
+          <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }} overflowX="auto">
+            <Stack spacing={4}>
+              <Heading as="h3" size="md">Email + Survey Follow-Up</Heading>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Contact</Th>
+                    <Th>Email</Th>
+                    <Th>Result Activity</Th>
+                    <Th>Survey</Th>
+                    <Th isNumeric>Answers</Th>
+                    <Th>Updated</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {emailRows.map((row) => (
+                    <Tr key={row.card.cardId}>
+                      <Td fontWeight="800">{row.card.firstName}</Td>
+                      <Td>{row.card.contact ?? "-"}</Td>
+                      <Td><Badge colorScheme={formatEmailStatusColor(row.card)}>{row.emailStatus}</Badge></Td>
+                      <Td>{row.resultActivity}</Td>
+                      <Td>{row.surveyStatus}</Td>
+                      <Td isNumeric>{row.answerCount}</Td>
+                      <Td whiteSpace="nowrap">{formatDate(row.updatedAt)}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Stack>
+          </Box>
+
+          <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }} overflowX="auto">
+            <Stack spacing={4}>
+              <Heading as="h3" size="md">Survey Respondents</Heading>
+              {surveyRows.length ? (
+                <Table size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Name</Th>
+                      <Th>Contact</Th>
+                      <Th>Beta Interest</Th>
+                      <Th>Follow-Up</Th>
+                      <Th>Preferred Contact</Th>
+                      <Th>Monthly Price</Th>
+                      <Th>Paid Beta</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {surveyRows.map((row) => (
+                      <Tr key={row.card.cardId}>
+                        <Td fontWeight="800">{row.card.firstName}</Td>
+                        <Td>{row.contact}</Td>
+                        <Td>{row.betaIntent}</Td>
+                        <Td>{row.followUpCall}</Td>
+                        <Td>{row.preferredContact}</Td>
+                        <Td>{row.monthlyPrice}</Td>
+                        <Td>{row.paidBeta}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              ) : (
+                <Text color="#516176">No survey responses are saved yet.</Text>
+              )}
+            </Stack>
+          </Box>
+        </Stack>
+
+        <Stack spacing={4}>
+          <BreakdownBox title="Beta Interest" rows={betaIntent} />
+          <BreakdownBox title="Follow-Up Call" rows={followUp} />
+          <BreakdownBox title="Preferred Contact" rows={preferredContact} />
+          <BreakdownBox title="Monthly Price" rows={monthlyPrice} />
+        </Stack>
+      </Grid>
+    </Stack>
+  );
+}
+
+function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
+  const avatarCount = cards.filter((card) => Boolean(card.generatedAvatarUrl)).length;
+  const printPngCount = cards.filter((card) => Boolean(card.printImageUrl)).length;
+
+  return (
+    <Stack spacing={4}>
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+        <StatBox label="Avatars Available" value={String(avatarCount)} />
+        <StatBox label="Print Assets" value={String(printPngCount)} />
+        <StatBox label="Creative Export" value="Next" />
+      </SimpleGrid>
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 6 }}>
+        <Stack spacing={2}>
+          <Heading as="h3" size="md">Asset Reel Planning</Heading>
+          <Text color="#516176">
+            The asset tab is reserved for the thank-you reel workflow: avatar pull, 10-15 second highlight video, expo summary, and SWCA thank-you creative.
+          </Text>
+        </Stack>
+      </Box>
     </Stack>
   );
 }
@@ -1471,6 +1740,166 @@ function buildStats(cards: TwinCardApiCard[]) {
   };
 }
 
+function buildPostEventSummary(cards: TwinCardApiCard[]) {
+  const costs = buildProviderCostSummary(cards);
+  const generatedCards = cards.filter(isPrintReadyCard);
+  const printedCards = generatedCards.filter((card) => card.fulfillmentStatus === "printed");
+  const emailCards = cards.filter((card) => Boolean(card.emailStatus));
+  const emailsSent = cards.filter((card) => card.emailStatus === "sent").length;
+  const emailsFailed = cards.filter((card) => card.emailStatus === "failed").length;
+  const emailsSkipped = cards.filter((card) => card.emailStatus === "skipped").length;
+  const surveysStarted = cards.filter((card) => Boolean(card.betaSurveyStatus)).length;
+  const surveysCompleted = cards.filter((card) => card.betaSurveyStatus === "completed").length;
+
+  return {
+    totalRuns: cards.length,
+    generatedCount: generatedCards.length,
+    printedCount: printedCards.length,
+    fallbackCount: cards.filter((card) => card.generationStatus === "fallback_used").length,
+    consentedCount: cards.filter((card) => card.consentAccepted).length,
+    emailCards: emailCards.length,
+    emailsSent,
+    emailsFailed,
+    emailsSkipped,
+    emailsPending: cards.filter((card) => card.emailStatus === "pending").length,
+    resultViewedCards: cards.filter((card) => Number(card.resultViewCount ?? 0) > 0).length,
+    emailClickedCards: cards.filter((card) => Number(card.emailClickCount ?? 0) > 0).length,
+    totalResultViews: cards.reduce((sum, card) => sum + Number(card.resultViewCount ?? 0), 0),
+    totalEmailClicks: cards.reduce((sum, card) => sum + Number(card.emailClickCount ?? 0), 0),
+    surveysStarted,
+    surveysCompleted,
+    partialSurveys: cards.filter((card) => card.betaSurveyStatus === "partial").length,
+    costs,
+    modelCostTotal: costs.total,
+  };
+}
+
+function buildProviderSummaryRows(cards: TwinCardApiCard[]) {
+  const rowMap = new Map<
+    string,
+    {
+      provider: string;
+      model: string;
+      count: number;
+      generatedCount: number;
+      printedCount: number;
+      cost: number;
+      totalDurationMs: number;
+      durationCount: number;
+      averageDurationMs?: number;
+    }
+  >();
+
+  cards.forEach((card) => {
+    const provider = card.replayProvider ?? card.generationProvider ?? "unknown";
+    const model = getBedrockModelId(card) ?? provider;
+    const key = `${provider}:${model}`;
+    const row =
+      rowMap.get(key) ??
+      {
+        provider,
+        model,
+        count: 0,
+        generatedCount: 0,
+        printedCount: 0,
+        cost: 0,
+        totalDurationMs: 0,
+        durationCount: 0,
+      };
+    const duration = card.totalRunDurationMs ?? calculateDurationMs(card.createdAt, card.renderedAt ?? card.generatedAt ?? card.updatedAt);
+
+    row.count += 1;
+    row.generatedCount += isPrintReadyCard(card) ? 1 : 0;
+    row.printedCount += card.fulfillmentStatus === "printed" ? 1 : 0;
+    row.cost += normalizeNumber(card.bedrockUsage?.totalEstimatedCostUsd);
+    if (duration) {
+      row.totalDurationMs += duration;
+      row.durationCount += 1;
+    }
+    row.averageDurationMs = row.durationCount ? row.totalDurationMs / row.durationCount : undefined;
+    rowMap.set(key, row);
+  });
+
+  return Array.from(rowMap.values()).sort((left, right) => right.count - left.count || right.cost - left.cost);
+}
+
+function buildEmailEngagementRows(cards: TwinCardApiCard[]) {
+  return cards
+    .filter((card) => Boolean(card.emailStatus) || Boolean(card.betaSurveyStatus))
+    .sort((left, right) => Date.parse(right.betaSurveyUpdatedAt ?? right.emailSentAt ?? right.updatedAt) - Date.parse(left.betaSurveyUpdatedAt ?? left.emailSentAt ?? left.updatedAt))
+    .map((card) => ({
+      card,
+      emailStatus: shortEmailStatus(card).replace(/^Email /, "") || "-",
+      resultActivity: formatTwinCardResultActivity(card),
+      surveyStatus: formatBetaSurvey(card),
+      answerCount: Number(card.betaSurveyAnswerCount ?? 0),
+      updatedAt: card.betaSurveyUpdatedAt ?? card.betaSurveySubmittedAt ?? card.emailSentAt ?? card.updatedAt,
+    }));
+}
+
+function buildSurveyRespondentRows(cards: TwinCardApiCard[]) {
+  return cards
+    .filter((card) => Boolean(card.betaSurveyStatus))
+    .sort((left, right) => Date.parse(right.betaSurveyUpdatedAt ?? right.updatedAt) - Date.parse(left.betaSurveyUpdatedAt ?? left.updatedAt))
+    .map((card) => ({
+      card,
+      contact: formatSurveyContact(card),
+      betaIntent: formatSurveyAnswer(readSurveyAnswer(card, "beta_intent")),
+      followUpCall: formatSurveyAnswer(readSurveyAnswer(card, "follow_up_call")),
+      preferredContact: formatSurveyAnswer(readSurveyAnswer(card, "preferred_contact")),
+      monthlyPrice: formatSurveyAnswer(readSurveyAnswer(card, "monthly_price")),
+      paidBeta: formatSurveyAnswer(readSurveyAnswer(card, "paid_beta")),
+    }));
+}
+
+function countSurveyAnswerValues(cards: TwinCardApiCard[], key: string) {
+  const counts = new Map<string, number>();
+  let total = 0;
+
+  cards.forEach((card) => {
+    normalizeSurveyAnswerValues(readSurveyAnswer(card, key)).forEach((value) => {
+      counts.set(value, (counts.get(value) ?? 0) + 1);
+      total += 1;
+    });
+  });
+
+  return Array.from(counts.entries())
+    .map(([label, count]) => ({ label: titleCaseSurveyValue(label), count, percent: total ? count / total : 0 }))
+    .sort((left, right) => right.count - left.count || left.label.localeCompare(right.label));
+}
+
+function SummaryLine({ label, value }: { label: string; value: string }) {
+  return (
+    <Flex justify="space-between" gap={4} align="center" borderTop="1px solid #eef4f8" pt={3}>
+      <Text color="#516176" fontSize="sm">{label}</Text>
+      <Text fontWeight="900">{value}</Text>
+    </Flex>
+  );
+}
+
+function BreakdownBox({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: Array<{ label: string; count: number; percent: number }>;
+}) {
+  return (
+    <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+      <Stack spacing={3}>
+        <Heading as="h3" size="sm">{title}</Heading>
+        {rows.length ? (
+          rows.map((row) => (
+            <SummaryLine key={row.label} label={row.label} value={`${row.count} (${formatPercentDecimal(row.percent)})`} />
+          ))
+        ) : (
+          <Text color="#516176" fontSize="sm">No responses yet.</Text>
+        )}
+      </Stack>
+    </Box>
+  );
+}
+
 function sortPrintQueue(left: TwinCardApiCard, right: TwinCardApiCard) {
   const leftPrinted = isCardPrinted(left) ? 1 : 0;
   const rightPrinted = isCardPrinted(right) ? 1 : 0;
@@ -1600,6 +2029,18 @@ function localLeadToApiCard(lead: TwinCardLead): TwinCardApiCard {
     betaSurveyAnswerCount: lead.betaSurveyAnswerCount,
     betaSurveyUpdatedAt: lead.betaSurveyUpdatedAt,
     betaSurveySubmittedAt: lead.betaSurveySubmittedAt,
+    resultViewCount: lead.resultViewCount,
+    firstResultViewedAt: lead.firstResultViewedAt,
+    lastResultViewedAt: lead.lastResultViewedAt,
+    emailClickCount: lead.emailClickCount,
+    firstEmailClickedAt: lead.firstEmailClickedAt,
+    lastEmailClickedAt: lead.lastEmailClickedAt,
+    personalizeClickCount: lead.personalizeClickCount,
+    firstPersonalizeClickedAt: lead.firstPersonalizeClickedAt,
+    lastPersonalizeClickedAt: lead.lastPersonalizeClickedAt,
+    engagementUpdatedAt: lead.engagementUpdatedAt,
+    lastEngagementEvent: lead.lastEngagementEvent,
+    lastEngagementSource: lead.lastEngagementSource,
     sourceImageUrl: lead.sourceImageUrl,
     generatedAvatarUrl: lead.generatedAvatarUrl,
     runS3Key: lead.runS3Key,
@@ -1665,6 +2106,15 @@ function formatBetaSurvey(card: TwinCardApiCard) {
   return `${card.betaSurveyStatus} / ${count} answer${count === 1 ? "" : "s"}`;
 }
 
+function formatTwinCardResultActivity(card: TwinCardApiCard) {
+  const emailClicks = Number(card.emailClickCount ?? 0);
+  const resultViews = Number(card.resultViewCount ?? 0);
+  if (emailClicks > 0) return `${emailClicks} email click${emailClicks === 1 ? "" : "s"} / last ${formatDate(card.lastEmailClickedAt)}`;
+  if (resultViews > 0) return `${resultViews} result view${resultViews === 1 ? "" : "s"}`;
+  if (card.betaSurveyStatus) return "Survey response";
+  return "No tracked click";
+}
+
 function shortSurveyStatus(card: TwinCardApiCard) {
   if (!card.betaSurveyStatus) return "Survey -";
   const count = Number(card.betaSurveyAnswerCount ?? 0);
@@ -1696,6 +2146,66 @@ function formatCurrency(value?: number | null) {
   const number = Number(value);
   if (!Number.isFinite(number)) return "-";
   return `$${number.toFixed(4)}`;
+}
+
+function formatCurrencyPerUnit(value: number, units: number) {
+  if (!units) return "-";
+  return formatCurrency(value / units);
+}
+
+function formatPercent(numerator: number, denominator: number) {
+  if (!denominator) return "0%";
+  return `${Math.round((numerator / denominator) * 100)}%`;
+}
+
+function formatPercentDecimal(value: number) {
+  if (!Number.isFinite(value)) return "0%";
+  return `${Math.round(value * 100)}%`;
+}
+
+function normalizeNumber(value?: number | null) {
+  const number = Number(value ?? 0);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function formatProviderName(value?: string) {
+  if (!value) return "-";
+  if (value === "fal_ai" || value === "fal" || value === "fal.ai") return "fal.ai";
+  if (value === "fallback_original_photo_card") return "Original photo fallback";
+  return titleCaseSurveyValue(value);
+}
+
+function formatSurveyContact(card: TwinCardApiCard) {
+  const contact = card.betaSurveyContact ?? {};
+  const email = formatSurveyAnswer(contact.contact_email);
+  const phone = formatSurveyAnswer(contact.contact_phone);
+  if (email !== "-" && phone !== "-") return `${email} / ${phone}`;
+  if (email !== "-") return email;
+  if (phone !== "-") return phone;
+  return card.contact ?? "-";
+}
+
+function readSurveyAnswer(card: TwinCardApiCard, key: string) {
+  return card.betaSurveyResponses?.[key] ?? card.betaSurveyContact?.[key];
+}
+
+function normalizeSurveyAnswerValues(value?: string | string[]) {
+  const values = Array.isArray(value) ? value : value ? [value] : [];
+  return values.map((item) => item.trim()).filter(Boolean);
+}
+
+function formatSurveyAnswer(value?: string | string[]) {
+  const values = normalizeSurveyAnswerValues(value);
+  if (!values.length) return "-";
+  return values.map(titleCaseSurveyValue).join(", ");
+}
+
+function titleCaseSurveyValue(value: string) {
+  return value
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 function isCanonPrintPng(card: TwinCardApiCard) {
