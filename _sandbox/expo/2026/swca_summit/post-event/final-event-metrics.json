@@ -1,0 +1,25 @@
+{
+  "totalRuns": 56,
+  "generated": 56,
+  "printReady": 56,
+  "printed": 56,
+  "fallback": 2,
+  "emailsSent": 46,
+  "emailClickedCards": 0,
+  "resultViewedCards": 2,
+  "surveysStarted": 1,
+  "surveysCompleted": 1,
+  "goals": {
+    "Get Back To Life": 23,
+    "Explore Advanced Care": 20,
+    "Move With Less Pain": 13
+  },
+  "providers": {
+    "fal_ai": 49,
+    "stability_control_structure": 5,
+    "fallback": 2
+  },
+  "avgAvatarSeconds": 18.2,
+  "medianAvatarSeconds": 16.6,
+  "p90AvatarSeconds": 24
+}

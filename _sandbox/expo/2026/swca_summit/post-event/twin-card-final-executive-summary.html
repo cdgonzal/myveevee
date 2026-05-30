@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VeeVee Twin Card SWCA Final Executive Summary</title>
+  <style>
+    @page { size: letter landscape; margin: 0; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #eef4f8;
+      color: #061b38;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .page {
+      width: 11in;
+      height: 8.5in;
+      padding: 0.36in;
+      background: #f8fbfd;
+      overflow: hidden;
+    }
+    .shell {
+      height: 100%;
+      border: 1px solid #d5e5f0;
+      border-radius: 18px;
+      background: #ffffff;
+      padding: 0.28in 0.32in;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 0.16in;
+    }
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #1177ba;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+    }
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 720px;
+      font-size: 32px;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .date {
+      margin: 6px 0 0;
+      color: #516176;
+      font-size: 13px;
+      line-height: 1.35;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 1.35fr;
+      gap: 0.18in;
+      align-items: stretch;
+    }
+    .statement {
+      border: 1px solid #dbeaf5;
+      border-radius: 10px;
+      padding: 16px;
+      background: #f8fbfd;
+    }
+    .statement h2 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      line-height: 1.1;
+    }
+    .statement p {
+      margin: 0;
+      color: #34495e;
+      font-size: 14px;
+      line-height: 1.42;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+    .metric {
+      border: 1px solid #dbeaf5;
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+      min-height: 78px;
+    }
+    .metric .value {
+      font-size: 23px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .metric .label {
+      margin-top: 6px;
+      color: #516176;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .content {
+      display: grid;
+      grid-template-columns: 0.95fr 1fr 1fr;
+      gap: 0.14in;
+      min-height: 0;
+    }
+    .panel {
+      border: 1px solid #dbeaf5;
+      border-radius: 10px;
+      padding: 14px;
+      background: #ffffff;
+      min-height: 0;
+    }
+    .panel h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 1.15;
+    }
+    .bar {
+      margin: 8px 0;
+    }
+    .bar-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .track {
+      height: 8px;
+      margin-top: 4px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8f1f6;
+    }
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: #29b8a9;
+    }
+    .fill.blue { background: #1177ba; }
+    .fill.navy { background: #061b38; }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #34495e;
+      font-size: 12.5px;
+      line-height: 1.38;
+    }
+    li { margin: 0 0 6px; }
+    .links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+    .link {
+      border: 1px solid #dbeaf5;
+      border-radius: 8px;
+      padding: 8px;
+      background: #f8fbfd;
+      overflow-wrap: anywhere;
+    }
+    .link strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 11px;
+      color: #061b38;
+    }
+    .link span { color: #516176; }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid #dbeaf5;
+      padding-top: 10px;
+      color: #516176;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .footer strong { color: #061b38; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="shell">
+      <header class="header">
+        <div>
+          <p class="eyebrow">VeeVee Twin Card Booth</p>
+          <h1>SWCA Medical Summit Final Executive Summary</h1>
+        </div>
+        <p class="date">4th SWCA Medical Summit<br>Post-event closeout<br>May 30, 2026</p>
+      </header>
+
+      <section class="hero">
+        <div class="statement">
+          <h2>The booth journey worked.</h2>
+          <p>
+            The team moved from first contact to generated avatar, printed Twin Card, and goodie-bag handoff in roughly 60 seconds. The process needs polish, but the base workflow proved it can operate live, in front of attendees, under expo conditions.
+          </p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="value">56</div><div class="label">live Twin Card runs</div></div>
+          <div class="metric"><div class="value">100%</div><div class="label">generated and print ready</div></div>
+          <div class="metric"><div class="value">56</div><div class="label">printed cards completed</div></div>
+          <div class="metric"><div class="value">46</div><div class="label">emails sent</div></div>
+          <div class="metric"><div class="value">18s</div><div class="label">average avatar generation</div></div>
+          <div class="metric"><div class="value">$30</div><div class="label">estimated cost per lead</div></div>
+        </div>
+      </section>
+
+      <section class="content">
+        <div class="panel">
+          <h3>Goal Choice Signal</h3>
+          <div class="bar">
+            <div class="bar-top"><span>Get Back To Life</span><span>23</span></div>
+            <div class="track"><div class="fill" style="width:100%"></div></div>
+          </div>
+          <div class="bar">
+            <div class="bar-top"><span>Explore Advanced Care</span><span>20</span></div>
+            <div class="track"><div class="fill blue" style="width:87%"></div></div>
+          </div>
+          <div class="bar">
+            <div class="bar-top"><span>Move With Less Pain</span><span>13</span></div>
+            <div class="track"><div class="fill navy" style="width:57%"></div></div>
+          </div>
+          <ul>
+            <li><strong>Winner:</strong> Get Back To Life.</li>
+            <li>Booth team reported especially strong, quick selection from women attendees.</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>Financial Closeout</h3>
+          <ul>
+            <li><strong>Total estimated event cost:</strong> $1,700.84 with 15% margin / overhead.</li>
+            <li><strong>Cost per lead:</strong> $30.37 across 56 live Twin Card leads.</li>
+            <li><strong>Cost per email sent:</strong> $36.97 across 46 sent emails.</li>
+            <li>Assumptions: $600 staff, $75 transport/water, $800 reusable booth kit, $3.99 tracked model spend.</li>
+            <li>The $800 printer/materials/roll-up/monitor kit can be reused for future booth events.</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>Executive Observations</h3>
+          <ul>
+            <li>The avatar was a powerful emotional doorway, not just a novelty.</li>
+            <li>Attendees described wanting honest conversations with themselves through their avatar.</li>
+            <li>The next conversion gap is app activation: the completed journey should leave the user with an account, their twin inside VeeVee, and a reason to return.</li>
+            <li>The event validated the core concept: fast, personal, visual, and memorable.</li>
+          </ul>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div>
+          <strong>Post-event assets:</strong>
+          board PDF, board PNG, 12-second thank-you reel, Seedance story/audio reel, Veo story/audio comparison.
+        </div>
+        <div>
+          <strong>Links:</strong>
+          myveevee.com/post-event/twin-card-post-event-board-summary.pdf ·
+          myveevee.com/post-event/twin-card-swca-thank-you-reel.mp4 ·
+          myveevee.com/post-event/twin-card-swca-seedance-story-audio.mp4 ·
+          myveevee.com/post-event/twin-card-swca-veo-story-audio.mp4
+        </div>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>

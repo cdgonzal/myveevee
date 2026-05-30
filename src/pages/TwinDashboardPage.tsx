@@ -894,6 +894,7 @@ function FinancialSummaryTab({
   summary: ReturnType<typeof buildPostEventSummary>;
 }) {
   const providerRows = useMemo(() => buildProviderSummaryRows(cards), [cards]);
+  const eventCostModel = useMemo(() => buildEventCostModel(summary), [summary]);
 
   return (
     <Stack spacing={4}>
@@ -901,8 +902,33 @@ function FinancialSummaryTab({
         <StatBox label="Live Runs" value={String(summary.totalRuns)} />
         <StatBox label="Cards Generated" value={`${summary.generatedCount} / ${formatPercent(summary.generatedCount, summary.totalRuns)}`} />
         <StatBox label="Cards Printed" value={`${summary.printedCount} / ${formatPercent(summary.printedCount, summary.generatedCount)}`} />
-        <StatBox label="Model Spend" value={formatCurrency(summary.modelCostTotal)} />
+        <StatBox label="Total Event Cost" value={formatCurrency(eventCostModel.totalWithMargin)} />
       </SimpleGrid>
+
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+        <Grid templateColumns={{ base: "1fr", lg: "minmax(0, 1.1fr) minmax(280px, 0.8fr)" }} gap={4}>
+          <Stack spacing={3}>
+            <Heading as="h3" size="md">Full Event Cost Model</Heading>
+            <Text color="#516176" fontSize="sm">
+              Planning model for future expo comparisons. Staff, transportation, and water are assumptions until final receipts/rates are confirmed.
+            </Text>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3}>
+              <StatBox label="Cost / Lead" value={formatCurrencyPerUnit(eventCostModel.totalWithMargin, summary.totalRuns)} />
+              <StatBox label="Cost / Printed Card" value={formatCurrencyPerUnit(eventCostModel.totalWithMargin, summary.printedCount)} />
+              <StatBox label="Cost / Email Sent" value={formatCurrencyPerUnit(eventCostModel.totalWithMargin, summary.emailsSent)} />
+            </SimpleGrid>
+          </Stack>
+          <Stack spacing={2}>
+            <SummaryLine label="3 booth staff, full day" value={formatCurrency(eventCostModel.staffCost)} />
+            <SummaryLine label="Transportation, mileage, water" value={formatCurrency(eventCostModel.transportWaterCost)} />
+            <SummaryLine label="Reusable booth kit" value={formatCurrency(eventCostModel.reusableBoothKitCost)} />
+            <SummaryLine label="Tracked model spend" value={formatCurrency(eventCostModel.modelSpend)} />
+            <SummaryLine label="Subtotal" value={formatCurrency(eventCostModel.subtotal)} />
+            <SummaryLine label="15% margin / overhead" value={formatCurrency(eventCostModel.margin)} />
+            <SummaryLine label="Total event cost" value={formatCurrency(eventCostModel.totalWithMargin)} />
+          </Stack>
+        </Grid>
+      </Box>
 
       <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.2fr) minmax(320px, 0.8fr)" }} gap={4}>
         <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }} overflowX="auto">
@@ -1086,15 +1112,19 @@ function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
   const printPngCount = cards.filter((card) => Boolean(card.printImageUrl)).length;
   const boardSummaryPdfUrl = "/post-event/twin-card-post-event-board-summary.pdf";
   const boardSummaryPreviewUrl = "/post-event/twin-card-post-event-board-summary-preview.png";
+  const finalSummaryPdfUrl = "/post-event/twin-card-final-executive-summary.pdf";
+  const finalSummaryPreviewUrl = "/post-event/twin-card-final-executive-summary-preview.png";
   const thankYouReelUrl = "/post-event/twin-card-swca-thank-you-reel.mp4";
   const thankYouReelPosterUrl = "/post-event/twin-card-swca-thank-you-reel-poster.jpg";
+  const seedanceStoryUrl = "/post-event/twin-card-swca-seedance-story-audio.mp4";
+  const veoStoryUrl = "/post-event/twin-card-swca-veo-story-audio.mp4";
 
   return (
     <Stack spacing={4}>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
         <StatBox label="Avatars Available" value={String(avatarCount)} />
         <StatBox label="Print Assets" value={String(printPngCount)} />
-        <StatBox label="Post Event Assets" value="2 ready" />
+        <StatBox label="Post Event Assets" value="6 ready" />
       </SimpleGrid>
 
       <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 0.95fr) minmax(320px, 0.75fr)" }} gap={4}>
@@ -1120,6 +1150,28 @@ function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
           </Stack>
         </Box>
 
+        <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+          <Stack spacing={4}>
+            <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
+              <Stack spacing={1}>
+                <Heading as="h3" size="md">Final Executive Summary</Heading>
+                <Text color="#516176">Closeout PDF with final numbers, cost model, links, and board-facing observations.</Text>
+              </Stack>
+              <HStack spacing={3}>
+                <Button as="a" href={finalSummaryPdfUrl} target="_blank" rel="noreferrer" bg="#1177BA" color="white" _hover={{ bg: "#0b5d94" }}>
+                  Open PDF
+                </Button>
+                <Button as="a" href={finalSummaryPreviewUrl} target="_blank" rel="noreferrer" variant="outline" borderColor="#b7d6e8">
+                  Open PNG
+                </Button>
+              </HStack>
+            </Flex>
+            <Box border="1px solid #dbeaf5" borderRadius="8px" overflow="hidden" bg="#eef4f8">
+              <Image src={finalSummaryPreviewUrl} alt="Twin Card final executive summary preview" w="100%" display="block" />
+            </Box>
+          </Stack>
+        </Box>
+
         <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 5, md: 6 }}>
           <Stack spacing={4}>
             <Flex justify="space-between" gap={4} align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }}>
@@ -1140,6 +1192,28 @@ function PostEventAssetsTab({ cards }: { cards: TwinCardApiCard[] }) {
           </Stack>
         </Box>
       </Grid>
+
+      <Box bg="white" border="1px solid #dbeaf5" borderRadius="8px" p={{ base: 4, md: 5 }}>
+        <Stack spacing={4}>
+          <Heading as="h3" size="md">AI Video Story Tests</Heading>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <Stack spacing={3} border="1px solid #dbeaf5" borderRadius="8px" p={4}>
+              <Heading as="h4" size="sm">Seedance 2.0 Story + Audio</Heading>
+              <Text color="#516176" fontSize="sm">Dynamic 8-second story reel with native audio. Current preferred AI-video direction.</Text>
+              <Button as="a" href={seedanceStoryUrl} target="_blank" rel="noreferrer" bg="#061b38" color="white" _hover={{ bg: "#0b2b57" }}>
+                Open MP4
+              </Button>
+            </Stack>
+            <Stack spacing={3} border="1px solid #dbeaf5" borderRadius="8px" p={4}>
+              <Heading as="h4" size="sm">Veo 3.1 Fast Story + Audio</Heading>
+              <Text color="#516176" fontSize="sm">Comparison reel with native audio. More conservative motion, higher estimated generation cost.</Text>
+              <Button as="a" href={veoStoryUrl} target="_blank" rel="noreferrer" variant="outline" borderColor="#b7d6e8">
+                Open MP4
+              </Button>
+            </Stack>
+          </SimpleGrid>
+        </Stack>
+      </Box>
     </Stack>
   );
 }
@@ -1811,6 +1885,25 @@ function buildPostEventSummary(cards: TwinCardApiCard[]) {
     partialSurveys: cards.filter((card) => card.betaSurveyStatus === "partial").length,
     costs,
     modelCostTotal: costs.total,
+  };
+}
+
+function buildEventCostModel(summary: ReturnType<typeof buildPostEventSummary>) {
+  const staffCost = 3 * 8 * 25;
+  const transportWaterCost = 75;
+  const reusableBoothKitCost = 800;
+  const modelSpend = summary.modelCostTotal;
+  const subtotal = staffCost + transportWaterCost + reusableBoothKitCost + modelSpend;
+  const margin = subtotal * 0.15;
+
+  return {
+    staffCost,
+    transportWaterCost,
+    reusableBoothKitCost,
+    modelSpend,
+    subtotal,
+    margin,
+    totalWithMargin: subtotal + margin,
   };
 }
 

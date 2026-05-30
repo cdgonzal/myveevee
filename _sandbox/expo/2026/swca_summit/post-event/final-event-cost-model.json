@@ -1,0 +1,28 @@
+﻿{
+  "currency": "USD",
+  "source": "planning assumptions plus live Twin Card metrics",
+  "liveLeads": 56,
+  "emailsSent": 46,
+  "staff": {
+    "boothMembers": 3,
+    "hoursPerMember": 8,
+    "assumedHourlyRate": 25,
+    "cost": 600
+  },
+  "transportationMileageGasAndWater": 75,
+  "reusableBoothKit": {
+    "description": "Canon printer, print materials, booth items, roll-up poster, TV monitor, and reusable setup materials",
+    "cost": 800,
+    "note": "Reusable for future booth events"
+  },
+  "trackedModelSpend": 3.99,
+  "subtotal": 1478.99,
+  "marginRate": 0.15,
+  "margin": 221.85,
+  "totalEstimatedCost": 1700.84,
+  "costPerLead": 30.37,
+  "costPerPrintedCard": 30.37,
+  "costPerEmailSent": 36.97,
+  "operatingCostExcludingReusableKitWithMargin": 780.84,
+  "operatingCostPerLeadExcludingReusableKit": 13.94
+}
