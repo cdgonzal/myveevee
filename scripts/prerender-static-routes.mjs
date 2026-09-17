@@ -5,41 +5,16 @@ import { fileURLToPath } from "node:url";
 const SITE_ORIGIN = "https://myveevee.com";
 const DIST_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
 const BASE_HTML_PATH = path.join(DIST_DIR, "index.html");
+const corePageMeta = JSON.parse(await readFile(new URL("../src/seo/corePageMeta.json", import.meta.url), "utf8"));
+const marketingRedirects = JSON.parse(await readFile(new URL("../src/config/marketingRedirects.json", import.meta.url), "utf8"));
 
 const ROUTES = [
-  {
-    path: "/",
-    title: "VeeVee | Meet Your Health Twin",
-    description:
-      "VEEVEE is a digital version of your health that brings your records, habits, and care into one place so you can understand your body and make decisions with confidence.",
-    robots: "index, follow",
-    image: "https://myveevee.com/og/home.svg",
-    body: `
-      <main data-prerendered-route="/" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Private. Secure. Yours.</p>
-        <h1 style="font-size:48px;line-height:1.1;margin:0 0 16px;">Meet your digital Health Twin</h1>
-        <p style="font-size:18px;line-height:1.6;max-width:760px;margin:0 0 24px;">
-          VeeVee brings your records, habits, and care into one place so you can understand your body, follow changes over time, and make decisions with confidence.
-        </p>
-        <h2 style="font-size:28px;margin:40px 0 12px;">Start with a guided Health Twin funnel</h2>
-        <p style="font-size:16px;line-height:1.6;max-width:820px;">
-          The homepage now points visitors into a four-step walkthrough: simulate bringing in sample health data, evolve the twin with more context, see insights and simulations, and then decide whether to create a real VeeVee account.
-        </p>
-        <ol style="line-height:1.8;padding-left:20px;">
-          <li>Data In: choose a sample asset like an MRI, health record, injury image, or lab panel.</li>
-          <li>Your Twin Evolves: add context such as symptom history, sleep routine, medication history, or care goals.</li>
-          <li>Insights and Simulations: review the simulated signals, recommendations, and next questions.</li>
-          <li>Better Decisions: continue to the real VeeVee experience.</li>
-        </ol>
-      </main>
-    `,
-  },
   {
     path: "/health-twin",
     title: "Create Your Health Twin | Guided VeeVee Funnel Preview",
     description:
       "Walk through a four-step VeeVee funnel: simulate health data input, evolve the twin with more context, review insights, and then create your own.",
-    robots: "index, follow",
+    robots: "noindex, nofollow",
     image: "https://myveevee.com/og/home.svg",
     body: `
       <main data-prerendered-route="/health-twin" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
@@ -62,7 +37,7 @@ const ROUTES = [
     title: "Create Your Health Twin | VeeVee",
     description:
       "Create a free personalized VeeVee Health Twin and turn your health signals into a clearer next step.",
-    robots: "index, follow",
+    robots: "noindex, nofollow",
     image: "https://myveevee.com/og/home.svg",
     body: `
       <main data-prerendered-route="/health-twin/create" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
@@ -75,102 +50,11 @@ const ROUTES = [
     `,
   },
   {
-    path: "/how-it-works",
-    title: "How VeeVee Works | 3 Simple Steps for Health Questions",
-    description:
-      "See how VeeVee helps people describe what is happening, get calmer next-step guidance, and decide what to do next in three simple steps.",
-    robots: "index, follow",
-    image: "https://myveevee.com/og/home.svg",
-    body: `
-      <main data-prerendered-route="/how-it-works" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">How it works</p>
-        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Your health questions answered in 3 simple steps.</h1>
-        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
-          This page explains the simple VeeVee journey: tell VeeVee what is happening, get clear guidance, and take the next step with more confidence.
-        </p>
-        <ol style="line-height:1.8;padding-left:20px;">
-          <li>Tell VeeVee what is happening.</li>
-          <li>Get clearer next-step guidance.</li>
-          <li>Decide what to do next with better context.</li>
-        </ol>
-      </main>
-    `,
-  },
-  {
-    path: "/hospital-value",
-    title: "VeeVee Hospital Value | Revenue, Labor Savings, and Risk Reduction",
-    description:
-      "Review the VeeVee hospital value story, including revenue support, labor efficiency, risk mitigation, and illustrative rollout math.",
-    robots: "index, follow",
-    image: "https://myveevee.com/og/technology.svg",
-    body: `
-      <main data-prerendered-route="/hospital-value" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Hospital value</p>
-        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">A simple way to think about VeeVee value for hospitals.</h1>
-        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
-          VeeVee frames hospital value around new revenue support, labor efficiency, risk mitigation, and clearer visibility from bedside to home.
-        </p>
-        <ul style="line-height:1.8;padding-left:20px;">
-          <li>Revenue support through RPM and RTM-aligned workflows.</li>
-          <li>Labor savings from reduced manual coverage dependence.</li>
-          <li>Risk reduction from earlier signals and better follow-through.</li>
-        </ul>
-      </main>
-    `,
-  },
-  {
-    path: "/features",
-    title: "VeeVee Features | Connected Care, Guidance, and Family Support",
-    description:
-      "Explore VeeVee features for connected care, everyday guidance, family support, care-team visibility, and hospital-to-home continuity.",
-    robots: "index, follow",
-    image: "https://myveevee.com/og/features.svg",
-    body: `
-      <main data-prerendered-route="/features" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Features</p>
-        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Digital health twin features for connected care.</h1>
-        <p style="font-size:18px;line-height:1.6;max-width:800px;margin:0 0 28px;">
-          Explore the VeeVee features that bring health records, family support, care-team visibility, and hospital-to-home continuity into one connected experience.
-        </p>
-        <ul style="line-height:1.8;padding-left:20px;">
-          <li>Guidance people can actually use.</li>
-          <li>VeeVee Simulator for simple what-if scenarios.</li>
-          <li>Family engagement without more confusion.</li>
-          <li>Better visibility for care teams.</li>
-          <li>Hospital-to-home connection after discharge.</li>
-        </ul>
-      </main>
-    `,
-  },
-  {
-    path: "/technology",
-    title: "VeeVee Technology | Private, Fast Infrastructure for Connected Care",
-    description:
-      "See how VeeVee is built for connected care with privacy-minded architecture, fast alerts, unit-ready scale, and a responsive app experience.",
-    robots: "index, follow",
-    image: "https://myveevee.com/og/technology.svg",
-    body: `
-      <main data-prerendered-route="/technology" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#76B900;margin:0 0 12px;">Technology</p>
-        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Private, fast technology for connected care.</h1>
-        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
-          VeeVee is built to support a digital health twin experience with privacy-minded infrastructure, faster response times, and technology that can support both hospital workflows and the app experience.
-        </p>
-        <ul style="line-height:1.8;padding-left:20px;">
-          <li>Private-by-design bedside processing.</li>
-          <li>Fast alerts when seconds matter.</li>
-          <li>Unit-ready scale across many rooms and streams.</li>
-          <li>Simulation and personalized guidance backed by the same foundation.</li>
-        </ul>
-      </main>
-    `,
-  },
-  {
     path: "/simulator",
     title: "VeeVee Simulator | Explore Health and Coverage Scenarios",
     description:
       "Try the VeeVee Simulator to explore health, routine, and coverage scenarios with clearer next steps and a more personal picture of your care story.",
-    robots: "index, follow",
+    robots: "noindex, nofollow",
     image: "https://myveevee.com/og/simulator.svg",
     body: `
       <main data-prerendered-route="/simulator" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
@@ -184,29 +68,6 @@ const ROUTES = [
           <li>Adjust payer, severity, duration, and sleep inputs.</li>
           <li>Review outcome, signals, recommendations, benefits, and follow-up questions.</li>
         </ol>
-      </main>
-    `,
-  },
-  {
-    path: "/testimonials",
-    title: "VeeVee Testimonials | Stories from Patients, Caregivers, and Clinicians",
-    description:
-      "Read how patients, caregivers, Medicare users, and clinicians describe VeeVee as a simpler, clearer, and more connected health experience.",
-    robots: "index, follow",
-    image: "https://myveevee.com/og/testimonials.svg",
-    body: `
-      <main data-prerendered-route="/testimonials" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Testimonials</p>
-        <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">VeeVee testimonials from patients, caregivers, and clinicians.</h1>
-        <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
-          Read how different people describe the VeeVee experience, what they were dealing with before, and what changed after using the platform.
-        </p>
-        <ul style="line-height:1.8;padding-left:20px;">
-          <li>A caregiver who wanted help without medical-language overload.</li>
-          <li>A working adult who wanted healthcare to feel smarter and more responsive.</li>
-          <li>A Medicare user who wanted a calmer, simpler way to follow care.</li>
-          <li>A physician who wanted patients and families more aligned before and after visits.</li>
-        </ul>
       </main>
     `,
   },
@@ -322,6 +183,58 @@ const ROUTES = [
   },
 ];
 
+const coreBodies = {
+  "/": `
+    <p>Your health, connected</p>
+    <h1>Meet your digital Health Twin</h1>
+    <p>Bring your records, habits, and care into one place. Understand your health over time and feel more prepared for your next step.</p>
+    <p><a href="/how-it-works">See How It Works</a></p>
+    <h2>A clearer picture. A more useful next step.</h2>
+    <h3>Keep your health story together</h3><p>Your records, daily habits, and care context form a more connected picture of you.</p>
+    <h3>Understand what changes</h3><p>Follow patterns over time and turn scattered information into questions you can discuss with your care team.</p>
+    <h3>Feel prepared for what comes next</h3><p>Get plain-language guidance to help you organize questions, follow up after visits, and support someone you care for.</p>
+    <h2>For everyday questions and the days between visits.</h2>
+    <p>Whether you are keeping track of your own health or helping someone you love, start with a clearer view of what matters.</p>
+  `,
+  "/how-it-works": `
+    <h1>Your Health Twin, in 3 simple steps.</h1>
+    <p>One place for your health story, with guidance to help you understand it and prepare for what comes next.</p>
+    <h2>1. Start your Health Twin</h2><p>Create your free VeeVee account and share what brings you here.</p>
+    <h2>2. Bring your health into focus</h2><p>Add records, habits, and care context to build a more personal picture of your health.</p>
+    <h2>3. Use it for your next step</h2><p>Explore guidance, follow changes over time, and prepare questions for your next care conversation.</p>
+    <p><a href="https://veevee.io">Create a Health Twin</a></p>
+    <h2>A few things to know</h2>
+    <h3>What is a Health Twin?</h3><p>A digital picture of your health that brings your records, habits, and care context together.</p>
+    <h3>Where do I get started?</h3><p>Continue to veevee.io to create your free account. If you already have an account, choose Log In.</p>
+    <h3>What should I know before sharing health information?</h3><p>Review the privacy policy and consent information in VeeVee before adding records. Contact our team with questions.</p>
+    <h3>Does VeeVee replace my care team?</h3><p>No. VeeVee supports wellness, education, and preparation for care conversations.</p>
+    <p><a href="/terms">Terms &amp; Disclaimers</a> · <a href="/contact">Contact our team</a></p>
+  `,
+  "/providers": `
+    <p>For Providers</p>
+    <h1>Connected care, from your team to their everyday life.</h1>
+    <p>Explore VeeVee for clinics, hospitals, and care teams. Start with your workflow, your patients, and the outcomes you want to improve.</p>
+    <h2>A clearer care picture</h2><p>Bring patient context, questions, and follow-up into a more connected conversation with patients and families.</p>
+    <h2>Support for care workflows</h2><p>Explore monitoring, documentation, and escalation workflows that fit how your team works.</p>
+    <h2>Continuity after the visit</h2><p>Help patients stay engaged with their health story and prepare for the next conversation with your team.</p>
+    <h2>Technology and deployment</h2><p>Discuss local bedside processing, integration requirements, data handling, and escalation paths with our team.</p>
+    <h2>Illustrative hospital economics</h2><p>Review planning assumptions for revenue support, staffing efficiency, and rollout costs with our team. Actual results depend on patient mix, staffing, reimbursement, and rollout design.</p>
+    <p><a href="/contact">Discuss a Partnership</a></p>
+  `,
+};
+ROUTES.push(...Object.entries(corePageMeta).map(([path, meta]) => ({
+  path, ...meta, robots: "index, follow",
+  body: `<main data-prerendered-route="${path}" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">${coreBodies[path]}</main>`,
+})));
+
+// Preserve the legacy direct-link creation URL with the same noindex policy.
+const creationPreview = ROUTES.find((route) => route.path === "/health-twin/create");
+ROUTES.push({
+  ...creationPreview,
+  path: "/create",
+  body: creationPreview.body.replace('data-prerendered-route="/health-twin/create"', 'data-prerendered-route="/create"'),
+});
+
 function escapeAttribute(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -338,7 +251,7 @@ function updateTag(html, pattern, replacement) {
 }
 
 function applyRouteHead(baseHtml, route) {
-  const canonicalUrl = new URL(route.path, SITE_ORIGIN).toString();
+  const canonicalUrl = new URL(route.canonicalPath ?? route.path, SITE_ORIGIN).toString();
   let html = baseHtml;
   html = updateTag(html, /<title>[\s\S]*?<\/title>/, `<title>${escapeAttribute(route.title)}</title>`);
   html = updateTag(
@@ -408,3 +321,26 @@ for (const route of ROUTES) {
   const outputPath = route.path === "/" ? BASE_HTML_PATH : path.join(routeDir, "index.html");
   await writeFile(outputPath, html, "utf8");
 }
+
+// Static fallback for hosts without redirect rules; Amplify 301 rules take precedence.
+for (const redirect of marketingRedirects) {
+  const route = {
+    path: redirect.source,
+    canonicalPath: redirect.target,
+    ...corePageMeta[redirect.target],
+    robots: "noindex, follow",
+    body: `<main><p>This page has moved. <a href="${redirect.target}">Continue to VeeVee</a>.</p></main>`,
+  };
+  const html = applyRouteHead(baseHtml, route).replace("</head>",
+    `<script>window.location.replace(${JSON.stringify(redirect.target)} + window.location.search + window.location.hash);</script></head>`);
+  const routeDir = path.join(DIST_DIR, redirect.source.slice(1));
+  await mkdir(routeDir, { recursive: true });
+  await writeFile(path.join(routeDir, "index.html"), html, "utf8");
+}
+// Prepend these rules to existing Amplify customRules when deploying this migration.
+const hostingRules = marketingRedirects.flatMap((rule) => [rule, { ...rule, source: `${rule.source}/` }]);
+await writeFile(path.join(DIST_DIR, "amplify-marketing-redirects.json"), JSON.stringify(hostingRules, null, 2) + "\n", "utf8");
+const pageRewrites = ROUTES.filter((route) => route.path !== "/").flatMap((route) =>
+  [route.path, `${route.path}/`].map((source) => ({ source, target: `${route.path}/index.html`, status: "200" }))
+);
+await writeFile(path.join(DIST_DIR, "amplify-marketing-rules.json"), JSON.stringify([...hostingRules, ...pageRewrites], null, 2) + "\n", "utf8");

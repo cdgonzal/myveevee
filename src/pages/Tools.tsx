@@ -100,10 +100,10 @@ const ADMIN_TOOLS: ToolCard[] = [
 
 const SUPPORT_TOOLS: ToolCard[] = [
   {
-    eyebrow: "Core Site",
+    eyebrow: "Internal Preview",
     title: "Health Twin Funnel",
-    description: "Public guided preview for the standard VeeVee Health Twin account creation path.",
-    status: "Live",
+    description: "Hidden guided preview retained for internal review. Excluded from the public funnel and search indexing.",
+    status: "Private",
     links: [
       { label: "Open Funnel", to: APP_LINKS.internal.healthTwin, primary: true },
       { label: "Create", to: APP_LINKS.internal.healthTwinCreate },

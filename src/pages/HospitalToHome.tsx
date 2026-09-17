@@ -55,15 +55,15 @@ export default function HospitalToHome() {
         },
         {
           question: "Where should someone go from here?",
-          answer: "The best next step is to create a Health Twin preview so discharge, recovery, and follow-up context can turn into a more personal next step.",
+          answer: "See how VeeVee works, then continue to create your account when you are ready.",
         },
       ]}
       primaryCta={{
-        label: "Create a Health Twin",
-        to: APP_LINKS.internal.healthTwin,
+        label: "See How It Works",
+        to: APP_LINKS.internal.howItWorks,
         destinationType: "internal",
         placement: "hospital_to_home_hero",
-        ctaName: "hospital_to_home_create_health_twin_preview",
+        ctaName: "hospital_to_home_how_it_works",
       }}
       secondaryCta={{
         label: "Contact VeeVee",
@@ -84,9 +84,9 @@ export default function HospitalToHome() {
           to: APP_LINKS.internal.medicare,
         },
         {
-          title: "Technology",
-          description: "See how the site describes the infrastructure supporting bedside-to-home continuity.",
-          to: APP_LINKS.internal.technology,
+          title: "For Providers",
+          description: "Explore VeeVee for care teams and continuity after the visit.",
+          to: APP_LINKS.internal.providers,
         },
       ]}
     />

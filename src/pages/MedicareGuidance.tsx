@@ -22,7 +22,7 @@ export default function MedicareGuidance() {
         },
         {
           title: "Keep coverage in the conversation",
-          body: "The homepage and Health Twin funnel both point to benefits and plan context as part of the user experience. That makes coverage-aware guidance a real search-intent lane for VeeVee.",
+          body: "VeeVee brings benefits and plan context into your health story so you can better understand your coverage questions and next steps.",
           points: [
             "Benefits can be considered alongside symptoms or routines",
             "Users can see what questions to ask next",
@@ -55,22 +55,22 @@ export default function MedicareGuidance() {
         },
         {
           question: "What is the best next action from this page?",
-          answer: "A good next step is to create a Health Twin preview so Medicare questions connect to a more personal care picture.",
+          answer: "See how VeeVee works, then continue to create your account when you are ready.",
         },
       ]}
       primaryCta={{
-        label: "Create a Health Twin",
-        to: APP_LINKS.internal.healthTwin,
+        label: "See How It Works",
+        to: APP_LINKS.internal.howItWorks,
         destinationType: "internal",
         placement: "medicare_hero",
-        ctaName: "medicare_create_health_twin_preview",
+        ctaName: "medicare_how_it_works",
       }}
       secondaryCta={{
-        label: "Read Testimonials",
-        to: APP_LINKS.internal.testimonials,
+        label: "Contact VeeVee",
+        to: APP_LINKS.internal.contact,
         destinationType: "internal",
         placement: "medicare_hero",
-        ctaName: "medicare_read_testimonials",
+        ctaName: "medicare_contact",
       }}
       relatedLinks={[
         {
@@ -84,9 +84,9 @@ export default function MedicareGuidance() {
           to: APP_LINKS.internal.hospitalToHome,
         },
         {
-          title: "Health Twin",
-          description: "Start the guided Health Twin funnel and connect coverage context to a more personal care story.",
-          to: APP_LINKS.internal.healthTwin,
+          title: "How It Works",
+          description: "See how VeeVee connects your health context to clearer next steps.",
+          to: APP_LINKS.internal.howItWorks,
         },
       ]}
     />

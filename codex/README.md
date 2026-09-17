@@ -1,5 +1,7 @@
 # Codex Notes for `myveevee`
 
+Current marketing consolidation: see [FUNNEL_SIMPLIFICATION.md](FUNNEL_SIMPLIFICATION.md) for the five core pages, retired routes, and hosting redirect setup. Older route and deployment checkpoints below are historical.
+
 ## Overview
 
 This repository is the public-facing marketing site for `myveevee.com`.

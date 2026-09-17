@@ -30,14 +30,14 @@ export default function Terms() {
 
           <Button
             as={RouterLink}
-            to={APP_LINKS.internal.healthTwin}
+            to={APP_LINKS.internal.howItWorks}
             onClick={() =>
               trackCtaClick({
-                ctaName: "terms_create_health_twin",
-                ctaText: "Create a Health Twin",
+                ctaName: "terms_how_it_works",
+                ctaText: "See How It Works",
                 placement: "terms_top_cta",
                 destinationType: "internal",
-                destinationUrl: APP_LINKS.internal.healthTwin,
+                destinationUrl: APP_LINKS.internal.howItWorks,
                 pagePath: APP_LINKS.internal.terms,
               })
             }
@@ -48,7 +48,7 @@ export default function Terms() {
             alignSelf="flex-start"
             boxShadow="0 0 28px rgba(17, 119, 186, 0.35)"
           >
-            Create a Health Twin
+            See How It Works
           </Button>
 
           <Text>

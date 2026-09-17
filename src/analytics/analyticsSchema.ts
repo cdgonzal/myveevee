@@ -16,7 +16,7 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_name: "home",
     page_section: "marketing",
     page_type: "marketing_landing",
-    primary_goal: "drive_funnel_entry",
+    primary_goal: "drive_how_it_works",
   },
   [APP_LINKS.internal.healthTwin]: {
     page_name: "health_twin_funnel",
@@ -34,37 +34,19 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_name: "how_it_works",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "drive_health_twin_funnel",
+    primary_goal: "drive_account_creation",
   },
-  [APP_LINKS.internal.hospitalValue]: {
-    page_name: "hospital_value",
+  [APP_LINKS.internal.providers]: {
+    page_name: "providers",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "drive_health_twin_funnel",
-  },
-  [APP_LINKS.internal.whyVeeVee]: {
-    page_name: "features",
-    page_section: "marketing",
-    page_type: "marketing_detail",
-    primary_goal: "drive_health_twin_funnel",
-  },
-  [APP_LINKS.internal.technology]: {
-    page_name: "technology",
-    page_section: "marketing",
-    page_type: "marketing_detail",
-    primary_goal: "drive_health_twin_funnel",
+    primary_goal: "drive_partnership_contact",
   },
   [APP_LINKS.internal.simulator]: {
     page_name: "simulator",
     page_section: "marketing",
     page_type: "interactive_preview",
     primary_goal: "drive_activation",
-  },
-  [APP_LINKS.internal.testimonials]: {
-    page_name: "testimonials",
-    page_section: "marketing",
-    page_type: "marketing_detail",
-    primary_goal: "drive_health_twin_funnel",
   },
   [APP_LINKS.internal.terms]: {
     page_name: "terms",

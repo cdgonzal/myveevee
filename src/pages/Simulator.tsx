@@ -590,7 +590,7 @@ export default function Simulator() {
                   </Button>
                   <Button
                     as={RouterLink}
-                    to={APP_LINKS.internal.whyVeeVee}
+                    to={APP_LINKS.internal.howItWorks}
                     variant="outline"
                     borderRadius="full"
                     px={8}
@@ -598,11 +598,11 @@ export default function Simulator() {
                     onClick={() => {
                       trackEvent("wm_cta_click", { cta: "explore_features" });
                       trackCtaClick({
-                        ctaName: "simulator_explore_features",
+                        ctaName: "simulator_how_it_works",
                         ctaText: "Explore features",
                         placement: "simulator_teaser",
                         destinationType: "internal",
-                        destinationUrl: APP_LINKS.internal.whyVeeVee,
+                        destinationUrl: APP_LINKS.internal.howItWorks,
                         pagePath: APP_LINKS.internal.simulator,
                       });
                     }}

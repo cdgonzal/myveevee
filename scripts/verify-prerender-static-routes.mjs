@@ -4,20 +4,16 @@ import { fileURLToPath } from "node:url";
 
 const SITE_ORIGIN = "https://myveevee.com";
 const DIST_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dist");
+const corePageMeta = JSON.parse(await readFile(new URL("../src/seo/corePageMeta.json", import.meta.url), "utf8"));
+const marketingRedirects = JSON.parse(await readFile(new URL("../src/config/marketingRedirects.json", import.meta.url), "utf8"));
 
 const ROUTES = [
-  {
-    path: "/",
-    title: "VeeVee | Meet Your Health Twin",
-    description:
-      "VEEVEE is a digital version of your health that brings your records, habits, and care into one place so you can understand your body and make decisions with confidence.",
-    image: "https://myveevee.com/og/home.svg",
-  },
   {
     path: "/health-twin",
     title: "Create Your Health Twin | Guided VeeVee Funnel Preview",
     description:
       "Walk through a four-step VeeVee funnel: simulate health data input, evolve the twin with more context, review insights, and then create your own.",
+    robots: "noindex, nofollow",
     image: "https://myveevee.com/og/home.svg",
   },
   {
@@ -25,35 +21,16 @@ const ROUTES = [
     title: "Create Your Health Twin | VeeVee",
     description:
       "Create a free personalized VeeVee Health Twin and turn your health signals into a clearer next step.",
+    robots: "noindex, nofollow",
     image: "https://myveevee.com/og/home.svg",
-  },
-  {
-    path: "/features",
-    title: "VeeVee Features | Connected Care, Guidance, and Family Support",
-    description:
-      "Explore VeeVee features for connected care, everyday guidance, family support, care-team visibility, and hospital-to-home continuity.",
-    image: "https://myveevee.com/og/features.svg",
-  },
-  {
-    path: "/technology",
-    title: "VeeVee Technology | Private, Fast Infrastructure for Connected Care",
-    description:
-      "See how VeeVee is built for connected care with privacy-minded architecture, fast alerts, unit-ready scale, and a responsive app experience.",
-    image: "https://myveevee.com/og/technology.svg",
   },
   {
     path: "/simulator",
     title: "VeeVee Simulator | Explore Health and Coverage Scenarios",
     description:
       "Try the VeeVee Simulator to explore health, routine, and coverage scenarios with clearer next steps and a more personal picture of your care story.",
+    robots: "noindex, nofollow",
     image: "https://myveevee.com/og/simulator.svg",
-  },
-  {
-    path: "/testimonials",
-    title: "VeeVee Testimonials | Stories from Patients, Caregivers, and Clinicians",
-    description:
-      "Read how patients, caregivers, Medicare users, and clinicians describe VeeVee as a simpler, clearer, and more connected health experience.",
-    image: "https://myveevee.com/og/testimonials.svg",
   },
   {
     path: "/caregivers",
@@ -92,6 +69,11 @@ const ROUTES = [
   },
 ];
 
+ROUTES.push(...Object.entries(corePageMeta).map(([path, meta]) => ({ path, ...meta })));
+
+// The legacy creation URL remains available only by direct link.
+ROUTES.push({ ...ROUTES.find((route) => route.path === "/health-twin/create"), path: "/create" });
+
 function routeHtmlPath(routePath) {
   return routePath === "/"
     ? path.join(DIST_DIR, "index.html")
@@ -118,9 +100,38 @@ for (const route of ROUTES) {
   requireContains(html, `<link rel="canonical" href="${canonicalUrl}" />`, `${route.path} canonical`);
   requireContains(html, `<meta property="og:url" content="${canonicalUrl}" />`, `${route.path} og:url`);
   requireContains(html, `<meta property="og:image" content="${route.image}" />`, `${route.path} og:image`);
-  requireContains(html, `<meta name="robots" content="index, follow" />`, `${route.path} robots`);
+  requireContains(html, `<meta name="robots" content="${route.robots ?? "index, follow"}" />`, `${route.path} robots`);
   requireContains(html, `<meta name="twitter:image" content="${route.image}" />`, `${route.path} twitter:image`);
   requireContains(html, `data-prerendered-route="${route.path}"`, `${route.path} prerender marker`);
 }
 
-console.log(`Verified prerendered SEO output for ${ROUTES.length} public routes.`);
+const sitemap = await readFile(path.join(DIST_DIR, "sitemap.xml"), "utf8");
+for (const route of ROUTES.filter((route) => route.robots?.includes("noindex"))) {
+  if (sitemap.includes(`<loc>${SITE_ORIGIN}${route.path}</loc>`)) {
+    throw new Error(`Hidden preview must not appear in the sitemap: ${route.path}`);
+  }
+}
+for (const redirect of marketingRedirects) {
+  const html = await readFile(routeHtmlPath(redirect.source), "utf8");
+  requireContains(html, `<link rel="canonical" href="${SITE_ORIGIN}${redirect.target}" />`, "redirect canonical");
+  requireContains(html, 'content="noindex, follow"', "redirect robots");
+  requireContains(html, 'window.location.search + window.location.hash', "redirect attribution preservation");
+  if (sitemap.includes(`<loc>${SITE_ORIGIN}${redirect.source}</loc>`)) throw new Error(`Retired page remains in sitemap: ${redirect.source}`);
+  if (!corePageMeta[redirect.target]) throw new Error(`Missing redirect destination: ${redirect.target}`);
+}
+const hostingRules = JSON.parse(await readFile(path.join(DIST_DIR, "amplify-marketing-rules.json"), "utf8"));
+for (const redirect of marketingRedirects) {
+  for (const source of [redirect.source, `${redirect.source}/`]) {
+    if (!hostingRules.some((rule) => rule.source === source && rule.target === redirect.target && rule.status === "301")) {
+      throw new Error(`Missing permanent hosting redirect: ${source}`);
+    }
+  }
+}
+for (const route of ROUTES.filter((route) => route.path !== "/")) {
+  for (const source of [route.path, `${route.path}/`]) {
+    if (!hostingRules.some((rule) => rule.source === source && rule.target === `${route.path}/index.html` && rule.status === "200")) {
+      throw new Error(`Missing prerendered-page hosting rewrite: ${source}`);
+    }
+  }
+}
+console.log(`Verified SEO output for ${ROUTES.length} routes and ${marketingRedirects.length} retired-page redirects.`);

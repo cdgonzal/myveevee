@@ -1,409 +1,71 @@
-import {
-  Box,
-  Button,
-  Grid,
-  Heading,
-  Image,
-  Stack,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { keyframes } from "@emotion/react";
-import { useEffect, useState } from "react";
-import { Link as CLink } from "@chakra-ui/react";
+import { Box, Button, Grid, Heading, Image, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
-
-const PAYOR_LOGOS = [
-  { src: "/payors/normalized/united.png", alt: "UnitedHealthcare" },
-  { src: "/payors/normalized/cigna.png", alt: "Cigna" },
-  { src: "/payors/normalized/humana99.png", alt: "Humana" },
-  { src: "/payors/normalized/aetna2.png", alt: "Aetna" },
-  { src: "/payors/normalized/elevance2.png", alt: "Elevance" },
-  { src: "/payors/normalized/florida2.png", alt: "Florida Blue" },
-  { src: "/payors/normalized/kaiser44.png", alt: "Kaiser Permanente" },
-  { src: "/payors/normalized/centene.png", alt: "Centene" },
-  { src: "/payors/normalized/molina3.png", alt: "Molina Healthcare" },
-  { src: "/payors/normalized/medicare1.png", alt: "Medicare" },
-  { src: "/payors/normalized/cvs.png", alt: "CVS" },
-].filter((logo) => !!logo.src);
-
-const scrollLogos = keyframes`
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-`;
-
-const HERO_IMAGES = [
-  {
-    src: "images/marketing/car0.webp",
-    fallbackSrc: "images/marketing/car0.jpg",
-    alt: "VeeVee carousel slide showing a health twin alongside the patient",
-    title: "Meet your health twin",
-    durationMs: 8000,
-  },
-  {
-    src: "images/marketing/car1.webp",
-    fallbackSrc: "images/marketing/car1.jpg",
-    alt: "VeeVee carousel slide showing everyday wellness support",
-    title: "Everyday support that feels simple",
-    durationMs: 4000,
-  },
-  {
-    src: "images/marketing/car2.webp",
-    fallbackSrc: "images/marketing/car2.jpg",
-    alt: "VeeVee carousel slide showing care that stays connected",
-    title: "Clear next steps, without the stress",
-    durationMs: 4000,
-  },
-  {
-    src: "images/marketing/car4.webp",
-    fallbackSrc: "images/marketing/car4.jpg",
-    alt: "VeeVee carousel slide showing a connected care experience",
-    title: "Be your ideal self",
-    durationMs: 4000,
-  },
-  {
-    src: "images/marketing/car3.webp",
-    fallbackSrc: "images/marketing/car3.jpg",
-    alt: "VeeVee carousel slide showing support after the visit",
-    title: "Support that stays with you",
-    durationMs: 4000,
-  },
-];
+import { HEALTH_TWIN_BENEFITS } from "./marketingContent";
 
 export default function Home() {
-  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
-  const pageGradient = useColorModeValue(
-    "linear(to-b, #FFFFFF, #9CE7FF)",
-    "linear(to-b, surface.900, surface.800)"
-  );
-  const heroCardBg = useColorModeValue("bg.elevated", "bg.elevated");
-  const heroStripBg = useColorModeValue("brand.50", "surface.700");
-  const border = useColorModeValue("border.default", "border.default");
+  const panelBg = useColorModeValue("white", "surface.800");
   const muted = useColorModeValue("text.muted", "text.muted");
-  const subtle = useColorModeValue("text.subtle", "text.subtle");
-  const pillBg = "accent.primary";
-  const logoFilter = useColorModeValue("none", "invert(1)");
-  const payorLogoFilter = "grayscale(1) brightness(0) invert(1) contrast(1.05)";
-  const heroStageBg = useColorModeValue("rgba(255, 255, 255, 0.94)", "rgba(6, 37, 76, 0.88)");
-  const currentHero = HERO_IMAGES[activeHeroIndex];
-
-  const trackHomeCta = (
-    ctaName: string,
-    ctaText: string,
-    destinationUrl: string,
-    destinationType: "internal" | "external",
-    placement: string
-  ) => {
-    trackCtaClick({
-      ctaName,
-      ctaText,
-      placement,
-      destinationType,
-      destinationUrl,
-      pagePath: APP_LINKS.internal.home,
-    });
-  };
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setActiveHeroIndex((current) => (current + 1) % HERO_IMAGES.length);
-    }, currentHero.durationMs);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [currentHero.durationMs]);
+  const trackLearnMore = (placement: string) => trackCtaClick({
+    ctaName: `${placement}_how_it_works`,
+    ctaText: "See How It Works",
+    placement,
+    destinationType: "internal",
+    destinationUrl: APP_LINKS.internal.howItWorks,
+    pagePath: APP_LINKS.internal.home,
+  });
 
   return (
-    <>
-      <Box
-        as="main"
-        minH="100vh"
-        bgGradient={pageGradient}
-        color="text.primary"
-        py={{ base: 10, md: 20 }}
-        px={{ base: 6, md: 10 }}
-      >
-        <Grid
-          templateColumns={{ base: "1fr", md: "minmax(0, 1.1fr) minmax(0, 1fr)" }}
-          gap={{ base: 12, md: 16 }}
-          alignItems="center"
-          maxW="6xl"
-          mx="auto"
-        >
-          <Stack spacing={6}>
-            <Text
-              fontSize="sm"
-              letterSpacing="0.18em"
-              textTransform="uppercase"
-              color="accent.soft"
-              as={RouterLink}
-              to={APP_LINKS.internal.home}
-              _hover={{ textDecoration: "none" }}
-              _focus={{ outline: "none" }}
-            >
-              Private. Secure. Yours.
-            </Text>
-
-            <CLink
-              as={RouterLink}
-              to={APP_LINKS.internal.home}
-              _hover={{ textDecoration: "none" }}
-              _focus={{ outline: "none" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Heading
-                as="h1"
-                size={{ base: "xl", md: "2xl" }}
-                fontWeight="800"
-                lineHeight="1.1"
-                color="text.primary"
-              >
-                Meet your digital
-                <br />
-                <Box as="span" color="accent.primary">
-                  Health Twin
-                </Box>
-              </Heading>
-            </CLink>
-
-            <Text fontSize={{ base: "md", md: "lg" }} maxW="lg" color={muted}>
-              VEEVEE is a digital health twin that brings your records, habits, and care into one place so you can understand your body, follow changes over time, and make decisions with confidence.
-            </Text>
-
-            <Stack spacing={3}>
-              <Button
-                as="a"
-                href={APP_LINKS.external.authenticatedConsole}
-                onClick={() =>
-                  trackHomeCta(
-                    "home_hero_create_health_twin",
-                    "Create Your Health Twin",
-                    APP_LINKS.external.authenticatedConsole,
-                    "external",
-                    "home_hero"
-                  )
-                }
-                size="lg"
-                borderRadius="full"
-                fontWeight="700"
-                px={10}
-                boxShadow="0 0 40px rgba(17, 119, 186, 0.45)"
-              >
-                Create Your Health Twin
-              </Button>
-
-              <Text fontSize="sm" color={subtle} textAlign={{ base: "center", md: "left" }}>
-                In less than 60 seconds
-              </Text>
-            </Stack>
-          </Stack>
-
-          <Box
-            position="relative"
-            bg={heroCardBg}
-            borderRadius="2xl"
-            overflow="hidden"
-            borderWidth="1px"
-            borderColor={border}
-            boxShadow="0 0 60px rgba(0,0,0,0.25)"
-          >
-            <CLink
-              as={RouterLink}
-              to={APP_LINKS.internal.home}
-              _hover={{ textDecoration: "none" }}
-              _focus={{ boxShadow: "none" }}
-              display="block"
-            >
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                gap={3}
-                px={4}
-                py={3}
-                bg={heroStripBg}
-                borderBottomWidth="1px"
-                borderColor={border}
-                cursor="pointer"
-              >
-                <Box display="flex" alignItems="center" gap={2} minW={0}>
-                  <Image
-                    src="/brand/2026/icon.svg"
-                    alt="VeeVee icon"
-                    h={{ base: "15px", md: "18px" }}
-                    w="auto"
-                    objectFit="contain"
-                    draggable="false"
-                    filter={logoFilter}
-                    flexShrink={0}
-                  />
-                  <Image
-                    src="/brand/2026/wordmark.svg"
-                    alt="VeeVee"
-                    h={{ base: "7px", md: "9px" }}
-                    w="auto"
-                    objectFit="contain"
-                    draggable="false"
-                    filter={logoFilter}
-                    flexShrink={0}
-                  />
-                </Box>
-                <Text
-                  fontSize={{ base: "xs", md: "sm" }}
-                  fontWeight="700"
-                  color="text.primary"
-                  textAlign="right"
-                  noOfLines={2}
-                >
-                  {currentHero.title}
-                </Text>
-              </Box>
-            </CLink>
-
-            <CLink as={RouterLink} to={APP_LINKS.internal.home} display="block">
-              <Box position="relative" h={{ base: "440px", md: "540px" }} bg={heroStageBg}>
-                {HERO_IMAGES.map((hero, index) => {
-                  const isActive = index === activeHeroIndex;
-
-                  return (
-                    <Image
-                      key={hero.src}
-                      src={`${import.meta.env.BASE_URL}${hero.src}`}
-                      alt={hero.alt}
-                      objectFit="contain"
-                      h="100%"
-                      w="100%"
-                      position="absolute"
-                      inset={0}
-                      p={{ base: 4, md: 5 }}
-                      opacity={isActive ? 1 : 0}
-                      transition="opacity 0.8s ease"
-                      onError={(e) => {
-                        const img = e.currentTarget;
-                        if (hero.fallbackSrc && img.src.endsWith(".webp")) {
-                          img.src = `${import.meta.env.BASE_URL}${hero.fallbackSrc}`;
-                        }
-                      }}
-                    />
-                  );
-                })}
-              </Box>
-            </CLink>
-
-            <Box
-              position="absolute"
-              bottom={4}
-              left="50%"
-              transform="translateX(-50%)"
-              display="flex"
-              alignItems="center"
-              gap={2}
-              px={3}
-              py={2}
-              borderRadius="full"
-              bg="rgba(6, 37, 76, 0.46)"
-              backdropFilter="blur(8px)"
-            >
-              {HERO_IMAGES.map((hero, index) => {
-                const isActive = index === activeHeroIndex;
-
-                return (
-                  <Box
-                    as="button"
-                    key={hero.src}
-                    type="button"
-                    aria-label={`Show hero image ${index + 1}`}
-                    onClick={() => setActiveHeroIndex(index)}
-                    w={isActive ? "28px" : "10px"}
-                    h="10px"
-                    borderRadius="full"
-                    bg={isActive ? "white" : "rgba(255,255,255,0.5)"}
-                    transition="all 0.2s ease"
-                  />
-                );
-              })}
-            </Box>
-          </Box>
-        </Grid>
-
-        <Box mt={{ base: 10, md: 14 }} maxW="6xl" mx="auto">
-          <Box
-            borderRadius="full"
-            bg={pillBg}
-            border="1px solid rgba(25, 37, 134, 0.5)"
-            boxShadow="0 0 36px rgba(25, 37, 134, 0.35)"
-            backdropFilter="blur(12px)"
-            px={{ base: 6, md: 10 }}
-            py={{ base: 6, md: 7 }}
-          >
-            <Text textAlign="center" fontSize={{ base: "sm", md: "md" }} color="#FFFFFF" mb={{ base: 4, md: 5 }}>
-              Built for connected care, real-life decisions, and real hospital workflows.
-            </Text>
-
-            <Box overflow="hidden">
-              <Box
-                as="div"
-                display="inline-flex"
-                alignItems="center"
-                animation={`${scrollLogos} 53s linear infinite`}
-                opacity={0.85}
-                columnGap={{ base: 8, md: 10 }}
-              >
-                {[...PAYOR_LOGOS, ...PAYOR_LOGOS].map((logo, idx) => (
-                  <Box
-                    key={`${logo.alt}-${idx}`}
-                    minW={{ base: "90px", md: "110px" }}
-                    maxW={{ base: "110px", md: "130px" }}
-                    h={{ base: "32px", md: "36px" }}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Image
-                      src={logo.src}
-                      alt={logo.alt}
-                      maxH="100%"
-                      maxW="100%"
-                      objectFit="contain"
-                      opacity={0.92}
-                      filter={payorLogoFilter}
-                      _hover={{ opacity: 1 }}
-                      loading="lazy"
-                    />
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          </Box>
-
-          <Stack spacing={2} align="center" textAlign="center" mt={{ base: 5, md: 6 }}>
-            <Text fontSize={{ base: "sm", md: "md" }} fontWeight="700" color="accent.primary">
-              Don&apos;t leave without seeing your Health Twin.
-            </Text>
-            <CLink
-              as={RouterLink}
-              to={APP_LINKS.internal.healthTwin}
-              fontSize={{ base: "sm", md: "md" }}
-              fontWeight="900"
-              color="accent.soft"
-              textDecoration="underline"
-              textUnderlineOffset="4px"
-              onClick={() =>
-                trackHomeCta(
-                  "home_post_insurance_health_twin",
-                  "Start the 4-step preview",
-                  APP_LINKS.internal.healthTwin,
-                  "internal",
-                  "home_post_insurance"
-                )
-              }
-            >
-              Start the 4-step preview
-            </CLink>
-          </Stack>
+    <Stack spacing={{ base: 10, md: 14 }} py={{ base: 2, md: 6 }}>
+      <Grid templateColumns={{ base: "1fr", md: "1.1fr 1fr" }} gap={{ base: 8, md: 12 }} alignItems="center">
+        <Stack spacing={5}>
+          <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
+            Your health, connected
+          </Text>
+          <Heading as="h1" size={{ base: "xl", md: "2xl" }} lineHeight="1.1">
+            Meet your digital <Box as="span" color="accent.primary">Health Twin</Box>
+          </Heading>
+          <Text fontSize="lg" color={muted} maxW="lg">
+            Bring your records, habits, and care into one place. Understand your health over time and feel more prepared for your next step.
+          </Text>
+          <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
+            alignSelf={{ base: "stretch", sm: "flex-start" }} px={8} onClick={() => trackLearnMore("home_hero")}>
+            See How It Works
+          </Button>
+          <Text fontSize="sm" color={muted}>Get to know your Health Twin in 3 simple steps.</Text>
+        </Stack>
+        <Box bg={panelBg} borderRadius="3xl" borderWidth="1px" borderColor="border.default" overflow="hidden" p={4}>
+          <Image src="/images/marketing/car0.webp" alt="Illustration of a person alongside their digital Health Twin"
+            w="full" h={{ base: "300px", md: "420px" }} objectFit="contain"
+            onError={(event) => {
+              if (event.currentTarget.src.endsWith(".webp")) event.currentTarget.src = "/images/marketing/car0.jpg";
+            }} />
         </Box>
-      </Box>
-    </>
+      </Grid>
+
+      <Stack as="section" aria-labelledby="benefits-heading" spacing={6}>
+        <Heading id="benefits-heading" as="h2" size="lg">A clearer picture. A more useful next step.</Heading>
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}>
+          {HEALTH_TWIN_BENEFITS.map((benefit) => (
+            <Box key={benefit.title} p={6} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl">
+              <Heading as="h3" size="sm" mb={3}>{benefit.title}</Heading>
+              <Text color={muted}>{benefit.detail}</Text>
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Stack>
+
+      <Stack as="section" spacing={4} align="center" textAlign="center" maxW="2xl" mx="auto">
+        <Heading as="h2" size="md">For everyday questions and the days between visits.</Heading>
+        <Text color={muted}>
+          Whether you are keeping track of your own health or helping someone you love, start with a clearer view of what matters.
+        </Text>
+        <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
+          px={8} onClick={() => trackLearnMore("home_bottom")}>
+          See How It Works
+        </Button>
+      </Stack>
+    </Stack>
   );
 }

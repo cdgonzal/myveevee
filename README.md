@@ -14,10 +14,8 @@ Public-facing marketing site for `myveevee.com`.
 ## Main Routes
 
 - `/`
-- `/features`
-- `/technology`
-- `/simulator`
-- `/testimonials`
+- `/how-it-works`
+- `/providers`
 - `/contact`
 - `/terms`
 - `/caregivers`
@@ -29,6 +27,12 @@ Public-facing marketing site for `myveevee.com`.
 Internal route:
 
 - `/briefs/swca-4821.html`
+- `/simulator`, `/health-twin`, `/health-twin/create`, and `/create`
+  - direct-link previews retained for internal review; no public marketing links, excluded from the sitemap, and `noindex, nofollow`
+  - hidden from discovery, not access-controlled
+
+The public consumer path is Home → How It Works → account creation at `veevee.io`.
+The implemented page consolidation and deployment notes are documented in [FUNNEL_SIMPLIFICATION.md](codex/FUNNEL_SIMPLIFICATION.md).
 
 Campaign/direct-link route:
 
@@ -84,6 +88,8 @@ Campaign/direct-link route:
   - shows all recent runs, replay rows, responses, consent, contact, image normalization metadata, DDB-backed fields, S3/presigned artifact links, Bedrock/fal.ai tracked model costs, and side-by-side replay image review
   - hidden direct-access route
   - `noindex`
+
+Retired marketing URLs redirect to the consolidated pages: `/features` → `/how-it-works`, `/technology` and `/hospital-value` → `/providers`, `/testimonials` → `/`. The build emits Amplify 301 rules; see the deployment notes before publishing.
 
 ## Scripts
 

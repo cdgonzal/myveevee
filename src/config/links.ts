@@ -6,6 +6,7 @@ export const APP_LINKS = {
     healthTwinCreate: "/health-twin/create",
     avatarPlaybackTest: "/avatar-playback-test",
     howItWorks: "/how-it-works",
+    providers: "/providers",
     hospitalValue: "/hospital-value",
     whyVeeVee: "/features",
     technology: "/technology",

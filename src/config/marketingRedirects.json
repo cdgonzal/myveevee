@@ -1,0 +1,6 @@
+[
+  { "source": "/features", "target": "/how-it-works", "status": "301" },
+  { "source": "/technology", "target": "/providers", "status": "301" },
+  { "source": "/testimonials", "target": "/", "status": "301" },
+  { "source": "/hospital-value", "target": "/providers", "status": "301" }
+]

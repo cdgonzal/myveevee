@@ -55,15 +55,15 @@ export default function Caregivers() {
         },
         {
           question: "What should a caregiver do next?",
-          answer: "The most direct next step is to create a Health Twin preview so the caregiver story turns into a clear, personalized next step.",
+          answer: "See how VeeVee works, then continue to create your account when you are ready.",
         },
       ]}
       primaryCta={{
-        label: "Create a Health Twin",
-        to: APP_LINKS.internal.healthTwin,
+        label: "See How It Works",
+        to: APP_LINKS.internal.howItWorks,
         destinationType: "internal",
         placement: "caregivers_hero",
-        ctaName: "caregivers_create_health_twin_preview",
+        ctaName: "caregivers_how_it_works",
       }}
       secondaryCta={{
         label: "Hospital to Home Support",
@@ -84,9 +84,9 @@ export default function Caregivers() {
           to: APP_LINKS.internal.hospitalToHome,
         },
         {
-          title: "Core features",
+          title: "How It Works",
           description: "See the broader VeeVee platform story across guidance, family support, and care-team visibility.",
-          to: APP_LINKS.internal.whyVeeVee,
+          to: APP_LINKS.internal.howItWorks,
         },
       ]}
     />

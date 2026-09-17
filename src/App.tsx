@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState, type ComponentType } from "react";
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef, type ComponentType } from "react";
 import {
   Box,
   Button,
@@ -14,7 +14,6 @@ import {
   IconButton,
   Image,
   Link as CLink,
-  SimpleGrid,
   Stack,
   Switch,
   Text,
@@ -29,6 +28,7 @@ import { trackPageView } from "./analytics/trackPageView";
 import { usePageEngagement } from "./analytics/usePageEngagement";
 import { useScrollDepth } from "./analytics/useScrollDepth";
 import { APP_LINKS } from "./config/links";
+import marketingRedirects from "./config/marketingRedirects.json";
 import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, NOT_FOUND_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 import { trackSwcaCampaignEvent } from "./swca/campaignEvents";
@@ -62,12 +62,9 @@ function shouldReloadForLazyImport(error: unknown) {
 const Home = lazyWithRetry(() => import("./pages/Home"));
 const HealthTwinFunnel = lazyWithRetry(() => import("./pages/HealthTwinFunnel"));
 const AvatarPlaybackTest = lazyWithRetry(() => import("./pages/AvatarPlaybackTest"));
+const Providers = lazyWithRetry(() => import("./pages/Providers"));
 const HowItWorks = lazyWithRetry(() => import("./pages/HowItWorks"));
-const HospitalValue = lazyWithRetry(() => import("./pages/HospitalValue"));
-const Features = lazyWithRetry(() => import("./pages/Features"));
-const Technology = lazyWithRetry(() => import("./pages/Technology"));
 const Simulator = lazyWithRetry(() => import("./pages/Simulator"));
-const Testimonials = lazyWithRetry(() => import("./pages/Testimonials"));
 const Caregivers = lazyWithRetry(() => import("./pages/Caregivers"));
 const MedicareGuidance = lazyWithRetry(() => import("./pages/MedicareGuidance"));
 const HospitalToHome = lazyWithRetry(() => import("./pages/HospitalToHome"));
@@ -90,59 +87,21 @@ const TwinCardPersonalizePage = lazyWithRetry(() => import("./pages/TwinCardPers
 const TwinCardAdminPage = lazyWithRetry(() => import("./pages/TwinCardAdminPage"));
 const TwinDashboardPage = lazyWithRetry(() => import("./pages/TwinDashboardPage"));
 
-type FooterNavLink = {
-  label: string;
-  ctaName: string;
-  to?: string;
-  href?: string;
-  destinationType?: "internal" | "external";
-};
-
-const FOOTER_NAV_GROUPS: Array<{ title: string; links: FooterNavLink[] }> = [
-  {
-    title: "Explore",
-    links: [
-      { label: "Health Twin", to: APP_LINKS.internal.healthTwin, ctaName: "footer_health_twin" },
-      { label: "How It Works", to: APP_LINKS.internal.howItWorks, ctaName: "footer_how_it_works" },
-      { label: "Features", to: APP_LINKS.internal.whyVeeVee, ctaName: "footer_features" },
-      { label: "Technology", to: APP_LINKS.internal.technology, ctaName: "footer_technology" },
-      { label: "Testimonials", to: APP_LINKS.internal.testimonials, ctaName: "footer_testimonials" },
-    ],
-  },
-  {
-    title: "Solutions",
-    links: [
-      { label: "Hospital Value", to: APP_LINKS.internal.hospitalValue, ctaName: "footer_hospital_value" },
-      { label: "Caregiver Support", to: APP_LINKS.internal.caregivers, ctaName: "footer_caregivers" },
-      { label: "Medicare Guidance", to: APP_LINKS.internal.medicare, ctaName: "footer_medicare" },
-      { label: "Hospital to Home", to: APP_LINKS.internal.hospitalToHome, ctaName: "footer_hospital_to_home" },
-    ],
-  },
-  {
-    title: "Action",
-    links: [
-      {
-        label: "Investor Info",
-        href: APP_LINKS.external.investors,
-        ctaName: "footer_investor_info",
-        destinationType: "external",
-      },
-      {
-        label: "Log In",
-        href: APP_LINKS.external.authenticatedConsole,
-        ctaName: "footer_login",
-        destinationType: "external",
-      },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "Contact & Press", to: APP_LINKS.internal.contact, ctaName: "footer_contact" },
-      { label: "Terms & Disclaimers", to: APP_LINKS.internal.terms, ctaName: "footer_terms" },
-    ],
-  },
+const PRIMARY_NAV_LINKS = [
+  { label: "Home", to: APP_LINKS.internal.home, name: "home" },
+  { label: "How It Works", to: APP_LINKS.internal.howItWorks, name: "how_it_works" },
+  { label: "For Providers", to: APP_LINKS.internal.providers, name: "providers" },
 ];
+const FOOTER_LINKS = [
+  ...PRIMARY_NAV_LINKS,
+  { label: "Contact", to: APP_LINKS.internal.contact, name: "contact" },
+  { label: "Terms & Disclaimers", to: APP_LINKS.internal.terms, name: "terms" },
+];
+
+function MarketingRedirect({ to }: { to: string }) {
+  const { search, hash } = useLocation();
+  return <Navigate to={{ pathname: to, search, hash }} replace />;
+}
 
 function ScrollToTop() {
   const { hash, pathname, search } = useLocation();
@@ -277,12 +236,12 @@ export default function App() {
                 <Route path={APP_LINKS.internal.healthTwin} element={<HealthTwinFunnel />} />
                 <Route path={APP_LINKS.internal.healthTwinCreate} element={<HealthTwinFunnel conversionOnly />} />
                 <Route path={APP_LINKS.internal.avatarPlaybackTest} element={<AvatarPlaybackTest />} />
+                <Route path={APP_LINKS.internal.providers} element={<Providers />} />
+                {marketingRedirects.map((redirect) => (
+                  <Route key={redirect.source} path={redirect.source} element={<MarketingRedirect to={redirect.target} />} />
+                ))}
                 <Route path={APP_LINKS.internal.howItWorks} element={<HowItWorks />} />
-                <Route path={APP_LINKS.internal.hospitalValue} element={<HospitalValue />} />
-                <Route path={APP_LINKS.internal.whyVeeVee} element={<Features />} />
-                <Route path={APP_LINKS.internal.technology} element={<Technology />} />
                 <Route path={APP_LINKS.internal.simulator} element={<Simulator />} />
-                <Route path={APP_LINKS.internal.testimonials} element={<Testimonials />} />
                 <Route path={APP_LINKS.internal.caregivers} element={<Caregivers />} />
                 <Route path={APP_LINKS.internal.medicare} element={<MedicareGuidance />} />
                 <Route path={APP_LINKS.internal.hospitalToHome} element={<HospitalToHome />} />
@@ -317,14 +276,12 @@ export default function App() {
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const { pathname } = useLocation();
   const headerBg = useColorModeValue("bg.glass", "bg.glass");
   const borderColor = useColorModeValue("border.default", "border.default");
   const navColor = useColorModeValue("text.primary", "text.primary");
   const menuButtonColor = useColorModeValue("text.primary", "white");
   const drawerBg = useColorModeValue("white", "surface.900");
-  const drawerPanelBg = useColorModeValue("rgba(17, 119, 186, 0.06)", "rgba(156, 231, 255, 0.08)");
-  const drawerLinkColor = useColorModeValue("gray.600", "gray.400");
   const logoFilter = useColorModeValue("none", "invert(1)");
 
   const trackNavClick = (
@@ -345,12 +302,10 @@ function Header() {
 
   const handleDrawerOpen = () => {
     trackEvent("nav_menu_open", { placement: "header_mobile" });
-    setIsMoreOpen(false);
     onOpen();
   };
 
   const handleDrawerClose = () => {
-    setIsMoreOpen(false);
     onClose();
   };
 
@@ -397,7 +352,17 @@ function Header() {
             </HStack>
 
             <HStack spacing={{ base: 3, md: 4 }} align="center">
-              <ColorModeToggle display={{ base: "none", md: "inline-flex" }} withDivider />
+              <HStack as="nav" aria-label="Main navigation" spacing={5} display={{ base: "none", md: "flex" }}>
+                {PRIMARY_NAV_LINKS.map((item) => (
+                  <CLink key={item.name} as={Link} to={item.to} fontSize="sm" fontWeight="700"
+                    aria-current={pathname === item.to ? "page" : undefined}
+                    color={pathname === item.to ? "accent.primary" : navColor}
+                    onClick={() => trackNavClick(`header_${item.name}`, item.label, item.to, "internal", "header_nav")}>
+                    {item.label}
+                  </CLink>
+                ))}
+              </HStack>
+              <ColorModeToggle display={{ base: "none", lg: "inline-flex" }} withDivider />
 
               <Button
                 as="a"
@@ -406,7 +371,7 @@ function Header() {
                 borderRadius="full"
                 fontWeight="700"
                 px={{ base: 4, md: 5 }}
-                boxShadow="0 0 20px rgba(17, 119, 186, 0.45)"
+                variant="outline"
                 onClick={() =>
                   trackNavClick("header_login", "Log in", APP_LINKS.external.authenticatedConsole, "external", "header_nav")
                 }
@@ -419,7 +384,7 @@ function Header() {
                 icon={<Box as="span" fontSize="12px" lineHeight="1">Menu</Box>}
                 variant="ghost"
                 color={menuButtonColor}
-                display="inline-flex"
+                display={{ base: "inline-flex", md: "none" }}
                 onClick={handleDrawerOpen}
               />
             </HStack>
@@ -435,83 +400,16 @@ function Header() {
             Navigation
           </DrawerHeader>
           <DrawerBody>
-            <Stack spacing={4} mt={4}>
-              <ColorModeToggle display={{ base: "inline-flex", md: "none" }} w="full" />
-              <CLink
-                as={Link}
-                to={APP_LINKS.internal.healthTwin}
-                onClick={() => {
-                  trackNavClick("drawer_health_twin", "Health Twin", APP_LINKS.internal.healthTwin, "internal", "mobile_drawer");
-                  handleDrawerClose();
-                }}
-                fontWeight="800"
-                fontSize="lg"
-                color={navColor}
-              >
-                Health Twin
-              </CLink>
-
-              <Button
-                variant="ghost"
-                justifyContent="space-between"
-                px={0}
-                fontWeight="800"
-                color={navColor}
-                onClick={() => {
-                  const nextOpen = !isMoreOpen;
-                  setIsMoreOpen(nextOpen);
-                  trackEvent("nav_menu_more_toggle", { placement: "header_mobile", expanded: nextOpen });
-                }}
-              >
-                <Text as="span">More</Text>
-                <Text as="span" fontSize="sm" transform={isMoreOpen ? "rotate(180deg)" : "none"} transition="transform 160ms ease">
-                  v
-                </Text>
-              </Button>
-
-              {isMoreOpen ? (
-                <Stack spacing={5} bg={drawerPanelBg} borderRadius="2xl" p={4}>
-                  {FOOTER_NAV_GROUPS.map((group) => (
-                    <Stack key={group.title} spacing={2.5}>
-                      <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color="text.muted">
-                        {group.title}
-                      </Text>
-                      <Stack spacing={2}>
-                        {group.links.map((drawerLink) => {
-                          const destination = drawerLink.to ?? drawerLink.href ?? APP_LINKS.internal.home;
-                          const destinationType = drawerLink.destinationType ?? "internal";
-
-                          return (
-                            <CLink
-                              key={drawerLink.ctaName}
-                              as={drawerLink.to ? Link : undefined}
-                              to={drawerLink.to}
-                              href={drawerLink.href}
-                              isExternal={destinationType === "external"}
-                              onClick={() => {
-                                trackNavClick(
-                                  drawerLink.ctaName.replace("footer_", "drawer_"),
-                                  drawerLink.label,
-                                  destination,
-                                  destinationType,
-                                  "mobile_drawer_more"
-                                );
-                                handleDrawerClose();
-                              }}
-                              fontSize="sm"
-                              fontWeight="600"
-                              color={drawerLinkColor}
-                              _hover={{ color: "accent.soft", textDecoration: "none" }}
-                            >
-                              {drawerLink.label}
-                            </CLink>
-                          );
-                        })}
-                      </Stack>
-                    </Stack>
-                  ))}
-                </Stack>
-              ) : null}
+            <Stack as="nav" aria-label="Mobile navigation" spacing={5} mt={4}>
+              {PRIMARY_NAV_LINKS.map((item) => (
+                <CLink key={item.name} as={Link} to={item.to} fontWeight="700" fontSize="lg"
+                  aria-current={pathname === item.to ? "page" : undefined}
+                  onClick={() => {
+                    trackNavClick(`drawer_${item.name}`, item.label, item.to, "internal", "mobile_drawer");
+                    handleDrawerClose();
+                  }}>{item.label}</CLink>
+              ))}
+              <ColorModeToggle display="inline-flex" w="full" />
             </Stack>
           </DrawerBody>
         </DrawerContent>
@@ -521,77 +419,21 @@ function Header() {
 }
 
 function Footer() {
-  const footerBorder = useColorModeValue("border.default", "border.default");
   const footerBg = useColorModeValue("bg.glass", "bg.glass");
-  const mutedText = useColorModeValue("text.muted", "text.muted");
-  const footerLinkColor = useColorModeValue("gray.600", "gray.400");
-  const linkBorder = useColorModeValue("rgba(17, 119, 186, 0.18)", "rgba(156, 231, 255, 0.18)");
-
-  const trackFooterClick = (
-    ctaName: string,
-    ctaText: string,
-    destinationUrl: string,
-    destinationType: "internal" | "external"
-  ) => {
-    trackCtaClick({
-      ctaName,
-      ctaText,
-      placement: "footer",
-      destinationType,
-      destinationUrl,
-    });
-  };
-
   return (
-    <Box
-      as="footer"
-      borderTop="1px solid"
-      borderColor={footerBorder}
-      bg={footerBg}
-      backdropFilter="saturate(150%) blur(12px)"
-    >
-      <Container maxW="6xl" py={{ base: 8, md: 10 }}>
-        <Stack spacing={6}>
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={{ base: 6, md: 8 }}>
-            {FOOTER_NAV_GROUPS.map((group) => (
-              <Stack key={group.title} spacing={3} align={{ base: "center", sm: "flex-start" }}>
-                <Text fontSize="xs" fontWeight="900" letterSpacing="0.16em" textTransform="uppercase" color={mutedText}>
-                  {group.title}
-                </Text>
-                <Stack spacing={2.5} align={{ base: "center", sm: "flex-start" }}>
-                  {group.links.map((footerLink) => {
-                    const destination = footerLink.to ?? footerLink.href ?? APP_LINKS.internal.home;
-                    const destinationType = footerLink.destinationType ?? "internal";
-
-                    return (
-                      <CLink
-                        key={footerLink.ctaName}
-                        as={footerLink.to ? Link : undefined}
-                        to={footerLink.to}
-                        href={footerLink.href}
-                        isExternal={destinationType === "external"}
-                        color={footerLinkColor}
-                        fontSize="sm"
-                        fontWeight="600"
-                        lineHeight="1.2"
-                        borderBottom="1px solid"
-                        borderColor={linkBorder}
-                        pb="1px"
-                        _hover={{ color: "accent.soft", borderColor: "accent.soft", textDecoration: "none" }}
-                        onClick={() => trackFooterClick(footerLink.ctaName, footerLink.label, destination, destinationType)}
-                      >
-                        {footerLink.label}
-                      </CLink>
-                    );
-                  })}
-                </Stack>
-              </Stack>
+    <Box as="footer" borderTop="1px solid" borderColor="border.default" bg={footerBg}>
+      <Container maxW="6xl" py={8}>
+        <Stack spacing={5} align="center">
+          <Flex as="nav" aria-label="Footer navigation" gap={{ base: 4, md: 6 }} wrap="wrap" justify="center">
+            {FOOTER_LINKS.map((item) => (
+              <CLink key={item.name} as={Link} to={item.to} fontSize="sm" color="text.muted"
+                onClick={() => trackCtaClick({ ctaName: `footer_${item.name}`, ctaText: item.label,
+                  placement: "footer", destinationType: "internal", destinationUrl: item.to })}>
+                {item.label}
+              </CLink>
             ))}
-          </SimpleGrid>
-
-          <Flex justify={{ base: "center", md: "space-between" }} align="center" fontSize="sm" color={mutedText}>
-            <Text>Copyright {new Date().getFullYear()} VeeVee Health</Text>
           </Flex>
+          <Text fontSize="sm" color="text.muted">Copyright {new Date().getFullYear()} VeeVee Health</Text>
         </Stack>
       </Container>
     </Box>

@@ -1,0 +1,17 @@
+{
+  "/": {
+    "title": "VeeVee | Meet Your Health Twin",
+    "description": "Bring your records, habits, and care into one place with VeeVee. Understand your health over time and prepare for your next step.",
+    "image": "https://myveevee.com/og/home.svg"
+  },
+  "/how-it-works": {
+    "title": "How VeeVee Works | Your Health Twin in 3 Simple Steps",
+    "description": "Create your VeeVee account, bring your health story together, and use your Health Twin to understand changes and prepare for care conversations.",
+    "image": "https://myveevee.com/og/home.svg"
+  },
+  "/providers": {
+    "title": "VeeVee for Providers | Connected Care for Clinics and Hospitals",
+    "description": "Explore VeeVee for care teams, hospital workflows, and continuity after the visit. Discuss deployment and partnership opportunities with our team.",
+    "image": "https://myveevee.com/og/technology.svg"
+  }
+}
