@@ -9,8 +9,8 @@ export default function HowItWorks() {
     <Stack spacing={{ base: 8, md: 10 }} maxW="5xl" mx="auto" py={{ base: 2, md: 6 }}>
       <Stack spacing={4} maxW="3xl">
         <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">How It Works</Text>
-        <Heading as="h1" size={{ base: "xl", md: "2xl" }}>Input. Simulate. Results.</Heading>
-        <Text fontSize="lg" color="text.muted">Bring your information. Explore possibilities. Decide what to do next.</Text>
+        <Heading as="h1" size={{ base: "xl", md: "2xl" }}>More of the life you want.</Heading>
+        <Text fontSize="lg" color="text.muted">Move more freely. Get back to something you love. Start with what matters to you, and explore the possibilities with your Health Twin.</Text>
       </Stack>
 
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>

@@ -38,7 +38,7 @@ describe("Simplified marketing funnel", () => {
     renderSite();
     const learnMore = await screen.findAllByRole("link", { name: "See How It Works" });
     fireEvent.click(learnMore[0]);
-    expect(await screen.findByRole("heading", { level: 1, name: "Input. Simulate. Results." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "More of the life you want." })).toBeInTheDocument();
     const steps = within(screen.getByRole("region", { name: "The three steps" }));
     expect(steps.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual(["Input", "Simulate", "Results"]);
     expect(screen.getByRole("region", { name: "“I want the freedom to move again.”" })).toBeInTheDocument();
