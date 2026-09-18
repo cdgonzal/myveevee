@@ -26,14 +26,20 @@ export const HEALTH_TWIN_BENEFITS = [
 ] as const;
 
 export const PATIENT_STEPS = [
-  { number: "1", title: "Start your Health Twin", detail: "Create your free VeeVee account and share what brings you here." },
-  { number: "2", title: "Bring your health into focus", detail: "Add records, habits, and care context to build a more personal picture of your health." },
-  { number: "3", title: "Use it for your next step", detail: "Explore guidance, follow changes over time, and prepare questions for your next care conversation." },
+  { number: "1", title: "Input", promise: "Tell your story", detail: "Upload photos, videos, or medical records. Check in on how you’re feeling and set a goal you want to work toward." },
+  { number: "2", title: "Simulate", promise: "Explore your possibilities", detail: "Run simulations with your digital twin to compare different approaches toward your goal." },
+  { number: "3", title: "Results", promise: "Take an informed next step", detail: "Review the projected results. Share them with your medical team, or explore a relevant product or service." },
+] as const;
+
+export const MOBILITY_EXAMPLE_STEPS = [
+  { number: "1", title: "Input", detail: "Alex wants to walk comfortably and enjoy outings again. He adds his records, uploads a movement video, and describes his current limitations and goal." },
+  { number: "2", title: "Simulate", detail: "He compares different approaches using his digital twin, exploring how each could support his mobility goal." },
+  { number: "3", title: "Results", detail: "He reviews the projected differences, identifies an option worth exploring, and shares the comparison with his medical team for discussion." },
 ] as const;
 
 export const HEALTH_TWIN_FAQS = [
   { question: "What is a Health Twin?", answer: "A digital picture of your health that brings your records, habits, and care context together. It helps you make sense of information over time." },
-  { question: "Where do I get started?", answer: "Choose Create a Health Twin to continue to veevee.io and create your free account. If you already have an account, choose Log In." },
+  { question: "Where do I get started?", answer: "Visit veevee.io to create your free account. If you already have an account, choose Log In at the top of this page." },
   { question: "What should I know before sharing health information?", answer: "Review the privacy policy and consent information in VeeVee before adding records. For questions about how your information is handled, contact our team." },
   { question: "Does VeeVee replace my care team?", answer: "No. VeeVee supports wellness, education, and preparation for care conversations. Your care team remains your source for diagnosis and treatment, and coverage questions should be confirmed with your plan." },
 ] as const;

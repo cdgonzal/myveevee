@@ -197,15 +197,24 @@ const coreBodies = {
     <p>Whether you are keeping track of your own health or helping someone you love, start with a clearer view of what matters.</p>
   `,
   "/how-it-works": `
-    <h1>Your Health Twin, in 3 simple steps.</h1>
-    <p>One place for your health story, with guidance to help you understand it and prepare for what comes next.</p>
-    <h2>1. Start your Health Twin</h2><p>Create your free VeeVee account and share what brings you here.</p>
-    <h2>2. Bring your health into focus</h2><p>Add records, habits, and care context to build a more personal picture of your health.</p>
-    <h2>3. Use it for your next step</h2><p>Explore guidance, follow changes over time, and prepare questions for your next care conversation.</p>
-    <p><a href="https://veevee.io">Create a Health Twin</a></p>
+    <h1>Input. Simulate. Results.</h1>
+    <p>Bring your information. Explore possibilities. Decide what to do next.</p>
+    <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Upload photos, videos, or medical records. Check in on how you’re feeling and set a goal you want to work toward.</p>
+    <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Run simulations with your digital twin to compare different approaches toward your goal.</p>
+    <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review the projected results. Share them with your medical team, or explore a relevant product or service.</p>
+    <section aria-labelledby="mobility-example-heading">
+      <p>Illustrative example</p>
+      <h2 id="mobility-example-heading">“I want the freedom to move again.”</h2>
+      <p>Follow Alex from a mobility goal to a more informed conversation with his care team.</p>
+      <ol>
+        <li><h3>Input</h3><p>Alex wants to walk comfortably and enjoy outings again. He adds his records, uploads a movement video, and describes his current limitations and goal.</p></li>
+        <li><h3>Simulate</h3><p>He compares different approaches using his digital twin, exploring how each could support his mobility goal.</p></li>
+        <li><h3>Results</h3><p>He reviews the projected differences, identifies an option worth exploring, and shares the comparison with his medical team for discussion.</p></li>
+      </ol>
+    </section>
     <h2>A few things to know</h2>
     <h3>What is a Health Twin?</h3><p>A digital picture of your health that brings your records, habits, and care context together.</p>
-    <h3>Where do I get started?</h3><p>Continue to veevee.io to create your free account. If you already have an account, choose Log In.</p>
+    <h3>Where do I get started?</h3><p>Visit veevee.io to create your free account. If you already have an account, choose Log In at the top of this page.</p>
     <h3>What should I know before sharing health information?</h3><p>Review the privacy policy and consent information in VeeVee before adding records. Contact our team with questions.</p>
     <h3>Does VeeVee replace my care team?</h3><p>No. VeeVee supports wellness, education, and preparation for care conversations.</p>
     <p><a href="/terms">Terms &amp; Disclaimers</a> · <a href="/contact">Contact our team</a></p>

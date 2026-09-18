@@ -34,7 +34,7 @@ export const ROUTE_ANALYTICS: Record<string, RouteAnalyticsMetadata> = {
     page_name: "how_it_works",
     page_section: "marketing",
     page_type: "marketing_detail",
-    primary_goal: "drive_account_creation",
+    primary_goal: "explain_input_simulate_results",
   },
   [APP_LINKS.internal.providers]: {
     page_name: "providers",

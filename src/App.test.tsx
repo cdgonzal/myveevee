@@ -34,13 +34,16 @@ afterEach(() => {
 });
 
 describe("Simplified marketing funnel", () => {
-  it("takes a visitor from Home to the explanation and then offers real account creation", async () => {
+  it("takes a visitor from Home to the three-step promise and mobility example", async () => {
     renderSite();
     const learnMore = await screen.findAllByRole("link", { name: "See How It Works" });
     fireEvent.click(learnMore[0]);
-    expect(await screen.findByRole("heading", { level: 1, name: "Your Health Twin, in 3 simple steps." })).toBeInTheDocument();
-    const createAccount = screen.getByRole("link", { name: "Create a Health Twin" });
-    expect(createAccount).toHaveAttribute("href", "https://veevee.io");
+    expect(await screen.findByRole("heading", { level: 1, name: "Input. Simulate. Results." })).toBeInTheDocument();
+    const steps = within(screen.getByRole("region", { name: "The three steps" }));
+    expect(steps.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual(["Input", "Simulate", "Results"]);
+    expect(screen.getByRole("region", { name: "“I want the freedom to move again.”" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Create a Health Twin" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "https://veevee.io");
     expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({ destinationUrl: "/how-it-works", destinationType: "internal" }));
     expect(document.querySelector('a[href="/health-twin"]')).toBeNull();
     expect(document.querySelector('a[href="/simulator"]')).toBeNull();

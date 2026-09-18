@@ -1,8 +1,7 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Heading, Link as CLink, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Heading, Link as CLink, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
-import { HEALTH_TWIN_FAQS, PATIENT_STEPS } from "./marketingContent";
+import { HEALTH_TWIN_FAQS, MOBILITY_EXAMPLE_STEPS, PATIENT_STEPS } from "./marketingContent";
 
 export default function HowItWorks() {
   const panelBg = useColorModeValue("white", "surface.800");
@@ -10,8 +9,8 @@ export default function HowItWorks() {
     <Stack spacing={{ base: 8, md: 10 }} maxW="5xl" mx="auto" py={{ base: 2, md: 6 }}>
       <Stack spacing={4} maxW="3xl">
         <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">How It Works</Text>
-        <Heading as="h1" size={{ base: "xl", md: "2xl" }}>Your Health Twin, in 3 simple steps.</Heading>
-        <Text fontSize="lg" color="text.muted">One place for your health story, with guidance to help you understand it and prepare for what comes next.</Text>
+        <Heading as="h1" size={{ base: "xl", md: "2xl" }}>Input. Simulate. Results.</Heading>
+        <Text fontSize="lg" color="text.muted">Bring your information. Explore possibilities. Decide what to do next.</Text>
       </Stack>
 
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>
@@ -19,21 +18,28 @@ export default function HowItWorks() {
           <Box key={step.number} p={6} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl">
             <Text mb={4} bg="accent.primary" color="white" borderRadius="full" w={10} h={10}
               display="flex" alignItems="center" justifyContent="center" fontWeight="800">{step.number}</Text>
-            <Heading as="h2" size="md" mb={3}>{step.title}</Heading>
+            <Heading as="h2" size="md" mb={2}>{step.title}</Heading>
+            <Text fontWeight="700" mb={3}>{step.promise}</Text>
             <Text color="text.muted">{step.detail}</Text>
           </Box>
         ))}
       </SimpleGrid>
 
-      <Stack spacing={4} align="center" textAlign="center" bg={panelBg} borderRadius="2xl" p={{ base: 6, md: 8 }}>
-        <Heading as="h2" size="lg">Ready to create your Health Twin?</Heading>
-        <Text color="text.muted">Continue to VeeVee to create your free account.</Text>
-        <Button as="a" href={APP_LINKS.external.authenticatedConsole} size="lg" borderRadius="full" px={8}
-          onClick={() => trackCtaClick({ ctaName: "how_it_works_create_health_twin", ctaText: "Create a Health Twin",
-            placement: "how_it_works_bottom_cta", destinationType: "external", destinationUrl: APP_LINKS.external.authenticatedConsole,
-            pagePath: APP_LINKS.internal.howItWorks })}>
-          Create a Health Twin
-        </Button>
+      <Stack as="section" aria-labelledby="mobility-example-heading" spacing={6} bg={panelBg}
+        borderWidth="1px" borderColor="border.default" borderRadius="2xl" p={{ base: 6, md: 8 }}>
+        <Stack spacing={3} maxW="3xl">
+          <Text fontSize="xs" fontWeight="700" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Illustrative example</Text>
+          <Heading id="mobility-example-heading" as="h2" size="lg">“I want the freedom to move again.”</Heading>
+          <Text color="text.muted">Follow Alex from a mobility goal to a more informed conversation with his care team.</Text>
+        </Stack>
+        <SimpleGrid as="ol" listStyleType="none" m={0} p={0} columns={{ base: 1, md: 3 }} spacing={6}>
+          {MOBILITY_EXAMPLE_STEPS.map((step) => (
+            <Stack as="li" key={step.number} spacing={3} borderTopWidth="2px" borderColor="accent.primary" pt={4}>
+              <Heading as="h3" size="sm"><Box as="span" color="accent.primary">{step.number}.</Box> {step.title}</Heading>
+              <Text color="text.muted">{step.detail}</Text>
+            </Stack>
+          ))}
+        </SimpleGrid>
       </Stack>
 
       <Stack as="section" aria-labelledby="questions-heading" spacing={4}>

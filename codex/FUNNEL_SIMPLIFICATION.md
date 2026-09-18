@@ -2,11 +2,11 @@
 
 ## Consolidated site
 
-The consumer path is **Home → How It Works → account creation at veevee.io**.
+The consumer learning path is **Home → How It Works → an illustrative mobility example**. Account access remains available through the header.
 There are five core pages: Home, How It Works, For Providers, Contact, and Terms.
 
 - Home has one static Health Twin illustration, three core benefits, and one repeated action: See How It Works. The rotating hero, insurance-logo ticker, and interactive preview prompts are removed.
-- How It Works explains account creation, bringing health context together, and using the Health Twin. It includes concise account/privacy questions and a direct account-creation CTA.
+- How It Works promises Input → Simulate → Results: add photos, videos, records, check-ins, and goals; compare approaches using a digital twin; review projected results to discuss with a medical team or explore a product or service. A clearly labeled illustrative mobility example replaces the conversion CTA and repeats the same three stages.
 - For Providers combines the former hospital value and technology content at `/providers`. Technical details and illustrative economics are expandable. Its action is Discuss a Partnership, leading to Contact.
 - Desktop and mobile primary navigation show Home, How It Works, and For Providers. Log In stays available in the header. The footer adds Contact and Terms.
 - Features, Technology, Testimonials, and Hospital Value no longer have separate page implementations. Legacy URLs redirect as listed below.
@@ -40,13 +40,13 @@ Until hosting rules are applied, the client/static fallback navigates to the rep
 
 ## Conversion measurement
 
-CTA events describe the current labels and destinations. Home's goal is reaching How It Works; How It Works' goal is account creation; Providers' goal is partnership contact.
+CTA events describe the current labels and destinations. Home's goal is reaching How It Works; How It Works' goal is explaining Input → Simulate → Results; Providers' goal is partnership contact.
 
-Measure Home → How It Works visits, How It Works → VeeVee clicks, and completed accounts per marketing visitor. Segment by acquisition source and mobile/desktop. A marketing click is not a completed signup: confirm cross-domain attribution and an account-completion event in the product before claiming improvement. The product signup implementation is outside this repository.
+Measure Home → How It Works visits, page engagement, header account-access clicks, and completed accounts per marketing visitor. The former how_it_works_create_health_twin event is no longer emitted because its button was removed. Segment by acquisition source and mobile/desktop. A marketing click is not a completed signup: confirm cross-domain attribution and an account-completion event in the product before claiming improvement. The product signup implementation is outside this repository.
 
 Compare against a baseline with enough comparable traffic before deciding whether to merge Home and How It Works into a single page. The two-page structure is a starting hypothesis for this site, not a universal conversion rule. [Nielsen Norman Group](https://www.nngroup.com/articles/3-ia-mistakes/) explains why competing actions can reduce the visibility of each action.
 
 ## Verification
 
 Run `npm run typecheck`, `npm test`, and `npm run verify:seo`.
-The integration checks cover Home → How It Works → the signup link, provider contact, focused navigation, and legacy redirects preserving campaign parameters. SEO verification checks canonical metadata, hidden previews, retired sitemap entries, and generated hosting rules.
+The integration checks cover Home → How It Works → the three-step promise and mobility example, with header account access preserved, provider contact, focused navigation, and legacy redirects preserving campaign parameters. SEO verification checks canonical metadata, hidden previews, retired sitemap entries, and generated hosting rules.
