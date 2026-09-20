@@ -3,12 +3,12 @@ import { CAMPAIGN_ART } from "../theme/campaign";
 
 type CampaignSceneProps = BoxProps & {
   subject: "input" | "simulation" | "results";
-  treatment?: "luminous" | "shadow" | "home" | "park";
+  treatment?: "luminous" | "shadow" | "home" | "park" | "parkInput";
   priority?: boolean;
 };
 
 const descriptions = {
-  input: "Theo leans forward with his hands on his knees in discomfort while his concerned digital Health Twin reaches out to help",
+  input: "Theo braces his knees in discomfort in a futuristic city park while his concerned digital Health Twin reaches out to help",
   simulation: "Nia’s digital Health Twin seated on a faceted stool in a futuristic living room, resting her chin on her hand in thought",
   results: "Rosa’s digital Health Twin walking through a futuristic city park with her water-bottle bag, extending an open hand toward the next step",
 };
@@ -23,7 +23,7 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
     .concat(`${src} ${width}w`).join(", ");
   return (
     <Box bg="surface.900" backgroundImage={`url("${CAMPAIGN_ART[treatment]}")`}
-      backgroundSize="cover" backgroundPosition={treatment === "home" || treatment === "park" ? "center bottom" : "center"} backgroundRepeat="no-repeat"
+      backgroundSize="cover" backgroundPosition={treatment === "home" || treatment === "park" || treatment === "parkInput" ? "center bottom" : "center"} backgroundRepeat="no-repeat"
       display="flex" alignItems="center" justifyContent="center" p="6%" {...props}>
       <Image ignoreFallback src={src} alt={descriptions[subject]}
         srcSet={srcSet} sizes="(min-width: 1280px) 290px, (min-width: 768px) 28vw, 88vw"

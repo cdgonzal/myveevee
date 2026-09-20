@@ -17,7 +17,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is always 
 | Primary actions | Green #16734B with white labels |
 | Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
 | Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
-| How It Works | AV-045 on Shadow / AV-040 seated in Future Home / AV-033 walking in Future City Park, Input / Simulate / Results |
+| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home / AV-033 walking in Future City Park, Input / Simulate / Results |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
 | Typography | Locally hosted Inter Variable, weights 100–900, font-display swap |
 
@@ -38,7 +38,7 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 | Required field | Homepage | How It Works |
 | --- | --- | --- |
 | Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-045 Theo discomfort/concern pair, AV-040 Nia seated Thinker with its stool, AV-033 Rosa walking roadmap single with bottle bag |
-| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-BG-02 for Input; TH26-ENV-04 living-room crop for Simulate; TH26-ENV-02 promenade crop for Results |
+| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-ENV-02 first park crop for Input; TH26-ENV-04 living-room crop for Simulate; TH26-ENV-02 third park crop for Results |
 | Mirror | None | None |
 | Text | Existing Home.tsx copy and HEALTH_TWIN_BENEFITS retained; added 01, 02, 03 markers | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
@@ -73,3 +73,7 @@ The second How It Works image uses AV-040 / S2-Nia-future-thinker-v1 over TH26-E
 ## Rosa on the City Park promenade
 
 The Results image uses AV-033 / S3-Rosa-future-v1, walking right with an open palm presenting next steps. Her signature glasses and crossbody water-bottle purse stay visible as part of the original asset. This pose fits the Results narrative without adding a literal roadmap interface or implying a guaranteed health outcome. The background is TH26-ENV-02 Future City Park, using the third carousel window from the supplied continuity proof (rounded to x1294/y0/648x809). Full source masters are retained; responsive 384/768px Rosa images and an optimized background crop are delivery copies. Contain sizing, 6% padding and bottom-aligned scenery preserve her full silhouette and place her feet on the promenade. No embedded copy or logos were added. Existing Results copy and shared header/footer branding remain unchanged. The homepage continues to use Nia and Theo.
+
+## Input in Future City Park
+
+Scene 1 now places the complete AV-045 Theo discomfort/concern duo over the first TH26-ENV-02 carousel window (rounded to x0/y0/648x809). The left park view complements the third park window behind Rosa in Results, while Nia remains in Future Home. Background placement anchors the promenade to the bottom of the image stage. Pair spacing, complete figures, 6% padding, Input copy and shared branding remain unchanged. The crop is a delivery variant of the preserved park master and is recorded in the mobile manifest.

@@ -134,6 +134,22 @@
       "size": 98774
     },
     {
+      "file": "future-city-park-input.webp",
+      "source": "future-city-park.webp",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 648,
+        "height": 809
+      },
+      "format": "webp",
+      "width": 648,
+      "height": 809,
+      "channels": 3,
+      "premultiplied": false,
+      "size": 167192
+    },
+    {
       "file": "future-city-park-results.webp",
       "source": "future-city-park.webp",
       "crop": {
