@@ -23,7 +23,7 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
     .concat(`${src} ${width}w`).join(", ");
   return (
     <Box bg="surface.900" backgroundImage={`url("${CAMPAIGN_ART[treatment]}")`}
-      backgroundSize="cover" backgroundPosition={treatment === "home" || treatment === "park" || treatment === "parkInput" ? "center bottom" : "center"} backgroundRepeat="no-repeat"
+      backgroundSize="cover" backgroundPosition={treatment === "home" ? "center 70%" : treatment === "park" || treatment === "parkInput" ? "center bottom" : "center"} backgroundRepeat="no-repeat"
       display="flex" alignItems="center" justifyContent="center" p="6%" {...props}>
       <Image ignoreFallback src={src} alt={descriptions[subject]}
         srcSet={srcSet} sizes="(min-width: 1280px) 290px, (min-width: 768px) 28vw, 88vw"

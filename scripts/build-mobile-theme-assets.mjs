@@ -21,9 +21,9 @@ const info = await sharp(fileURLToPath(new URL("future-office.webp", root)))
   .webp({ quality: 88, effort: 6 })
   .toFile(fileURLToPath(new URL(officeFile, root)));
 variants.push({ file: officeFile, source: "future-office.webp", crop: { left: 647, top: 0, width: 648, height: 809 }, ...info });
-// Scene 1 of Future Home retains the sofa and window behind the seated avatar.
-const homeFile = "future-home-living-room.webp";
-const homeCrop = { left: 0, top: 0, width: 648, height: 809 };
+// Open central area of Future Home, beyond the sofa's right edge.
+const homeFile = "future-home-open-area.webp";
+const homeCrop = { left: 720, top: 0, width: 648, height: 809 };
 const homeInfo = await sharp(fileURLToPath(new URL("future-home.webp", root)))
   .extract(homeCrop).webp({ quality: 88, effort: 6 })
   .toFile(fileURLToPath(new URL(homeFile, root)));

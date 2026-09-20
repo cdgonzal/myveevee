@@ -38,7 +38,7 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 | Required field | Homepage | How It Works |
 | --- | --- | --- |
 | Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-045 Theo discomfort/concern pair, AV-040 Nia seated Thinker with its stool, AV-033 Rosa walking roadmap single with bottle bag |
-| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-ENV-02 first park crop for Input; TH26-ENV-04 living-room crop for Simulate; TH26-ENV-02 third park crop for Results |
+| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-ENV-02 first park crop for Input; TH26-ENV-04 open central area for Simulate; TH26-ENV-02 third park crop for Results |
 | Mirror | None | None |
 | Text | Existing Home.tsx copy and HEALTH_TWIN_BENEFITS retained; added 01, 02, 03 markers | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
@@ -68,7 +68,7 @@ The first image now uses AV-045 / S1-Theo-future-v2: the complete human Theo ben
 
 ## Seated Nia in Future Home
 
-The second How It Works image uses AV-040 / S2-Nia-future-thinker-v1 over TH26-ENV-04 Future Home. Both source masters are preserved and imported losslessly. The background delivery crop is the first carousel window, rounded to x0/y0/648x809, retaining the sofa and window so the scene reads as a home. Nia is a separate transparent image, fitted with contain, positioned toward the right and floor, and given the existing 6% stage padding. Her full canvas, embedded faceted stool, hands and shoes remain visible. No new raster effects, embedded copy, logos or UI are added. Scene 2 copy and shared header/footer logo placements remain as recorded in the composition table. Responsive 384/768px avatar files and the optimized living-room crop serve the card without requiring full-size masters.
+The second How It Works image uses AV-040 / S2-Nia-future-thinker-v1 over TH26-ENV-04 Future Home. Both source masters are preserved and imported losslessly. The background delivery crop uses the open central area at x720/y0/648x809, beyond the sofa, with the illuminated wall and open floor behind Nia. This supersedes the first carousel window after the user rejected the empty couch. Nia is a separate transparent image, fitted with contain, positioned toward the right and floor, and given the existing 6% stage padding. Her full canvas, embedded faceted stool, hands and shoes remain visible. No new raster effects, embedded copy, logos or UI are added. Scene 2 copy and shared header/footer logo placements remain as recorded in the composition table. Responsive 384/768px avatar files and the optimized open-area crop serve the card without requiring full-size masters.
 
 ## Rosa on the City Park promenade
 

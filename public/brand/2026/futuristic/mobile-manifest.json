@@ -118,10 +118,10 @@
       "size": 86386
     },
     {
-      "file": "future-home-living-room.webp",
+      "file": "future-home-open-area.webp",
       "source": "future-home.webp",
       "crop": {
-        "left": 0,
+        "left": 720,
         "top": 0,
         "width": 648,
         "height": 809
@@ -131,7 +131,7 @@
       "height": 809,
       "channels": 3,
       "premultiplied": false,
-      "size": 98774
+      "size": 54602
     },
     {
       "file": "future-city-park-input.webp",

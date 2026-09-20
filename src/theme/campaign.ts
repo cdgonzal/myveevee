@@ -8,7 +8,7 @@ export const CAMPAIGN_ART = {
   results: "/brand/2026/futuristic/nia-results.webp",
   office: "/brand/2026/futuristic/future-office.webp",
   theo: "/brand/2026/futuristic/theo-results.webp",
-  home: "/brand/2026/futuristic/future-home-living-room.webp",
+  home: "/brand/2026/futuristic/future-home-open-area.webp",
   rosa: "/brand/2026/futuristic/rosa-results.webp",
   park: "/brand/2026/futuristic/future-city-park-results.webp",
   parkInput: "/brand/2026/futuristic/future-city-park-input.webp",
