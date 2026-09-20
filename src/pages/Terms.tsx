@@ -6,7 +6,7 @@ import { APP_LINKS } from "../config/links";
 export default function Terms() {
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
-    "linear(to-b, surface.900, surface.800)"
+    "none"
   );
 
   return (

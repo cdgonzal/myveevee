@@ -32,6 +32,7 @@ import marketingRedirects from "./config/marketingRedirects.json";
 import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, NOT_FOUND_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 import { trackSwcaCampaignEvent } from "./swca/campaignEvents";
+import { CAMPAIGN_ART } from "./theme/campaign";
 
 const LAZY_RELOAD_STORAGE_KEY = "myveevee:lazy-import-reload";
 
@@ -193,11 +194,11 @@ export default function App() {
     pathname === APP_LINKS.internal.twinDashboard;
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
-    "linear(to-b, surface.900, surface.800)"
+    "none"
   );
 
   return (
-    <Flex minH="100vh" direction="column" bgGradient={pageGradient}>
+    <Flex minH="100vh" direction="column" bg="bg.canvas" bgGradient={pageGradient}>
       <ScrollToTop />
       {!isStandalonePage && <Header />}
       <Box as="main" flex="1">
@@ -362,7 +363,7 @@ function Header() {
                   </CLink>
                 ))}
               </HStack>
-              <ColorModeToggle display={{ base: "none", lg: "inline-flex" }} withDivider />
+              <ColorModeToggle display={{ base: "none", md: "inline-flex" }} withDivider />
 
               <Button
                 as="a"
@@ -420,10 +421,12 @@ function Header() {
 
 function Footer() {
   const footerBg = useColorModeValue("bg.glass", "bg.glass");
+  const showCampaignLogo = useColorModeValue(false, true);
   return (
     <Box as="footer" borderTop="1px solid" borderColor="border.default" bg={footerBg}>
       <Container maxW="6xl" py={8}>
         <Stack spacing={5} align="center">
+          {showCampaignLogo && <Image src={CAMPAIGN_ART.logo} alt="VeeVee" w="160px" h="160px" objectFit="contain" loading="lazy" />}
           <Flex as="nav" aria-label="Footer navigation" gap={{ base: 4, md: 6 }} wrap="wrap" justify="center">
             {FOOTER_LINKS.map((item) => (
               <CLink key={item.name} as={Link} to={item.to} fontSize="sm" color="text.muted"

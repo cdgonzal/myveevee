@@ -2,9 +2,11 @@ import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPane
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 import { HEALTH_TWIN_FAQS, MOBILITY_EXAMPLE_STEPS, PATIENT_STEPS } from "./marketingContent";
+import { CampaignScene } from "../components/CampaignScene";
 
 export default function HowItWorks() {
-  const panelBg = useColorModeValue("white", "surface.800");
+  const panelBg = "bg.surface";
+  const isDark = useColorModeValue(false, true);
   return (
     <Stack spacing={{ base: 8, md: 10 }} maxW="5xl" mx="auto" py={{ base: 2, md: 6 }}>
       <Stack spacing={4} maxW="3xl">
@@ -14,13 +16,16 @@ export default function HowItWorks() {
       </Stack>
 
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>
-        {PATIENT_STEPS.map((step) => (
-          <Box key={step.number} p={6} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl">
-            <Text mb={4} bg="accent.primary" color="white" borderRadius="full" w={10} h={10}
-              display="flex" alignItems="center" justifyContent="center" fontWeight="800">{step.number}</Text>
-            <Heading as="h2" size="md" mb={2}>{step.title}</Heading>
-            <Text fontWeight="700" mb={3}>{step.promise}</Text>
-            <Text color="text.muted">{step.detail}</Text>
+        {PATIENT_STEPS.map((step, index) => (
+          <Box key={step.number} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl" overflow="hidden">
+            {isDark && <CampaignScene subject={(["input", "simulation", "results"] as const)[index]} treatment="shadow" h="260px" />}
+            <Box p={6}>
+              <Text mb={4} bg="accent.primary" color="accent.on" borderRadius="full" w={10} h={10}
+                display="flex" alignItems="center" justifyContent="center" fontWeight="800">{step.number}</Text>
+              <Heading as="h2" size="md" mb={2}>{step.title}</Heading>
+              <Text fontWeight="700" mb={3}>{step.promise}</Text>
+              <Text color="text.muted">{step.detail}</Text>
+            </Box>
           </Box>
         ))}
       </SimpleGrid>

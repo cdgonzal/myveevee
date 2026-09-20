@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Heading, SimpleGrid, Stack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, useColorModeValue } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Heading, SimpleGrid, Stack, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
@@ -11,7 +11,7 @@ const PROVIDER_BENEFITS = [
 ];
 
 export default function Providers() {
-  const panelBg = useColorModeValue("white", "surface.800");
+  const panelBg = "bg.surface";
   const contact = () => trackCtaClick({ ctaName: "providers_contact", ctaText: "Discuss a Partnership",
     placement: "providers_bottom_cta", destinationType: "internal", destinationUrl: APP_LINKS.internal.contact,
     pagePath: APP_LINKS.internal.providers });

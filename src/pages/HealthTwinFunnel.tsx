@@ -744,7 +744,7 @@ function IconTile({
             flexShrink={0}
             boxShadow={isSelected ? "0 10px 18px rgba(54, 197, 255, 0.22)" : "none"}
           >
-            {isSelected ? <Text fontSize="xs" fontWeight="900" color="white">✓</Text> : null}
+            {isSelected ? <Text fontSize="xs" fontWeight="900" color="accent.on">✓</Text> : null}
           </Box>
         </HStack>
         <TileVisual visualType={visualType} isSelected={isSelected} imageSrc={imageSrc} imageAlt={`${title} preview`} />

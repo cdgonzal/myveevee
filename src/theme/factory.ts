@@ -1,7 +1,7 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 
 const config: ThemeConfig = {
-  initialColorMode: "light",
+  initialColorMode: "dark",
   useSystemColorMode: false,
 };
 
@@ -40,16 +40,19 @@ export function createTheme() {
     semanticTokens: {
       colors: {
         "bg.canvas": { default: "#FFFFFF", _dark: "surface.900" },
-        "bg.surface": { default: "#FFFFFF", _dark: "surface.800" },
-        "bg.elevated": { default: "#FFFFFF", _dark: "surface.800" },
+        "bg.surface": { default: "#FFFFFF", _dark: "brand.700" },
+        "bg.elevated": { default: "#FFFFFF", _dark: "brand.700" },
         "bg.glass": { default: "#FFFFFF", _dark: "surface.900" },
         "text.primary": { default: "#000000", _dark: "#FFFFFF" },
-        "text.muted": { default: "brand.900", _dark: "brand.100" },
+        "text.muted": { default: "brand.900", _dark: "brand.50" },
         "text.subtle": { default: "brand.400", _dark: "brand.50" },
-        "border.default": { default: "brand.50", _dark: "brand.900" },
-        "accent.primary": { default: "brand.700", _dark: "brand.500" },
+        "border.default": { default: "brand.50", _dark: "brand.700" },
+        "accent.primary": { default: "brand.700", _dark: "brand.50" },
         "accent.soft": { default: "brand.400", _dark: "accent.100" },
-        "accent.on": { default: "#FFFFFF", _dark: "#FFFFFF" },
+        "accent.on": { default: "#FFFFFF", _dark: "surface.900" },
+        "action.primary": { default: "brand.700", _dark: "#16734B" },
+        "action.hover": { default: "brand.400", _dark: "#16734B" },
+        "action.on": { default: "#FFFFFF", _dark: "#FFFFFF" },
         "state.success": { default: "status.success", _dark: "status.success" },
         "state.warning": { default: "status.warning", _dark: "status.warning" },
         "state.error": { default: "status.error", _dark: "status.error" },
@@ -61,6 +64,13 @@ export function createTheme() {
     },
     styles: {
       global: {
+        "@font-face": {
+          fontFamily: "Inter",
+          src: 'url("/fonts/InterVariable.ttf") format("truetype")',
+          fontStyle: "normal",
+          fontWeight: "100 900",
+          fontDisplay: "swap",
+        },
         "html, body, #root": { height: "100%" },
         body: {
           bg: "bg.canvas",
@@ -79,10 +89,10 @@ export function createTheme() {
         baseStyle: { borderRadius: "999px", fontWeight: 600 },
         variants: {
           solid: {
-            bg: "accent.primary",
-            color: "accent.on",
-            _hover: { bg: "accent.soft" },
-            _active: { bg: "accent.primary" },
+            bg: "action.primary",
+            color: "action.on",
+            _hover: { bg: "action.hover", boxShadow: "inset 0 0 0 2px currentColor" },
+            _active: { bg: "action.primary" },
             _focusVisible: {
               boxShadow: "0 0 0 3px var(--chakra-colors-brand-100)",
             },
@@ -91,7 +101,7 @@ export function createTheme() {
             border: "1px solid",
             borderColor: "accent.primary",
             color: "accent.soft",
-            _hover: { bg: "brand.50", _dark: { bg: "surface.700" } },
+            _hover: { bg: "brand.50", _dark: { bg: "brand.700" } },
           },
         },
         defaultProps: { variant: "solid" },

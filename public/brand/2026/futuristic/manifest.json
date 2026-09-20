@@ -1,0 +1,73 @@
+{
+  "theme": "health-twin-2026",
+  "sourceRepository": "vv-designs",
+  "encoding": "lossless WebP, original dimensions and complete canvases",
+  "assets": [
+    {
+      "id": "TH26-BG-01",
+      "source": "2026/branding/themes/health-twin-2026/assets/master-background.png",
+      "file": "luminous.webp",
+      "width": 2880,
+      "height": 1024,
+      "sourceSha256": "a617ad9a094be27deb4aa67bf30cefbd64507a1c87b8d8308e054c6815aa4a66",
+      "outputSha256": "9035fe0c281209c64892b19cc723ab0cb794fd7c514c2a43618459c09304a636",
+      "bytes": 1564176,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "TH26-BG-02",
+      "source": "2026/branding/themes/health-twin-2026/assets/master-with-shadow.png",
+      "file": "shadow.webp",
+      "width": 2880,
+      "height": 1024,
+      "sourceSha256": "3a77a045a8f1f0f5e235be8b478a4956dd804f6bdc7299a50c9ff9110df4189a",
+      "outputSha256": "e3b97367cb8b1202776942131fd12755f19915e8e14e277aca5f0dd510539ebc",
+      "bytes": 1100986,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "TH26-LOGO-01",
+      "source": "2026/branding/themes/health-twin-2026/assets/veevee-futuristic-logo-v1.png",
+      "file": "logo.webp",
+      "width": 1746,
+      "height": 1746,
+      "sourceSha256": "2c38f05c51150ef193eee45aebb4b2098b5982c08ca496ee033988dd05f3f9e8",
+      "outputSha256": "97bbcc416dbd98e8f20c2db26ab337424bd0b950c06be6151d3bcaefc48a809f",
+      "bytes": 453334,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-037",
+      "source": "2026/asset-library/futuristic/nia-v2/assets/pair-nia-futuristic-s1-v2.png",
+      "file": "nia-input.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "d3a671cb0e7d97be5fdc3be887d378099a47527a4f5955d12fa8b1b9237d569b",
+      "outputSha256": "4e9b4fff4a6beffbf6dc5b47a36f219c3601cd77e5bf0bfb6a7c464de463fb63",
+      "bytes": 651850,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-038",
+      "source": "2026/asset-library/futuristic/nia-v2/assets/single-avatar-nia-futuristic-s2-v2.png",
+      "file": "nia-simulation.webp",
+      "width": 1024,
+      "height": 1536,
+      "sourceSha256": "fda82108aa226ab9119a5946052614c719013eb348c2334e31efd316ed9a3ae3",
+      "outputSha256": "5b6f9c6e9172bec4d3bacb2d38c989e54b9cdb6535743b374c881d8ca02e85be",
+      "bytes": 752688,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-039",
+      "source": "2026/asset-library/futuristic/nia-v2/assets/single-avatar-nia-futuristic-s3-v2.png",
+      "file": "nia-results.webp",
+      "width": 1024,
+      "height": 1536,
+      "sourceSha256": "13f6943e8b151a622c6bd20a9abfc24f9a14bce43e8c5c73d7d7bfc68d7e57d0",
+      "outputSha256": "fb6efc35daa119275826db8cc2fc41c7e67437add7d93420a78ddab45d59aaf3",
+      "bytes": 725570,
+      "visiblePixelsPreserved": true
+    }
+  ]
+}

@@ -122,13 +122,13 @@ export default function SeoLandingPage({
 }: SeoLandingPageProps) {
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
-    "linear(to-b, surface.900, surface.800)"
+    "none"
   );
   const border = useColorModeValue("border.default", "border.default");
   const muted = useColorModeValue("text.muted", "text.muted");
-  const panelBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "rgba(6, 37, 76, 0.70)");
-  const cardBg = useColorModeValue("rgba(255, 255, 255, 0.88)", "rgba(6, 37, 76, 0.56)");
-  const accentSurface = useColorModeValue("rgba(17, 119, 186, 0.08)", "rgba(17, 119, 186, 0.16)");
+  const panelBg = useColorModeValue("rgba(255, 255, 255, 0.82)", "bg.surface");
+  const cardBg = useColorModeValue("rgba(255, 255, 255, 0.88)", "bg.surface");
+  const accentSurface = useColorModeValue("rgba(17, 119, 186, 0.08)", "bg.canvas");
 
   return (
     <Box

@@ -6,10 +6,10 @@ import { APP_LINKS } from "../config/links";
 export default function Contact() {
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
-    "linear(to-b, surface.900, surface.800)"
+    "none"
   );
   const border = useColorModeValue("border.default", "border.default");
-  const cardBg = useColorModeValue("rgba(255, 255, 255, 0.84)", "rgba(6, 37, 76, 0.70)");
+  const cardBg = useColorModeValue("rgba(255, 255, 255, 0.84)", "bg.surface");
   const muted = useColorModeValue("text.muted", "text.muted");
 
   return (
