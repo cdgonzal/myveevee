@@ -18,8 +18,8 @@ export default function Contact() {
       minH="100vh"
       bgGradient={pageGradient}
       color="text.primary"
-      py={{ base: 10, md: 20 }}
-      px={{ base: 6, md: 10 }}
+      py={{ base: 2, md: 20 }}
+      px={{ base: 0, md: 10 }}
     >
       <Stack maxW="5xl" mx="auto" spacing={{ base: 8, md: 10 }}>
         <Stack spacing={3}>
@@ -36,8 +36,8 @@ export default function Contact() {
         </Stack>
 
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-          <Card bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
-            <CardBody>
+          <Card p={{ base: 0, md: 6 }} bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
+            <CardBody p={{ base: 5, md: 6 }}>
               <Stack spacing={2}>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft">
                   Press
@@ -55,8 +55,8 @@ export default function Contact() {
             </CardBody>
           </Card>
 
-          <Card bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
-            <CardBody>
+          <Card p={{ base: 0, md: 6 }} bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
+            <CardBody p={{ base: 5, md: 6 }}>
               <Stack spacing={2}>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft">
                   Partnerships
@@ -74,8 +74,8 @@ export default function Contact() {
             </CardBody>
           </Card>
 
-          <Card bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
-            <CardBody>
+          <Card p={{ base: 0, md: 6 }} bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
+            <CardBody p={{ base: 5, md: 6 }}>
               <Stack spacing={2}>
                 <Text fontSize="xs" textTransform="uppercase" letterSpacing="0.16em" color="accent.soft">
                   Investors
@@ -94,8 +94,8 @@ export default function Contact() {
           </Card>
         </SimpleGrid>
 
-        <Card bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
-          <CardBody>
+        <Card p={{ base: 0, md: 6 }} bg={cardBg} borderWidth="1px" borderColor={border} borderRadius="2xl">
+          <CardBody p={{ base: 5, md: 6 }}>
             <Stack spacing={3}>
               <Heading as="h2" size="md">
                 What VeeVee covers

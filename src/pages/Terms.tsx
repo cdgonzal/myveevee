@@ -15,8 +15,8 @@ export default function Terms() {
       minH="100vh"
       bgGradient={pageGradient}
       color="text.primary"
-      py={{ base: 10, md: 20 }}
-      px={{ base: 6, md: 10 }}
+      py={{ base: 2, md: 20 }}
+      px={{ base: 0, md: 10 }}
     >
       <Box maxW="4xl" mx="auto">
         <Heading as="h1" size={{ base: "lg", md: "xl" }} fontWeight="800" mb={6}>

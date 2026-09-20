@@ -1,0 +1,61 @@
+{
+  "quality": 88,
+  "variants": [
+    {
+      "file": "nia-results-384.webp",
+      "source": "nia-results.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 576,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 44102
+    },
+    {
+      "file": "nia-results-768.webp",
+      "source": "nia-results.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 1152,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 130670
+    },
+    {
+      "file": "theo-results-384.webp",
+      "source": "theo-results.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 576,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 45842
+    },
+    {
+      "file": "theo-results-768.webp",
+      "source": "theo-results.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 1152,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 134532
+    },
+    {
+      "file": "future-office-mobile.webp",
+      "source": "future-office.webp",
+      "crop": {
+        "left": 647,
+        "top": 0,
+        "width": 648,
+        "height": 809
+      },
+      "format": "webp",
+      "width": 648,
+      "height": 809,
+      "channels": 3,
+      "premultiplied": false,
+      "size": 86386
+    }
+  ]
+}

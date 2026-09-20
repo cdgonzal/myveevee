@@ -1,6 +1,6 @@
 # Theme Plan: Dark + Light Mode Factory
 
-> Current implementation, 2026-09-20: see [Futuristic dark theme](FUTURISTIC_DARK_THEME.md). New visitors default to the Futuristic dark theme. Explicit saved light/dark preferences are preserved.
+> Current implementation, 2026-09-20: see [Futuristic dark theme](FUTURISTIC_DARK_THEME.md). The site always uses the Futuristic dark theme, including visitors with saved light preferences. Theme toggles have been removed. The plan below is historical and superseded by that implementation.
 
 ## Goal
 Define a reusable theme factory for VeeVee that supports:

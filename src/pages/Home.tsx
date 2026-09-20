@@ -20,22 +20,22 @@ export default function Home() {
   });
 
   const heroCopy = (
-  <Stack spacing={5} textAlign={isDark ? "center" : undefined} align={isDark ? "center" : undefined}>
-    <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
+  <Stack spacing={{ base: 4, md: 5 }} textAlign={isDark ? "center" : undefined} align={isDark ? "center" : undefined}>
+    <Text fontSize={{ base: "xs", md: "sm" }} letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
       Your health, connected
     </Text>
     <Heading as="h1" size={isDark ? { base: "2xl", md: "2xl", lg: "3xl" } : { base: "xl", md: "2xl" }} lineHeight="1.05"
       letterSpacing={isDark ? "-0.05em" : undefined}>
       Meet your digital <Box as="span" display={isDark ? "block" : "inline"} color="accent.primary">Health Twin</Box>
     </Heading>
-    <Text fontSize="lg" color={muted} maxW="lg">
+    <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.55" color={muted} maxW="lg">
       Bring your records, habits, and care into one place. Understand your health over time and feel more prepared for your next step.
     </Text>
     <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
       alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }} px={8} onClick={() => trackLearnMore("home_hero")}>
       See How It Works
     </Button>
-    <Text fontSize="sm" color={muted}>Get to know your Health Twin in 3 simple steps.</Text>
+    <Text fontSize="sm" color={muted}>Your Health Twin, in 3 simple steps.</Text>
   </Stack>
   );
 
@@ -72,13 +72,13 @@ export default function Home() {
           <Box as="section" backgroundImage={isDark ? `url("${CAMPAIGN_ART.shadow}")` : undefined}
             backgroundSize="cover" backgroundPosition="center" p={isDark ? { base: 5, md: 12 } : 0}>
             <Stack spacing={4} align="center" textAlign="center" maxW="2xl" mx="auto"
-              bg={isDark ? "bg.canvas" : undefined} p={isDark ? { base: 6, md: 10 } : 0}>
+              bg={isDark ? "bg.canvas" : undefined} p={isDark ? { base: 4, md: 10 } : 0}>
               <Heading as="h2" size="md">For everyday questions and the days between visits.</Heading>
               <Text color={muted}>
                 Whether you are keeping track of your own health or helping someone you love, start with a clearer view of what matters.
               </Text>
               <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
-                px={8} onClick={() => trackLearnMore("home_bottom")}>
+                px={{ base: 4, md: 8 }} w={{ base: "full", sm: "auto" }} onClick={() => trackLearnMore("home_bottom")}>
                 See How It Works
               </Button>
             </Stack>

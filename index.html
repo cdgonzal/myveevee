@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark" style="color-scheme:dark">
   <head>
     <!-- Basics -->
     <meta charset="UTF-8" />
@@ -9,6 +9,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#030725" />
+    <style>
+      html, body { margin: 0; background: #030725; color: #FFFFFF; }
+      [data-prerendered-route] a { color: #9CE7FF; }
+    </style>
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href="https://myveevee.com/" />
     <meta name="robots" content="index, follow" />
@@ -71,7 +75,7 @@
       gtag('config', 'G-1GWP2YT1CP', { send_page_view: false });
     </script>
   </head>
-  <body>
+  <body class="chakra-ui-dark">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -15,9 +15,7 @@ import {
   Image,
   Link as CLink,
   Stack,
-  Switch,
   Text,
-  useColorMode,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -330,6 +328,7 @@ function Header() {
               as={Link}
               to="/"
               spacing={2}
+              minH="44px"
               align="center"
               onClick={() =>
                 trackNavClick("header_logo", "VeeVee", APP_LINKS.internal.home, "internal", "header_brand")
@@ -365,12 +364,12 @@ function Header() {
                   </CLink>
                 ))}
               </HStack>
-              <ColorModeToggle display={{ base: "none", md: "inline-flex" }} withDivider />
 
               <Button
                 as="a"
                 href={APP_LINKS.external.authenticatedConsole}
                 size="sm"
+                minH="44px"
                 borderRadius="full"
                 fontWeight="700"
                 px={{ base: 4, md: 5 }}
@@ -384,6 +383,8 @@ function Header() {
 
               <IconButton
                 aria-label="Open navigation menu"
+                minW="44px"
+                minH="44px"
                 icon={<Box as="span" fontSize="12px" lineHeight="1">Menu</Box>}
                 variant="ghost"
                 color={menuButtonColor}
@@ -398,21 +399,20 @@ function Header() {
       <Drawer placement="right" onClose={handleDrawerClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent bg={drawerBg} color={navColor}>
-          <DrawerCloseButton mt={2} />
+          <DrawerCloseButton mt={1} minW="44px" minH="44px" />
           <DrawerHeader borderBottomWidth="1px" borderColor={borderColor}>
             Navigation
           </DrawerHeader>
           <DrawerBody>
             <Stack as="nav" aria-label="Mobile navigation" spacing={5} mt={4}>
               {PRIMARY_NAV_LINKS.map((item) => (
-                <CLink key={item.name} as={Link} to={item.to} fontWeight="700" fontSize="lg"
+                <CLink key={item.name} as={Link} to={item.to} fontWeight="700" fontSize="lg" display="flex" alignItems="center" minH="44px"
                   aria-current={pathname === item.to ? "page" : undefined}
                   onClick={() => {
                     trackNavClick(`drawer_${item.name}`, item.label, item.to, "internal", "mobile_drawer");
                     handleDrawerClose();
                   }}>{item.label}</CLink>
               ))}
-              <ColorModeToggle display="inline-flex" w="full" />
             </Stack>
           </DrawerBody>
         </DrawerContent>
@@ -429,9 +429,9 @@ function Footer() {
       <Container maxW="6xl" py={8}>
         <Stack spacing={5} align="center">
           {showCampaignLogo && <Image src={CAMPAIGN_ART.logo} alt="VeeVee" w="160px" h="160px" objectFit="contain" loading="lazy" />}
-          <Flex as="nav" aria-label="Footer navigation" gap={{ base: 4, md: 6 }} wrap="wrap" justify="center">
+          <Flex as="nav" aria-label="Footer navigation" columnGap={{ base: 4, md: 6 }} rowGap={1} wrap="wrap" justify="center">
             {FOOTER_LINKS.map((item) => (
-              <CLink key={item.name} as={Link} to={item.to} fontSize="sm" color="text.muted"
+              <CLink key={item.name} as={Link} to={item.to} fontSize="sm" color="text.muted" display="inline-flex" alignItems="center" minH="44px"
                 onClick={() => trackCtaClick({ ctaName: `footer_${item.name}`, ctaText: item.label,
                   placement: "footer", destinationType: "internal", destinationUrl: item.to })}>
                 {item.label}
@@ -442,55 +442,5 @@ function Footer() {
         </Stack>
       </Container>
     </Box>
-  );
-}
-
-function ColorModeToggle({
-  display,
-  w,
-  withDivider = false,
-}: {
-  display?: any;
-  w?: any;
-  withDivider?: boolean;
-}) {
-  const { colorMode, toggleColorMode } = useColorMode();
-  const label = colorMode === "dark" ? "Switch to light mode" : "Switch to dark mode";
-  const nextMode = colorMode === "dark" ? "light" : "dark";
-  const isDark = colorMode === "dark";
-
-  const onToggle = () => {
-    toggleColorMode();
-    trackEvent("theme_toggle", { mode: nextMode });
-  };
-
-  return (
-    <Flex
-      align="center"
-      gap={2}
-      display={display}
-      w={w}
-      justify={w ? "space-between" : "flex-start"}
-    >
-      {withDivider && (
-        <Box
-          h="28px"
-          w="1px"
-          bg="border.default"
-          opacity={0.9}
-          mr={1}
-        />
-      )}
-      <Text fontSize="xs" color="text.subtle" letterSpacing="0.04em">
-        Theme
-      </Text>
-      <Switch
-        isChecked={isDark}
-        onChange={onToggle}
-        colorScheme="blue"
-        aria-label={label}
-        title={label}
-      />
-    </Flex>
   );
 }

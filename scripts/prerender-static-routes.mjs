@@ -17,8 +17,8 @@ const ROUTES = [
     robots: "noindex, nofollow",
     image: "https://myveevee.com/og/home.svg",
     body: `
-      <main data-prerendered-route="/health-twin" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Health Twin Funnel</p>
+      <main data-prerendered-route="/health-twin" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Health Twin Funnel</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Create a Health Twin in four guided steps.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           This public funnel simulates what VeeVee does: bring in sample health data, evolve the twin with more context, review insights, and then continue to the real experience.
@@ -40,8 +40,8 @@ const ROUTES = [
     robots: "noindex, nofollow",
     image: "https://myveevee.com/og/home.svg",
     body: `
-      <main data-prerendered-route="/health-twin/create" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Create your free Health Twin</p>
+      <main data-prerendered-route="/health-twin/create" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Create your free Health Twin</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Create your digital twin.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           Turn your health signals into a personalized Health Twin inside VeeVee.
@@ -57,8 +57,8 @@ const ROUTES = [
     robots: "noindex, nofollow",
     image: "https://myveevee.com/og/simulator.svg",
     body: `
-      <main data-prerendered-route="/simulator" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Simulator</p>
+      <main data-prerendered-route="/simulator" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Simulator</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Try a health and coverage scenario with VeeVee Simulator.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           VeeVee Simulator gives people a quick preview of what may matter, what questions to ask, and what next steps may help based on a simple health and insurance scenario.
@@ -79,8 +79,8 @@ const ROUTES = [
     robots: "index, follow",
     image: "https://myveevee.com/og/features.svg",
     body: `
-      <main data-prerendered-route="/caregivers" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Caregiver support</p>
+      <main data-prerendered-route="/caregivers" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Caregiver support</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Caregiver support that keeps family, questions, and next steps in one place.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           VeeVee is positioned to help caregivers follow updates, understand benefits and coverage questions more clearly, and stay involved after appointments or during recovery without adding more confusion.
@@ -101,8 +101,8 @@ const ROUTES = [
     robots: "index, follow",
     image: "https://myveevee.com/og/simulator.svg",
     body: `
-      <main data-prerendered-route="/medicare-guidance" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Medicare guidance</p>
+      <main data-prerendered-route="/medicare-guidance" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Medicare guidance</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">A simpler way to understand Medicare-related next steps, questions, and coverage context.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           VeeVee is positioned for people who want a calmer way to understand what may matter after a visit, what questions to ask, and how benefits or coverage may shape the next step.
@@ -123,8 +123,8 @@ const ROUTES = [
     robots: "index, follow",
     image: "https://myveevee.com/og/technology.svg",
     body: `
-      <main data-prerendered-route="/hospital-to-home" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Hospital to home</p>
+      <main data-prerendered-route="/hospital-to-home" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Hospital to home</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Hospital-to-home support for discharge follow-up, family visibility, and connected care.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           VeeVee repeatedly positions its value around continuity after the visit. This page focuses that story for people searching around discharge follow-up, home recovery, and staying connected once someone leaves the hospital.
@@ -145,8 +145,8 @@ const ROUTES = [
     robots: "index, follow",
     image: "https://myveevee.com/og/contact.svg",
     body: `
-      <main data-prerendered-route="/contact" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Contact</p>
+      <main data-prerendered-route="/contact" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Contact</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Contact VeeVee for press, partnerships, and support.</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           Reach out if you are covering VeeVee, exploring a partnership, looking for investor information, or need help getting to the right team.
@@ -167,8 +167,8 @@ const ROUTES = [
     robots: "index, follow",
     image: "https://myveevee.com/og/terms.svg",
     body: `
-      <main data-prerendered-route="/terms" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">
-        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#1177BA;margin:0 0 12px;">Terms</p>
+      <main data-prerendered-route="/terms" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">
+        <p style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#9CE7FF;margin:0 0 12px;">Terms</p>
         <h1 style="font-size:42px;line-height:1.1;margin:0 0 16px;">Terms and Disclaimers</h1>
         <p style="font-size:18px;line-height:1.6;max-width:820px;margin:0 0 28px;">
           Review plain-English terms, disclaimers, privacy notes, and usage limits for people, hospitals, and care teams using VeeVee.
@@ -233,7 +233,7 @@ const coreBodies = {
 };
 ROUTES.push(...Object.entries(corePageMeta).map(([path, meta]) => ({
   path, ...meta, robots: "index, follow",
-  body: `<main data-prerendered-route="${path}" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#0b2341;">${coreBodies[path]}</main>`,
+  body: `<main data-prerendered-route="${path}" style="font-family:Inter,Arial,sans-serif;max-width:1040px;margin:0 auto;padding:48px 24px;color:#FFFFFF;">${coreBodies[path]}</main>`,
 })));
 
 // Preserve the legacy direct-link creation URL with the same noindex policy.

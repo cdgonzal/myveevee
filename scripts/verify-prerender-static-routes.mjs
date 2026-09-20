@@ -103,6 +103,10 @@ for (const route of ROUTES) {
   requireContains(html, `<meta name="robots" content="${route.robots ?? "index, follow"}" />`, `${route.path} robots`);
   requireContains(html, `<meta name="twitter:image" content="${route.image}" />`, `${route.path} twitter:image`);
   requireContains(html, `data-prerendered-route="${route.path}"`, `${route.path} prerender marker`);
+  requireContains(html, 'data-theme="dark"', `${route.path} initial dark appearance`);
+  requireContains(html, 'color-scheme:dark', `${route.path} browser color scheme`);
+  requireContains(html, 'color:#FFFFFF;', `${route.path} readable prerendered copy`);
+  if (html.includes("color:#0b2341")) throw new Error(`Light fallback text on ${route.path}`);
 }
 
 const sitemap = await readFile(path.join(DIST_DIR, "sitemap.xml"), "utf8");
