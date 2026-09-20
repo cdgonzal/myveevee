@@ -123,6 +123,28 @@
       "outputSha256": "bf18f9a90412f5eb01749d7e440e4d917b8acdb2ec3698be6aac50041d79dc71",
       "bytes": 1687568,
       "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-033",
+      "source": "2026/asset-library/futuristic/rosa-v1/assets/single-avatar-rosa-futuristic-s3-v1.png",
+      "file": "rosa-results.webp",
+      "width": 1024,
+      "height": 1536,
+      "sourceSha256": "568a3615c1f2f0ece8f1c36d53ddc5128475c7bf31370825f2b3751738e2829f",
+      "outputSha256": "aaf02c0c6e590c6c150fae57bda4ae023937de23c363eba27747956a97512802",
+      "bytes": 959536,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "TH26-ENV-02",
+      "source": "2026/ads/013-environment-backgrounds/futuristic-v1/assets/future-city-park-panorama-v1.png",
+      "file": "future-city-park.webp",
+      "width": 1942,
+      "height": 809,
+      "sourceSha256": "b21dc6cc5c7d8a8c942162d42d0257cf66fa9ae2b0d787e5f45fc0e70f796b09",
+      "outputSha256": "40e3a8c4d3ceb8b48a4dd1dac699b5da6f5ba92cb679baa10a32ec05deab60a1",
+      "bytes": 2183576,
+      "visiblePixelsPreserved": true
     }
   ]
 }

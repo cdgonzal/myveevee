@@ -18,7 +18,7 @@ export default function HowItWorks() {
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>
         {PATIENT_STEPS.map((step, index) => (
           <Box key={step.number} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl" overflow="hidden">
-            {isDark && <CampaignScene subject={(["input", "simulation", "results"] as const)[index]} treatment={index === 1 ? "home" : "shadow"} h="260px" />}
+            {isDark && <CampaignScene subject={(["input", "simulation", "results"] as const)[index]} treatment={(["shadow", "home", "park"] as const)[index]} h="260px" />}
             <Box p={6}>
               <Text mb={4} bg="accent.primary" color="accent.on" borderRadius="full" w={10} h={10}
                 display="flex" alignItems="center" justifyContent="center" fontWeight="800">{step.number}</Text>

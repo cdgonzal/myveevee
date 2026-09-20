@@ -82,6 +82,26 @@
       "size": 103088
     },
     {
+      "file": "rosa-results-384.webp",
+      "source": "rosa-results.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 576,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 54648
+    },
+    {
+      "file": "rosa-results-768.webp",
+      "source": "rosa-results.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 1152,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 165848
+    },
+    {
       "file": "future-office-mobile.webp",
       "source": "future-office.webp",
       "crop": {
@@ -112,6 +132,22 @@
       "channels": 3,
       "premultiplied": false,
       "size": 98774
+    },
+    {
+      "file": "future-city-park-results.webp",
+      "source": "future-city-park.webp",
+      "crop": {
+        "left": 1294,
+        "top": 0,
+        "width": 648,
+        "height": 809
+      },
+      "format": "webp",
+      "width": 648,
+      "height": 809,
+      "channels": 3,
+      "premultiplied": false,
+      "size": 145624
     }
   ]
 }

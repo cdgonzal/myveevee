@@ -9,4 +9,6 @@ export const CAMPAIGN_ART = {
   office: "/brand/2026/futuristic/future-office.webp",
   theo: "/brand/2026/futuristic/theo-results.webp",
   home: "/brand/2026/futuristic/future-home-living-room.webp",
+  rosa: "/brand/2026/futuristic/rosa-results.webp",
+  park: "/brand/2026/futuristic/future-city-park-results.webp",
 } as const;

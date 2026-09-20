@@ -17,7 +17,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is always 
 | Primary actions | Green #16734B with white labels |
 | Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
 | Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
-| How It Works | AV-045 on Shadow / AV-040 seated in Future Home / AV-039 on Shadow, Input / Simulate / Results |
+| How It Works | AV-045 on Shadow / AV-040 seated in Future Home / AV-033 walking in Future City Park, Input / Simulate / Results |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
 | Typography | Locally hosted Inter Variable, weights 100–900, font-display swap |
 
@@ -29,7 +29,7 @@ The public provider, contact, terms and audience landing pages share the revised
 
 Source repository: `C:/w/vv-designs`. Design references: `CODEX.md`, `2026/branding/campaign-palette.css`, `2026/branding/themes/health-twin-2026/README.md` and `2026/asset-library/avatar-casting.json`.
 
-`node scripts/import-futuristic-theme.mjs [source-root]` imports eleven specific assets without changing the design library. The checked-in manifest at `public/brand/2026/futuristic/manifest.json` records IDs, paths, dimensions, SHA-256 hashes and sizes. Lossless WebP encoding preserves every visible source pixel, all alpha values and full source dimensions; the importer verifies these against decoded originals. The masters have no resizing, cropped subjects, recoloring or added glow. Responsive delivery copies are documented below. The font and its license are copied from the library's guide-v1 fonts directory.
+`node scripts/import-futuristic-theme.mjs [source-root]` imports thirteen specific assets without changing the design library. The checked-in manifest at `public/brand/2026/futuristic/manifest.json` records IDs, paths, dimensions, SHA-256 hashes and sizes. Lossless WebP encoding preserves every visible source pixel, all alpha values and full source dimensions; the importer verifies these against decoded originals. The masters have no resizing, cropped subjects, recoloring or added glow. Responsive delivery copies are documented below. The font and its license are copied from the library's guide-v1 fonts directory.
 
 Backgrounds use centered cover crops. The office hero reaches both browser edges immediately below the header; on phones its background is anchored to the lower avatar region at a readable scene scale. Nia and Theo use separate complete digital-only sources, aligned to the floor with contain and padding. The copy sits over a midnight radial backdrop with feathered edges that blend into the office. The dark center keeps copy readable; both avatars sit above the backdrop so it never dims their figures. How It Works retains 6% stage padding and its complete Input pair. No UI or text covers a person. The avatar illustrations are conceptual artwork, not product screenshots or clinical evidence.
 
@@ -37,8 +37,8 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 
 | Required field | Homepage | How It Works |
 | --- | --- | --- |
-| Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-045 Theo discomfort/concern pair, AV-040 Nia seated Thinker with its stool, AV-039 Nia roadmap single |
-| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-BG-02 for Input/Results; TH26-ENV-04 living-room crop for Simulate |
+| Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-045 Theo discomfort/concern pair, AV-040 Nia seated Thinker with its stool, AV-033 Rosa walking roadmap single with bottle bag |
+| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-BG-02 for Input; TH26-ENV-04 living-room crop for Simulate; TH26-ENV-02 promenade crop for Results |
 | Mirror | None | None |
 | Text | Existing Home.tsx copy and HEALTH_TWIN_BENEFITS retained; added 01, 02, 03 markers | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
@@ -50,7 +50,7 @@ Typecheck, production build, 15 tests (including saved light/system preferences,
 
 Measured text contrast: white/midnight 19.79:1; cyan/midnight 14.41:1; white/indigo 12.73:1; cyan/indigo 9.26:1; white/green actions 5.85:1. These apply to the opaque content surfaces, not arbitrary background artwork pixels. Default and hover actions retain readable labels.
 
-Browser review covers desktop and phone consumer layouts, complete image loading, horizontal overflow, navigation and FAQ interaction, always-dark appearance, and reloads. Mobile checks cover 320, 390 and 430 CSS-pixel widths, plus tablet and desktop breakpoints. No animations added. The original theme masters remain available. Eleven full-resolution lossless master assets are retained; only artwork used by the current page is requested. The office hero's two digital avatars have high priority, while How It Works subject images and the footer mark load lazily.
+Browser review covers desktop and phone consumer layouts, complete image loading, horizontal overflow, navigation and FAQ interaction, always-dark appearance, and reloads. Mobile checks cover 320, 390 and 430 CSS-pixel widths, plus tablet and desktop breakpoints. No animations added. The original theme masters remain available. Thirteen full-resolution lossless master assets are retained; only artwork used by the current page is requested. The office hero's two digital avatars have high priority, while How It Works subject images and the footer mark load lazily.
 
 ## Mobile refinement, 2026-09-20
 
@@ -64,8 +64,12 @@ The desktop copy panel has been replaced by a CSS radial backdrop: an opaque mid
 
 ## How It Works Input pair
 
-The first image now uses AV-045 / S1-Theo-future-v2: the complete human Theo bends forward with hands bracing his knees in discomfort, while his concerned digital twin reaches out to help. It replaces the AV-037 wellness pair for this pain-specific Input story. Nia remains in the exploration and results images; the steps represent people using the product, not one person changing identity. Original source: `2026/asset-library/futuristic/theo-v2/assets/pair-theo-futuristic-s1-v2.png`. The importer verifies lossless visible-pixel preservation; 384/768px delivery copies keep phone downloads small. Contain sizing and stage padding preserve both complete figures. The accessible description reflects the new pose. No embedded text or logos; page copy, shared header/footer branding, background and other two images retain their existing composition.
+The first image now uses AV-045 / S1-Theo-future-v2: the complete human Theo bends forward with hands bracing his knees in discomfort, while his concerned digital twin reaches out to help. It replaces the AV-037 wellness pair for this pain-specific Input story. Nia appears in exploration and Rosa in results; the steps represent people using the product, not one person changing identity. Original source: `2026/asset-library/futuristic/theo-v2/assets/pair-theo-futuristic-s1-v2.png`. The importer verifies lossless visible-pixel preservation; 384/768px delivery copies keep phone downloads small. Contain sizing and stage padding preserve both complete figures. The accessible description reflects the new pose. No embedded text or logos; page copy, shared header/footer branding, background and other two images retain their existing composition.
 
 ## Seated Nia in Future Home
 
 The second How It Works image uses AV-040 / S2-Nia-future-thinker-v1 over TH26-ENV-04 Future Home. Both source masters are preserved and imported losslessly. The background delivery crop is the first carousel window, rounded to x0/y0/648x809, retaining the sofa and window so the scene reads as a home. Nia is a separate transparent image, fitted with contain, positioned toward the right and floor, and given the existing 6% stage padding. Her full canvas, embedded faceted stool, hands and shoes remain visible. No new raster effects, embedded copy, logos or UI are added. Scene 2 copy and shared header/footer logo placements remain as recorded in the composition table. Responsive 384/768px avatar files and the optimized living-room crop serve the card without requiring full-size masters.
+
+## Rosa on the City Park promenade
+
+The Results image uses AV-033 / S3-Rosa-future-v1, walking right with an open palm presenting next steps. Her signature glasses and crossbody water-bottle purse stay visible as part of the original asset. This pose fits the Results narrative without adding a literal roadmap interface or implying a guaranteed health outcome. The background is TH26-ENV-02 Future City Park, using the third carousel window from the supplied continuity proof (rounded to x1294/y0/648x809). Full source masters are retained; responsive 384/768px Rosa images and an optimized background crop are delivery copies. Contain sizing, 6% padding and bottom-aligned scenery preserve her full silhouette and place her feet on the promenade. No embedded copy or logos were added. Existing Results copy and shared header/footer branding remain unchanged. The homepage continues to use Nia and Theo.
