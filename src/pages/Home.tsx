@@ -29,7 +29,7 @@ export default function Home() {
       Meet your digital <Box as="span" display={isDark ? "block" : "inline"} color="accent.primary">Health Twin</Box>
     </Heading>
     <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.55" color={muted} maxW="lg">
-      Bring your records, habits, and care into one place. Understand your health over time and feel more prepared for your next step.
+      Your twin. Your simulation. <Box as="strong" color="accent.soft" whiteSpace="nowrap">All free.</Box>
     </Text>
     <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
       alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }} px={8} onClick={() => trackLearnMore("home_hero")}>
@@ -57,7 +57,7 @@ export default function Home() {
       <Container maxW="6xl" px={isDark ? 4 : 0} py={isDark ? { base: 10, md: 16 } : 0}>
         <Stack spacing={{ base: 10, md: 16 }}>
           <Stack as="section" aria-labelledby="benefits-heading" spacing={6}>
-            <Heading id="benefits-heading" as="h2" size="lg">A clearer picture. A more useful next step.</Heading>
+            <Heading id="benefits-heading" as="h2" size="lg">Your twin. Real possibilities.</Heading>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}>
               {HEALTH_TWIN_BENEFITS.map((benefit, index) => (
                 <Box key={benefit.title} p={6} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl">

@@ -187,12 +187,12 @@ const coreBodies = {
   "/": `
     <p>Your health, connected</p>
     <h1>Meet your digital Health Twin</h1>
-    <p>Bring your records, habits, and care into one place. Understand your health over time and feel more prepared for your next step.</p>
+    <p>Your twin. Your simulation. <strong>All free.</strong></p>
     <p><a href="/how-it-works">See How It Works</a></p>
-    <h2>A clearer picture. A more useful next step.</h2>
-    <h3>Keep your health story together</h3><p>Your records, daily habits, and care context form a more connected picture of you.</p>
-    <h3>Understand what changes</h3><p>Follow patterns over time and turn scattered information into questions you can discuss with your care team.</p>
-    <h3>Feel prepared for what comes next</h3><p>Get plain-language guidance to help you organize questions, follow up after visits, and support someone you care for.</p>
+    <h2>Your twin. Real possibilities.</h2>
+    <h3>Personalized guidance and practical tips</h3><p>Turn your goals into everyday actions with guidance tailored to you.</p>
+    <h3>Recommended products and services</h3><p>Explore relevant options to support your goals and your next step.</p>
+    <h3>Available coupons and discounts</h3><p>Find available offers on products and services that fit your needs.</p>
     <h2>For everyday questions and the days between visits.</h2>
     <p>Whether you are keeping track of your own health or helping someone you love, start with a clearer view of what matters.</p>
   `,

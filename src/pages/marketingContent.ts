@@ -20,9 +20,9 @@ export const HOSPITAL_VALUE_ROWS = [
 ] as const;
 
 export const HEALTH_TWIN_BENEFITS = [
-  { title: "Keep your health story together", detail: "Your records, daily habits, and care context form a more connected picture of you." },
-  { title: "Understand what changes", detail: "Follow patterns over time and turn scattered information into questions you can discuss with your care team." },
-  { title: "Feel prepared for what comes next", detail: "Get plain-language guidance to help you organize questions, follow up after visits, and support someone you care for." },
+  { title: "Personalized guidance and practical tips", detail: "Turn your goals into everyday actions with guidance tailored to you." },
+  { title: "Recommended products and services", detail: "Explore relevant options to support your goals and your next step." },
+  { title: "Available coupons and discounts", detail: "Find available offers on products and services that fit your needs." },
 ] as const;
 
 export const PATIENT_STEPS = [

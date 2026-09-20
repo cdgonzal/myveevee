@@ -40,7 +40,7 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 | Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-045 Theo discomfort/concern pair, AV-040 Nia seated Thinker with its stool, AV-033 Rosa walking roadmap single with bottle bag |
 | Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-ENV-02 first park crop for Input; TH26-ENV-04 open central area for Simulate; TH26-ENV-02 third park crop for Results |
 | Mirror | None | None |
-| Text | Existing Home.tsx copy and HEALTH_TWIN_BENEFITS retained; added 01, 02, 03 markers | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
+| Text | Hero: “Your twin. Your simulation. All free.” with emphasized free offering. Benefits: “Your twin. Real possibilities.” plus the supplied campaign poster's guidance, recommendations, and offers language; retained 01, 02, 03 markers. | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
 | Duplicate words | Existing repeated “See How It Works” CTA and header/footer navigation are intentional | Existing repeated step labels in the explanatory example and header/footer navigation are intentional |
 
