@@ -68,6 +68,28 @@
       "outputSha256": "fb6efc35daa119275826db8cc2fc41c7e67437add7d93420a78ddab45d59aaf3",
       "bytes": 725570,
       "visiblePixelsPreserved": true
+    },
+    {
+      "id": "TH26-ENV-03",
+      "source": "2026/ads/013-environment-backgrounds/futuristic-v1/assets/future-office-panorama-v1.png",
+      "file": "future-office.webp",
+      "width": 1942,
+      "height": 809,
+      "sourceSha256": "85155b0fa940dd0c47f8eac21e6b2cbac29f63d4440659bc839a75c5fdcc6f9b",
+      "outputSha256": "7bd9c05b7e2cc19728366be543c8fd0410e73919596ee00da50cde9dc5f1c455",
+      "bytes": 1869730,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-047",
+      "source": "2026/asset-library/futuristic/theo-v2/assets/single-avatar-theo-futuristic-s3-v2.png",
+      "file": "theo-results.webp",
+      "width": 1024,
+      "height": 1536,
+      "sourceSha256": "05164f5f3be4d8ce45c30696c571c689f38c471bec234c71c197f32aa5a55226",
+      "outputSha256": "31c74c0ee189bb0bfb1abd79d2b64b7e089044b37f710a8173bdd84095b0272c",
+      "bytes": 758404,
+      "visiblePixelsPreserved": true
     }
   ]
 }

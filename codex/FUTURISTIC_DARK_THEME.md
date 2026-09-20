@@ -15,7 +15,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is the def
 | Primary text | White #FFFFFF |
 | Supporting text, links, heading emphasis | Cyan #9CE7FF |
 | Primary actions | Green #16734B with white labels |
-| Hero artwork | TH26-BG-01 Luminous + AV-037 Nia v2 pair |
+| Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
 | Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
 | How It Works | TH26-BG-02 + AV-037 / AV-038 / AV-039, Input / Simulate / Results |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
@@ -29,16 +29,16 @@ The public provider, contact, terms and audience landing pages share the revised
 
 Source repository: `C:/w/vv-designs`. Design references: `CODEX.md`, `2026/branding/campaign-palette.css`, `2026/branding/themes/health-twin-2026/README.md` and `2026/asset-library/avatar-casting.json`.
 
-`node scripts/import-futuristic-theme.mjs [source-root]` imports six specific assets without changing the design library. The checked-in manifest at `public/brand/2026/futuristic/manifest.json` records IDs, paths, dimensions, SHA-256 hashes and sizes. Lossless WebP encoding preserves every visible source pixel, all alpha values and full source dimensions; the importer verifies these against decoded originals. No resizing, cropped subjects, recoloring or added glow. The font and its license are copied from the library's guide-v1 fonts directory.
+`node scripts/import-futuristic-theme.mjs [source-root]` imports eight specific assets without changing the design library. The checked-in manifest at `public/brand/2026/futuristic/manifest.json` records IDs, paths, dimensions, SHA-256 hashes and sizes. Lossless WebP encoding preserves every visible source pixel, all alpha values and full source dimensions; the importer verifies these against decoded originals. No resizing, cropped subjects, recoloring or added glow. The font and its license are copied from the library's guide-v1 fonts directory.
 
-Backgrounds use centered cover crops. Foreground figures use contain with 6% stage padding and separate copy regions. No UI or text covers a person; both members of the Input pair remain complete. The avatar illustrations are conceptual artwork, not product screenshots or clinical evidence.
+Backgrounds use centered cover crops. The office hero reaches both browser edges immediately below the header; on phones its background is anchored to the lower avatar region at a readable scene scale. Nia and Theo use separate complete digital-only sources, aligned to the floor with contain and padding. The copy has its own opaque midnight surface. How It Works retains 6% stage padding and its complete Input pair. No UI or text covers a person. The avatar illustrations are conceptual artwork, not product screenshots or clinical evidence.
 
 ## Composition record
 
 | Required field | Homepage | How It Works |
 | --- | --- | --- |
-| Avatar | Complete AV-037 Nia v2 human/twin pair | AV-037 pair, AV-038 exploration single, AV-039 roadmap single |
-| Scene | TH26-BG-01 hero; TH26-BG-02 closing invitation | TH26-BG-02 behind each complete subject |
+| Avatar | Separate complete AV-039 Nia v2 and AV-047 Theo v2 digital singles | AV-037 pair, AV-038 exploration single, AV-039 roadmap single |
+| Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-BG-02 behind each complete subject |
 | Mirror | None | None |
 | Text | Existing Home.tsx copy and HEALTH_TWIN_BENEFITS retained; added 01, 02, 03 markers | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
@@ -50,4 +50,4 @@ Typecheck, production build, 11 existing tests and the prerender verifier (12 ro
 
 Measured text contrast: white/midnight 19.79:1; cyan/midnight 14.41:1; white/indigo 12.73:1; cyan/indigo 9.26:1; white/green actions 5.85:1. These apply to the opaque content surfaces, not arbitrary background artwork pixels. Default and hover actions retain readable labels.
 
-Browser review covers desktop and phone consumer layouts, complete image loading, horizontal overflow, navigation, dark/light switching and persistence on reload. No animations added. Six full-resolution lossless images total approximately 5 MiB; lazy subject images and the footer mark defer loading, while the hero pair has high priority. The two original background masters retain their full resolution for fidelity.
+Browser review covers desktop and phone consumer layouts, complete image loading, horizontal overflow, navigation, dark/light switching and persistence on reload. No animations added. The original theme masters remain available. Eight full-resolution lossless assets total approximately 7.5 MiB; only artwork used by the current page is requested. The office hero's two digital avatars have high priority, while How It Works subject images and the footer mark load lazily.

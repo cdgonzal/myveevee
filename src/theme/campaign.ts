@@ -6,4 +6,6 @@ export const CAMPAIGN_ART = {
   input: "/brand/2026/futuristic/nia-input.webp",
   simulation: "/brand/2026/futuristic/nia-simulation.webp",
   results: "/brand/2026/futuristic/nia-results.webp",
+  office: "/brand/2026/futuristic/future-office.webp",
+  theo: "/brand/2026/futuristic/theo-results.webp",
 } as const;

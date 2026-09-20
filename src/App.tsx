@@ -173,6 +173,7 @@ function PageFallback() {
 
 export default function App() {
   const { pathname } = useLocation();
+  const isFullWidthHome = useColorModeValue(false, pathname === APP_LINKS.internal.home);
   const isStandalonePage =
     pathname === APP_LINKS.internal.create ||
     pathname === APP_LINKS.internal.healthTwin ||
@@ -229,7 +230,8 @@ export default function App() {
             </Suspense>
           </>
         ) : (
-          <Container maxW="6xl" py={{ base: 8, md: 12 }}>
+          <Container maxW={isFullWidthHome ? "none" : "6xl"} px={isFullWidthHome ? 0 : undefined}
+            py={isFullWidthHome ? 0 : { base: 8, md: 12 }}>
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path={APP_LINKS.internal.home} element={<Home />} />
