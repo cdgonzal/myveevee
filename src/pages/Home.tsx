@@ -20,7 +20,7 @@ export default function Home() {
   });
 
   const heroCopy = (
-  <Stack spacing={{ base: 4, md: 5 }} textAlign={isDark ? "center" : undefined} align={isDark ? "center" : undefined}>
+  <Stack spacing={{ base: 4, md: 5, lg: 6 }} textAlign={isDark ? "center" : undefined} align={isDark ? "center" : undefined}>
     <Text fontSize={{ base: "xs", md: "sm" }} letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
       Your health, connected
     </Text>
