@@ -101,6 +101,28 @@
       "outputSha256": "b097f32fd8ec76375aca8a0078c61b64b732b3e34594aa3f34855c1f916c7c08",
       "bytes": 730512,
       "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-040",
+      "source": "2026/asset-library/futuristic/nia-thinking-v1/assets/single-avatar-nia-futuristic-thinker-v1.png",
+      "file": "nia-seated.webp",
+      "width": 1254,
+      "height": 1254,
+      "sourceSha256": "45c004139bea5dc1bc18e15beab037a2828aab98c80f74395073505c19411322",
+      "outputSha256": "b2004ce6b11c09009792eef6ef2f99f333f5bc20472dd29fff68f290e3478e27",
+      "bytes": 846578,
+      "visiblePixelsPreserved": true
+    },
+    {
+      "id": "TH26-ENV-04",
+      "source": "2026/ads/013-environment-backgrounds/futuristic-v1/assets/future-home-panorama-v1.png",
+      "file": "future-home.webp",
+      "width": 1942,
+      "height": 809,
+      "sourceSha256": "5fb10bef72b0b3d4ffa7adf8c9e8c82102b4a9216f18cd65ffc2fd9cbd2caf4a",
+      "outputSha256": "bf18f9a90412f5eb01749d7e440e4d917b8acdb2ec3698be6aac50041d79dc71",
+      "bytes": 1687568,
+      "visiblePixelsPreserved": true
     }
   ]
 }

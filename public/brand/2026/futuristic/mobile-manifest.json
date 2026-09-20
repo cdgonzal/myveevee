@@ -62,6 +62,26 @@
       "size": 69316
     },
     {
+      "file": "nia-seated-384.webp",
+      "source": "nia-seated.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 384,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 33732
+    },
+    {
+      "file": "nia-seated-768.webp",
+      "source": "nia-seated.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 768,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 103088
+    },
+    {
       "file": "future-office-mobile.webp",
       "source": "future-office.webp",
       "crop": {
@@ -76,6 +96,22 @@
       "channels": 3,
       "premultiplied": false,
       "size": 86386
+    },
+    {
+      "file": "future-home-living-room.webp",
+      "source": "future-home.webp",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 648,
+        "height": 809
+      },
+      "format": "webp",
+      "width": 648,
+      "height": 809,
+      "channels": 3,
+      "premultiplied": false,
+      "size": 98774
     }
   ]
 }

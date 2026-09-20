@@ -18,6 +18,8 @@ const sources = [
   ["TH26-ENV-03", "2026/ads/013-environment-backgrounds/futuristic-v1/assets/future-office-panorama-v1.png", "future-office.webp"],
   ["AV-047", "2026/asset-library/futuristic/theo-v2/assets/single-avatar-theo-futuristic-s3-v2.png", "theo-results.webp"],
   ["AV-045", "2026/asset-library/futuristic/theo-v2/assets/pair-theo-futuristic-s1-v2.png", "theo-input.webp"],
+  ["AV-040", "2026/asset-library/futuristic/nia-thinking-v1/assets/single-avatar-nia-futuristic-thinker-v1.png", "nia-seated.webp"],
+  ["TH26-ENV-04", "2026/ads/013-environment-backgrounds/futuristic-v1/assets/future-home-panorama-v1.png", "future-home.webp"],
 ];
 const hash = (buffer) => createHash("sha256").update(buffer).digest("hex");
 await mkdir(target, { recursive: true });
