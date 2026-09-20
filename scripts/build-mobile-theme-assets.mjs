@@ -5,7 +5,7 @@ import { writeFile } from "node:fs/promises";
 const root = new URL("../public/brand/2026/futuristic/", import.meta.url);
 const variants = [];
 // Delivery copies only: the approved full-resolution masters remain unchanged.
-for (const name of ["nia-results", "theo-results"]) {
+for (const name of ["nia-results", "theo-results", "theo-input"]) {
   for (const width of [384, 768]) {
     const file = `${name}-${width}.webp`;
     const info = await sharp(fileURLToPath(new URL(`${name}.webp`, root)))

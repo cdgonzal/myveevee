@@ -90,6 +90,17 @@
       "outputSha256": "31c74c0ee189bb0bfb1abd79d2b64b7e089044b37f710a8173bdd84095b0272c",
       "bytes": 758404,
       "visiblePixelsPreserved": true
+    },
+    {
+      "id": "AV-045",
+      "source": "2026/asset-library/futuristic/theo-v2/assets/pair-theo-futuristic-s1-v2.png",
+      "file": "theo-input.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "327cda0820555c48a7456b70123c516e36d6d612ee5cdb1b5e8bf5200a3beb42",
+      "outputSha256": "b097f32fd8ec76375aca8a0078c61b64b732b3e34594aa3f34855c1f916c7c08",
+      "bytes": 730512,
+      "visiblePixelsPreserved": true
     }
   ]
 }

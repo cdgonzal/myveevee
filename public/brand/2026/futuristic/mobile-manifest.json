@@ -42,6 +42,26 @@
       "size": 134532
     },
     {
+      "file": "theo-input-384.webp",
+      "source": "theo-input.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 256,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 24328
+    },
+    {
+      "file": "theo-input-768.webp",
+      "source": "theo-input.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 512,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 69316
+    },
+    {
       "file": "future-office-mobile.webp",
       "source": "future-office.webp",
       "crop": {
