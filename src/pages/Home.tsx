@@ -20,7 +20,7 @@ export default function Home() {
   });
 
   const heroCopy = (
-  <Stack spacing={5}>
+  <Stack spacing={5} textAlign={isDark ? "center" : undefined} align={isDark ? "center" : undefined}>
     <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">
       Your health, connected
     </Text>
@@ -32,7 +32,7 @@ export default function Home() {
       Bring your records, habits, and care into one place. Understand your health over time and feel more prepared for your next step.
     </Text>
     <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
-      alignSelf={{ base: "stretch", sm: "flex-start" }} px={8} onClick={() => trackLearnMore("home_hero")}>
+      alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }} px={8} onClick={() => trackLearnMore("home_hero")}>
       See How It Works
     </Button>
     <Text fontSize="sm" color={muted}>Get to know your Health Twin in 3 simple steps.</Text>

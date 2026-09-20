@@ -37,7 +37,7 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 
 | Required field | Homepage | How It Works |
 | --- | --- | --- |
-| Avatar | Separate complete AV-039 Nia v2 and AV-047 Theo v2 digital singles | AV-037 pair, AV-038 exploration single, AV-039 roadmap single |
+| Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-037 pair, AV-038 exploration single, AV-039 roadmap single |
 | Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-BG-02 behind each complete subject |
 | Mirror | None | None |
 | Text | Existing Home.tsx copy and HEALTH_TWIN_BENEFITS retained; added 01, 02, 03 markers | Existing PATIENT_STEPS, MOBILITY_EXAMPLE_STEPS, FAQs retained |
