@@ -17,7 +17,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is always 
 | Primary actions | Green #16734B with white labels |
 | Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
 | Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
-| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home imagining a new Vitruvian Nia inside a thought cloud / AV-033 walking in Future City Park, Input / Simulate / Results |
+| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home imagining a new Vitruvian Nia inside a thought cloud / AV-033 walking in Future City Park with a small three-milestone roadmap beside her open hand, Input / Simulate / Results |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
 | Typography | Locally hosted Inter Variable, weights 100–900, font-display swap |
 
@@ -36,6 +36,8 @@ The revised simulation composition replaces the miniature Theo with a newly gene
 Backgrounds use centered cover crops. The office hero reaches both browser edges immediately below the header; on phones its background is anchored to the lower avatar region at a readable scene scale. Nia and Theo use separate complete digital-only sources, aligned to the floor with contain and padding. The copy sits over a midnight radial backdrop with feathered edges that blend into the office. The dark center keeps copy readable; both avatars sit above the backdrop so it never dims their figures. How It Works retains 6% stage padding and its complete Input pair. No UI or text covers a person. The avatar illustrations are conceptual artwork, not product screenshots or clinical evidence.
 
 ## Composition record
+
+Results adds a small code-native SVG roadmap above and beside Rosa's open hand: three cyan milestones linked by a short rising path, ending in a checkmark. It uses midnight backing strokes for contrast, no text or panel, and stays separate from the complete avatar and unchanged park. The combined image description includes the roadmap; the decorative SVG is hidden from assistive technology.
 
 | Required field | Homepage | How It Works |
 | --- | --- | --- |

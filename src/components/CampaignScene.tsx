@@ -10,7 +10,7 @@ type CampaignSceneProps = BoxProps & {
 const descriptions = {
   input: "Theo braces his knees in discomfort in a futuristic city park while his concerned digital Health Twin reaches out to help",
   simulation: "Nia’s digital Health Twin seated in a futuristic living room, imagining a Vitruvian simulation of herself inside a thought cloud connected to her head by small dots",
-  results: "Rosa’s digital Health Twin walking through a futuristic city park with her water-bottle bag, extending an open hand toward the next step",
+  results: "Rosa’s digital Health Twin walking through a futuristic city park with her water-bottle bag, presenting a small three-milestone roadmap ending in a checkmark beside her open hand",
 };
 
 const dimensions = { input: [1536, 1024], simulation: [1254, 1254], results: [1024, 1536] } as const;
@@ -38,6 +38,22 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
             sizes="(min-width: 1280px) 120px, (min-width: 768px) 11vw, 32vw"
             width={1254} height={1254} w="80%" h="80%" objectFit="contain"
             position="absolute" left="10%" top="10%" loading={priority ? "eager" : "lazy"} decoding="async" />
+        </Box>
+      )}
+      {subject === "results" && (
+        <Box as="svg" viewBox="0 0 88 54" position="absolute" right="5%" top="8%" w="25%" maxW="84px"
+          color="accent.soft" pointerEvents="none" aria-hidden="true" focusable="false">
+          <path d="M 12 42 C 24 42 23 28 39 28 S 53 14 72 14" fill="none"
+            stroke="var(--chakra-colors-bg-canvas)" strokeWidth="6" strokeLinecap="round" />
+          <path d="M 12 42 C 24 42 23 28 39 28 S 53 14 72 14" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <g fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="42" r="4" />
+            <circle cx="39" cy="28" r="4" />
+            <circle cx="72" cy="14" r="10" />
+          </g>
+          <path d="m 67 14 3 3 6 -6" fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round" />
         </Box>
       )}
       <Image ignoreFallback src={src} alt={descriptions[subject]}
