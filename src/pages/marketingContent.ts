@@ -34,7 +34,7 @@ export const PATIENT_STEPS = [
 export const PATIENT_STORY_STEPS = [
   { number: "1", title: "Input", detail: "Added his records and a movement video." },
   { number: "2", title: "Simulate", detail: "Compared options with his digital twin." },
-  { number: "3", title: "Results", detail: "Shared the results with his care team." },
+  { number: "3", title: "Results", detail: "Found solutions and a roadmap to discuss with his wellness team." },
 ] as const;
 
 export const HEALTH_TWIN_FAQS = [

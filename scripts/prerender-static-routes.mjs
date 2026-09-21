@@ -213,7 +213,7 @@ const coreBodies = {
       <ol>
         <li><h3>Input</h3><p>Added his records and a movement video.</p></li>
         <li><h3>Simulate</h3><p>Compared options with his digital twin.</p></li>
-        <li><h3>Results</h3><p>Shared the results with his care team.</p></li>
+        <li><h3>Results</h3><p>Found solutions and a roadmap to discuss with his wellness team.</p></li>
       </ol>
       <p><a href="https://veevee.io">Start free</a></p>
     </section>
