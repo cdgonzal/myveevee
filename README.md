@@ -17,6 +17,8 @@ Public-facing marketing site for `myveevee.com`.
 - `/how-it-works`
 - `/providers`
 - `/contact`
+  - `/contact?topic=providers` opens the provider inquiry form, which sends to `info@veevee.io`
+  - implementation, deployment, and delivery checks: [Provider inquiries](aws/provider-inquiry/README.md)
 - `/terms`
 - `/caregivers`
 - `/medicare-guidance`

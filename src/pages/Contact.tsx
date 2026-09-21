@@ -1,9 +1,11 @@
 import { Box, Button, Heading, Text, Link as CLink, Card, CardBody, SimpleGrid, Stack, useColorModeValue } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
+import { ProviderInquiryForm } from "../components/ProviderInquiryForm";
 
 export default function Contact() {
+  const [searchParams] = useSearchParams();
   const pageGradient = useColorModeValue(
     "linear(to-b, #FFFFFF, #9CE7FF)",
     "none"
@@ -11,6 +13,17 @@ export default function Contact() {
   const border = useColorModeValue("border.default", "border.default");
   const cardBg = useColorModeValue("rgba(255, 255, 255, 0.84)", "bg.surface");
   const muted = useColorModeValue("text.muted", "text.muted");
+
+  if (searchParams.get("topic") === "providers") return (
+    <Stack spacing={7} maxW="3xl" mx="auto" py={{ base: 2, md: 6 }}>
+      <Stack spacing={3}>
+        <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Connect with our team</Text>
+        <Heading as="h1" size={{ base: "xl", md: "2xl" }}>Let’s talk about your practice.</Heading>
+        <Text color="text.muted" fontSize="lg">Tell us a little about your team and what you’d like to learn about VeeVee.</Text>
+      </Stack>
+      <ProviderInquiryForm />
+    </Stack>
+  );
 
   return (
     <Box

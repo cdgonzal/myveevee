@@ -7,7 +7,7 @@ There are five core pages: Home, How It Works, For Providers, Contact, and Terms
 
 - Home has one static Health Twin illustration, three core benefits, and one repeated action: See How It Works. The rotating hero, insurance-logo ticker, and interactive preview prompts are removed.
 - How It Works promises Input → Simulate → Results: add photos, videos, records, check-ins, and goals; compare approaches using a digital twin; review projected results to discuss with a medical team or explore a product or service. A clearly labeled illustrative mobility example replaces the conversion CTA and repeats the same three stages.
-- For Providers combines the former hospital value and technology content at `/providers`. Technical details and illustrative economics are expandable. Its action is Discuss a Partnership, leading to Contact.
+- For Providers presents a brief public story around patient context and informed conversations at `/providers`. Its action is Connect With Our Team, leading to the inquiry form at `/contact?topic=providers`, which sends to `info@veevee.io`. Hospital economics and detailed implementation information are omitted from this public page.
 - Desktop and mobile primary navigation show Home, How It Works, and For Providers. Log In stays available in the header. The footer adds Contact and Terms.
 - Features, Technology, Testimonials, and Hospital Value no longer have separate page implementations. Legacy URLs redirect as listed below.
 - Caregivers, Medicare Guidance, and Hospital to Home remain searchable supporting pages outside primary navigation. Traffic and assisted-signup evidence is needed before retiring those search entry points.

@@ -1,3 +1,4 @@
 cdk.out/
+cdk.out-provider/
 dist/
 node_modules/

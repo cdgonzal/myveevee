@@ -69,16 +69,17 @@ describe("Simplified marketing funnel", () => {
 
   it("keeps navigation focused and sends provider interest to Contact", async () => {
     renderSite("/providers");
-    const partnershipLinks = await screen.findAllByRole("link", { name: "Bring VeeVee to Your Practice" });
+    const partnershipLinks = await screen.findAllByRole("link", { name: "Connect With Our Team" });
     expect(partnershipLinks).toHaveLength(2);
-    for (const link of partnershipLinks) expect(link).toHaveAttribute("href", "/contact");
+    for (const link of partnershipLinks) expect(link).toHaveAttribute("href", "/contact?topic=providers");
     expect(screen.getByRole("link", { name: "Start" })).toHaveAttribute("href", "https://veevee.io");
     expect(screen.queryByRole("link", { name: "Log in" })).not.toBeInTheDocument();
     fireEvent.click(partnershipLinks[0]);
     expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({
-      placement: "providers_hero_contact", destinationUrl: "/contact", destinationType: "internal", pagePath: "/providers",
+      placement: "providers_hero_contact", destinationUrl: "/contact?topic=providers", destinationType: "internal", pagePath: "/providers",
     }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Contact VeeVee for press, partnerships, and support." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Let’s talk about your practice." })).toBeInTheDocument();
+    expect(screen.getByRole("form", { name: "Provider inquiry" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Open navigation menu" }));
     const navigation = within(await screen.findByRole("navigation", { name: "Mobile navigation" }));
     expect(navigation.getAllByRole("link").map((link) => link.textContent)).toEqual(["Home", "How It Works", "For Providers"]);

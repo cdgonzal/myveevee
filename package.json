@@ -11,6 +11,7 @@
     "verify:seo": "npm run build && node scripts/verify-prerender-static-routes.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
+    "test:provider-inquiry": "node --test aws/provider-inquiry/core.test.mjs",
     "test:watch": "vitest"
   },
   "dependencies": {
