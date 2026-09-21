@@ -5,7 +5,6 @@ import { APP_LINKS } from "../config/links";
 import { HEALTH_TWIN_BENEFITS } from "./marketingContent";
 import { OfficeHero } from "../components/OfficeHero";
 import { StartButton } from "../components/StartButton";
-import { CAMPAIGN_ART } from "../theme/campaign";
 
 export default function Home() {
   const panelBg = "bg.surface";
@@ -71,14 +70,10 @@ export default function Home() {
             </SimpleGrid>
           </Stack>
 
-          <Box as="section" backgroundImage={isDark ? `url("${CAMPAIGN_ART.shadow}")` : undefined}
-            backgroundSize="cover" backgroundPosition="center" p={isDark ? { base: 5, md: 8 } : 0}>
-            <Stack spacing={4} align="center" textAlign="center" maxW="2xl" mx="auto"
-              bg={isDark ? "bg.canvas" : undefined} p={isDark ? { base: 4, md: 6 } : 0}>
-              <Heading as="h2" size="md">Meet your free twin.</Heading>
-              <StartButton placement="home_bottom_start" px={{ base: 4, md: 8 }} w={{ base: "full", sm: "auto" }} />
-            </Stack>
-          </Box>
+          <Stack as="section" spacing={4} align="center" textAlign="center" maxW="2xl" w="full" mx="auto" py={4}>
+            <Heading as="h2" size="md">Meet your free twin.</Heading>
+            <StartButton placement="home_bottom_start" px={{ base: 4, md: 8 }} w={{ base: "full", sm: "auto" }} />
+          </Stack>
         </Stack>
       </Container>
     </Stack>

@@ -16,7 +16,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is always 
 | Supporting text, links, heading emphasis | Cyan #9CE7FF |
 | Primary actions | Green #16734B with white labels |
 | Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
-| Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
+| Closing invitation | Centered “Meet your free twin.” and Start free directly on the page canvas, without background artwork or an inner panel |
 | How It Works | AV-045 in Future City Park / AV-040 seated in Future Home imagining a new Vitruvian Nia inside a thought cloud / rebuilt Rosa Results scene with a palm-projected roadmap and matching violet, cyan and gold glass stepping tiles |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
 | Typography | Locally hosted Inter Variable, weights 100–900, font-display swap |
