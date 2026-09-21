@@ -37,7 +37,7 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 
 ## Composition record
 
-Results adds a small code-native SVG roadmap above and beside Rosa's open hand: three cyan milestones linked by a short rising path, ending in a checkmark. It uses midnight backing strokes for contrast, no text or panel, and stays separate from the complete avatar and unchanged park. The combined image description includes the roadmap; the decorative SVG is hidden from assistive technology.
+Results adds a small code-native SVG roadmap above and beside Rosa's open hand: three cyan milestones linked by a short rising path, ending in a checkmark. Three low digital stepping stones continue from beneath her feet into the park, echoing the roadmap's connected milestones. Their shallow ellipses, inner rings and decreasing size suggest illuminated platforms resting on the ground. Both SVG layers use midnight fills and cyan strokes, without text or panels; the complete avatar renders above the ground path. The combined image description includes the roadmap and stepping stones; decorative SVGs are hidden from assistive technology.
 
 | Required field | Homepage | How It Works |
 | --- | --- | --- |

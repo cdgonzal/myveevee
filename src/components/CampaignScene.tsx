@@ -10,7 +10,7 @@ type CampaignSceneProps = BoxProps & {
 const descriptions = {
   input: "Theo braces his knees in discomfort in a futuristic city park while his concerned digital Health Twin reaches out to help",
   simulation: "Nia’s digital Health Twin seated in a futuristic living room, imagining a Vitruvian simulation of herself inside a thought cloud connected to her head by small dots",
-  results: "Rosa’s digital Health Twin walking through a futuristic city park with her water-bottle bag, presenting a small three-milestone roadmap ending in a checkmark beside her open hand",
+  results: "Rosa’s digital Health Twin walking on glowing digital stepping stones through a futuristic city park, with a matching three-milestone roadmap ending in a checkmark beside her open hand",
 };
 
 const dimensions = { input: [1536, 1024], simulation: [1254, 1254], results: [1024, 1536] } as const;
@@ -41,6 +41,22 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
         </Box>
       )}
       {subject === "results" && (
+        <Box as="svg" viewBox="0 0 320 90" preserveAspectRatio="none" position="absolute" left={0} bottom="3%" w="100%" h="27%"
+          color="accent.soft" pointerEvents="none" aria-hidden="true" focusable="false">
+          <path d="M 165 68 C 193 68 202 48 224 47 S 253 28 274 27" fill="none"
+            stroke="var(--chakra-colors-bg-canvas)" strokeWidth="5" />
+          <path d="M 165 68 C 193 68 202 48 224 47 S 253 28 274 27" fill="none"
+            stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 5" />
+          {[[165, 68, 28], [224, 47, 24], [274, 27, 20]].map(([x, y, radius]) => (
+            <g key={x}>
+              <ellipse cx={x} cy={y + 3} rx={radius} ry="7" fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="1" />
+              <ellipse cx={x} cy={y} rx={radius} ry="7" fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="2" />
+              <ellipse cx={x} cy={y} rx={radius - 6} ry="3.5" fill="none" stroke="currentColor" strokeWidth="1" opacity={0.55} />
+            </g>
+          ))}
+        </Box>
+      )}
+      {subject === "results" && (
         <Box as="svg" viewBox="0 0 88 54" position="absolute" right="5%" top="8%" w="25%" maxW="84px"
           color="accent.soft" pointerEvents="none" aria-hidden="true" focusable="false">
           <path d="M 12 42 C 24 42 23 28 39 28 S 53 14 72 14" fill="none"
@@ -57,6 +73,7 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
         </Box>
       )}
       <Image ignoreFallback src={src} alt={descriptions[subject]}
+        position="relative"
         srcSet={srcSet} sizes="(min-width: 1280px) 290px, (min-width: 768px) 28vw, 88vw"
         width={width} height={height}
         w={subject === "simulation" ? "80%" : "100%"} ml={subject === "simulation" ? "auto" : undefined}
