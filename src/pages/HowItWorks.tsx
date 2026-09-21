@@ -12,7 +12,7 @@ export default function HowItWorks() {
       <Stack spacing={4} maxW="3xl">
         <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">How It Works</Text>
         <Heading as="h1" size={{ base: "xl", md: "2xl" }}>More of the life you want.</Heading>
-        <Text fontSize="lg" color="text.muted">Move more freely. Get back to something you love. Start with what matters to you, and explore the possibilities with your Health Twin.</Text>
+        <Text fontSize="lg" color="text.muted">Your twin. Three simple steps.</Text>
       </Stack>
 
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>

@@ -198,7 +198,7 @@ const coreBodies = {
   `,
   "/how-it-works": `
     <h1>More of the life you want.</h1>
-    <p>Move more freely. Get back to something you love. Start with what matters to you, and explore the possibilities with your Health Twin.</p>
+    <p>Your twin. Three simple steps.</p>
     <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Upload photos, videos, or medical records. Check in on how you’re feeling and set a goal you want to work toward.</p>
     <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Run simulations with your digital twin to compare different approaches toward your goal.</p>
     <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review the projected results. Share them with your medical team, or explore a relevant product or service.</p>
