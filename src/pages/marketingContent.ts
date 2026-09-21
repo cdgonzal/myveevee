@@ -20,9 +20,9 @@ export const HOSPITAL_VALUE_ROWS = [
 ] as const;
 
 export const HEALTH_TWIN_BENEFITS = [
-  { title: "Personalized guidance and practical tips", detail: "Turn your goals into everyday actions with guidance tailored to you." },
-  { title: "Recommended products and services", detail: "Explore relevant options to support your goals and your next step." },
-  { title: "Available coupons and discounts", detail: "Find available offers on products and services that fit your needs." },
+  { title: "Personalized guidance" },
+  { title: "Products & services" },
+  { title: "Coupons & discounts" },
 ] as const;
 
 export const PATIENT_STEPS = [

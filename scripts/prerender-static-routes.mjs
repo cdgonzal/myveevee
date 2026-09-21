@@ -190,11 +190,11 @@ const coreBodies = {
     <p>Your twin. Your simulation. <strong>All free.</strong></p>
     <p><a href="/how-it-works">See How It Works</a></p>
     <h2>Your twin. Real possibilities.</h2>
-    <h3>Personalized guidance and practical tips</h3><p>Turn your goals into everyday actions with guidance tailored to you.</p>
-    <h3>Recommended products and services</h3><p>Explore relevant options to support your goals and your next step.</p>
-    <h3>Available coupons and discounts</h3><p>Find available offers on products and services that fit your needs.</p>
-    <h2>For everyday questions and the days between visits.</h2>
-    <p>Whether you are keeping track of your own health or helping someone you love, start with a clearer view of what matters.</p>
+    <h3>Personalized guidance</h3>
+    <h3>Products &amp; services</h3>
+    <h3>Coupons &amp; discounts</h3>
+    <h2>Meet your free twin.</h2>
+    <p><a href="/how-it-works">See How It Works</a></p>
   `,
   "/how-it-works": `
     <h1>More of the life you want.</h1>
