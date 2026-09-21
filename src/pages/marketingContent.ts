@@ -31,10 +31,10 @@ export const PATIENT_STEPS = [
   { number: "3", title: "Results", promise: "Take an informed next step", detail: "Review the projected results. Share them with your medical team, or explore a relevant product or service." },
 ] as const;
 
-export const MOBILITY_EXAMPLE_STEPS = [
-  { number: "1", title: "Input", detail: "Alex wants to walk comfortably and enjoy outings again. He adds his records, uploads a movement video, and describes his current limitations and goal." },
-  { number: "2", title: "Simulate", detail: "He compares different approaches using his digital twin, exploring how each could support his mobility goal." },
-  { number: "3", title: "Results", detail: "He reviews the projected differences, identifies an option worth exploring, and shares the comparison with his medical team for discussion." },
+export const PATIENT_STORY_STEPS = [
+  { number: "1", title: "Input", detail: "Added his records and a movement video." },
+  { number: "2", title: "Simulate", detail: "Compared options with his digital twin." },
+  { number: "3", title: "Results", detail: "Shared the results with his care team." },
 ] as const;
 
 export const HEALTH_TWIN_FAQS = [

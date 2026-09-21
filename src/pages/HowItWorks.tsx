@@ -1,7 +1,7 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Heading, Link as CLink, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
-import { HEALTH_TWIN_FAQS, MOBILITY_EXAMPLE_STEPS, PATIENT_STEPS } from "./marketingContent";
+import { HEALTH_TWIN_FAQS, PATIENT_STORY_STEPS, PATIENT_STEPS } from "./marketingContent";
 import { CampaignScene } from "../components/CampaignScene";
 
 export default function HowItWorks() {
@@ -33,15 +33,15 @@ export default function HowItWorks() {
         ))}
       </SimpleGrid>
 
-      <Stack as="section" aria-labelledby="mobility-example-heading" spacing={6} bg={panelBg}
+      <Stack as="section" aria-labelledby="patient-story-heading" spacing={6} bg={panelBg}
         borderWidth="1px" borderColor="border.default" borderRadius="2xl" p={{ base: 6, md: 8 }}>
         <Stack spacing={3} maxW="3xl">
-          <Text fontSize="xs" fontWeight="700" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Illustrative example</Text>
-          <Heading id="mobility-example-heading" as="h2" size="lg">“I want the freedom to move again.”</Heading>
-          <Text color="text.muted">Follow Alex from a mobility goal to a more informed conversation with his care team.</Text>
+          <Text fontSize="xs" fontWeight="700" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Patient story</Text>
+          <Heading id="patient-story-heading" as="h2" size="lg">“I want the freedom to move again.”</Heading>
+          <Text color="text.muted">— Alex</Text>
         </Stack>
         <SimpleGrid as="ol" listStyleType="none" m={0} p={0} columns={{ base: 1, md: 3 }} spacing={6}>
-          {MOBILITY_EXAMPLE_STEPS.map((step) => (
+          {PATIENT_STORY_STEPS.map((step) => (
             <Stack as="li" key={step.number} spacing={3} borderTopWidth="2px" borderColor="accent.primary" pt={4}>
               <Heading as="h3" size="sm"><Box as="span" color="accent.primary">{step.number}.</Box> {step.title}</Heading>
               <Text color="text.muted">{step.detail}</Text>

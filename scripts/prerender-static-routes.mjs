@@ -202,14 +202,14 @@ const coreBodies = {
     <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Upload photos, videos, or medical records. Check in on how you’re feeling and set a goal you want to work toward.</p>
     <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Run simulations with your digital twin to compare different approaches toward your goal.</p>
     <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review the projected results. Share them with your medical team, or explore a relevant product or service.</p>
-    <section aria-labelledby="mobility-example-heading">
-      <p>Illustrative example</p>
-      <h2 id="mobility-example-heading">“I want the freedom to move again.”</h2>
-      <p>Follow Alex from a mobility goal to a more informed conversation with his care team.</p>
+    <section aria-labelledby="patient-story-heading">
+      <p>Patient story</p>
+      <h2 id="patient-story-heading">“I want the freedom to move again.”</h2>
+      <p>— Alex</p>
       <ol>
-        <li><h3>Input</h3><p>Alex wants to walk comfortably and enjoy outings again. He adds his records, uploads a movement video, and describes his current limitations and goal.</p></li>
-        <li><h3>Simulate</h3><p>He compares different approaches using his digital twin, exploring how each could support his mobility goal.</p></li>
-        <li><h3>Results</h3><p>He reviews the projected differences, identifies an option worth exploring, and shares the comparison with his medical team for discussion.</p></li>
+        <li><h3>Input</h3><p>Added his records and a movement video.</p></li>
+        <li><h3>Simulate</h3><p>Compared options with his digital twin.</p></li>
+        <li><h3>Results</h3><p>Shared the results with his care team.</p></li>
       </ol>
     </section>
     <h2>A few things to know</h2>
