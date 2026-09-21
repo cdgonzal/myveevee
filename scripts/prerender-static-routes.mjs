@@ -200,7 +200,6 @@ const coreBodies = {
   "/how-it-works": `
     <h1>More of the life you want.</h1>
     <p>Your twin. Three simple steps.</p>
-    <p><a href="https://veevee.io">Start free</a></p>
     <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Add records, photos, or videos. Set your goal.</p>
     <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Compare approaches with your digital twin.</p>
     <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review results and explore relevant options.</p>

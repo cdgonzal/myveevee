@@ -53,12 +53,12 @@ describe("Simplified marketing funnel", () => {
     expect(steps.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual(["Input", "Simulate", "Results"]);
     expect(screen.getByRole("region", { name: "“I want the freedom to move again.”" })).toBeInTheDocument();
     const howItWorksStarts = screen.getAllByRole("link", { name: "Start free" });
-    expect(howItWorksStarts).toHaveLength(3);
+    expect(howItWorksStarts).toHaveLength(2);
     for (const link of howItWorksStarts) expect(link).toHaveAttribute("href", "https://veevee.io");
     howItWorksStarts[0].addEventListener("click", (event) => event.preventDefault(), { once: true });
     fireEvent.click(howItWorksStarts[0]);
     expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({
-      placement: "how_it_works_top_start", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/how-it-works",
+      placement: "how_it_works_steps_start", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/how-it-works",
     }));
     expect(screen.queryByRole("link", { name: "Create a Health Twin" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Log in" })).not.toBeInTheDocument();

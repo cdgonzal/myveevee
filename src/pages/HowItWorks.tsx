@@ -14,7 +14,6 @@ export default function HowItWorks() {
         <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">How It Works</Text>
         <Heading as="h1" size={{ base: "xl", md: "2xl" }}>More of the life you want.</Heading>
         <Text fontSize="lg" color="text.muted">Your twin. Three simple steps.</Text>
-        <StartButton placement="how_it_works_top_start" alignSelf={{ base: "stretch", sm: "flex-start" }} />
       </Stack>
 
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>
