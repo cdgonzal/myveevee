@@ -9,7 +9,7 @@ type CampaignSceneProps = BoxProps & {
 
 const descriptions = {
   input: "Theo braces his knees in discomfort in a futuristic city park while his concerned digital Health Twin reaches out to help",
-  simulation: "Nia’s digital Health Twin seated on a faceted stool in a futuristic living room, studying a miniature anatomical hologram to her left",
+  simulation: "Nia’s digital Health Twin seated in a futuristic living room, imagining a Vitruvian simulation of herself inside a thought cloud connected to her head by small dots",
   results: "Rosa’s digital Health Twin walking through a futuristic city park with her water-bottle bag, extending an open hand toward the next step",
 };
 
@@ -26,14 +26,18 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
       backgroundSize="cover" backgroundPosition={treatment === "home" ? "center 70%" : treatment === "park" || treatment === "parkInput" ? "center bottom" : "center"} backgroundRepeat="no-repeat"
       position="relative" display="flex" alignItems="center" justifyContent="center" p="6%" {...props}>
       {subject === "simulation" && (
-        <Box position="absolute" left="5%" bottom="12%" w="36%" h="50%" pointerEvents="none" aria-hidden="true">
-          <Box position="absolute" left="15%" bottom="0" w="70%" h="12%" borderRadius="full"
-            bg="accent.soft" opacity={0.3} filter="blur(10px)" />
+        <Box position="absolute" left="3%" top={{ base: "5%", md: "22%", lg: "5%" }} w="41%" aspectRatio={1} pointerEvents="none" aria-hidden="true" color="accent.soft">
+          <Box as="svg" viewBox="0 0 160 180" preserveAspectRatio="none" position="absolute" inset={0} w="100%" h="100%" overflow="visible">
+            <path d="M 28 28 C 18 8 52 0 65 14 C 80 -1 110 2 117 20 C 140 15 157 34 148 53 C 165 70 160 93 148 101 C 164 120 152 147 133 148 C 129 170 103 179 86 167 C 67 183 43 173 38 159 C 12 168 -1 143 11 125 C -5 111 1 87 13 80 C -2 59 7 36 28 28 Z"
+              fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="2" />
+          </Box>
+          <Box position="absolute" left="101%" top="28%" boxSize="10px" borderRadius="full" bg="bg.canvas" border="2px solid" borderColor="accent.soft" />
+          <Box position="absolute" left="112%" top="20%" boxSize="6px" borderRadius="full" bg="accent.soft" />
           <Image ignoreFallback src={CAMPAIGN_ART.hologram} alt=""
             srcSet={`${CAMPAIGN_ART.hologram.replace(/\.webp$/, "-384.webp")} 384w, ${CAMPAIGN_ART.hologram.replace(/\.webp$/, "-768.webp")} 768w`}
             sizes="(min-width: 1280px) 120px, (min-width: 768px) 11vw, 32vw"
-            width={1122} height={1402} w="100%" h="100%" objectFit="contain" objectPosition="center bottom"
-            position="relative" loading={priority ? "eager" : "lazy"} decoding="async" />
+            width={1254} height={1254} w="80%" h="80%" objectFit="contain"
+            position="absolute" left="10%" top="10%" loading={priority ? "eager" : "lazy"} decoding="async" />
         </Box>
       )}
       <Image ignoreFallback src={src} alt={descriptions[subject]}

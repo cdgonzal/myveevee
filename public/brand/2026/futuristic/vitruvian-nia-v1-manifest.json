@@ -1,0 +1,30 @@
+{
+  "source": "codex/creative/nia-simulation/vitruvian-nia-v1.png",
+  "sourceSha256": "98397724e910db3bacdac06170076a9a8879279aca6514293c0ce94dbc51b8ce",
+  "generator": "built-in image_gen",
+  "prompt": "codex/creative/nia-simulation/prompt-v1.txt",
+  "width": 1254,
+  "height": 1254,
+  "alphaPreserved": true,
+  "description": "Nia in an anatomical Vitruvian simulation pose, complete figure and ring on transparency; conceptual artwork.",
+  "variants": [
+    {
+      "file": "vitruvian-nia-v1.webp",
+      "width": 1254,
+      "bytes": 1029694,
+      "sha256": "cf37ac610b6204a4cd5ea47237ae9202f6e7355685cd0e0513359b8d6d4914b9"
+    },
+    {
+      "file": "vitruvian-nia-v1-384.webp",
+      "width": 384,
+      "bytes": 63212,
+      "sha256": "20f3eee727b87701f19d5aee792096a669dc88c300a8cf1eda1286ed9e4a14f8"
+    },
+    {
+      "file": "vitruvian-nia-v1-768.webp",
+      "width": 768,
+      "bytes": 189804,
+      "sha256": "abbd7700def2e7258af1768cf185ff5b90a057e491e1c24f231b94dd7f4598c9"
+    }
+  ]
+}
