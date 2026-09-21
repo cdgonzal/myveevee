@@ -1,9 +1,10 @@
-import { Box, Button, Container, Grid, Heading, Image, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Container, Grid, Heading, Image, Link as CLink, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
 import { HEALTH_TWIN_BENEFITS } from "./marketingContent";
 import { OfficeHero } from "../components/OfficeHero";
+import { StartButton } from "../components/StartButton";
 import { CAMPAIGN_ART } from "../theme/campaign";
 
 export default function Home() {
@@ -31,11 +32,13 @@ export default function Home() {
     <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.55" color={muted} maxW="lg">
       Your twin. Your simulation. <Box as="strong" color="accent.soft" whiteSpace="nowrap">All free.</Box>
     </Text>
-    <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
-      alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }} px={8} onClick={() => trackLearnMore("home_hero")}>
+    <StartButton placement="home_hero_start" px={8}
+      alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }} />
+    <CLink as={RouterLink} to={APP_LINKS.internal.howItWorks} fontSize="sm" color="accent.soft"
+      display="inline-flex" alignItems="center" minH="44px" textDecoration="underline"
+      onClick={() => trackLearnMore("home_hero")}>
       See How It Works
-    </Button>
-    <Text fontSize="sm" color={muted}>Your Health Twin, in 3 simple steps.</Text>
+    </CLink>
   </Stack>
   );
 
@@ -73,10 +76,7 @@ export default function Home() {
             <Stack spacing={4} align="center" textAlign="center" maxW="2xl" mx="auto"
               bg={isDark ? "bg.canvas" : undefined} p={isDark ? { base: 4, md: 6 } : 0}>
               <Heading as="h2" size="md">Meet your free twin.</Heading>
-              <Button as={RouterLink} to={APP_LINKS.internal.howItWorks} size="lg" borderRadius="full"
-                px={{ base: 4, md: 8 }} w={{ base: "full", sm: "auto" }} onClick={() => trackLearnMore("home_bottom")}>
-                See How It Works
-              </Button>
+              <StartButton placement="home_bottom_start" px={{ base: 4, md: 8 }} w={{ base: "full", sm: "auto" }} />
             </Stack>
           </Box>
         </Stack>

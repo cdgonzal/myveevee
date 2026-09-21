@@ -33,16 +33,33 @@ afterEach(() => {
 });
 
 describe("Simplified marketing funnel", () => {
-  it("takes a visitor from Home to the three-step promise and mobility example", async () => {
+  it("offers direct Start links on both consumer pages while keeping How It Works available", async () => {
     renderSite();
     // Wait for the lazy page using a cheap text query before scanning roles.
     await screen.findByText("Your health, connected");
+    const homeStarts = screen.getAllByRole("link", { name: "Start free" });
+    expect(homeStarts).toHaveLength(2);
+    for (const link of homeStarts) expect(link).toHaveAttribute("href", "https://veevee.io");
+    expect(screen.getByRole("link", { name: "Start" })).toHaveAttribute("href", "https://veevee.io");
+    homeStarts[0].addEventListener("click", (event) => event.preventDefault(), { once: true });
+    fireEvent.click(homeStarts[0]);
+    expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({
+      placement: "home_hero_start", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/",
+    }));
     const learnMore = await screen.findAllByRole("link", { name: "See How It Works" });
     fireEvent.click(learnMore[0]);
     expect(await screen.findByRole("heading", { level: 1, name: "More of the life you want." })).toBeInTheDocument();
     const steps = within(screen.getByRole("region", { name: "The three steps" }));
     expect(steps.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual(["Input", "Simulate", "Results"]);
     expect(screen.getByRole("region", { name: "“I want the freedom to move again.”" })).toBeInTheDocument();
+    const howItWorksStarts = screen.getAllByRole("link", { name: "Start free" });
+    expect(howItWorksStarts).toHaveLength(3);
+    for (const link of howItWorksStarts) expect(link).toHaveAttribute("href", "https://veevee.io");
+    howItWorksStarts[0].addEventListener("click", (event) => event.preventDefault(), { once: true });
+    fireEvent.click(howItWorksStarts[0]);
+    expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({
+      placement: "how_it_works_top_start", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/how-it-works",
+    }));
     expect(screen.queryByRole("link", { name: "Create a Health Twin" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "https://veevee.io");
     expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({ destinationUrl: "/how-it-works", destinationType: "internal" }));

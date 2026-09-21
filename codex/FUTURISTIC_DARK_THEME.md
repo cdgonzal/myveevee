@@ -48,7 +48,13 @@ All three illustration frames use a consistent 5:4 aspect ratio so the complete 
 | Mirror | None | None |
 | Text | Hero: “Your twin. Your simulation. All free.” with emphasized free offering. Benefits: “Your twin. Real possibilities.” plus the supplied campaign poster's guidance, recommendations, and offers language; retained 01, 02, 03 markers. | Intro: “Your twin. Three simple steps.” Alex's section is labeled “Patient story” following the user's confirmation that this is a real patient; the original quote is retained and PATIENT_STORY_STEPS is shortened to one sentence per step. PATIENT_STEPS and FAQs retained. |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
-| Duplicate words | Existing repeated “See How It Works” CTA and header/footer navigation are intentional | Existing repeated step labels in the explanatory example and header/footer navigation are intentional |
+| Duplicate words | “Start free” appears at the hero and close; “See How It Works” is a secondary hero link. | “Start free” appears at the introduction, after the three steps and after Alex's story. |
+
+## Conversion path
+
+The primary action on Home and How It Works now opens `https://veevee.io` in the same tab. Their sticky header also offers Start alongside Log in. At widths below 361px the header uses the icon alone so the actions remain unobscured. Each Start placement records `cta_click` with an external destination and its page path; both pages' analytics goal is `drive_account_creation`. These events measure app handoffs, not completed registrations. Account creation must be measured in veevee.io to assess the full funnel.
+
+The live destination was reviewed: veevee.io defaults to Sign In and exposes a separate Create Account tab. Its current app entry uses the default Amplify Authenticator without a direct signup URL. A signup-first destination requires a change in that app; marketing links use the verified root URL. No app authentication behavior was changed here.
 
 ## Validation
 

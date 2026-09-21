@@ -26,9 +26,9 @@ export const HEALTH_TWIN_BENEFITS = [
 ] as const;
 
 export const PATIENT_STEPS = [
-  { number: "1", title: "Input", promise: "Tell your story", detail: "Upload photos, videos, or medical records. Check in on how you’re feeling and set a goal you want to work toward." },
-  { number: "2", title: "Simulate", promise: "Explore your possibilities", detail: "Run simulations with your digital twin to compare different approaches toward your goal." },
-  { number: "3", title: "Results", promise: "Take an informed next step", detail: "Review the projected results. Share them with your medical team, or explore a relevant product or service." },
+  { number: "1", title: "Input", promise: "Tell your story", detail: "Add records, photos, or videos. Set your goal." },
+  { number: "2", title: "Simulate", promise: "Explore your possibilities", detail: "Compare approaches with your digital twin." },
+  { number: "3", title: "Results", promise: "Take an informed next step", detail: "Review results and explore relevant options." },
 ] as const;
 
 export const PATIENT_STORY_STEPS = [

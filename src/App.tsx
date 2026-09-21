@@ -31,6 +31,7 @@ import { applyRouteSeo } from "./seo/applyRouteSeo";
 import { DEFAULT_ROUTE_SEO, NOT_FOUND_ROUTE_SEO, ROUTE_SEO } from "./seo/routeMeta";
 import { trackSwcaCampaignEvent } from "./swca/campaignEvents";
 import { CAMPAIGN_ART } from "./theme/campaign";
+import { StartButton } from "./components/StartButton";
 
 const LAZY_RELOAD_STORAGE_KEY = "myveevee:lazy-import-reload";
 
@@ -346,6 +347,7 @@ function Header() {
               <Image
                 src="/brand/2026/wordmark.svg"
                 alt="VeeVee"
+                sx={{ "@media (max-width: 360px)": { display: "none" } }}
                 h={{ base: "10px", md: "12px" }}
                 w="auto"
                 objectFit="contain"
@@ -353,7 +355,7 @@ function Header() {
               />
             </HStack>
 
-            <HStack spacing={{ base: 3, md: 4 }} align="center">
+            <HStack spacing={{ base: 2, md: 4 }} align="center">
               <HStack as="nav" aria-label="Main navigation" spacing={5} display={{ base: "none", md: "flex" }}>
                 {PRIMARY_NAV_LINKS.map((item) => (
                   <CLink key={item.name} as={Link} to={item.to} fontSize="sm" fontWeight="700"
@@ -365,6 +367,9 @@ function Header() {
                 ))}
               </HStack>
 
+              {(pathname === "/" || pathname === "/how-it-works") && (
+                <StartButton placement="header_start" size="sm" px={{ base: 3, md: 5 }}>Start</StartButton>
+              )}
               <Button
                 as="a"
                 href={APP_LINKS.external.authenticatedConsole}
@@ -372,7 +377,7 @@ function Header() {
                 minH="44px"
                 borderRadius="full"
                 fontWeight="700"
-                px={{ base: 4, md: 5 }}
+                px={{ base: 2, md: 5 }}
                 variant="outline"
                 onClick={() =>
                   trackNavClick("header_login", "Log in", APP_LINKS.external.authenticatedConsole, "external", "header_nav")

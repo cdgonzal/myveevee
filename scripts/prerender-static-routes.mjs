@@ -188,20 +188,24 @@ const coreBodies = {
     <p>Your health, connected</p>
     <h1>Meet your digital Health Twin</h1>
     <p>Your twin. Your simulation. <strong>All free.</strong></p>
+    <p><a href="https://veevee.io">Start free</a></p>
     <p><a href="/how-it-works">See How It Works</a></p>
     <h2>Your twin. Real possibilities.</h2>
     <h3>Personalized guidance</h3>
     <h3>Products &amp; services</h3>
     <h3>Coupons &amp; discounts</h3>
     <h2>Meet your free twin.</h2>
-    <p><a href="/how-it-works">See How It Works</a></p>
+    <p><a href="https://veevee.io">Start free</a></p>
   `,
   "/how-it-works": `
     <h1>More of the life you want.</h1>
     <p>Your twin. Three simple steps.</p>
-    <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Upload photos, videos, or medical records. Check in on how you’re feeling and set a goal you want to work toward.</p>
-    <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Run simulations with your digital twin to compare different approaches toward your goal.</p>
-    <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review the projected results. Share them with your medical team, or explore a relevant product or service.</p>
+    <p><a href="https://veevee.io">Start free</a></p>
+    <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Add records, photos, or videos. Set your goal.</p>
+    <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Compare approaches with your digital twin.</p>
+    <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review results and explore relevant options.</p>
+    <p><a href="https://veevee.io">Start free</a></p>
+    <p>Your twin. Your simulation. All free.</p>
     <section aria-labelledby="patient-story-heading">
       <p>Patient story</p>
       <h2 id="patient-story-heading">“I want the freedom to move again.”</h2>
@@ -211,6 +215,7 @@ const coreBodies = {
         <li><h3>Simulate</h3><p>Compared options with his digital twin.</p></li>
         <li><h3>Results</h3><p>Shared the results with his care team.</p></li>
       </ol>
+      <p><a href="https://veevee.io">Start free</a></p>
     </section>
     <h2>A few things to know</h2>
     <h3>What is a Health Twin?</h3><p>A digital picture of your health that brings your records, habits, and care context together.</p>

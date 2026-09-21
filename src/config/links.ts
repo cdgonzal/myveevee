@@ -35,7 +35,7 @@ export const APP_LINKS = {
     twinDashboard: "/twin-dashboard",
   },
   cta: {
-    getStarted: "/",
+    getStarted: "https://veevee.io",
     checkBenefits: "/",
     login: "https://veevee.io",
   },

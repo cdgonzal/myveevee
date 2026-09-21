@@ -3,6 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { APP_LINKS } from "../config/links";
 import { HEALTH_TWIN_FAQS, PATIENT_STORY_STEPS, PATIENT_STEPS } from "./marketingContent";
 import { CampaignScene } from "../components/CampaignScene";
+import { StartButton } from "../components/StartButton";
 
 export default function HowItWorks() {
   const panelBg = "bg.surface";
@@ -13,6 +14,7 @@ export default function HowItWorks() {
         <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">How It Works</Text>
         <Heading as="h1" size={{ base: "xl", md: "2xl" }}>More of the life you want.</Heading>
         <Text fontSize="lg" color="text.muted">Your twin. Three simple steps.</Text>
+        <StartButton placement="how_it_works_top_start" alignSelf={{ base: "stretch", sm: "flex-start" }} />
       </Stack>
 
       <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>
@@ -33,6 +35,11 @@ export default function HowItWorks() {
         ))}
       </SimpleGrid>
 
+      <Stack align="center" spacing={3}>
+        <StartButton placement="how_it_works_steps_start" w={{ base: "full", sm: "auto" }} />
+        <Text fontSize="sm" color="text.muted">Your twin. Your simulation. All free.</Text>
+      </Stack>
+
       <Stack as="section" aria-labelledby="patient-story-heading" spacing={6} bg={panelBg}
         borderWidth="1px" borderColor="border.default" borderRadius="2xl" p={{ base: 6, md: 8 }}>
         <Stack spacing={3} maxW="3xl">
@@ -48,6 +55,7 @@ export default function HowItWorks() {
             </Stack>
           ))}
         </SimpleGrid>
+        <StartButton placement="how_it_works_story_start" alignSelf={{ base: "stretch", sm: "flex-start" }} />
       </Stack>
 
       <Stack as="section" aria-labelledby="questions-heading" spacing={4}>
