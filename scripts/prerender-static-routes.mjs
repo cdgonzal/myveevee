@@ -217,7 +217,7 @@ const coreBodies = {
       <p><a href="https://veevee.io">Start free</a></p>
     </section>
     <h2>A few things to know</h2>
-    <h3>What is a Health Twin?</h3><p>A digital picture of your health that brings your records, habits, and care context together.</p>
+    <h3>What is a Health Twin?</h3><p>A digital version of you that helps you explore possibilities and find a path toward your wellness goals.</p>
     <h3>Where do I get started?</h3><p>Choose Start to create your free account or sign in.</p>
     <h3>What should I know before sharing health information?</h3><p>Review the privacy policy and consent information in VeeVee before adding records. Contact our team with questions.</p>
     <h3>Does VeeVee replace my care team?</h3><p>No. VeeVee supports wellness, education, and preparation for care conversations.</p>
