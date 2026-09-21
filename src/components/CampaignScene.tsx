@@ -10,14 +10,26 @@ type CampaignSceneProps = BoxProps & {
 const descriptions = {
   input: "Theo braces his knees in discomfort in a futuristic city park while his concerned digital Health Twin reaches out to help",
   simulation: "Nia’s digital Health Twin seated in a futuristic living room, imagining a Vitruvian simulation of herself inside a thought cloud connected to her head by small dots",
-  results: "Rosa’s digital Health Twin walking on glowing digital stepping stones through a futuristic city park, with a matching three-milestone roadmap ending in a checkmark beside her open hand",
+  results: "Rosa’s digital Health Twin walking forward with her feet on violet and cyan glass stepping tiles toward a gold next step, matching the three colored milestones of the roadmap projected from her palm in a futuristic park",
 };
 
 const dimensions = { input: [1536, 1024], simulation: [1254, 1254], results: [1024, 1536] } as const;
 
 /** Artwork stays separate from copy; contain and padding preserve each complete pose. */
 export function CampaignScene({ subject, treatment = "luminous", priority = false, ...props }: CampaignSceneProps) {
-  const src = subject === "results" ? CAMPAIGN_ART.rosa : CAMPAIGN_ART[subject];
+  if (subject === "results") {
+    const scene = CAMPAIGN_ART.rosaScene;
+    return (
+      <Box bg="surface.900" overflow="hidden" {...props}>
+        <Image ignoreFallback src={scene} alt={descriptions.results}
+          srcSet={`${scene.replace(/\.webp$/, "-384.webp")} 384w, ${scene.replace(/\.webp$/, "-768.webp")} 768w, ${scene} 1402w`}
+          sizes="(min-width: 1280px) 325px, (min-width: 768px) 30vw, 94vw"
+          width={1402} height={1122} w="100%" h="100%" objectFit="cover"
+          loading={priority ? "eager" : "lazy"} decoding="async" />
+      </Box>
+    );
+  }
+  const src = CAMPAIGN_ART[subject];
   const [width, height] = dimensions[subject];
   const srcSet = [384, 768].map((size) => `${src.replace(/\.webp$/, `-${size}.webp`)} ${size}w`)
     .concat(`${src} ${width}w`).join(", ");
@@ -26,7 +38,7 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
       backgroundSize="cover" backgroundPosition={treatment === "home" ? "center 70%" : treatment === "park" || treatment === "parkInput" ? "center bottom" : "center"} backgroundRepeat="no-repeat"
       position="relative" display="flex" alignItems="center" justifyContent="center" p="6%" {...props}>
       {subject === "simulation" && (
-        <Box position="absolute" left="3%" top={{ base: "5%", md: "22%", lg: "5%" }} w="41%" aspectRatio={1} pointerEvents="none" aria-hidden="true" color="accent.soft">
+        <Box position="absolute" left="3%" top="5%" w="41%" aspectRatio={1} pointerEvents="none" aria-hidden="true" color="accent.soft">
           <Box as="svg" viewBox="0 0 160 180" preserveAspectRatio="none" position="absolute" inset={0} w="100%" h="100%" overflow="visible">
             <path d="M 28 28 C 18 8 52 0 65 14 C 80 -1 110 2 117 20 C 140 15 157 34 148 53 C 165 70 160 93 148 101 C 164 120 152 147 133 148 C 129 170 103 179 86 167 C 67 183 43 173 38 159 C 12 168 -1 143 11 125 C -5 111 1 87 13 80 C -2 59 7 36 28 28 Z"
               fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="2" />
@@ -38,38 +50,6 @@ export function CampaignScene({ subject, treatment = "luminous", priority = fals
             sizes="(min-width: 1280px) 120px, (min-width: 768px) 11vw, 32vw"
             width={1254} height={1254} w="80%" h="80%" objectFit="contain"
             position="absolute" left="10%" top="10%" loading={priority ? "eager" : "lazy"} decoding="async" />
-        </Box>
-      )}
-      {subject === "results" && (
-        <Box as="svg" viewBox="0 0 320 90" preserveAspectRatio="none" position="absolute" left={0} bottom="3%" w="100%" h="27%"
-          color="accent.soft" pointerEvents="none" aria-hidden="true" focusable="false">
-          <path d="M 165 68 C 193 68 202 48 224 47 S 253 28 274 27" fill="none"
-            stroke="var(--chakra-colors-bg-canvas)" strokeWidth="5" />
-          <path d="M 165 68 C 193 68 202 48 224 47 S 253 28 274 27" fill="none"
-            stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 5" />
-          {[[165, 68, 28], [224, 47, 24], [274, 27, 20]].map(([x, y, radius]) => (
-            <g key={x}>
-              <ellipse cx={x} cy={y + 3} rx={radius} ry="7" fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="1" />
-              <ellipse cx={x} cy={y} rx={radius} ry="7" fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="2" />
-              <ellipse cx={x} cy={y} rx={radius - 6} ry="3.5" fill="none" stroke="currentColor" strokeWidth="1" opacity={0.55} />
-            </g>
-          ))}
-        </Box>
-      )}
-      {subject === "results" && (
-        <Box as="svg" viewBox="0 0 88 54" position="absolute" right="5%" top="8%" w="25%" maxW="84px"
-          color="accent.soft" pointerEvents="none" aria-hidden="true" focusable="false">
-          <path d="M 12 42 C 24 42 23 28 39 28 S 53 14 72 14" fill="none"
-            stroke="var(--chakra-colors-bg-canvas)" strokeWidth="6" strokeLinecap="round" />
-          <path d="M 12 42 C 24 42 23 28 39 28 S 53 14 72 14" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          <g fill="var(--chakra-colors-bg-canvas)" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="42" r="4" />
-            <circle cx="39" cy="28" r="4" />
-            <circle cx="72" cy="14" r="10" />
-          </g>
-          <path d="m 67 14 3 3 6 -6" fill="none" stroke="currentColor" strokeWidth="2"
-            strokeLinecap="round" strokeLinejoin="round" />
         </Box>
       )}
       <Image ignoreFallback src={src} alt={descriptions[subject]}

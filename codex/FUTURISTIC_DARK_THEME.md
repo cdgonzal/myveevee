@@ -17,7 +17,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is always 
 | Primary actions | Green #16734B with white labels |
 | Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
 | Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
-| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home imagining a new Vitruvian Nia inside a thought cloud / AV-033 walking in Future City Park with a small three-milestone roadmap beside her open hand, Input / Simulate / Results |
+| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home imagining a new Vitruvian Nia inside a thought cloud / rebuilt Rosa Results scene with a palm-projected roadmap and matching violet, cyan and gold glass stepping tiles |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
 | Typography | Locally hosted Inter Variable, weights 100–900, font-display swap |
 
@@ -37,7 +37,9 @@ Backgrounds use centered cover crops. The office hero reaches both browser edges
 
 ## Composition record
 
-Results adds a small code-native SVG roadmap above and beside Rosa's open hand: three cyan milestones linked by a short rising path, ending in a checkmark. Three low digital stepping stones continue from beneath her feet into the park, echoing the roadmap's connected milestones. Their shallow ellipses, inner rings and decreasing size suggest illuminated platforms resting on the ground. Both SVG layers use midnight fills and cyan strokes, without text or panels; the complete avatar renders above the ground path. The combined image description includes the roadmap and stepping stones; decorative SVGs are hidden from assistive technology.
+Results now uses a rebuilt imagegen composition, preserving Rosa's identity, glasses, curls and water-bottle bag while correcting her walking pose. Her trailing and forward feet contact consecutive violet and cyan glass tiles; a gold tile lies ahead in her direction of travel. Three palm-projected milestones repeat those colors and end in a checkmark. Tile thickness, contact shadows and reflections integrate the route into the park. The old SVG overlays were removed. The source PNGs and exact prompts are preserved in `codex/creative/rosa-results/`; v2 is the intermediate reference, and v3 is current. `node scripts/build-rosa-results-scene.mjs` creates responsive WebP assets and the provenance manifest. This is conceptual artwork, not a clinical outcome guarantee.
+
+All three illustration frames use a consistent 5:4 aspect ratio so the complete compositions remain visible on phones and narrow tablet cards. Their desktop height remains approximately 260px; at smaller widths the frames scale proportionally.
 
 | Required field | Homepage | How It Works |
 | --- | --- | --- |

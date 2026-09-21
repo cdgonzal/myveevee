@@ -1,0 +1,33 @@
+{
+  "source": "codex/creative/rosa-results/rosa-roadmap-scene-v3.png",
+  "sourceSha256": "759c7660d47c78aa470252e9f71a3c5c2bd65575e7af23fdcc860012beae5e3e",
+  "generator": "built-in image_gen",
+  "prompt": "codex/creative/rosa-results/prompt-v3.txt",
+  "references": [
+    "codex/creative/rosa-results/rosa-roadmap-scene-v2.png",
+    "public/brand/2026/futuristic/rosa-results.webp"
+  ],
+  "width": 1402,
+  "height": 1122,
+  "description": "Rebuilt conceptual Results scene: Rosa walks forward across violet and cyan tiles toward a gold next step. The three glass tiles match the colors of her palm-projected roadmap.",
+  "variants": [
+    {
+      "file": "rosa-roadmap-scene-v3.webp",
+      "width": 1402,
+      "bytes": 499522,
+      "sha256": "fe4c47b93d7c095934907042825fc45643daf348e0057c9197a1757db5169a95"
+    },
+    {
+      "file": "rosa-roadmap-scene-v3-384.webp",
+      "width": 384,
+      "bytes": 51172,
+      "sha256": "731f8beeb8960127e720c35a53b0ba93fbb9e6c230254d6653cd1e152ac1676e"
+    },
+    {
+      "file": "rosa-roadmap-scene-v3-768.webp",
+      "width": 768,
+      "bytes": 157014,
+      "sha256": "c3b977ce418fb08bdd99f6a9172c50cf47f7f223e917a9b3e770f7eb05e02952"
+    }
+  ]
+}
