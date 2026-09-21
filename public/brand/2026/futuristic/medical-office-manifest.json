@@ -1,0 +1,24 @@
+{
+  "id": "TH26-ENV-09",
+  "name": "Future Doctor’s Office — Central Park",
+  "sourceRepository": "vv-designs",
+  "source": "2026/ads/013-environment-backgrounds/healthcare-futuristic-v1/assets/future-doctors-office-panorama-v3.png",
+  "sourceSha256": "44451950c8380197d6858553bdbc9a006d594147e4d5d70dff9860343febd25e",
+  "encoding": "WebP quality 88, complete source canvas; responsive CSS frames the medical desk on the right",
+  "variants": [
+    {
+      "file": "future-medical-office.webp",
+      "width": 1942,
+      "height": 809,
+      "bytes": 248348,
+      "sha256": "d3574401df99ac5d97398fa521e8f3a2869242383181dd008bdfbb808cc509a4"
+    },
+    {
+      "file": "future-medical-office-mobile.webp",
+      "width": 1100,
+      "height": 458,
+      "bytes": 103926,
+      "sha256": "fa7d6ead3c2f87e0de99bb1b16accd62b44548a5af054959dbf05995fab7f468"
+    }
+  ]
+}

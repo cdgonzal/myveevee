@@ -69,10 +69,15 @@ describe("Simplified marketing funnel", () => {
 
   it("keeps navigation focused and sends provider interest to Contact", async () => {
     renderSite("/providers");
-    await screen.findByText("Discuss a Partnership");
+    const partnershipLinks = await screen.findAllByRole("link", { name: "Bring VeeVee to Your Practice" });
+    expect(partnershipLinks).toHaveLength(2);
+    for (const link of partnershipLinks) expect(link).toHaveAttribute("href", "/contact");
     expect(screen.getByRole("link", { name: "Start" })).toHaveAttribute("href", "https://veevee.io");
     expect(screen.queryByRole("link", { name: "Log in" })).not.toBeInTheDocument();
-    fireEvent.click(await screen.findByRole("link", { name: "Discuss a Partnership" }));
+    fireEvent.click(partnershipLinks[0]);
+    expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({
+      placement: "providers_hero_contact", destinationUrl: "/contact", destinationType: "internal", pagePath: "/providers",
+    }));
     expect(await screen.findByRole("heading", { level: 1, name: "Contact VeeVee for press, partnerships, and support." })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Open navigation menu" }));
     const navigation = within(await screen.findByRole("navigation", { name: "Mobile navigation" }));

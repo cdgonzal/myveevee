@@ -223,15 +223,31 @@ const coreBodies = {
     <p><a href="/terms">Terms &amp; Disclaimers</a> · <a href="/contact">Contact our team</a></p>
   `,
   "/providers": `
-    <p>For Providers</p>
-    <h1>Connected care, from your team to their everyday life.</h1>
-    <p>Explore VeeVee for clinics, hospitals, and care teams. Start with your workflow, your patients, and the outcomes you want to improve.</p>
-    <h2>A clearer care picture</h2><p>Bring patient context, questions, and follow-up into a more connected conversation with patients and families.</p>
-    <h2>Support for care workflows</h2><p>Explore monitoring, documentation, and escalation workflows that fit how your team works.</p>
-    <h2>Continuity after the visit</h2><p>Help patients stay engaged with their health story and prepare for the next conversation with your team.</p>
-    <h2>Technology and deployment</h2><p>Discuss local bedside processing, integration requirements, data handling, and escalation paths with our team.</p>
-    <h2>Illustrative hospital economics</h2><p>Review planning assumptions for revenue support, staffing efficiency, and rollout costs with our team. Actual results depend on patient mix, staffing, reimbursement, and rollout design.</p>
-    <p><a href="/contact">Discuss a Partnership</a></p>
+    <p>For clinics &amp; practices</p>
+    <h1>Your practice. Their Health Twin.</h1>
+    <p>Introduce patients to VeeVee—a free, personalized Health Twin to explore their wellness goals and prepare questions for your team.</p>
+    <p><a href="/contact">Bring VeeVee to Your Practice</a> · <a href="/how-it-works">See the Patient Experience</a></p>
+    <h2>Their story. A starting point for your conversation.</h2>
+    <ol>
+      <li><h3>Tell their story</h3><p>Patients add their records, photos, or videos and choose a wellness goal.</p></li>
+      <li><h3>Explore possibilities</h3><p>Their Health Twin helps them explore approaches related to their goals.</p></li>
+      <li><h3>Bring questions to you</h3><p>Patients review their results and bring questions and next steps to a conversation with your team.</p></li>
+    </ol>
+    <h2>Start with an introduction.</h2>
+    <ol>
+      <li><h3>Make the introduction</h3><p>Introduce VeeVee during a visit or in your patient communications. Invite patients to explore their own Health Twin.</p></li>
+      <li><h3>Let patients explore</h3><p>Patients start their free account and explore their goals through the patient experience.</p></li>
+      <li><h3>Keep the conversation going</h3><p>Invite patients to discuss what they explored and the questions they want to ask at their next visit.</p></li>
+    </ol>
+    <h2>A few things your team may ask.</h2>
+    <h3>Is the Health Twin free for patients?</h3><p>Yes. Patients can create their Health Twin for free through VeeVee. Practice partnership arrangements can be discussed separately with our team.</p>
+    <h3>How can our team get familiar with VeeVee?</h3><p>Start with the patient experience to see the Input, Simulate, and Results journey. Then contact us to discuss how you would introduce VeeVee in your practice.</p>
+    <h3>What does our practice need to get started?</h3><p>Tell us about your practice and how you would like to introduce VeeVee to patients. We can discuss the setup, patient communications, and support that would fit your team.</p>
+    <h3>Will our team automatically receive patient information?</h3><p>This patient introduction does not promise automatic sharing with your practice. Discuss access, consent, and any integration requirements with our team before planning a connected workflow.</p>
+    <h3>Does VeeVee replace our clinical guidance?</h3><p>No. VeeVee is for entertainment and educational purposes and does not provide medical advice. Patients should discuss medical decisions with a licensed healthcare professional.</p>
+    <h2>Bring VeeVee into your patient conversations.</h2>
+    <p>Tell us about your practice, your patients, and how you would like to introduce VeeVee. Let’s discuss the setup and support that would fit your team.</p>
+    <p><a href="/contact">Bring VeeVee to Your Practice</a></p>
   `,
 };
 ROUTES.push(...Object.entries(corePageMeta).map(([path, meta]) => ({
