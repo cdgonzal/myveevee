@@ -225,7 +225,7 @@ const coreBodies = {
   "/providers": `
     <p>For clinics &amp; practices</p>
     <h1>Your practice. Their Health Twin.</h1>
-    <p>Introduce patients to VeeVee—a free, personalized Health Twin to explore their wellness goals and prepare questions for your team.</p>
+    <p>Introduce patients to VeeVee, a free, personalized Health Twin to explore their wellness goals and prepare questions for your team.</p>
     <p><a href="/contact">Bring VeeVee to Your Practice</a> · <a href="/how-it-works">See the Patient Experience</a></p>
     <h2>Their story. A starting point for your conversation.</h2>
     <ol>

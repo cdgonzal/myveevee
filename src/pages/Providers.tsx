@@ -3,7 +3,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { CampaignScene } from "../components/CampaignScene";
 import { APP_LINKS } from "../config/links";
-import { CAMPAIGN_ART } from "../theme/campaign";
 
 const PATIENT_JOURNEY = [
   { title: "Tell their story", label: "Input", detail: "Patients add their records, photos, or videos and choose a wellness goal.", subject: "input", treatment: "parkInput" },
@@ -56,7 +55,7 @@ export default function Providers() {
               Your practice.{" "}<Box as="span" display="block" color="accent.soft">Their Health Twin.</Box>
             </Heading>
             <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.65" color="text.muted" maxW="lg">
-              Introduce patients to VeeVee—a free, personalized Health Twin to explore their wellness goals and prepare questions for your team.
+              Introduce patients to VeeVee, a free, personalized Health Twin to explore their wellness goals and prepare questions for your team.
             </Text>
             <Stack spacing={3} align={{ base: "stretch", sm: "flex-start" }}>
               <Button as={RouterLink} to={APP_LINKS.internal.contact} size="lg" borderRadius="full" px={{ base: 4, md: 7 }}
@@ -72,22 +71,6 @@ export default function Providers() {
             </Stack>
           </Stack>
         </Container>
-        <Box as="figure" m={0} position="absolute" right={{ base: "13%", sm: "18%", lg: "13%", xl: "16%" }}
-          bottom={{ base: "132px", md: "148px", lg: "232px" }} w={{ base: "180px", md: "210px", lg: "230px" }} textAlign="center">
-          <Text as="figcaption" display="inline-block" mb={3} px={3} py={2} bg="rgba(3, 7, 37, 0.82)"
-            borderWidth="1px" borderColor="rgba(156, 231, 255, 0.4)" borderRadius="full" fontSize="xs" color="accent.soft">
-            Meet your Health Twin
-          </Text>
-          <Box position="relative">
-            <Box aria-hidden="true" position="absolute" bottom={0} left="15%" w="70%" h="15px" borderRadius="50%"
-              bg="rgba(92, 224, 255, 0.22)" boxShadow="0 0 28px 8px rgba(92, 224, 255, 0.4)" />
-            <Image ignoreFallback src={CAMPAIGN_ART.theo} alt="Theo’s digital Health Twin above the medical office desk"
-              srcSet="/brand/2026/futuristic/theo-results-384.webp 384w, /brand/2026/futuristic/theo-results-768.webp 768w"
-              sizes="(min-width: 992px) 230px, (min-width: 768px) 210px, 180px"
-              width={1024} height={1536} w="full" h={{ base: "240px", md: "280px", lg: "310px" }} p={2}
-              position="relative" objectFit="contain" loading="eager" decoding="async" />
-          </Box>
-        </Box>
       </Box>
 
       <Container maxW="6xl" px={{ base: 4, md: 8 }} py={{ base: 12, md: 20 }}>
