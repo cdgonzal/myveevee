@@ -219,8 +219,7 @@ const coreBodies = {
     <h2>A few things to know</h2>
     <h3>What is a Health Twin?</h3><p>A digital version of you that helps you explore possibilities and find a path toward your wellness goals.</p>
     <h3>Where do I get started?</h3><p>Choose Start to create your free account or sign in.</p>
-    <h3>What should I know before sharing health information?</h3><p>Review the privacy policy and consent information in VeeVee before adding records. Contact our team with questions.</p>
-    <h3>Does VeeVee replace my care team?</h3><p>No. VeeVee supports wellness, education, and preparation for care conversations.</p>
+    <h3>Does VeeVee replace my wellness team?</h3><p>Not a doctor. VeeVee is for entertainment and educational purposes only. VeeVee gives you lifestyle tips, wellness prompts, and benefit reminders. We do not provide medical advice. Always talk to a licensed healthcare professional for medical decisions.</p>
     <p><a href="/terms">Terms &amp; Disclaimers</a> · <a href="/contact">Contact our team</a></p>
   `,
   "/providers": `

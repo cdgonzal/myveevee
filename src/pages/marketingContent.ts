@@ -40,6 +40,5 @@ export const PATIENT_STORY_STEPS = [
 export const HEALTH_TWIN_FAQS = [
   { question: "What is a Health Twin?", answer: "A digital version of you that helps you explore possibilities and find a path toward your wellness goals." },
   { question: "Where do I get started?", answer: "Choose Start to create your free account or sign in." },
-  { question: "What should I know before sharing health information?", answer: "Review the privacy policy and consent information in VeeVee before adding records. For questions about how your information is handled, contact our team." },
-  { question: "Does VeeVee replace my care team?", answer: "No. VeeVee supports wellness, education, and preparation for care conversations. Your care team remains your source for diagnosis and treatment, and coverage questions should be confirmed with your plan." },
+  { question: "Does VeeVee replace my wellness team?", answer: "Not a doctor. VeeVee is for entertainment and educational purposes only. VeeVee gives you lifestyle tips, wellness prompts, and benefit reminders. We do not provide medical advice. Always talk to a licensed healthcare professional for medical decisions." },
 ] as const;
