@@ -5,6 +5,7 @@ export const CAMPAIGN_ART = {
   logo: "/brand/2026/futuristic/logo.webp",
   input: "/brand/2026/futuristic/theo-input.webp",
   simulation: "/brand/2026/futuristic/nia-seated.webp",
+  hologram: "/brand/2026/futuristic/vitruvian-theo.webp",
   results: "/brand/2026/futuristic/nia-results.webp",
   office: "/brand/2026/futuristic/future-office.webp",
   theo: "/brand/2026/futuristic/theo-results.webp",

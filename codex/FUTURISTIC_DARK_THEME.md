@@ -17,7 +17,7 @@ The dark theme now adopts the supplied Health Twin 2026 direction and is always 
 | Primary actions | Green #16734B with white labels |
 | Hero artwork | TH26-ENV-03 Future Office — Connected skyline workspace, full browser width, with separate AV-039 Nia v2 and AV-047 Theo v2 digital avatars |
 | Closing invitation | TH26-BG-02 Shadow surrounding an opaque midnight copy panel |
-| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home / AV-033 walking in Future City Park, Input / Simulate / Results |
+| How It Works | AV-045 in Future City Park / AV-040 seated in Future Home studying the IT-023 miniature hologram / AV-033 walking in Future City Park, Input / Simulate / Results |
 | Footer signature | TH26-LOGO-01, complete stacked logo and original glow |
 | Typography | Locally hosted Inter Variable, weights 100–900, font-display swap |
 
@@ -29,7 +29,9 @@ The public provider, contact, terms and audience landing pages share the revised
 
 Source repository: `C:/w/vv-designs`. Design references: `CODEX.md`, `2026/branding/campaign-palette.css`, `2026/branding/themes/health-twin-2026/README.md` and `2026/asset-library/avatar-casting.json`.
 
-`node scripts/import-futuristic-theme.mjs [source-root]` imports thirteen specific assets without changing the design library. The checked-in manifest at `public/brand/2026/futuristic/manifest.json` records IDs, paths, dimensions, SHA-256 hashes and sizes. Lossless WebP encoding preserves every visible source pixel, all alpha values and full source dimensions; the importer verifies these against decoded originals. The masters have no resizing, cropped subjects, recoloring or added glow. Responsive delivery copies are documented below. The font and its license are copied from the library's guide-v1 fonts directory.
+`node scripts/import-futuristic-theme.mjs [source-root]` imports fourteen specific assets without changing the design library. The checked-in manifest at `public/brand/2026/futuristic/manifest.json` records IDs, paths, dimensions, SHA-256 hashes and sizes. Lossless WebP encoding preserves every visible source pixel, all alpha values and full source dimensions; the importer verifies these against decoded originals. The masters have no resizing, cropped subjects, recoloring or added glow. Responsive delivery copies are documented below. The font and its license are copied from the library's guide-v1 fonts directory.
+
+The user-endorsed simulation composition adds IT-023 from `2026/ads/017-while-you-wait/assets/vitruvian-theo-telepresence-v2.png` to Nia's left at roughly half her height. The complete model, rings and console remain one contained image, with a separate soft cyan floor glow. Nia stays on the right, fully visible. This illustrates simulation exploration rather than a real patient scan or product interface. The combined image description includes both subjects; the decorative projection layer has empty alt text to avoid a duplicate announcement.
 
 Backgrounds use centered cover crops. The office hero reaches both browser edges immediately below the header; on phones its background is anchored to the lower avatar region at a readable scene scale. Nia and Theo use separate complete digital-only sources, aligned to the floor with contain and padding. The copy sits over a midnight radial backdrop with feathered edges that blend into the office. The dark center keeps copy readable; both avatars sit above the backdrop so it never dims their figures. How It Works retains 6% stage padding and its complete Input pair. No UI or text covers a person. The avatar illustrations are conceptual artwork, not product screenshots or clinical evidence.
 

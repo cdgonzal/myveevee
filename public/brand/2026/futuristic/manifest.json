@@ -114,6 +114,17 @@
       "visiblePixelsPreserved": true
     },
     {
+      "id": "IT-023",
+      "source": "2026/ads/017-while-you-wait/assets/vitruvian-theo-telepresence-v2.png",
+      "file": "vitruvian-theo.webp",
+      "width": 1122,
+      "height": 1402,
+      "sourceSha256": "7fc0c71a9e20027a558f3534220717e4982f2bcf1bde931bc0e8b7439ea93d4e",
+      "outputSha256": "5689a5b59861f5eb463f8f5698ad11f769bdcb0dbc15796fbdea0892811e101c",
+      "bytes": 963262,
+      "visiblePixelsPreserved": true
+    },
+    {
       "id": "TH26-ENV-04",
       "source": "2026/ads/013-environment-backgrounds/futuristic-v1/assets/future-home-panorama-v1.png",
       "file": "future-home.webp",

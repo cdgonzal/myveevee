@@ -102,6 +102,26 @@
       "size": 165848
     },
     {
+      "file": "vitruvian-theo-384.webp",
+      "source": "vitruvian-theo.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 63720
+    },
+    {
+      "file": "vitruvian-theo-768.webp",
+      "source": "vitruvian-theo.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 960,
+      "channels": 4,
+      "premultiplied": false,
+      "size": 189288
+    },
+    {
       "file": "future-office-mobile.webp",
       "source": "future-office.webp",
       "crop": {
