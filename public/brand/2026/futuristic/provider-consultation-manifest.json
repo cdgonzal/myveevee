@@ -1,0 +1,24 @@
+{
+  "id": "SC-056",
+  "name": "Provider consultation — Desktop Health Twin",
+  "sourceRepository": "vv-designs",
+  "source": "2026/ads/013-environment-backgrounds/provider-telepresence-v1/assets/provider-desktop-health-twin-v1.png",
+  "sourceSha256": "0a0f4f13151f0c51854d0b8c49642d813abdd5a460b88f5791bff28e8b95f905",
+  "encoding": "WebP quality 88, complete source canvas; responsive CSS preserves the physician, both hands, full Health Twin and projection device; mobile frames the right 60% of the scene",
+  "variants": [
+    {
+      "file": "provider-desktop-health-twin-v1.webp",
+      "width": 1774,
+      "height": 887,
+      "bytes": 150072,
+      "sha256": "25094900b333edffb387fe0169a10b019cd34107e660e0ead68acacbd28d6d49"
+    },
+    {
+      "file": "provider-desktop-health-twin-v1-mobile.webp",
+      "width": 1100,
+      "height": 550,
+      "bytes": 78052,
+      "sha256": "8a9b3707eed59c10938417cd1e82d6da368ff077135fe3ae152dbaaca341f560"
+    }
+  ]
+}

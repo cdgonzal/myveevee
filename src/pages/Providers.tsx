@@ -35,23 +35,23 @@ export default function Providers() {
 
   return (
     <Stack spacing={0}>
-      <Box as="section" aria-labelledby="providers-heading" position="relative" isolation="isolate" bg="bg.canvas">
-        <Box as="picture" position="absolute" insetX={0} bottom={0} zIndex={-1}
-          h={{ base: "400px", md: "440px", lg: "100%" }}
-          sx={{ maskImage: { base: "linear-gradient(to bottom, transparent, black 96px)", lg: "none" } }}>
-          <source media="(max-width: 991px)" srcSet="/brand/2026/futuristic/future-medical-office-mobile.webp" />
-          <Image ignoreFallback src="/brand/2026/futuristic/future-medical-office.webp" alt=""
+      <Box as="section" aria-labelledby="providers-heading" position="relative" isolation="isolate" bg="bg.canvas"
+        display="flex" flexDirection="column" justifyContent="center" w="full" maxW="1920px" mx="auto"
+        aspectRatio={{ xl: 2 }}>
+        <Box as="picture" display="block" position={{ base: "relative", xl: "absolute" }} inset={{ xl: 0 }}
+          order={2} zIndex={{ xl: -1 }} w="full" aspectRatio={{ base: 1.2, md: 2 }} h={{ xl: "full" }}>
+          <source media="(max-width: 1279px)" srcSet="/brand/2026/futuristic/provider-desktop-health-twin-v1-mobile.webp" />
+          <Image ignoreFallback src="/brand/2026/futuristic/provider-desktop-health-twin-v1.webp"
+            alt="Concept illustration of a physician talking with a digital Health Twin projected above her desk"
             w="full" h="full" objectFit="cover" objectPosition="right bottom"
             loading="eager" decoding="async" {...{ fetchpriority: "high" }} />
         </Box>
-        <Box position="absolute" inset={0} zIndex={-1} pointerEvents="none" display={{ base: "none", lg: "block" }}
-          bg="linear-gradient(90deg, rgba(3, 7, 37, 0.96) 0%, rgba(3, 7, 37, 0.88) 28%, rgba(3, 7, 37, 0.45) 46%, rgba(3, 7, 37, 0.06) 64%, transparent 80%)" />
-        <Container maxW="7xl" px={{ base: 4, md: 8, lg: 12 }}
-          minH={{ lg: "680px" }} display="flex" alignItems="center"
-          pt={{ base: 10, md: 12 }} pb={{ base: "440px", md: "500px", lg: 12 }}>
-          <Stack spacing={{ base: 5, md: 6 }} maxW={{ base: "2xl", lg: "520px" }} position="relative" zIndex={1}>
+        <Box position="absolute" inset={0} zIndex={-1} pointerEvents="none" display={{ base: "none", xl: "block" }}
+          bg="linear-gradient(90deg, rgba(3, 7, 37, 0.90) 0%, rgba(3, 7, 37, 0.75) 25%, rgba(3, 7, 37, 0.35) 39%, transparent 49%)" />
+        <Container maxW="7xl" px={{ base: 4, md: 8, xl: 12 }} py={{ base: 10, md: 12 }}>
+          <Stack spacing={{ base: 5, md: 6 }} maxW={{ base: "2xl", xl: "440px" }} position="relative" zIndex={1}>
             <Text fontSize={{ base: "xs", md: "sm" }} letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">For clinics &amp; practices</Text>
-            <Heading id="providers-heading" as="h1" fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }} lineHeight="1.08" letterSpacing="-0.04em">
+            <Heading id="providers-heading" as="h1" fontSize={{ base: "4xl", md: "5xl", xl: "54px" }} lineHeight="1.08" letterSpacing="-0.04em">
               Your practice.{" "}<Box as="span" display="block" color="accent.soft">Their Health Twin.</Box>
             </Heading>
             <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.65" color="text.muted" maxW="lg">
