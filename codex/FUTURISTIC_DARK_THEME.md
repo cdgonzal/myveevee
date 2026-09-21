@@ -52,7 +52,7 @@ All three illustration frames use a consistent 5:4 aspect ratio so the complete 
 
 ## Conversion path
 
-The primary action on Home and How It Works now opens `https://veevee.io` in the same tab. Their sticky header also offers Start alongside Log in. At widths below 361px the header uses the icon alone so the actions remain unobscured. Each Start placement records `cta_click` with an external destination and its page path; both pages' analytics goal is `drive_account_creation`. These events measure app handoffs, not completed registrations. Account creation must be measured in veevee.io to assess the full funnel.
+The primary action on Home and How It Works opens `https://veevee.io` in the same tab. The shared sticky header has one app action, Start, on every page; the duplicate Log in action is removed. The icon and wordmark remain visible at phone widths. Each Start placement records `cta_click` with an external destination and its page path; both pages' analytics goal is `drive_account_creation`. These events measure app handoffs, not completed registrations. Account creation must be measured in veevee.io to assess the full funnel.
 
 The live destination was reviewed: veevee.io defaults to Sign In and exposes a separate Create Account tab. Its current app entry uses the default Amplify Authenticator without a direct signup URL. A signup-first destination requires a change in that app; marketing links use the verified root URL. No app authentication behavior was changed here.
 

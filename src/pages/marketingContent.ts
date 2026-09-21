@@ -39,7 +39,7 @@ export const PATIENT_STORY_STEPS = [
 
 export const HEALTH_TWIN_FAQS = [
   { question: "What is a Health Twin?", answer: "A digital picture of your health that brings your records, habits, and care context together. It helps you make sense of information over time." },
-  { question: "Where do I get started?", answer: "Visit veevee.io to create your free account. If you already have an account, choose Log In at the top of this page." },
+  { question: "Where do I get started?", answer: "Choose Start to create your free account or sign in." },
   { question: "What should I know before sharing health information?", answer: "Review the privacy policy and consent information in VeeVee before adding records. For questions about how your information is handled, contact our team." },
   { question: "Does VeeVee replace my care team?", answer: "No. VeeVee supports wellness, education, and preparation for care conversations. Your care team remains your source for diagnosis and treatment, and coverage questions should be confirmed with your plan." },
 ] as const;

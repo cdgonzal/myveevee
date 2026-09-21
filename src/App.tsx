@@ -1,7 +1,6 @@
 import { Suspense, lazy, useEffect, useLayoutEffect, useRef, type ComponentType } from "react";
 import {
   Box,
-  Button,
   Container,
   Drawer,
   DrawerBody,
@@ -347,7 +346,6 @@ function Header() {
               <Image
                 src="/brand/2026/wordmark.svg"
                 alt="VeeVee"
-                sx={{ "@media (max-width: 360px)": { display: "none" } }}
                 h={{ base: "10px", md: "12px" }}
                 w="auto"
                 objectFit="contain"
@@ -367,24 +365,7 @@ function Header() {
                 ))}
               </HStack>
 
-              {(pathname === "/" || pathname === "/how-it-works") && (
-                <StartButton placement="header_start" size="sm" px={{ base: 3, md: 5 }}>Start</StartButton>
-              )}
-              <Button
-                as="a"
-                href={APP_LINKS.external.authenticatedConsole}
-                size="sm"
-                minH="44px"
-                borderRadius="full"
-                fontWeight="700"
-                px={{ base: 2, md: 5 }}
-                variant="outline"
-                onClick={() =>
-                  trackNavClick("header_login", "Log in", APP_LINKS.external.authenticatedConsole, "external", "header_nav")
-                }
-              >
-                Log in
-              </Button>
+              <StartButton placement="header_start" size="sm" px={{ base: 3, md: 5 }}>Start</StartButton>
 
               <IconButton
                 aria-label="Open navigation menu"

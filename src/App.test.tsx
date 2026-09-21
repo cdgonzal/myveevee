@@ -61,7 +61,7 @@ describe("Simplified marketing funnel", () => {
       placement: "how_it_works_top_start", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/how-it-works",
     }));
     expect(screen.queryByRole("link", { name: "Create a Health Twin" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "https://veevee.io");
+    expect(screen.queryByRole("link", { name: "Log in" })).not.toBeInTheDocument();
     expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({ destinationUrl: "/how-it-works", destinationType: "internal" }));
     expect(document.querySelector('a[href="/health-twin"]')).toBeNull();
     expect(document.querySelector('a[href="/simulator"]')).toBeNull();
@@ -70,6 +70,8 @@ describe("Simplified marketing funnel", () => {
   it("keeps navigation focused and sends provider interest to Contact", async () => {
     renderSite("/providers");
     await screen.findByText("Discuss a Partnership");
+    expect(screen.getByRole("link", { name: "Start" })).toHaveAttribute("href", "https://veevee.io");
+    expect(screen.queryByRole("link", { name: "Log in" })).not.toBeInTheDocument();
     fireEvent.click(await screen.findByRole("link", { name: "Discuss a Partnership" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Contact VeeVee for press, partnerships, and support." })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Open navigation menu" }));
