@@ -371,7 +371,11 @@ function Header() {
                 aria-label="Open navigation menu"
                 minW="44px"
                 minH="44px"
-                icon={<Box as="span" fontSize="12px" lineHeight="1">Menu</Box>}
+                icon={<Box as="svg" viewBox="0 0 24 24" boxSize="22px" fill="currentColor" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="5" r="1.8" />
+                  <circle cx="12" cy="12" r="1.8" />
+                  <circle cx="12" cy="19" r="1.8" />
+                </Box>}
                 variant="ghost"
                 color={menuButtonColor}
                 display={{ base: "inline-flex", md: "none" }}
