@@ -46,9 +46,9 @@ All three illustration frames use a consistent 5:4 aspect ratio so the complete 
 | Avatar | AV-047 Theo v2 on the left, centered copy, AV-039 Nia v2 on the right; complete digital singles. At phone/tablet widths, centered copy sits above Theo (left) and Nia (right). | AV-045 Theo discomfort/concern pair, AV-040 Nia seated Thinker with its stool, AV-033 Rosa walking roadmap single with bottle bag |
 | Scene | TH26-ENV-03 office hero; TH26-BG-02 closing invitation | TH26-ENV-02 first park crop for Input; TH26-ENV-04 open central area for Simulate; TH26-ENV-02 third park crop for Results |
 | Mirror | None | None |
-| Text | Hero: “Your twin. Your simulation. All free.” with emphasized free offering. Benefits: “Your twin. Real possibilities.” plus the supplied campaign poster's guidance, recommendations, and offers language; retained 01, 02, 03 markers. | Intro: “Your twin. Three simple steps.” Alex's section is labeled “Patient story” following the user's confirmation that this is a real patient; the original quote is retained and PATIENT_STORY_STEPS is shortened to one sentence per step. PATIENT_STEPS and FAQs retained. |
+| Text | Hero: “Your twin. Your simulation. All free.” with emphasized free offering. Benefits: “Your twin. Real possibilities.” plus the supplied campaign poster's guidance, recommendations, and offers language; retained 01, 02, 03 markers. | Intro: “Your twin. Three simple steps.” Liam's section is labeled “Patient story” following the user's confirmation that this is a real patient; the original quote is retained and PATIENT_STORY_STEPS is shortened to one sentence per step. PATIENT_STEPS and FAQs retained. |
 | Logo count | Original header icon/wordmark placement plus one combined futuristic footer mark; no logos embedded in avatar sources | Same header/footer; no embedded logos in the three avatar sources |
-| Duplicate words | “Start free” appears at the hero and close; “See How It Works” is a secondary hero link. | “Start free” appears at the introduction, after the three steps and after Alex's story. |
+| Duplicate words | “Start free” appears at the hero and close; “See How It Works” is a secondary hero link. | “Start free” appears at the introduction, after the three steps and after Liam's story. |
 
 ## Conversion path
 

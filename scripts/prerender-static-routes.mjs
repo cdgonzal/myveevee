@@ -209,7 +209,7 @@ const coreBodies = {
     <section aria-labelledby="patient-story-heading">
       <p>Patient story</p>
       <h2 id="patient-story-heading">“I want the freedom to move again.”</h2>
-      <p>— Alex</p>
+      <p>— Liam</p>
       <ol>
         <li><h3>Input</h3><p>Added his records and a movement video.</p></li>
         <li><h3>Simulate</h3><p>Compared options with his digital twin.</p></li>

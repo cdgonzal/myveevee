@@ -45,7 +45,7 @@ export default function HowItWorks() {
         <Stack spacing={3} maxW="3xl">
           <Text fontSize="xs" fontWeight="700" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Patient story</Text>
           <Heading id="patient-story-heading" as="h2" size="lg">“I want the freedom to move again.”</Heading>
-          <Text color="text.muted">— Alex</Text>
+          <Text color="text.muted">— Liam</Text>
         </Stack>
         <SimpleGrid as="ol" listStyleType="none" m={0} p={0} columns={{ base: 1, md: 3 }} spacing={6}>
           {PATIENT_STORY_STEPS.map((step) => (
