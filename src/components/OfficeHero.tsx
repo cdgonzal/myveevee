@@ -20,9 +20,13 @@ export function OfficeHero({ children }: { children: ReactNode }) {
             p={{ base: 0, md: 7, lg: 8 }} maxW="lg" mx="auto" w="full"
             _before={{
               content: '""', position: "absolute", zIndex: -1, pointerEvents: "none",
-              display: { base: "none", lg: "block" },
-              insetX: "-144px", insetY: "-128px",
-              background: "radial-gradient(ellipse closest-side, #030725 55%, rgba(3, 7, 37, 0.96) 68%, rgba(3, 7, 37, 0.72) 80%, rgba(3, 7, 37, 0.32) 90%, transparent 100%)",
+              insetX: { base: "-16px", lg: "-144px" },
+              insetY: { base: "-24px", lg: "-128px" },
+              background: {
+                base: "radial-gradient(ellipse at 20% 20%, rgba(66, 109, 226, 0.18), transparent 70%), radial-gradient(ellipse at 80% 75%, rgba(222, 151, 204, 0.13), transparent 70%)",
+                lg: "radial-gradient(ellipse closest-side, #12102F 48%, rgba(18, 16, 47, 0.96) 62%, rgba(18, 16, 47, 0.65) 76%, transparent 100%), radial-gradient(ellipse at 28% 30%, rgba(66, 109, 226, 0.60), transparent 65%), radial-gradient(ellipse at 72% 70%, rgba(222, 151, 204, 0.48), transparent 65%)",
+              },
+              maskImage: "radial-gradient(ellipse closest-side, black 70%, transparent 100%)",
             }}>
             {children}
           </Box>
