@@ -413,7 +413,8 @@ function Footer() {
   const footerBg = useColorModeValue("bg.glass", "bg.glass");
   const showCampaignLogo = useColorModeValue(false, true);
   return (
-    <Box as="footer" borderTop="1px solid" borderColor="border.default" bg={footerBg}>
+    <Box as="footer" borderTop="1px solid" borderColor="border.default" bg={footerBg}
+      bgImage="radial-gradient(ellipse at 10% 0%, rgba(66, 109, 226, 0.48), transparent 75%), radial-gradient(ellipse at 90% 100%, rgba(222, 151, 204, 0.34), transparent 75%)">
       <Container maxW="6xl" py={8}>
         <Stack spacing={5} align="center">
           {showCampaignLogo && <Image src={CAMPAIGN_ART.logo} alt="VeeVee" w="160px" h="160px" objectFit="contain" loading="lazy" />}
