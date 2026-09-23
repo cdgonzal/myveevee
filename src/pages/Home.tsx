@@ -1,8 +1,7 @@
-import { Box, Container, Grid, Heading, Image, Link as CLink, SimpleGrid, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Grid, Heading, Image, Link as CLink, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { trackCtaClick } from "../analytics/trackCtaClick";
 import { APP_LINKS } from "../config/links";
-import { HEALTH_TWIN_BENEFITS } from "./marketingContent";
 import { OfficeHero } from "../components/OfficeHero";
 import { StartButton } from "../components/StartButton";
 
@@ -55,27 +54,6 @@ export default function Home() {
           </Box>
         </Grid>
       )}
-
-      <Container maxW="6xl" px={isDark ? 4 : 0} py={isDark ? { base: 10, md: 16 } : 0}>
-        <Stack spacing={{ base: 10, md: 16 }}>
-          <Stack as="section" aria-labelledby="benefits-heading" spacing={6}>
-            <Heading id="benefits-heading" as="h2" size="lg">Your twin. Real possibilities.</Heading>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}>
-              {HEALTH_TWIN_BENEFITS.map((benefit, index) => (
-                <Box key={benefit.title} p={5} display="flex" alignItems="center" gap={4} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl">
-                  {isDark && <Text fontSize="xs" letterSpacing="0.16em" color="accent.soft" flexShrink={0}>0{index + 1}</Text>}
-                  <Heading as="h3" size="sm">{benefit.title}</Heading>
-                </Box>
-              ))}
-            </SimpleGrid>
-          </Stack>
-
-          <Stack as="section" spacing={4} align="center" textAlign="center" maxW="2xl" w="full" mx="auto" py={4}>
-            <Heading as="h2" size="md">Meet your free twin.</Heading>
-            <StartButton placement="home_bottom_start" px={{ base: 4, md: 8 }} w={{ base: "full", sm: "auto" }} />
-          </Stack>
-        </Stack>
-      </Container>
     </Stack>
   );
 }

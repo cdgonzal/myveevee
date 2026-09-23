@@ -190,12 +190,6 @@ const coreBodies = {
     <p>Your twin. Your simulation.</p>
     <p><a href="https://veevee.io">Start Now</a></p>
     <p><a href="/how-it-works">See How It Works</a></p>
-    <h2>Your twin. Real possibilities.</h2>
-    <h3>Personalized guidance</h3>
-    <h3>Products &amp; services</h3>
-    <h3>Coupons &amp; discounts</h3>
-    <h2>Meet your free twin.</h2>
-    <p><a href="https://veevee.io">Start free</a></p>
   `,
   "/how-it-works": `
     <h1>More of the life you want.</h1>
