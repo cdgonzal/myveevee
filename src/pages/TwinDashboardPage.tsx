@@ -1288,9 +1288,9 @@ function PrintQueueList({
 
               <HStack spacing={3} flexWrap="wrap">
                 <Button
-                  bg={primaryActionLabel === "Mark Printed" ? "#14804A" : "#1177BA"}
+                  bg={primaryActionLabel === "Mark Printed" ? "action.primary" : "#1177BA"}
                   color="white"
-                  _hover={{ bg: primaryActionLabel === "Mark Printed" ? "#0f6b3d" : "#0b5d94" }}
+                  _hover={{ bg: primaryActionLabel === "Mark Printed" ? "action.hover" : "#0b5d94" }}
                   size="lg"
                   minW="170px"
                   isDisabled={primaryActionLabel === "Reprint" && !card.printImageUrl}
