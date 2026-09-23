@@ -99,7 +99,10 @@ export default function Providers() {
           </Stack>
 
           <Stack as="section" aria-labelledby="partnership-heading" align="center" spacing={5} textAlign="center"
-            p={{ base: 6, md: 12 }} bg="bg.surface" borderWidth="1px" borderColor="border.default" borderRadius="2xl">
+            p={{ base: 6, md: 12 }} bg="bg.canvas"
+            bgImage="linear-gradient(rgba(3, 7, 37, 0.72), rgba(3, 7, 37, 0.72)), url('/brand/2026/futuristic/future-examination-room.webp')"
+            bgSize="cover" bgPosition={{ base: "65% center", md: "center" }} bgRepeat="no-repeat"
+            borderWidth="1px" borderColor="border.default" borderRadius="2xl">
             <Text fontSize="xs" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Let’s connect</Text>
             <Heading id="partnership-heading" as="h2" size="xl">Explore VeeVee for your practice.</Heading>
             <Text color="text.muted" maxW="2xl">Tell us a little about your practice. Our team will follow up to answer your questions and discuss next steps.</Text>

@@ -1,0 +1,16 @@
+{
+  "name": "Future Examination Room",
+  "sourceRepository": "vv-designs",
+  "source": "2026/ads/013-environment-backgrounds/healthcare-futuristic-v1/assets/future-examination-room-panorama-v3.png",
+  "sourceSha256": "a390b0422a7541d169c62327df261f3da764295d590eadd6766db9af1b39c9ca",
+  "encoding": "WebP quality 88, complete source canvas; CSS crops to cover the provider contact section",
+  "variants": [
+    {
+      "file": "future-examination-room.webp",
+      "width": 1942,
+      "height": 809,
+      "bytes": 181718,
+      "sha256": "5037be1db04ec4637beda9e1386b78d408f3f06dd56af4e2a85265ce07a414ce"
+    }
+  ]
+}
