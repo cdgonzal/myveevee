@@ -13,10 +13,10 @@ export default function HowItWorks() {
       <Stack spacing={4} maxW="3xl">
         <Text fontSize="sm" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">How It Works</Text>
         <Heading as="h1" size={{ base: "xl", md: "2xl" }}>More of the life you want.</Heading>
-        <Text fontSize="lg" color="text.muted">Your twin. Three simple steps.</Text>
+        <Text fontSize="lg" color="text.muted">Your goals. VeeVee helps you find a way forward.</Text>
       </Stack>
 
-      <SimpleGrid as="section" aria-label="The three steps" columns={{ base: 1, md: 3 }} spacing={5}>
+      <SimpleGrid as="section" aria-label="How VeeVee helps you" columns={{ base: 1, md: 3 }} spacing={5}>
         {PATIENT_STEPS.map((step, index) => (
           <Box key={step.number} bg={panelBg} borderWidth="1px" borderColor="border.default" borderRadius="2xl" overflow="hidden">
             {isDark && <Box position="relative" aspectRatio={5 / 4}>
@@ -27,7 +27,6 @@ export default function HowItWorks() {
               <Text mb={4} bg="accent.primary" color="accent.on" borderRadius="full" w={10} h={10}
                 display="flex" alignItems="center" justifyContent="center" fontWeight="800">{step.number}</Text>
               <Heading as="h2" size="md" mb={2}>{step.title}</Heading>
-              <Text fontWeight="700" mb={3}>{step.promise}</Text>
               <Text color="text.muted">{step.detail}</Text>
             </Box>
           </Box>
@@ -35,14 +34,14 @@ export default function HowItWorks() {
       </SimpleGrid>
 
       <Stack align="center" spacing={3}>
-        <StartButton placement="how_it_works_steps_start" w={{ base: "full", sm: "auto" }} />
-        <Text fontSize="sm" color="text.muted">Your twin. Your simulation. All free.</Text>
+        <StartButton placement="how_it_works_steps_start" w={{ base: "full", sm: "auto" }}>Start Now</StartButton>
+        <Text fontSize="sm" color="text.muted">Your twin. Your simulation.</Text>
       </Stack>
 
       <Stack as="section" aria-labelledby="patient-story-heading" spacing={6} bg={panelBg}
         borderWidth="1px" borderColor="border.default" borderRadius="2xl" p={{ base: 6, md: 8 }}>
         <Stack spacing={3} maxW="3xl">
-          <Text fontSize="xs" fontWeight="700" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Patient story</Text>
+          <Text fontSize="xs" fontWeight="700" letterSpacing="0.16em" textTransform="uppercase" color="accent.soft">Illustrative example</Text>
           <Heading id="patient-story-heading" as="h2" size="lg">“I want the freedom to move again.”</Heading>
           <Text color="text.muted">— Liam</Text>
         </Stack>
@@ -54,7 +53,7 @@ export default function HowItWorks() {
             </Stack>
           ))}
         </SimpleGrid>
-        <StartButton placement="how_it_works_story_start" alignSelf={{ base: "stretch", sm: "flex-start" }} />
+        <StartButton placement="how_it_works_story_start" alignSelf={{ base: "stretch", sm: "flex-start" }}>Start Now</StartButton>
       </Stack>
 
       <Stack as="section" aria-labelledby="questions-heading" spacing={4}>

@@ -26,19 +26,19 @@ export const HEALTH_TWIN_BENEFITS = [
 ] as const;
 
 export const PATIENT_STEPS = [
-  { number: "1", title: "Input", promise: "Tell your story", detail: "Add records, photos, or videos. Set your goal." },
-  { number: "2", title: "Simulate", promise: "Explore your possibilities", detail: "Compare approaches with your digital twin." },
-  { number: "3", title: "Results", promise: "Take an informed next step", detail: "Review results and explore relevant options." },
+  { number: "1", title: "VeeVee gets to know you", detail: "Brings the information you share into context, connecting your story with what matters to you." },
+  { number: "2", title: "VeeVee explores your possibilities", detail: "Uses your digital twin to explore options and possible paths toward your goals." },
+  { number: "3", title: "VeeVee helps you move forward", detail: "Brings together a suggested roadmap, relevant recommendations, and next steps to consider." },
 ] as const;
 
 export const PATIENT_STORY_STEPS = [
-  { number: "1", title: "Input", detail: "Added his records and a movement video." },
-  { number: "2", title: "Simulate", detail: "Compared options with his digital twin." },
-  { number: "3", title: "Results", detail: "Found solutions and a roadmap to discuss with his wellness team." },
+  { number: "1", title: "VeeVee gets to know Liam", detail: "Brings the information he shares into context with his goal of moving more freely." },
+  { number: "2", title: "VeeVee explores his possibilities", detail: "Uses his digital twin to explore possible paths toward his mobility goal." },
+  { number: "3", title: "VeeVee helps him move forward", detail: "Brings together a suggested roadmap and relevant options to discuss with his wellness team." },
 ] as const;
 
 export const HEALTH_TWIN_FAQS = [
   { question: "What is a Health Twin?", answer: "A digital version of you that helps you explore possibilities and find a path toward your wellness goals." },
-  { question: "Where do I get started?", answer: "Choose Start to create your free account or sign in." },
+  { question: "Where do I get started?", answer: "Choose Start Now to create your account or sign in." },
   { question: "Does VeeVee replace my wellness team?", answer: "Not a doctor. VeeVee is for entertainment and educational purposes only. VeeVee gives you lifestyle tips, wellness prompts, and benefit reminders. We do not provide medical advice. Always talk to a licensed healthcare professional for medical decisions." },
 ] as const;

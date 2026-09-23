@@ -48,10 +48,12 @@ describe("Simplified marketing funnel", () => {
     const learnMore = await screen.findAllByRole("link", { name: "See How It Works" });
     fireEvent.click(learnMore[0]);
     expect(await screen.findByRole("heading", { level: 1, name: "More of the life you want." })).toBeInTheDocument();
-    const steps = within(screen.getByRole("region", { name: "The three steps" }));
-    expect(steps.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual(["Input", "Simulate", "Results"]);
+    const steps = within(screen.getByRole("region", { name: "How VeeVee helps you" }));
+    expect(steps.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      "VeeVee gets to know you", "VeeVee explores your possibilities", "VeeVee helps you move forward",
+    ]);
     expect(screen.getByRole("region", { name: "“I want the freedom to move again.”" })).toBeInTheDocument();
-    const howItWorksStarts = screen.getAllByRole("link", { name: "Start free" });
+    const howItWorksStarts = screen.getAllByRole("link", { name: "Start Now" });
     expect(howItWorksStarts).toHaveLength(2);
     for (const link of howItWorksStarts) expect(link).toHaveAttribute("href", "https://veevee.io");
     howItWorksStarts[0].addEventListener("click", (event) => event.preventDefault(), { once: true });

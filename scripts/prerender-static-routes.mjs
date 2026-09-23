@@ -193,26 +193,26 @@ const coreBodies = {
   `,
   "/how-it-works": `
     <h1>More of the life you want.</h1>
-    <p>Your twin. Three simple steps.</p>
-    <h2>1. Input</h2><p><strong>Tell your story</strong></p><p>Add records, photos, or videos. Set your goal.</p>
-    <h2>2. Simulate</h2><p><strong>Explore your possibilities</strong></p><p>Compare approaches with your digital twin.</p>
-    <h2>3. Results</h2><p><strong>Take an informed next step</strong></p><p>Review results and explore relevant options.</p>
-    <p><a href="https://veevee.io">Start free</a></p>
-    <p>Your twin. Your simulation. All free.</p>
+    <p>Your goals. VeeVee helps you find a way forward.</p>
+    <h2>1. VeeVee gets to know you</h2><p>Brings the information you share into context, connecting your story with what matters to you.</p>
+    <h2>2. VeeVee explores your possibilities</h2><p>Uses your digital twin to explore options and possible paths toward your goals.</p>
+    <h2>3. VeeVee helps you move forward</h2><p>Brings together a suggested roadmap, relevant recommendations, and next steps to consider.</p>
+    <p><a href="https://veevee.io">Start Now</a></p>
+    <p>Your twin. Your simulation.</p>
     <section aria-labelledby="patient-story-heading">
-      <p>Patient story</p>
+      <p>Illustrative example</p>
       <h2 id="patient-story-heading">“I want the freedom to move again.”</h2>
       <p>— Liam</p>
       <ol>
-        <li><h3>Input</h3><p>Added his records and a movement video.</p></li>
-        <li><h3>Simulate</h3><p>Compared options with his digital twin.</p></li>
-        <li><h3>Results</h3><p>Found solutions and a roadmap to discuss with his wellness team.</p></li>
+        <li><h3>VeeVee gets to know Liam</h3><p>Brings the information he shares into context with his goal of moving more freely.</p></li>
+        <li><h3>VeeVee explores his possibilities</h3><p>Uses his digital twin to explore possible paths toward his mobility goal.</p></li>
+        <li><h3>VeeVee helps him move forward</h3><p>Brings together a suggested roadmap and relevant options to discuss with his wellness team.</p></li>
       </ol>
-      <p><a href="https://veevee.io">Start free</a></p>
+      <p><a href="https://veevee.io">Start Now</a></p>
     </section>
     <h2>A few things to know</h2>
     <h3>What is a Health Twin?</h3><p>A digital version of you that helps you explore possibilities and find a path toward your wellness goals.</p>
-    <h3>Where do I get started?</h3><p>Choose Start to create your free account or sign in.</p>
+    <h3>Where do I get started?</h3><p>Choose Start Now to create your account or sign in.</p>
     <h3>Does VeeVee replace my wellness team?</h3><p>Not a doctor. VeeVee is for entertainment and educational purposes only. VeeVee gives you lifestyle tips, wellness prompts, and benefit reminders. We do not provide medical advice. Always talk to a licensed healthcare professional for medical decisions.</p>
     <p><a href="/terms">Terms &amp; Disclaimers</a> · <a href="/contact">Contact our team</a></p>
   `,
