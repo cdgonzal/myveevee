@@ -279,7 +279,6 @@ export default function App() {
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { pathname } = useLocation();
-  const headerBg = useColorModeValue("bg.glass", "bg.glass");
   const borderColor = useColorModeValue("border.default", "border.default");
   const navColor = useColorModeValue("text.primary", "text.primary");
   const menuButtonColor = useColorModeValue("text.primary", "white");
@@ -316,7 +315,7 @@ function Header() {
         as="header"
         borderBottom="1px solid"
         borderColor={borderColor}
-        bg={headerBg}
+        layerStyle="headerFooter"
         backdropFilter="saturate(150%) blur(12px)"
         position="sticky"
         top={0}
@@ -410,11 +409,9 @@ function Header() {
 }
 
 function Footer() {
-  const footerBg = useColorModeValue("bg.glass", "bg.glass");
   const showCampaignLogo = useColorModeValue(false, true);
   return (
-    <Box as="footer" borderTop="1px solid" borderColor="border.default" bg={footerBg}
-      bgImage="radial-gradient(ellipse at 10% 0%, rgba(66, 109, 226, 0.48), transparent 75%), radial-gradient(ellipse at 90% 100%, rgba(222, 151, 204, 0.34), transparent 75%)">
+    <Box as="footer" borderTop="1px solid" borderColor="border.default" layerStyle="headerFooter">
       <Container maxW="6xl" py={8}>
         <Stack spacing={5} align="center">
           {showCampaignLogo && <Image src={CAMPAIGN_ART.logo} alt="VeeVee" w="160px" h="160px" objectFit="contain" loading="lazy" />}

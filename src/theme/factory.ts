@@ -59,6 +59,12 @@ export function createTheme() {
         "state.error": { default: "status.error", _dark: "status.error" },
       },
     },
+    layerStyles: {
+      headerFooter: {
+        bg: "bg.glass",
+        bgImage: "radial-gradient(ellipse at 10% 0%, rgba(66, 109, 226, 0.48), transparent 75%), radial-gradient(ellipse at 90% 100%, rgba(222, 151, 204, 0.34), transparent 75%)",
+      },
+    },
     fonts: {
       body: `"Inter", system-ui, Avenir, Helvetica, Arial, sans-serif`,
       heading: `"Inter", system-ui, Avenir, Helvetica, Arial, sans-serif`,
