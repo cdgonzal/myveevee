@@ -2,6 +2,20 @@ import { Box, Container, Grid, Image } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { CAMPAIGN_ART } from "../theme/campaign";
 
+const HERO_GLOW = {
+  base: [
+    "radial-gradient(ellipse at 60% 65%, rgba(212, 121, 211, 0.28), transparent 60%)",
+    "radial-gradient(ellipse at 32% 40%, rgba(103, 76, 224, 0.34), transparent 60%)",
+    "radial-gradient(ellipse at 58% 25%, rgba(41, 88, 227, 0.38), transparent 65%)",
+  ].join(", "),
+  lg: [
+    "radial-gradient(ellipse at 58% 65%, rgba(212, 121, 211, 0.48), transparent 44%)",
+    "radial-gradient(ellipse at 34% 38%, rgba(103, 76, 224, 0.65), transparent 50%)",
+    "radial-gradient(ellipse at 57% 27%, rgba(41, 88, 227, 0.72), transparent 52%)",
+    "radial-gradient(ellipse closest-side, #111638 50%, rgba(17, 22, 56, 0.94) 66%, rgba(17, 22, 56, 0.50) 84%, transparent 100%)",
+  ].join(", "),
+};
+
 export function OfficeHero({ children }: { children: ReactNode }) {
   return (
     <Box as="section" aria-label="Meet your Health Twin" bg="bg.canvas" position="relative" isolation="isolate">
@@ -18,14 +32,12 @@ export function OfficeHero({ children }: { children: ReactNode }) {
           py={{ base: 6, md: 12 }}>
           <Box gridArea="copy" position="relative" isolation="isolate"
             p={{ base: 0, md: 7, lg: 8 }} maxW="lg" mx="auto" w="full"
+            textShadow="-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000"
             _before={{
               content: '""', position: "absolute", zIndex: -1, pointerEvents: "none",
               insetX: { base: "-16px", lg: "-144px" },
               insetY: { base: "-24px", lg: "-128px" },
-              background: {
-                base: "radial-gradient(ellipse at 20% 20%, rgba(66, 109, 226, 0.18), transparent 70%), radial-gradient(ellipse at 80% 75%, rgba(222, 151, 204, 0.13), transparent 70%)",
-                lg: "radial-gradient(ellipse closest-side, #12102F 48%, rgba(18, 16, 47, 0.96) 62%, rgba(18, 16, 47, 0.65) 76%, transparent 100%), radial-gradient(ellipse at 28% 30%, rgba(66, 109, 226, 0.60), transparent 65%), radial-gradient(ellipse at 72% 70%, rgba(222, 151, 204, 0.48), transparent 65%)",
-              },
+              background: HERO_GLOW,
               maskImage: "radial-gradient(ellipse closest-side, black 70%, transparent 100%)",
             }}>
             {children}
