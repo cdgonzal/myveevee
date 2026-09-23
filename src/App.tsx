@@ -284,7 +284,6 @@ function Header() {
   const navColor = useColorModeValue("text.primary", "text.primary");
   const menuButtonColor = useColorModeValue("text.primary", "white");
   const drawerBg = useColorModeValue("white", "surface.900");
-  const logoFilter = useColorModeValue("none", "invert(1)");
 
   const trackNavClick = (
     ctaName: string,
@@ -337,20 +336,18 @@ function Header() {
               _hover={{ textDecoration: "none" }}
             >
               <Image
-                src="/brand/2026/icon.svg"
+                src="/brand/2026/icon-dark.webp"
                 alt="VeeVee icon"
                 h={{ base: "26px", md: "30px" }}
                 w="auto"
                 objectFit="contain"
-                filter={logoFilter}
               />
               <Image
-                src="/brand/2026/wordmark.svg"
+                src="/brand/2026/wordmark-dark.webp"
                 alt="VeeVee"
-                h={{ base: "10px", md: "12px" }}
+                h={{ base: "26px", md: "30px" }}
                 w="auto"
                 objectFit="contain"
-                filter={logoFilter}
               />
             </HStack>
 
