@@ -29,10 +29,10 @@ export default function Home() {
       Meet your digital <Box as="span" display={isDark ? "block" : "inline"} color="accent.primary">Health Twin</Box>
     </Heading>
     <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.55" color={muted} maxW="lg">
-      Your twin. Your simulation. <Box as="strong" color="accent.soft" whiteSpace="nowrap">All free.</Box>
+      Your twin. Your simulation.
     </Text>
     <StartButton placement="home_hero_start" px={8}
-      alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }} />
+      alignSelf={isDark ? { base: "stretch", sm: "center" } : { base: "stretch", sm: "flex-start" }}>Start Now</StartButton>
     <CLink as={RouterLink} to={APP_LINKS.internal.howItWorks} fontSize="sm" color="accent.soft"
       display="inline-flex" alignItems="center" minH="44px" textDecoration="underline"
       onClick={() => trackLearnMore("home_hero")}>

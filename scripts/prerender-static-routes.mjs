@@ -187,8 +187,8 @@ const coreBodies = {
   "/": `
     <p>Your health, connected</p>
     <h1>Meet your digital Health Twin</h1>
-    <p>Your twin. Your simulation. <strong>All free.</strong></p>
-    <p><a href="https://veevee.io">Start free</a></p>
+    <p>Your twin. Your simulation.</p>
+    <p><a href="https://veevee.io">Start Now</a></p>
     <p><a href="/how-it-works">See How It Works</a></p>
     <h2>Your twin. Real possibilities.</h2>
     <h3>Personalized guidance</h3>

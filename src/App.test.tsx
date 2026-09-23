@@ -37,14 +37,13 @@ describe("Simplified marketing funnel", () => {
     renderSite();
     // Wait for the lazy page using a cheap text query before scanning roles.
     await screen.findByText("Your health, connected");
-    const homeStarts = screen.getAllByRole("link", { name: "Start free" });
-    expect(homeStarts).toHaveLength(2);
+    const homeStarts = [screen.getByRole("link", { name: "Start Now" }), screen.getByRole("link", { name: "Start free" })];
     for (const link of homeStarts) expect(link).toHaveAttribute("href", "https://veevee.io");
     expect(screen.getByRole("link", { name: "Start" })).toHaveAttribute("href", "https://veevee.io");
     homeStarts[0].addEventListener("click", (event) => event.preventDefault(), { once: true });
     fireEvent.click(homeStarts[0]);
     expect(trackCtaClick).toHaveBeenCalledWith(expect.objectContaining({
-      placement: "home_hero_start", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/",
+      placement: "home_hero_start", ctaText: "Start Now", destinationUrl: "https://veevee.io", destinationType: "external", pagePath: "/",
     }));
     const learnMore = await screen.findAllByRole("link", { name: "See How It Works" });
     fireEvent.click(learnMore[0]);
